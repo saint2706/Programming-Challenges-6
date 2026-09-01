@@ -19,11 +19,11 @@ This repo is organized around five categories that reflect where I want to spend
 | Category | Completed | Total | Progress |
 | --- | --- | --- | --- |
 | Practical Software | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| Algorithmic Challenges | 0 | 30 | ![0%](https://geps.dev/progress/0) |
+| Algorithmic Challenges | 1 | 30 | ![3%](https://geps.dev/progress/3) |
 | Web Development Showcase | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Data Analytics | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Practical ML | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| **Total** | **0** | **150** | ![0%](https://geps.dev/progress/0) |
+| **Total** | **1** | **150** | ![1%](https://geps.dev/progress/1) |
 
 ### Difficulty Legend
 
@@ -87,7 +87,7 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 
 | # | Challenge | Difficulty | Notes | Status |
 | --- | --- | --- | --- | --- |
-| 1 | [Custom Sorting Algorithm Race Visualizer](./challenges/Algorithmic%20Challenges/Custom%20Sorting%20Algorithm%20Race%20Visualizer/) | B | Animate bubble/insertion/selection/quick/merge side by side. | Not started |
+| 1 | [Custom Sorting Algorithm Race Visualizer](./challenges/Algorithmic%20Challenges/Custom%20Sorting%20Algorithm%20Race%20Visualizer/) | B | Manim race across 14 algorithms (comparison, non-comparison, hybrid) on one shared array. | Implemented (Python) |
 | 2 | [Balanced Bracket Validator for Multiple Bracket Types](./challenges/Algorithmic%20Challenges/Balanced%20Bracket%20Validator%20for%20Multiple%20Bracket%20Types/) | B | Stack-based, support custom/nested pair definitions. | Not started |
 | 3 | [Prime Sieve Showdown (Eratosthenes vs Atkin)](./challenges/Algorithmic%20Challenges/Prime%20Sieve%20Showdown%20(Eratosthenes%20vs%20Atkin)/) | B | Benchmark both to 10^8, compare memory and wall time. | Not started |
 | 4 | [Josephus Problem Solver](./challenges/Algorithmic%20Challenges/Josephus%20Problem%20Solver/) | B | Simulate with a circular list, then derive the closed form. | Not started |

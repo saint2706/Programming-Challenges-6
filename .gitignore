@@ -1,0 +1,13 @@
+# Rendered Manim output (large binaries, always regenerable from the .py source)
+media/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
