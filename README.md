@@ -19,11 +19,11 @@ This repo is organized around five categories that reflect where I want to spend
 | Category | Completed | Total | Progress |
 | --- | --- | --- | --- |
 | Practical Software | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| Algorithmic Challenges | 1 | 30 | ![3%](https://geps.dev/progress/3) |
+| Algorithmic Challenges | 5 | 30 | ![17%](https://geps.dev/progress/17) |
 | Web Development Showcase | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Data Analytics | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Practical ML | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| **Total** | **1** | **150** | ![1%](https://geps.dev/progress/1) |
+| **Total** | **5** | **150** | ![3%](https://geps.dev/progress/3) |
 
 ### Difficulty Legend
 
@@ -88,10 +88,10 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 | # | Challenge | Difficulty | Notes | Status |
 | --- | --- | --- | --- | --- |
 | 1 | [Custom Sorting Algorithm Race Visualizer](./challenges/Algorithmic%20Challenges/Custom%20Sorting%20Algorithm%20Race%20Visualizer/) | B | Manim race across 14 algorithms (comparison, non-comparison, hybrid) on one shared array. | Implemented (Python) |
-| 2 | [Balanced Bracket Validator for Multiple Bracket Types](./challenges/Algorithmic%20Challenges/Balanced%20Bracket%20Validator%20for%20Multiple%20Bracket%20Types/) | B | Stack-based, support custom/nested pair definitions. | Not started |
-| 3 | [Prime Sieve Showdown (Eratosthenes vs Atkin)](./challenges/Algorithmic%20Challenges/Prime%20Sieve%20Showdown%20(Eratosthenes%20vs%20Atkin)/) | B | Benchmark both to 10^8, compare memory and wall time. | Not started |
-| 4 | [Josephus Problem Solver](./challenges/Algorithmic%20Challenges/Josephus%20Problem%20Solver/) | B | Simulate with a circular list, then derive the closed form. | Not started |
-| 5 | [Run-Length Encoding Compressor with Custom Alphabets](./challenges/Algorithmic%20Challenges/Run-Length%20Encoding%20Compressor%20with%20Custom%20Alphabets/) | B | Support arbitrary symbol sets, not just text. | Not started |
+| 2 | [Balanced Bracket Validator for Multiple Bracket Types](./challenges/Algorithmic%20Challenges/Balanced%20Bracket%20Validator%20for%20Multiple%20Bracket%20Types/) | B | Configurable grammars: multi-character delimiters, opaque string/comment regions, escapes, self-pairing quotes, nesting rules, multi-error recovery, streaming. | Implemented (Python) |
+| 3 | [Prime Sieve Showdown (Eratosthenes vs Atkin)](./challenges/Algorithmic%20Challenges/Prime%20Sieve%20Showdown%20(Eratosthenes%20vs%20Atkin)/) | B | Six implementations (wheel-30 segmented, mod-60 Atkin, NumPy tiers) benchmarked to 10^9 with subprocess-isolated RSS measurement. | Implemented (Python) |
+| 4 | [Josephus Problem Solver](./challenges/Algorithmic%20Challenges/Josephus%20Problem%20Solver/) | B | Five methods from O(n·k) simulation to the O(1) k=2 bit rotation, plus an O(k log n) solver and a Fenwick-tree elimination order. | Implemented (Python) |
+| 5 | [Run-Length Encoding Compressor with Custom Alphabets](./challenges/Algorithmic%20Challenges/Run-Length%20Encoding%20Compressor%20with%20Custom%20Alphabets/) | B | Encoders closed over the alphabet: self-delimiting counts in base \|Sigma\|, four codecs, bit packing to log2(\|Sigma\|) bits. Beats zlib on DNA. | Implemented (Python) |
 | 6 | [Anagram Grouping at Scale](./challenges/Algorithmic%20Challenges/Anagram%20Grouping%20at%20Scale/) | B | Hash-based grouping for very large word lists; benchmark. | Not started |
 | 7 | [Count Inversions in an Array](./challenges/Algorithmic%20Challenges/Count%20Inversions%20in%20an%20Array/) | B | Compare merge-sort counting vs Fenwick tree approach. | Not started |
 | 8 | [Manacher's Algorithm for Longest Palindromic Substring](./challenges/Algorithmic%20Challenges/Manacher's%20Algorithm%20for%20Longest%20Palindromic%20Substring/) | I | O(n) approach; compare against the naive O(n²) baseline. | Not started |
