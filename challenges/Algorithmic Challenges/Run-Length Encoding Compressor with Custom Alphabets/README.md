@@ -165,6 +165,42 @@ So "DNA at 2 bits per base" is a real file on disk, not a talking point.
   coder that models only run lengths. It says how much of the remaining gap is
   the codec's fault and how much is the data's.
 
+## The security bug hiding in a compression exercise
+
+Run-length encoding is *unboundedly* expansive by design. That is the whole
+point of the format, and it is also one hostile input away from an OOM kill:
+
+```
+8 symbols  ->  claims 10,000,000,000,000 output symbols  ->  process killed
+```
+
+A 957-byte container was enough to take the process down. This is the classic
+decompression bomb, and a decompressor that doesn't think about it is not
+finished.
+
+Every decoder now takes an output ceiling and checks it **before** allocating,
+raising `DecompressionBomb`. The ceiling has to be generous rather than tight,
+because extreme ratios are exactly what this format is good at — a 54-byte file
+expanding to 2,000,000 symbols is legitimate, and still decodes. `unpack_file`,
+where untrusted bytes actually arrive, defaults to 65,536× the file size with a
+1 MiB floor; the in-memory `decompress` defaults to unbounded, since the caller
+already holds the input.
+
+Three smaller holes closed alongside it:
+
+- **Truncated packed data decoded silently.** `int.from_bytes(b"")` is `0`, so a
+  cut-off file produced a run of the first symbol — corruption presented as
+  data. It now checks the byte count against the header before decoding.
+- **A one-symbol alphabet gave a useless error.** A constant string is RLE's
+  *best* case and the one thing auto-inference can't handle (counts need at
+  least two symbols to be written in). The message now says exactly that, and
+  names the workaround.
+- **Alphabets larger than 2^64 crashed the bit packer** with a `TypeError` on
+  `None` instead of falling back to one symbol per whole number of bytes.
+
+Decoder fuzzing backs all of it: 500 random streams per codec must either decode
+cleanly or raise `ValueError` — never crash, never hang.
+
 ## Symbols are anything hashable
 
 Nothing in the module assumes text. Characters, byte values, enum members,
@@ -195,7 +231,7 @@ uv run python rle.py compress genome.txt genome.rle --alphabet dna
 uv run python rle.py decompress genome.rle genome.out
 uv run python rle.py analyze scan.bin --binary --alphabet bytes
 
-uv run --with pytest pytest -q      # 126 tests
+uv run --with pytest pytest -q      # 142 tests
 ```
 
 Standard library only (`zlib` is stdlib). Named alphabets: `binary`, `bits`,

@@ -45,6 +45,8 @@ __all__ = [
     "eratosthenes_numpy",
     "atkin_numpy",
     "primes_below",
+    "primes_in_range",
+    "iter_primes",
     "IMPLEMENTATIONS",
     "PI_REFERENCE",
     "HAVE_NUMPY",
@@ -107,6 +109,52 @@ def _small_pi(limit: int) -> int:
     return sum(1 for p in (2, 3, 5) if p <= limit)
 
 
+def _as_limit(limit) -> int:
+    """Normalize and validate a sieve bound.
+
+    Integral floats are accepted because ``1e8`` is how people actually write
+    this bound (the CLI parses ``--limit`` that way too); anything else fails
+    here with a readable message rather than deep inside a ``range`` call.
+    """
+    if isinstance(limit, bool) or not isinstance(limit, (int, float)):
+        raise TypeError(
+            f"limit must be an integer, got {type(limit).__name__}: {limit!r}"
+        )
+    if isinstance(limit, float):
+        if limit != int(limit):
+            raise ValueError(f"limit must be a whole number, got {limit!r}")
+        limit = int(limit)
+    return limit
+
+
+def _wheel_value(index: int) -> int:
+    """The integer a wheel-30 index stands for."""
+    return (index // 8) * 30 + W30[index % 8]
+
+
+def _first_hits(base_primes: list[int], from_index: int) -> list[list[int]]:
+    """For each base prime, the eight wheel indices where its striking begins.
+
+    Row ``j`` holds one entry per residue class: the smallest index that is
+    both at or above ``p^2`` and at or above ``from_index``. Splitting this out
+    is what lets the segmented sieve and :func:`primes_in_range` share the same
+    arithmetic instead of two copies that can drift apart.
+    """
+    rows: list[list[int]] = []
+    for p in base_primes:
+        step = 8 * p
+        row = []
+        for r in W30:
+            pr = p * r
+            k0 = max(0, -((r - p) // 30))
+            hit = (pr // 30) * 8 + POS30[pr % 30] + step * k0
+            if hit < from_index:
+                hit += step * (-((hit - from_index) // step))
+            row.append(hit)
+        rows.append(row)
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # Eratosthenes
 # ---------------------------------------------------------------------------
@@ -119,6 +167,7 @@ def eratosthenes_simple(limit: int) -> int:
     beat: ``sieve[start::step] = b"\\x00" * n`` pushes the inner loop into C.
     Costs 0.5 bytes per integer.
     """
+    limit = _as_limit(limit)
     if limit < 2:
         return 0
     if limit == 2:
@@ -154,6 +203,7 @@ def eratosthenes_wheel30(limit: int) -> int:
     written drops by 47%. Whether that wins depends on the ratio of slice-call
     overhead to slice length, which is exactly what the benchmark measures.
     """
+    limit = _as_limit(limit)
     if limit < 7:
         return _small_pi(limit)
 
@@ -201,6 +251,7 @@ def eratosthenes_segmented(limit: int, segment_size: int | None = None) -> int:
     the per-segment bookkeeping is interpreted while the striking is memcpy in
     C. The cache argument only starts to matter once the loop overhead is gone.
     """
+    limit = _as_limit(limit)
     if limit < 7:
         return _small_pi(limit)
 
@@ -217,15 +268,7 @@ def eratosthenes_segmented(limit: int, segment_size: int | None = None) -> int:
 
     # next_hit[j][r] is the absolute wheel index of the next multiple of
     # base_primes[j] in residue class W30[r] that is still unstruck.
-    next_hit: list[list[int]] = []
-    for p in base_primes:
-        step = 8 * p
-        row = []
-        for r in W30:
-            pr = p * r
-            k0 = max(0, -((r - p) // 30))
-            row.append((pr // 30) * 8 + POS30[pr % 30] + step * k0)
-        next_hit.append(row)
+    next_hit = _first_hits(base_primes, 0)
 
     # One segment buffer, refilled in place from a memoryview -- no allocation
     # per segment, and none per strike either.
@@ -297,6 +340,7 @@ def atkin(limit: int) -> int:
     parity of x (forms 2 and 3) is the only half worth enumerating. That
     halving is not cosmetic -- it is most of what keeps this competitive.
     """
+    limit = _as_limit(limit)
     if limit < 7:
         return _small_pi(limit)
 
@@ -378,6 +422,7 @@ def _require_numpy() -> None:
 def eratosthenes_numpy(limit: int) -> int:
     """Odds-only Eratosthenes over a NumPy boolean array. 0.5 bytes/integer."""
     _require_numpy()
+    limit = _as_limit(limit)
     if limit < 2:
         return 0
     if limit == 2:
@@ -401,6 +446,7 @@ def atkin_numpy(limit: int) -> int:
     hazard, and it runs at full vector speed.
     """
     _require_numpy()
+    limit = _as_limit(limit)
     if limit < 7:
         return _small_pi(limit)
 
@@ -480,7 +526,62 @@ def atkin_numpy(limit: int) -> int:
 
 def primes_below(limit: int) -> list[int]:
     """The primes in [2, limit] as a list. For when you want primes, not a count."""
-    return _wheel30_primes(limit)
+    return _wheel30_primes(_as_limit(limit))
+
+
+def primes_in_range(lo: int, hi: int) -> list[int]:
+    """Primes in the inclusive range ``[lo, hi]`` without sieving from zero.
+
+    This is what a segmented sieve is actually *for*, and it is the one thing
+    ``primes_below`` cannot do: the primes just above 10^12 cost O(sqrt(hi))
+    memory and time proportional to the width of the window, not to ``hi``.
+
+    >>> primes_in_range(10**12, 10**12 + 100)
+    [1000000000039, 1000000000061, 1000000000063, 1000000000091]
+    """
+    lo, hi = _as_limit(lo), _as_limit(hi)
+    if hi < lo or hi < 2:
+        return []
+    out = [p for p in (2, 3, 5) if lo <= p <= hi]
+    if hi < 7:
+        return out
+
+    lo = max(lo, 7)
+    # There are ``_size30(n)`` integers coprime to 30 in [1, n], so the first
+    # such integer at or above ``lo`` sits at wheel index ``_size30(lo - 1)``.
+    start = _size30(lo - 1)
+    stop = _size30(hi)
+    if stop <= start:
+        return out
+
+    base_primes = [p for p in _wheel30_primes(isqrt(hi)) if p >= 7]
+    next_hit = _first_hits(base_primes, start)
+
+    width = stop - start
+    segment_size = min(1 << 21, max(1 << 12, width))
+    ones = memoryview(bytes(b"\x01") * segment_size)
+    zeros = memoryview(bytes(segment_size // 56 + 2))
+    segment = bytearray(segment_size)
+
+    for base in range(start, stop, segment_size):
+        end = min(base + segment_size, stop)
+        span = end - base
+        segment[:span] = ones[:span]
+        for j, p in enumerate(base_primes):
+            step = 8 * p
+            row = next_hit[j]
+            for r in range(8):
+                cur = row[r]
+                if cur >= end:
+                    continue
+                local = cur - base
+                segment[local::step] = zeros[: -((local - segment_size) // step)]
+                row[r] = cur + step * (-((cur - end) // step))
+        k = segment.find(1, 0, span)
+        while k >= 0:
+            out.append(_wheel_value(base + k))
+            k = segment.find(1, k + 1, span)
+    return out
 
 
 def iter_primes(limit: int) -> Iterator[int]:

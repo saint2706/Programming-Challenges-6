@@ -6,6 +6,7 @@ Run with:  uv run --with pytest pytest -q
 from __future__ import annotations
 
 import random
+import time
 import subprocess
 import sys
 from pathlib import Path
@@ -133,6 +134,43 @@ def test_survivor_dispatch_agrees_with_both_backends():
         assert survivor(n, k) == expected, (n, k)
 
 
+def test_fast_skips_its_linear_prefix():
+    """Without the seeding step, n=1 walks k-1 times, one increment each."""
+    start = time.perf_counter()
+    assert survivor_fast(1, 10**12) == 1
+    assert survivor_fast(10**12, 3) == survivor(10**12, 3)
+    assert time.perf_counter() - start < 1.0
+
+
+def test_fast_refuses_intractable_work_instead_of_hanging():
+    """n=2, k=10^12 wants ~7e11 iterations. That is not slow, it is never."""
+    with pytest.raises(ValueError, match="large relative to n"):
+        survivor_fast(2, 10**12)
+    with pytest.raises(ValueError, match="survivor"):
+        survivor_fast(10, 10**9)
+    # The guard is advisory, not a hard limit.
+    assert survivor_fast(20, 10**6 + 1, max_steps=None) == simulate(20, 10**6 + 1)[-1]
+
+
+def test_survivor_is_never_blocked_by_the_guard():
+    """survivor() may legitimately want more than max_steps when n is huge."""
+    assert survivor(10**12, 3) == survivor_fast(10**12, 3)
+    assert 1 <= survivor(10**15, 11) <= 10**15
+
+
+def test_survivor_never_picks_the_pathological_branch():
+    """k >> n is where survivor_fast is asymptotically wrong; dispatch must win."""
+    start = time.perf_counter()
+    for n, k in [(10, 10**9), (5, 10**10), (100, 10**8)]:
+        assert survivor(n, k) == survivor_recurrence(n, k), (n, k)
+    assert time.perf_counter() - start < 1.0
+
+
+def test_fenwick_rejects_an_empty_tree():
+    with pytest.raises(ValueError, match="at least one slot"):
+        Fenwick(0)
+
+
 # ---------------------------------------------------------------------------
 # Elimination order and the Fenwick tree
 # ---------------------------------------------------------------------------
@@ -206,6 +244,18 @@ def test_start_offset_rotates_the_answer():
                 expected = simulate(n, k, start=s)[-1]
                 assert survivor(n, k, start=s) == expected
                 assert elimination_order(n, k, start=s) == simulate(n, k, start=s)
+
+
+def test_start_wraps_around_the_circle_consistently():
+    """start=0 is start=n, start=-1 is start=n-1, and every method agrees."""
+    for n in (1, 2, 5, 7, 13):
+        for k in (1, 2, 3, 7):
+            for s in range(-2 * n, 3 * n + 1):
+                expected = simulate(n, k, start=s)[-1]
+                assert survivor(n, k, start=s) == expected, (n, k, s)
+                assert survivor_recurrence(n, k, start=s) == expected, (n, k, s)
+                assert survivor_fast(n, k, start=s) == expected, (n, k, s)
+                assert elimination_order(n, k, start=s)[-1] == expected, (n, k, s)
 
 
 # ---------------------------------------------------------------------------

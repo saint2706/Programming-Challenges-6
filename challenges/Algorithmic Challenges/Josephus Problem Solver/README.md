@@ -79,10 +79,9 @@ repeat  x ← x + ⌊x / (k−1)⌋ + 1  until x ≥ n(k−1)
 survivor (0-indexed) = n·k − x − 1
 ```
 
-Each step multiplies x by roughly k/(k−1), so reaching n(k−1) takes about
-(k−1)·ln(n·k) iterations — **independent of n except logarithmically**. It's
-also iterative rather than recursive, so there's no stack depth to blow at
-n = 10^18:
+Each step multiplies x by roughly k/(k−1), so **n enters the cost only
+logarithmically** — n can be astronomical as long as k is not. It's also
+iterative rather than recursive, so there's no stack depth to blow at n = 10^18:
 
 ```
 Method                         n       k       time   survivor
@@ -94,9 +93,8 @@ survivor_pow2              10^18       2    0.0000s   847078495393153025
 survivor                 10^1000       3    0.0050s   438615908...09234016
 ```
 
-The catch, which `survivor` handles by dispatching: when k is large relative to
-n, x grows by ~1 per step and this degrades to O(k). The recurrence's plain O(n)
-wins there. The crossover is around n ≈ k log n.
+The catch is sharper than it looks, and it cost me a hung test suite — see
+below. `survivor` dispatches around it.
 
 ## The whole permutation in O(n log n)
 
@@ -184,10 +182,39 @@ all methods agree for n in 1..120, k in 1..20, and every start position
 
 — which is 2,400 (n, k) pairs × 5 methods, plus the full elimination order, plus
 1, 2 and 3 survivors, plus every starting position for a sample of circles. The
-pytest suite adds 62 more: the bit-rotation identity for every n < 5000, k > n,
+pytest suite adds 68 more: the bit-rotation identity for every n < 5000, k > n,
 k = 1, n = 1, random agreement over 400 cases, and a check that `survivor_fast`
 really is logarithmic in n (10^12 must cost under 2.5× what 10^6 does — the
 test that would catch a hidden loop over n).
+
+## The edge case that hung my own test suite
+
+`survivor_fast` is O(k log n), and I had written the cost off as "fine, that's
+what `survivor()` dispatches around". Then a test called
+`survivor_fast(2, 10**12)` directly and pytest ran for ten minutes before I
+killed it.
+
+The arithmetic: x grows from k−1 to n(k−1) — a factor of n — at a rate of
+k/(k−1) per step, so the real cost is **(k−1)·ln(n)** iterations. For n = 2,
+k = 10¹² that is 7 × 10¹¹ steps. Not slow; never.
+
+Three changes came out of it:
+
+1. **Skip the linear prefix.** While x < k−1 the update is exactly `x += 1`, so
+   a naive loop burns its first k−1 iterations counting one at a time. Seeding
+   x past that analytically is two lines, and turns `survivor_fast(1, 10**12)`
+   from an unbounded walk into three arithmetic operations.
+2. **Refuse rather than hang.** `max_steps` (default 10⁷) estimates the work up
+   front and raises with a message pointing at `survivor()`. Pass `None` to
+   insist. A public function that silently runs for four minutes is a worse
+   failure than one that declines.
+3. **Fix the dispatch estimate.** It had been `(k−1)·ln(n·k)`, which
+   over-charges the fast path. `survivor()` now uses the accurate model and
+   passes `max_steps=None`, because its own comparison *is* the guard.
+
+Separately: `start` wraps rather than being range-checked — `start=0` and
+`start=n` name the same person — and all five methods agree on that over the
+whole range −2n .. 3n, which is now a test.
 
 ## Run it
 
@@ -202,7 +229,7 @@ uv run python josephus.py 100 7 --order
 uv run python josephus.py --verify
 uv run python josephus.py --benchmark
 
-uv run --with pytest pytest -q                      # 62 tests
+uv run --with pytest pytest -q                      # 68 tests
 ```
 
 Standard library only. `--method {auto,simulate,recurrence,fast,pow2}` forces a

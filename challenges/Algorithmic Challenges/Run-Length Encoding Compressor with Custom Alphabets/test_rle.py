@@ -19,8 +19,10 @@ from pathlib import Path
 
 import pytest
 
+import rle
 from rle import (
     CODECS,
+    DecompressionBomb,
     NAMED_ALPHABETS,
     AdaptiveCodec,
     Alphabet,
@@ -352,6 +354,107 @@ def test_run_entropy_is_a_real_lower_bound():
         c.packed_bytes * 8 for c in report.codecs if not c.error
     )
     assert best_bits >= report.run_entropy_bits
+
+
+# ---------------------------------------------------------------------------
+# Hostile input
+# ---------------------------------------------------------------------------
+
+
+def _bomb_stream(alpha: Alphabet, claimed: int) -> list[int]:
+    """A handful of symbols claiming an astronomical run length."""
+    return alpha.count_code.encode(claimed, len(alpha)) + [0]
+
+
+@pytest.mark.parametrize("codec", ["pair", "packbits", "escape", "adaptive"])
+def test_decoders_refuse_a_decompression_bomb(codec):
+    alpha = Alphabet(range(256))
+    if not CODECS[codec].applicable(alpha):
+        pytest.skip("not applicable")
+    stream = _bomb_stream(alpha, 10**13)
+    if codec == "escape":
+        stream = [0, 0] + alpha.count_code.encode(10**13, 256) + [1]
+    elif codec == "adaptive":
+        stream = [0] + stream
+    with pytest.raises(DecompressionBomb):
+        CODECS[codec].decode(stream, alpha, max_output=10**6)
+
+
+def test_a_bomb_is_eight_symbols_claiming_ten_trillion():
+    """Documenting the threat model, not just guarding it."""
+    alpha = Alphabet(range(256))
+    stream = _bomb_stream(alpha, 10**13)
+    assert len(stream) < 16
+    with pytest.raises(DecompressionBomb, match="10,000,000,000,000"):
+        CODECS["pair"].decode(stream, alpha, max_output=1000)
+
+
+def test_unbounded_decode_is_still_available():
+    alpha = Alphabet("ACGT")
+    encoded, _ = compress("A" * 500_000, alpha, "pair")
+    assert len(decompress(encoded, alpha, "pair", max_symbols=None)) == 500_000
+    assert len(decompress(encoded, alpha, "pair", max_symbols=500_000)) == 500_000
+    with pytest.raises(DecompressionBomb):
+        decompress(encoded, alpha, "pair", max_symbols=499_999)
+
+
+def test_container_blocks_a_bomb_by_default():
+    alpha = Alphabet(range(256))
+    payload = alpha.to_symbols(_bomb_stream(alpha, 10**13))
+    header = json.dumps(
+        {"codec": "pair", "symbols": list(alpha.symbols)}, separators=(",", ":")
+    ).encode("utf-8")
+    blob = rle.MAGIC + rle._leb128(len(header)) + header + BitPacker(alpha).pack(payload)
+    assert len(blob) < 2000
+    with pytest.raises(DecompressionBomb):
+        unpack_file(blob)
+
+
+def test_container_still_allows_a_genuinely_huge_ratio():
+    """A 54-byte file that expands 37,000x is legitimate, and must survive."""
+    alpha = Alphabet("ACGT")
+    blob = pack_file(list("A" * 2_000_000), alpha, "pair")
+    assert len(blob) < 200
+    assert len(unpack_file(blob)) == 2_000_000
+
+
+def test_truncated_packed_data_raises_instead_of_inventing_symbols():
+    alpha = Alphabet("ACGT")
+    packed = BitPacker(alpha).pack(list("ACGT" * 100))
+    with pytest.raises(ValueError, match="truncated packed data"):
+        BitPacker(alpha).unpack(packed[:-5])
+
+
+def test_truncated_container_header_raises():
+    with pytest.raises(ValueError, match="truncated container"):
+        unpack_file(rle.MAGIC + b"\xff\xff\xff\x7f")
+
+
+@pytest.mark.parametrize("codec", CODEC_NAMES)
+def test_random_garbage_never_crashes_unexpectedly(codec):
+    """Fuzzing the decoder: only ValueError (or a clean decode) is acceptable."""
+    rng = random.Random(31337)
+    alpha = Alphabet(range(16))
+    for _ in range(500):
+        stream = [rng.randrange(16) for _ in range(rng.randint(0, 40))]
+        try:
+            out = CODECS[codec].decode(stream, alpha, max_output=10**5)
+            assert all(0 <= s < 16 for s in alpha.to_indices(out))
+        except ValueError:
+            pass  # truncated / bomb / unknown tag are all fine
+
+
+def test_one_distinct_symbol_gives_actionable_advice():
+    """RLE's best case is also the one auto-inference cannot handle."""
+    with pytest.raises(ValueError, match="at least two symbols"):
+        Alphabet.of("AAAA")
+    # ...and the workaround in the message actually works.
+    assert compress("AAAA", Alphabet("ACGT"), "pair")[0]
+
+
+def test_empty_data_cannot_infer_an_alphabet_either():
+    with pytest.raises(ValueError, match="cannot infer"):
+        Alphabet.of("")
 
 
 # ---------------------------------------------------------------------------

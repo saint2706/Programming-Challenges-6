@@ -102,6 +102,37 @@ def test_ten_million(key):
 
 
 # ---------------------------------------------------------------------------
+# Input validation
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("key", ALL_AVAILABLE)
+@pytest.mark.parametrize("bad", ["100", None, [], 2.5, complex(1, 2)])
+def test_bogus_limits_fail_clearly(key, bad):
+    """Not a TypeError from deep inside range() three frames down."""
+    with pytest.raises((TypeError, ValueError)) as exc:
+        IMPLEMENTATIONS[key].fn(bad)
+    assert "limit" in str(exc.value)
+
+
+@pytest.mark.parametrize("key", ALL_AVAILABLE)
+def test_integral_floats_are_accepted(key):
+    """``1e6`` is how people write this, and the CLI parses --limit that way."""
+    assert IMPLEMENTATIONS[key].fn(1e6) == PI_REFERENCE[10**6]
+
+
+@pytest.mark.parametrize("key", ALL_AVAILABLE)
+@pytest.mark.parametrize("limit", [-1, -10**9])
+def test_negative_limits_are_empty_not_an_error(key, limit):
+    assert IMPLEMENTATIONS[key].fn(limit) == 0
+
+
+def test_booleans_are_not_integers_here():
+    with pytest.raises(TypeError):
+        sieves.eratosthenes_simple(True)
+
+
+# ---------------------------------------------------------------------------
 # Segmentation must not change the answer, whatever the segment size
 # ---------------------------------------------------------------------------
 
@@ -153,6 +184,48 @@ def test_primes_below_edges():
 def test_iter_primes_matches_primes_below():
     for limit in (0, 1, 5, 6, 7, 30, 31, 1000, 100_000):
         assert list(iter_primes(limit)) == primes_below(limit), limit
+
+
+def test_primes_in_range_against_every_small_window(oracle):
+    """Exhaustive: every [lo, hi] with lo < 300 and width < 120."""
+    for lo in range(0, 300):
+        for hi in range(lo, lo + 120):
+            expected = [p for p in oracle if lo <= p <= hi]
+            assert sieves.primes_in_range(lo, hi) == expected, (lo, hi)
+
+
+@pytest.mark.parametrize(
+    "lo,hi,expected",
+    [
+        (10, 5, []),          # inverted
+        (0, 1, []),
+        (-100, -1, []),
+        (-10, 5, [2, 3, 5]),  # negative lower bound
+        (2, 2, [2]),
+        (5, 7, [5, 7]),
+        (7, 7, [7]),
+        (6, 6, []),
+        (30, 30, []),         # exactly on the wheel modulus
+        (29, 31, [29, 31]),
+    ],
+)
+def test_primes_in_range_edges(lo, hi, expected):
+    assert sieves.primes_in_range(lo, hi) == expected
+
+
+def test_primes_in_range_does_not_sieve_from_zero():
+    """The point of the exercise: a window at 10^12 without 10^12 of work."""
+    assert sieves.primes_in_range(10**12, 10**12 + 100) == [
+        1000000000039, 1000000000061, 1000000000063, 1000000000091
+    ]
+
+
+def test_primes_in_range_spans_many_segments():
+    """A window wider than one segment must not lose or duplicate primes."""
+    lo, hi = 10**7, 10**7 + 3 * (1 << 21)
+    got = sieves.primes_in_range(lo, hi)
+    assert got == sorted(set(got))
+    assert len(got) == sieves.eratosthenes_simple(hi) - sieves.eratosthenes_simple(lo - 1)
 
 
 def test_iter_primes_is_lazy():

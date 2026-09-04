@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 
 from brackets import (
+    SPECS,
     BracketSpec,
     Pair,
     Validator,
@@ -64,6 +65,24 @@ def test_max_depth_guard():
     report = validate("(" * 50 + ")" * 50, "plain", max_depth=10)
     assert not report.ok
     assert any(d.kind == "depth-exceeded" for d in report.diagnostics)
+
+
+def test_depth_limit_is_fatal_and_does_not_cascade():
+    """Dropping the frame and continuing made every later closer a fake fault."""
+    report = validate("(" * 20 + ")" * 20, "plain", max_depth=3)
+    assert [d.kind for d in report.diagnostics] == ["depth-exceeded"]
+    assert report.fault_count == 1
+
+
+def test_depth_limit_is_fatal_when_streaming_too():
+    text = "(" * 20 + ")" * 20
+    report = validate_stream((text[i : i + 3] for i in range(0, len(text), 3)),
+                             "plain", max_depth=3)
+    assert [d.kind for d in report.diagnostics] == ["depth-exceeded"]
+
+
+def test_depth_limit_below_the_real_depth_is_not_triggered():
+    assert validate("((()))", "plain", max_depth=3).ok
 
 
 # ---------------------------------------------------------------------------
@@ -173,6 +192,45 @@ def test_opaque_closers_are_context_only():
     assert validate("a */ b", "c").ok
 
 
+def test_a_lexeme_shared_by_two_pairs_resolves_against_the_stack():
+    """``|`` closes pair b and opens pair a; only the stack can say which."""
+    spec = BracketSpec([Pair("|", "#", "a"), Pair("@", "|", "b")])
+    assert validate("@|", spec).ok  # closes b
+    assert validate("|#", spec).ok  # opens a
+    assert not validate("|", spec).ok
+
+
+def test_an_opener_that_is_a_prefix_of_its_own_closer():
+    spec = BracketSpec([Pair("<", "<<", "x")])
+    assert validate("< <<", spec).ok
+    assert not validate("<<<", spec).ok  # longest-first makes this close, open
+
+
+def test_crlf_line_endings():
+    report = validate("ok()\r\nbad(\r\n", "plain")
+    (d,) = report.diagnostics
+    assert (d.line, d.column) == (2, 4)
+
+
+def test_finish_is_idempotent_and_feeding_after_it_raises():
+    v = Validator(SPECS["plain"])
+    v.feed("(")
+    first, second = v.finish(), v.finish()
+    assert (first.ok, len(first.diagnostics)) == (second.ok, len(second.diagnostics))
+    with pytest.raises(RuntimeError, match="cannot feed after finish"):
+        v.feed("x")
+
+
+def test_one_enormous_line_does_not_break_position_tracking():
+    text = "(" * 5 + "x" * 500_000 + ")" * 4
+    report = validate(text, "plain")
+    assert not report.ok
+    (d,) = report.diagnostics
+    # The four closers match the four innermost parens, so the outermost is the
+    # one left open -- at column 1, half a megabyte earlier.
+    assert (d.line, d.column, d.kind) == (1, 1, "unclosed")
+
+
 def test_unknown_preset_is_a_clear_error():
     with pytest.raises(ValueError, match="unknown spec"):
         validate("()", "klingon")
@@ -186,6 +244,26 @@ def test_duplicate_pair_names_rejected():
 def test_may_contain_must_reference_real_pairs():
     with pytest.raises(ValueError, match="may_contain"):
         BracketSpec([Pair("(", ")", "p", may_contain=frozenset({"ghost"}))])
+
+
+def test_escape_equal_to_the_closer_is_rejected():
+    """Otherwise every closer reads as an escape and the region never ends."""
+    with pytest.raises(ValueError, match="unterminatable"):
+        Pair('"', '"', "s", opaque=True, escape='"')
+
+
+def test_escape_outside_an_opaque_region_is_rejected():
+    with pytest.raises(ValueError, match="opaque"):
+        Pair("(", ")", "p", escape="\\")
+
+
+def test_empty_lexemes_are_rejected():
+    with pytest.raises(ValueError, match="non-empty"):
+        Pair("", ")", "p")
+    with pytest.raises(ValueError, match="non-empty"):
+        Pair("(", "", "p")
+    with pytest.raises(ValueError, match="non-empty"):
+        Pair("(", ")", "p", opaque=True, escape="")
 
 
 # ---------------------------------------------------------------------------
@@ -209,9 +287,16 @@ def test_mismatch_points_back_at_the_opener():
     # ``]`` wants a square bracket; none is open, so the diagnostic names the
     # frame that actually is open and where it started.
     report = validate("(\n  ]", "plain")
-    (d,) = report.diagnostics[:1]
-    assert d.kind == "mismatched"
+    d = next(d for d in report.diagnostics if d.kind == "mismatched")
     assert (d.related_line, d.related_column) == (1, 1)
+
+
+def test_diagnostics_come_back_in_source_order():
+    """Unclosed frames are found at EOF but belong where their opener is."""
+    report = validate("( { ] ", "plain")
+    offsets = [d.offset for d in report.diagnostics]
+    assert offsets == sorted(offsets)
+    assert [d.kind for d in report.diagnostics] == ["unclosed", "unclosed", "mismatched"]
 
 
 def test_recovery_pops_to_the_frame_the_closer_matches():
@@ -246,6 +331,22 @@ def test_render_draws_a_caret():
 def test_max_diagnostics_caps_output():
     report = validate(")" * 1000, "plain", max_diagnostics=5)
     assert len(report.diagnostics) == 5
+
+
+def test_capping_diagnostics_never_makes_broken_input_look_valid():
+    """The bug this guards: ``ok`` derived from the *listed* diagnostics."""
+    for cap in (0, 1, 5, None):
+        report = validate("((((", "plain", max_diagnostics=cap)
+        assert report.ok is False, cap
+        assert report.fault_count == 4
+    assert validate("()", "plain", max_diagnostics=0).ok is True
+
+
+def test_truncated_flag_and_render_say_how_many_were_hidden():
+    report = validate(")" * 100, "plain", max_diagnostics=3)
+    assert report.truncated and report.fault_count == 100
+    assert "100 faults found, showing the first 3" in report.render(")" * 100)
+    assert validate(")))", "plain").truncated is False
 
 
 def test_report_to_dict_is_json_serializable():
@@ -418,6 +519,26 @@ def test_cli_json_output(tmp_path, capsys):
     payload = json.loads(capsys.readouterr().out)
     assert payload[0]["ok"] is False
     assert payload[0]["diagnostics"]
+
+
+def test_cli_reports_unreadable_files_without_a_traceback(tmp_path, capsys):
+    missing = tmp_path / "nope.txt"
+    assert main([str(missing)]) == 1
+    assert "cannot read" in capsys.readouterr().err
+
+
+def test_cli_keeps_going_after_an_unreadable_file(tmp_path, capsys):
+    good = tmp_path / "good.txt"
+    good.write_text("()")
+    assert main([str(tmp_path / "nope.txt"), str(good)]) == 1
+    captured = capsys.readouterr()
+    assert "cannot read" in captured.err
+    assert "ok" in captured.out  # the readable file was still checked
+
+
+def test_cli_rejects_auto_close_with_stream():
+    with pytest.raises(SystemExit):
+        main(["--auto-close", "--stream", "-"])
 
 
 def test_cli_stream_matches_non_stream(tmp_path, capsys):

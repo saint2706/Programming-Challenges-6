@@ -28,6 +28,11 @@ Plus :class:`BitPacker`, which turns a symbol sequence into actual bytes at
 close to log2(|Sigma|) bits per symbol -- so "DNA at 2 bits per base" is a real
 file on disk rather than a talking point.
 
+Every decoder takes an output ceiling. RLE is unboundedly expansive by design --
+eight symbols can legitimately mean "ten trillion of these" -- which is also one
+hostile input away from an OOM kill, so decoders check the budget before
+allocating rather than after. See :class:`DecompressionBomb`.
+
 Run directly for a self-check and a worked example:
 
     uv run python rle.py --self-check
@@ -54,6 +59,7 @@ __all__ = [
     "ContinuationCount",
     "choose_count_code",
     "Codec",
+    "DecompressionBomb",
     "PairCodec",
     "PackBitsCodec",
     "EscapeCodec",
@@ -68,6 +74,7 @@ __all__ = [
     "CodecReport",
     "pack_file",
     "unpack_file",
+    "EXPANSION_LIMIT",
 ]
 
 
@@ -304,6 +311,16 @@ class Alphabet:
         seen: dict[Hashable, None] = {}
         for s in data:
             seen.setdefault(s, None)
+        if len(seen) < 2:
+            # The most annoying possible failure, because a constant string is
+            # RLE's *best* case -- so say what to do about it rather than
+            # repeating the generic constructor error.
+            found = "".join(repr(s) for s in seen) or "nothing"
+            raise ValueError(
+                f"cannot infer an alphabet from data containing {found}: run-length "
+                f"counts need at least two symbols to be written in. Pass an explicit "
+                f"Alphabet, e.g. Alphabet.of(data + other) or Alphabet('ACGT')."
+            )
         return cls(seen, **kwargs)
 
     @classmethod
@@ -344,6 +361,24 @@ def runs(data: Sequence[Hashable]) -> Iterator[tuple[Hashable, int]]:
 # ---------------------------------------------------------------------------
 
 
+class DecompressionBomb(ValueError):
+    """Raised when a stream claims more output than the caller allowed.
+
+    Run-length encoding is *unboundedly* expansive by design: eight symbols can
+    legitimately mean "ten trillion of these". That is the whole point of the
+    format and also a hostile input away from an OOM kill, so every decoder
+    takes a ceiling and checks it *before* allocating.
+    """
+
+
+def _check_budget(produced: int, adding: int, budget: int | None) -> None:
+    if budget is not None and produced + adding > budget:
+        raise DecompressionBomb(
+            f"stream expands to more than max_symbols={budget:,} "
+            f"(at least {produced + adding:,}); raise the limit if it is genuine"
+        )
+
+
 class Codec:
     """Encode and decode index sequences, closed over the alphabet."""
 
@@ -352,7 +387,9 @@ class Codec:
     def encode(self, idx: Sequence[int], alpha: Alphabet) -> list[int]:
         raise NotImplementedError
 
-    def decode(self, idx: Sequence[int], alpha: Alphabet) -> list[int]:
+    def decode(
+        self, idx: Sequence[int], alpha: Alphabet, max_output: int | None = None
+    ) -> list[int]:
         raise NotImplementedError
 
     def applicable(self, alpha: Alphabet) -> bool:
@@ -389,7 +426,9 @@ class PairCodec(Codec):
                 first = False
         return out
 
-    def decode(self, idx: Sequence[int], alpha: Alphabet) -> list[int]:
+    def decode(
+        self, idx: Sequence[int], alpha: Alphabet, max_output: int | None = None
+    ) -> list[int]:
         if not idx:
             return []
         binary = len(alpha) == 2
@@ -405,6 +444,7 @@ class PairCodec(Codec):
                 pos += 1
             else:
                 symbol ^= 1  # binary runs alternate; nothing was stored
+            _check_budget(len(out), count, max_output)
             out.extend([symbol] * count)
         return out
 
@@ -456,12 +496,15 @@ class PackBitsCodec(Codec):
         flush()
         return out
 
-    def decode(self, idx: Sequence[int], alpha: Alphabet) -> list[int]:
+    def decode(
+        self, idx: Sequence[int], alpha: Alphabet, max_output: int | None = None
+    ) -> list[int]:
         out: list[int] = []
         pos = 0
         while pos < len(idx):
             control, pos = alpha.decode_count(idx, pos)
             n = (control >> 1) + 1
+            _check_budget(len(out), n, max_output)
             if control & 1:
                 if pos >= len(idx):
                     raise ValueError("truncated packbits stream: missing run symbol")
@@ -525,7 +568,9 @@ class EscapeCodec(Codec):
                 out.extend([symbol] * count)
         return out
 
-    def decode(self, idx: Sequence[int], alpha: Alphabet) -> list[int]:
+    def decode(
+        self, idx: Sequence[int], alpha: Alphabet, max_output: int | None = None
+    ) -> list[int]:
         if not idx:
             return []
         esc = idx[0]
@@ -535,14 +580,17 @@ class EscapeCodec(Codec):
             symbol = idx[pos]
             pos += 1
             if symbol != esc:
+                _check_budget(len(out), 1, max_output)
                 out.append(symbol)
                 continue
             count, pos = alpha.decode_count(idx, pos)
             if count == 0:
+                _check_budget(len(out), 1, max_output)
                 out.append(esc)
                 continue
             if pos >= len(idx):
                 raise ValueError("truncated escape stream: missing run symbol")
+            _check_budget(len(out), count, max_output)
             out.extend([idx[pos]] * count)
             pos += 1
         return out
@@ -586,14 +634,16 @@ class AdaptiveCodec(Codec):
                 best_tag, best_out = tag, out
         return [best_tag] + (best_out or [])
 
-    def decode(self, idx: Sequence[int], alpha: Alphabet) -> list[int]:
+    def decode(
+        self, idx: Sequence[int], alpha: Alphabet, max_output: int | None = None
+    ) -> list[int]:
         if not idx:
             return []
         usable = self._usable(alpha)
         tag = idx[0]
         if tag >= len(usable):
             raise ValueError(f"unknown codec tag {tag}")
-        return usable[tag].decode(idx[1:], alpha)
+        return usable[tag].decode(idx[1:], alpha, max_output)
 
     def chosen(self, idx: Sequence[int], alpha: Alphabet) -> str:
         """Which member codec would win. Diagnostics only."""
@@ -639,10 +689,17 @@ def decompress(
     data: Sequence[Hashable],
     alphabet: Alphabet,
     codec: "Codec | str" = "adaptive",
+    max_symbols: int | None = None,
 ) -> list[Hashable]:
-    """Inverse of :func:`compress`."""
+    """Inverse of :func:`compress`.
+
+    ``max_symbols`` caps the decoded length. It defaults to unbounded because
+    the caller already holds the input in memory; :func:`unpack_file`, which is
+    where untrusted bytes actually arrive, defaults to a real ceiling.
+    """
     idx = alphabet.to_indices(data)
-    return alphabet.to_symbols(_resolve_codec(codec).decode(idx, alphabet))
+    decoded = _resolve_codec(codec).decode(idx, alphabet, max_symbols)
+    return alphabet.to_symbols(decoded)
 
 
 def _resolve_alphabet(
@@ -685,7 +742,12 @@ class BitPacker:
                 m += 1
             if m and (best is None or m / bits > best[0] / best[1]):
                 best = (m, bits)
-        self.group, self.bits = best  # type: ignore[misc]
+        if best is None:
+            # k > 2^64: no group of even one symbol fits the widest word, so
+            # fall back to one symbol per whole number of bytes.
+            width = (k - 1).bit_length()
+            best = (1, ((width + 7) // 8) * 8)
+        self.group, self.bits = best
         self.nbytes = self.bits // 8
 
     @property
@@ -707,6 +769,16 @@ class BitPacker:
     def unpack(self, blob: bytes) -> list[Hashable]:
         n, pos = _un_leb128(blob, 0)
         k = len(self.alphabet)
+        groups = (n + self.group - 1) // self.group
+        needed = groups * self.nbytes
+        if len(blob) - pos < needed:
+            # Without this, ``int.from_bytes(b"")`` is 0 and truncation decodes
+            # silently into a run of the first symbol -- corruption presented
+            # as data.
+            raise ValueError(
+                f"truncated packed data: header claims {n:,} symbols "
+                f"({needed:,} bytes), found {len(blob) - pos:,}"
+            )
         idx: list[int] = []
         while len(idx) < n:
             value = int.from_bytes(blob[pos : pos + self.nbytes], "big")
@@ -714,6 +786,8 @@ class BitPacker:
             for _ in range(min(self.group, n - len(idx))):
                 idx.append(value % k)
                 value //= k
+        if any(i >= k for i in idx):
+            raise ValueError("packed data contains a symbol outside the alphabet")
         return self.alphabet.to_symbols(idx)
 
 
@@ -880,15 +954,32 @@ def pack_file(data: Sequence[Hashable], alpha: Alphabet, codec_name: str) -> byt
     return MAGIC + _leb128(len(header)) + header + body
 
 
-def unpack_file(blob: bytes) -> list[Hashable]:
+# A container may legitimately expand enormously -- a million-symbol run costs
+# about four symbols -- so the default ceiling is generous rather than tight.
+# It exists to turn an OOM kill into an exception, not to second-guess ratios.
+EXPANSION_LIMIT = 1 << 16
+
+
+def unpack_file(blob: bytes, max_symbols: int | None = -1) -> list[Hashable]:
+    """Decode a container.
+
+    ``max_symbols`` defaults to ``EXPANSION_LIMIT`` times the file size (with a
+    1 MiB floor). Untrusted input reaches this function, and eight bytes of it
+    can ask for ten trillion symbols; pass ``None`` to lift the ceiling when
+    you trust the source.
+    """
     if not blob.startswith(MAGIC):
         raise ValueError("not an RLE1 container")
+    if max_symbols == -1:
+        max_symbols = max(1 << 20, EXPANSION_LIMIT * len(blob))
     size, pos = _un_leb128(blob, len(MAGIC))
+    if size > len(blob) - pos:
+        raise ValueError("truncated container: header runs past end of file")
     meta = json.loads(blob[pos : pos + size].decode("utf-8"))
     pos += size
     alpha = Alphabet(meta["symbols"])
     encoded = BitPacker(alpha).unpack(blob[pos:])
-    return decompress(encoded, alpha, meta["codec"])
+    return decompress(encoded, alpha, meta["codec"], max_symbols)
 
 
 # ---------------------------------------------------------------------------
@@ -966,6 +1057,15 @@ def _self_check() -> int:
         failures += 1
     else:
         print(f"  [ok  ] packbits on 20k random bytes: +{grown} symbols total")
+
+    # Hostile input: a handful of symbols claiming ten trillion.
+    bomb = alpha.count_code.encode(10**13, 256) + [0]
+    try:
+        CODECS["pair"].decode(bomb, alpha, max_output=10**6)
+        print(f"  [FAIL] a {len(bomb)}-symbol decompression bomb was not refused")
+        failures += 1
+    except DecompressionBomb:
+        print(f"  [ok  ] {len(bomb)}-symbol bomb claiming 10^13 symbols refused")
 
     # Bit packing must be exact and lossless.
     for name in ("binary", "dna", "digits", "bytes"):

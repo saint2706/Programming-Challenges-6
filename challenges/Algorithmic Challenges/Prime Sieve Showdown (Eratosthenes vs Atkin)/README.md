@@ -199,7 +199,7 @@ uv run --with numpy python benchmark.py --limit 1e9 --only era-segmented
 uv run --with numpy python benchmark.py --markdown         # README-ready output
 uv run --with numpy python benchmark.py --list
 
-uv run --with pytest --with numpy pytest -q -m "not slow"   # 79 tests
+uv run --with pytest --with numpy pytest -q -m "not slow"   # 141 tests
 uv run --with pytest --with numpy pytest -q                 # + 7 slow ones (to 10^9)
 ```
 
@@ -212,11 +212,28 @@ appearing to hang.
 For actually using primes rather than counting them:
 
 ```python
-from sieves import primes_below, iter_primes
+from sieves import primes_below, primes_in_range, iter_primes
 
 primes_below(100)                 # [2, 3, 5, ..., 97]
 next(iter_primes(10**9))          # lazy, segmented, O(√N) memory
+primes_in_range(10**12, 10**12 + 100)
+# [1000000000039, 1000000000061, 1000000000063, 1000000000091]  -- in 0.5 s
 ```
+
+`primes_in_range` is what a segmented sieve is actually *for*, and the one thing
+`primes_below` cannot do: the primes just above 10^12 cost O(√hi) memory and
+time proportional to the width of the window, not to `hi`. It shares its
+striking arithmetic with `eratosthenes_segmented` through one helper rather than
+duplicating it, and it is checked against `primes_below` over every window with
+lo < 300 and width < 120 — about 36,000 of them.
+
+## Robustness
+
+A bogus `limit` used to surface as a `TypeError` from inside a `range` call
+three frames down. Every entry point now normalizes it up front: integral floats
+are accepted, because `1e8` is how people actually write this bound (and how the
+CLI parses `--limit`), and anything else fails with a message naming the
+parameter. Negative limits are empty results, not errors.
 
 ## Files
 
@@ -224,7 +241,7 @@ next(iter_primes(10**9))          # lazy, segmented, O(√N) memory
 | --- | --- |
 | `sieves.py` | Six implementations plus the shared wheel tables and a registry with per-implementation caveats |
 | `benchmark.py` | Subprocess-isolated harness: wall time, peak RSS, bytes/integer, correctness |
-| `test_sieves.py` | 86 tests — oracle agreement, wheel boundaries, structural invariants, harness behavior |
+| `test_sieves.py` | 148 tests — oracle agreement, wheel boundaries, structural invariants, harness behavior |
 
 ## Sources
 

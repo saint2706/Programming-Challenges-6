@@ -84,6 +84,37 @@ broken.c: FAILED (max depth 3)
 
 `--json` emits the same thing machine-readably.
 
+## What an adversarial pass turned up
+
+Four bugs that only a deliberate hunt for edge cases would find, all now fixed
+and pinned by tests:
+
+**`ok` could lie.** `max_diagnostics` caps the reported list, and `ok` was
+derived from that list — so `validate(text, max_diagnostics=0)` called *any*
+input valid, including `"(((("`. Faults are now counted separately from the
+diagnostics that get listed, and `ok` follows the count. `Report` also carries
+`fault_count` and `truncated`, so a capped report says how much it hid.
+
+**The depth limit cascaded.** Exceeding `max_depth` dropped the frame and
+carried on, which turned every subsequent closer into a spurious
+"unexpected close": a limit of 3 on 20 nested parens produced 1 real
+diagnostic and 17 pieces of noise. The limit exists to bound work, so hitting
+it is now fatal — one diagnostic, scan abandoned.
+
+**Two Pair configurations were silently unusable.** `escape == close` makes the
+scanner read every closer as an escape, so the region can never end — an
+unterminated string swallowing the rest of the file, reported as one confusing
+fault at EOF. An `escape` on a non-opaque pair is simply ignored. Both are now
+rejected at construction with a message that says why.
+
+**Diagnostics came back out of order.** Unclosed frames are discovered at end
+of input but belong where their opener is. They are now sorted by offset, which
+is what makes the caret output readable top to bottom.
+
+Also probed and found already correct, now pinned by tests: a lexeme shared as
+one pair's opener and another's closer, an opener that is a prefix of its own
+closer, CRLF line endings, `finish()` called twice, and a 500 KB single line.
+
 ## A subtlety that took a bug to find
 
 An opaque pair's *closer* is deliberately not registered as a globally visible
@@ -167,7 +198,7 @@ recursion limit to hit.
 cd "challenges/Algorithmic Challenges/Balanced Bracket Validator for Multiple Bracket Types"
 
 uv run python brackets.py --self-check          # 21 checks, no dependencies
-uv run --with pytest pytest -q                  # 121 tests
+uv run --with pytest pytest -q                  # 138 tests
 
 uv run python brackets.py --spec c src/*.c
 echo '{"a": [1, 2}' | uv run python brackets.py --spec json
@@ -180,7 +211,7 @@ suite. Exit code is 1 when any input fails, so it drops straight into CI.
 
 ## Test suite
 
-121 tests, including two that earn their keep more than the rest:
+138 tests, including two that earn their keep more than the rest:
 
 * **Differential fuzzing** — 20,000 random strings over `([{}])xy `, comparing
   against the deliberately naive ten-line validator, which is a *correct*

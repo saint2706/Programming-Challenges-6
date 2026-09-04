@@ -95,6 +95,19 @@ class Pair:
             raise ValueError("delimiter lexemes must be non-empty")
         if self.escape == "":
             raise ValueError("escape lexeme must be non-empty or None")
+        if self.escape is not None and not self.opaque:
+            raise ValueError(
+                f"pair {self.name or self.open!r}: escape only applies inside an "
+                "opaque region; set opaque=True or drop the escape"
+            )
+        if self.escape is not None and self.escape == self.close:
+            # The scanner would read every closer as an escape, so the region
+            # could never end -- a silently unterminated string for the whole
+            # rest of the file.
+            raise ValueError(
+                f"pair {self.name or self.open!r}: escape {self.escape!r} equals "
+                "the closer, which would make the region unterminatable"
+            )
         if not self.name:
             object.__setattr__(self, "name", f"{self.open}{self.close}")
 
@@ -310,6 +323,11 @@ class Report:
     spans: list[Span] = field(default_factory=list)
     max_depth: int = 0
     length: int = 0
+    # Faults found, which is not the same as faults *listed*: ``max_diagnostics``
+    # caps the list. ``ok`` follows this count, never the list -- otherwise
+    # capping the output at zero would silently report broken input as valid.
+    fault_count: int = 0
+    truncated: bool = False
 
     def __bool__(self) -> bool:
         return self.ok
@@ -319,6 +337,8 @@ class Report:
             "ok": self.ok,
             "max_depth": self.max_depth,
             "length": self.length,
+            "fault_count": self.fault_count,
+            "truncated": self.truncated,
             "diagnostics": [d.to_dict() for d in self.diagnostics],
         }
 
@@ -328,6 +348,11 @@ class Report:
             return "ok"
         lines = text.split("\n")
         out: list[str] = []
+        if self.truncated:
+            out.append(
+                f"({self.fault_count} faults found, showing the first "
+                f"{len(self.diagnostics)})"
+            )
         for d in self.diagnostics:
             out.append(str(d))
             if context and 1 <= d.line <= len(lines):
@@ -378,7 +403,8 @@ class Validator:
         self._diagnostics: list[Diagnostic] = []
         self._spans: list[Span] = []
         self._max_depth_seen = 0
-        self._depth_reported = False
+        self._faults = 0
+        self._abandoned = False
         self._finished = False
 
     # -- position bookkeeping ------------------------------------------------
@@ -411,6 +437,10 @@ class Validator:
         pair: str,
         related: int | None = None,
     ) -> None:
+        # Count first, list second. ``ok`` is derived from the count, so a
+        # capped (or zero) diagnostic budget hides detail without ever turning
+        # a broken document into a valid one.
+        self._faults += 1
         if self.max_diagnostics is not None and len(self._diagnostics) >= self.max_diagnostics:
             return
         line, column = self._line_col(offset)
@@ -426,7 +456,7 @@ class Validator:
     def feed(self, text: str) -> None:
         if self._finished:
             raise RuntimeError("cannot feed after finish()")
-        if not text:
+        if not text or self._abandoned:
             return
         self._buf += text
         self._consume(final=False)
@@ -436,12 +466,18 @@ class Validator:
             self._consume(final=True)
             self._finished = True
             self._flush_stack()
+        # Report in source order. Unclosed frames are discovered at end of
+        # input but belong where their opener is, which is what every compiler
+        # does and what makes the caret output readable top to bottom.
+        diagnostics = sorted(self._diagnostics, key=lambda d: (d.offset, d.kind))
         return Report(
-            ok=not self._diagnostics,
-            diagnostics=list(self._diagnostics),
+            ok=self._faults == 0,
+            diagnostics=diagnostics,
             spans=list(self._spans),
             max_depth=self._max_depth_seen,
             length=self._base + len(self._buf),
+            fault_count=self._faults,
+            truncated=self._faults > len(diagnostics),
         )
 
     def _consume(self, final: bool) -> None:
@@ -453,6 +489,9 @@ class Validator:
         i = 0  # index into buf
 
         while i <= limit:
+            if self._abandoned:
+                i = len(buf)
+                break
             frame = self._stack[-1] if self._stack else None
             if frame is not None and frame.pair.opaque:
                 i, stop = self._scan_opaque(buf, i, limit, frame, final)
@@ -553,15 +592,18 @@ class Validator:
                 )
                 return
         if self.max_depth is not None and len(self._stack) >= self.max_depth:
-            if not self._depth_reported:
-                self._depth_reported = True
-                self._emit(
-                    DEPTH_EXCEEDED,
-                    f"nesting deeper than {self.max_depth}",
-                    offset,
-                    lex,
-                    pair.name,
-                )
+            # Fatal, not recoverable. Dropping the frame and carrying on turns
+            # every subsequent closer into a spurious "unexpected close": a
+            # 3-deep limit on 20 nested parens produced 1 real diagnostic and
+            # 17 pieces of noise. The limit exists to bound work, so stop.
+            self._emit(
+                DEPTH_EXCEEDED,
+                f"nesting deeper than {self.max_depth}; scan abandoned here",
+                offset,
+                lex,
+                pair.name,
+            )
+            self._abandoned = True
             return
         self._stack.append(_Frame(pair, offset, lex))
         self._max_depth_seen = max(self._max_depth_seen, len(self._stack))
@@ -641,6 +683,11 @@ class Validator:
             )
 
     def _flush_stack(self) -> None:
+        if self._abandoned:
+            # The stack is whatever it was when scanning stopped; reporting it
+            # as "unclosed" would be a second wave of noise about one fault.
+            self._stack.clear()
+            return
         for frame in self._stack:
             if frame.pair.optional_close:
                 continue
@@ -956,37 +1003,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(spec.to_json(indent=2))
         return 0
 
-    sources: list[tuple[str, object]] = []
-    if not args.files:
-        sources.append(("<stdin>", sys.stdin))
-    else:
-        for path in args.files:
-            sources.append((path, None if path != "-" else sys.stdin))
+    paths = args.files or ["-"]
+    if args.auto_close and args.stream:
+        ap.error("--auto-close needs the whole buffer; drop --stream")
 
     failed = False
     results = []
-    for label, handle in sources:
-        if handle is not None:
-            text = None if args.stream else handle.read()
-            chunks = _iter_chunks(handle) if args.stream else None
-        elif args.stream:
-            text, chunks = None, None
-        else:
-            with open(label, encoding="utf-8", errors="replace") as fh:
-                text = fh.read()
-            chunks = None
+    for path in paths:
+        label = "<stdin>" if path == "-" else path
+        try:
+            if args.stream:
+                # Never materializes the file; source context is unavailable,
+                # so diagnostics print without carets.
+                opener = (
+                    _stdin_chunks() if path == "-" else _file_chunks(path)
+                )
+                report = validate_stream(opener, spec, max_depth=args.max_depth)
+                text = None
+            else:
+                text = (
+                    sys.stdin.read()
+                    if path == "-"
+                    else _read_text(path)
+                )
+                report = validate(text, spec, max_depth=args.max_depth)
+        except OSError as exc:
+            print(f"{label}: cannot read: {exc.strerror or exc}", file=sys.stderr)
+            failed = True
+            continue
 
-        if args.stream and chunks is None:
-            with open(label, encoding="utf-8", errors="replace") as fh:
-                report = validate_stream(_iter_chunks(fh), spec, max_depth=args.max_depth)
-            text = None
-        elif args.stream:
-            report = validate_stream(chunks, spec, max_depth=args.max_depth)
-        else:
-            report = validate(text, spec, max_depth=args.max_depth)
-
-        if args.auto_close and text is not None:
-            print(auto_close(text, spec))
+        if args.auto_close:
+            print(auto_close(text or "", spec))
             continue
 
         failed |= not report.ok
@@ -1007,6 +1054,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         json.dump(results, sys.stdout, indent=2)
         print()
     return 1 if failed else 0
+
+
+def _read_text(path: str) -> str:
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        return fh.read()
+
+
+def _file_chunks(path: str, size: int = 1 << 16) -> Iterator[str]:
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        yield from _iter_chunks(fh, size)
+
+
+def _stdin_chunks(size: int = 1 << 16) -> Iterator[str]:
+    yield from _iter_chunks(sys.stdin, size)
 
 
 def _self_check() -> int:

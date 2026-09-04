@@ -18,6 +18,10 @@ closed form -- that is still open. So this module is a ladder:
 with ``survivor`` picking the right one for the (n, k) you actually have.
 
 All public positions are 1-indexed, matching how the problem is always stated.
+``start`` wraps around the circle rather than being range-checked -- ``start=0``
+and ``start=n`` name the same person, as do ``start=-1`` and ``start=n-1``,
+which is the arithmetic the problem itself implies. Every method agrees on
+this, and the test suite checks it over the whole range -2n .. 3n.
 
 Run directly for a demo and cross-validation:
 
@@ -42,6 +46,8 @@ __all__ = [
     "elimination_order",
     "survivors",
     "Fenwick",
+    "frames",
+    "verify",
 ]
 
 
@@ -104,7 +110,23 @@ def survivor_recurrence(n: int, k: int, *, start: int = 1) -> int:
 # ---------------------------------------------------------------------------
 
 
-def survivor_fast(n: int, k: int, *, start: int = 1) -> int:
+def _fast_steps(n: int, k: int) -> float:
+    """How many iterations :func:`survivor_fast` will actually take.
+
+    Seeded at x = min(k-1, n(k-1)), it grows to n(k-1) at a rate of k/(k-1) per
+    step -- a factor of n, so (k-1)*ln(n) steps. For n = 1 the seed already
+    lands on the target and the loop body never runs, which is why this is not
+    ``log(max(2, n))``: that would over-estimate the one case the prefix skip
+    made free.
+    """
+    if n <= 1 or k <= 1:
+        return 0.0
+    return (k - 1) * math.log(n)
+
+
+def survivor_fast(
+    n: int, k: int, *, start: int = 1, max_steps: int | None = 10**7
+) -> int:
     """Survivor in O(k log n) steps and O(1) space.
 
     The recurrence advances one person at a time, which is wasteful: while
@@ -117,18 +139,37 @@ def survivor_fast(n: int, k: int, *, start: int = 1) -> int:
         x = 0;  repeat  x <- x + floor(x / (k-1)) + 1  until x >= n(k-1)
         survivor (0-indexed) = n·k - x - 1
 
-    Each step multiplies x by roughly k/(k-1), so reaching n(k-1) takes about
-    (k-1)·ln(n·k) iterations -- independent of n except logarithmically. n can
-    be astronomically large as long as k is not.
+    Each step multiplies x by roughly k/(k-1), so n enters the cost only
+    logarithmically: n can be astronomically large as long as k is not.
 
-    The flip side: when ``k`` is large relative to ``n``, x grows by ~1 per
-    step and this degrades to O(k). Use :func:`survivor`, which dispatches.
+    One subtlety worth the two lines it costs: while ``x < k-1`` the update is
+    exactly ``x += 1``, so a naive loop spends its first k-1 iterations
+    counting one at a time before the geometric growth starts. Seeding x past
+    that prefix analytically turns ``survivor_fast(1, 10**7)`` from a
+    one-second walk into three arithmetic operations.
+
+    The flip side remains: growth from k-1 up to n(k-1) is a factor of n at a
+    rate of k/(k-1) per step, so the real cost is about (k-1)*ln(n) iterations.
+    For k much larger than n that is catastrophic -- ``survivor_fast(2, 10**12)``
+    wants roughly 7e11 iterations, which is not slow, it is *never*. ``max_steps``
+    refuses that up front instead of hanging; pass ``None`` to insist, or just
+    call :func:`survivor`, which routes such cases to the O(n) recurrence.
     """
     _check(n, k)
     if k == 1:
         return (n - 1 + start - 1) % n + 1
-    x = 0
+    if max_steps is not None:
+        estimate = _fast_steps(n, k)
+        if estimate > max_steps:
+            raise ValueError(
+                f"survivor_fast(n={n}, k={k}) needs about {estimate:.3g} iterations "
+                f"because k is large relative to n. Call survivor(), which uses the "
+                f"O(n) recurrence here, or pass max_steps=None to insist."
+            )
     target = n * (k - 1)
+    # Skip the linear prefix: from x = 0, x increments by exactly 1 until it
+    # reaches k-1, so the first x at or above min(k-1, target) is known.
+    x = min(k - 1, target)
     while x < target:
         x += x // (k - 1) + 1
     return (n * k - x - 1 + start - 1) % n + 1
@@ -168,19 +209,26 @@ def survivor(n: int, k: int, *, start: int = 1) -> int:
 
     * k = 1 -- the last person standing is the last one counted.
     * k = 2 -- constant-time bit rotation.
-    * otherwise -- ``survivor_fast`` costs about (k-1)·ln(n·k) steps and
-      ``survivor_recurrence`` costs n, so take the smaller. The crossover is
-      around n ≈ k log n: simulation-sized k with astronomical n goes fast,
-      huge k with modest n goes to the recurrence.
+    * otherwise -- ``survivor_fast`` grows x from k-1 to n(k-1), a factor of n,
+      at a rate of k/(k-1) per step: about (k-1)·ln(n) iterations.
+      ``survivor_recurrence`` costs exactly n. Take the smaller.
+
+    That second comparison matters more than it looks. ``survivor_fast`` is
+    asymptotically *wrong* for k much larger than n -- n = 10, k = 10^9 takes
+    minutes there and microseconds via the recurrence -- so this dispatch is
+    what makes ``survivor`` safe to call on any (n, k) at all.
     """
     _check(n, k)
     if k == 1:
         return (n - 1 + start - 1) % n + 1
     if k == 2:
         return survivor_pow2(n, start=start)
-    fast_steps = (k - 1) * math.log(max(2, n * k))
+    fast_steps = _fast_steps(n, k)
     if fast_steps < n:
-        return survivor_fast(n, k, start=start)
+        # max_steps=None because this comparison *is* the guard: the fast path
+        # was chosen precisely because it beats the O(n) alternative. A large
+        # absolute step count is fine when n is larger still.
+        return survivor_fast(n, k, start=start, max_steps=None)
     return survivor_recurrence(n, k, start=start)
 
 
@@ -206,6 +254,8 @@ class Fenwick:
     __slots__ = ("n", "tree", "_top")
 
     def __init__(self, n: int) -> None:
+        if n < 1:
+            raise ValueError(f"a Fenwick tree needs at least one slot, got {n}")
         self.n = n
         # tree[i] = i & -i initializes every slot to 1 in O(n) without n adds:
         # node i covers exactly (i & -i) slots, all of which hold 1.
