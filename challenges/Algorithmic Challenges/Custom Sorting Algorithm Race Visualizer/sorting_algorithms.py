@@ -498,6 +498,27 @@ ALGORITHMS = {
     "TimSort": timsort_steps,
 }
 
+# The one-line characterisation shown under each title. It lives here rather
+# than on the Manim scene classes because it is a fact about the algorithm,
+# not about the animation -- and because `pacing.py` has to budget reading
+# time for it without importing Manim.
+SUBTITLES = {
+    "Selection Sort": "Unstable | O(n^2) always | minimal writes",
+    "Bubble Sort": "Stable | O(n^2) | early-exit when no swaps happen",
+    "Insertion Sort": "Stable | O(n^2) worst | O(n) best on nearly-sorted input",
+    "Merge Sort": "Stable | O(n log n) always | needs O(n) extra space",
+    "Quick Sort": "Unstable | O(n log n) average | O(n^2) worst case",
+    "Heap Sort": "Unstable | O(n log n) always | O(1) extra space",
+    "Cycle Sort": "Stable-ish | O(n^2) | minimizes total number of writes",
+    "3-Way Merge Sort": "Stable | O(n log3 n) comparisons | fewer merge levels than 2-way",
+    "Counting Sort": "Stable | O(n + k), k = value range | non-comparison",
+    "Radix Sort": "Stable | O(d * (n + b)), d = digits | non-comparison",
+    "Bucket Sort": "Stable | O(n + k) average | needs a roughly uniform distribution",
+    "Pigeonhole Sort": "Stable | O(n + range) | mechanically close to Counting Sort",
+    "IntroSort": "Unstable | O(n log n) worst-case guaranteed | Quick -> Heap -> Insertion",
+    "TimSort": "Stable | O(n log n) worst, O(n) best | runs + merge, powers Python's sort",
+}
+
 
 def _self_check():
     expected = sorted(BASE_ARRAY)
