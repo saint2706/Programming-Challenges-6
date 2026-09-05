@@ -225,6 +225,52 @@ in the user's text.
 - `Eertree` is **online**: adding characters one at a time matches building
   from the whole string at every prefix.
 
+## Where this is actually used
+
+**Biology is the serious application.** Palindromic structure in nucleic acids
+is functional, not decorative:
+
+- **Restriction enzyme sites are palindromes.** EcoRI cuts at `GAATTC`, whose
+  reverse complement is itself; the enzyme's two-fold symmetric structure binds
+  a two-fold symmetric site. Locating these is step one of any digest planning
+  or cloning tool.
+- **Inverted repeats form hairpins and stem-loops**, which govern transcription
+  termination, RNA secondary structure and transposon boundaries. EMBOSS ships
+  `palindrome` and `einverted` for exactly this scan.
+- **CRISPR arrays** are named for their palindromic repeats.
+
+One honest caveat: biological palindromes are *reverse-complement* palindromes
+(`A` pairs with `T`, `C` with `G`), not literal ones. The loop here compares
+`s[i-k] == s[i+k]`; the biological version compares
+`s[i-k] == complement(s[i+k])` — a one-line change to the same amortization
+argument, not a drop-in use of this module. The sequence-generic design means
+everything built on top still applies once you make it.
+
+**The radii array is the reusable artifact.** O(1) "is `s[i:j]` a palindrome"
+after an O(n) build is a primitive other string algorithms consume: palindromic
+factorization (studied in its own right as a compression scheme), text
+segmentation, and any dynamic program whose inner test is a palindrome check —
+the O(n²) DP in this module is only tolerable because the test became free.
+
+**The technique transfers further than the problem does.** Manacher's core idea
+— keep the rightmost known-good boundary, use the mirror position to skip work
+already proved, and amortize because that boundary only ever moves right — is
+the same argument powering the **Z-algorithm** and **KMP's failure function**
+(challenges 9 and 10 in this repository). Learn it once here and three
+algorithms stop being tricks.
+
+**And the benchmark result is the practical guidance.** On natural language the
+naive O(n²) scan is *faster*, because palindromes in real text are short. The
+quadratic blowup needs a near-unary alphabet — long homopolymer runs, which is
+to say exactly the sequencing data above, or attacker-chosen input. So: on
+prose, either works and the simpler one wins; on genomic or untrusted input,
+only the algorithm with a worst case you can state is safe. Choosing between
+them without measuring palindrome density is guessing.
+
+The literal use — does this phrase read the same backwards — is where
+`relaxed_view` earns its index map. A palindrome feature that cannot point at
+*where* in the user's original text the match sits is only half built.
+
 ## Files
 
 | File | What it is |

@@ -167,6 +167,48 @@ checks the grouping against combinatorics:
 - The multiset hash is a homomorphism, supports deletion, and is 0 on the
   empty multiset.
 
+## Where this is actually used
+
+Grouping words into anagram classes is a puzzle. The two mechanisms built here
+to do it at scale are not.
+
+**Incremental multiset hashing is deployed, not theoretical.** The problem
+MSet-Add-Hash was invented for is verifying that a collection holds the contents
+you expect when the two sides cannot agree on an order — and the homomorphism is
+what makes the digest *updatable* rather than recomputed:
+
+- **Bitcoin Core** commits to the UTXO set with a multiset hash (`MuHash`, the
+  multiplicative sibling of the additive one here; reachable via
+  `gettxoutsetinfo`). Creating or spending an output updates the digest in O(1),
+  where recomputing a Merkle root over 100M+ entries every block would not be
+  viable.
+- **Replica and backup verification**: deciding whether two nodes hold the same
+  rows without sorting either side, and without the ordering assumptions a
+  Merkle tree imposes.
+- **Sliding-window integrity and streaming checksums**, where O(1) *deletion* is
+  the whole point — no sorted-string key can retract a symbol.
+
+**Canonical-key grouping is the shape of every `GROUP BY`.** Choose a canonical
+form, hash it, partition on the hash: that is how Spark and Hadoop shuffle. And
+`group_anagrams_external` is a small readable version of what a database does
+for `GROUP BY` on data larger than memory — buffer, sort, spill a run, k-way
+merge. If you have ever wanted to see what "external sort" means concretely, it
+is about forty lines here.
+
+**The Unicode work is security-relevant, not decorative.** Deciding when two
+strings are "the same" under normalization and case folding is the core of
+username and email canonicalization (so `Admin` and `admin` cannot both
+register), homograph and IDN spoofing defence, deduplicating product catalogs
+and address records, and search-index term normalization. The
+`str.lower`/`str.casefold` distinction and the NFC-versus-NFD trap are how real
+canonicalization bugs happen. The UTF-8 byte-multiset counterexample is a
+working demonstration of a plausible shortcut that silently merges distinct
+inputs — which, in a canonicalization layer, is an account-takeover primitive.
+
+**Where the literal problem shows up:** Scrabble and Wordle solvers, crossword
+tooling, and — over a different alphabet — grouping sequencing reads by k-mer
+composition, where the multiset genuinely is the feature you want to index on.
+
 ## Files
 
 | File | What it is |

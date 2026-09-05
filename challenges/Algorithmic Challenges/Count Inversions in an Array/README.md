@@ -191,6 +191,50 @@ against OEIS [A008302](https://oeis.org/A008302).
 - The total exceeds 2³¹ at n = 200 000 reversed (2 × 10¹⁰ inversions); every
   method returns a Python `int`, so nothing silently wraps.
 
+## Where this is actually used
+
+The inversion count has an unusually short route to production, because it is
+the same number as **Kendall's tau**, and rank correlation is a working
+statistical tool rather than an exercise.
+
+**Evaluating rankings.** Search relevance, recommender systems and
+learning-to-rank models are judged by how far a predicted ordering sits from a
+reference one, and tau is one of the standard metrics for it, alongside NDCG and
+Spearman. `kendall_tau_b` is the tie-corrected form `scipy.stats.kendalltau`
+returns — which matters because real relevance labels are mostly ties. A
+five-point judgement scale over a thousand documents is almost entirely tied
+pairs, and the uncorrected coefficient reports nonsense on it.
+
+**Nonparametric statistics.** Tau is the default when Pearson's assumptions
+fail: ordinal outcomes, monotone-but-not-linear relationships, heavy tails. It
+appears in A/B tests on ordinal metrics, in copula estimation in finance, and
+anywhere the data are ranks to begin with.
+
+**Rank aggregation.** The Kemeny–Young consensus ranking is *defined* as the
+ordering minimizing total Kendall tau to a set of input rankings — the basis of
+meta-search, of combining several judges or models, and of a well-studied voting
+rule.
+
+**Measuring sortedness, to decide what to do next.** "How far from sorted is
+this?" drives adaptive sorting (TimSort's run detection pays off precisely when
+inversions are few), query planning over data suspected to be nearly ordered,
+and drift detection in a stream that ought to be monotone. Out-of-order arrivals
+in a time-series ingest pipeline *are* inversions, and `count_smaller_to_right`
+names which records are the offenders rather than only how many there are.
+
+**The Fenwick tree outlives the problem it was brought in for.** Point update,
+prefix sum, O(log n), one flat array and no node objects: leaderboards ("what
+rank is this score"), running aggregates over time buckets, inventory and
+order-book depth, and any order-statistic query on a changing set. It reappears
+in [the Josephus solver](../Josephus%20Problem%20Solver/) for a completely
+unrelated question.
+
+**And the vectorization trick generalizes.** Offsetting each block so that a
+batch of independent sorted arrays becomes one globally sorted array — turning
+n/w separate binary searches into a single `np.searchsorted` — works for any
+per-segment lookup you want to run without a Python loop: bucketed joins,
+per-group interpolation, segment-wise rank assignment.
+
 ## Files
 
 | File | What it is |

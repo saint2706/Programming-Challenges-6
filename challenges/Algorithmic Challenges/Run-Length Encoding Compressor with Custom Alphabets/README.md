@@ -220,6 +220,50 @@ quietly.
 Containers are self-describing — a JSON header carries the alphabet, so a reader
 that has never seen `♠♡♢♣` still decodes the file.
 
+## Where this is actually used
+
+Run-length encoding is not a toy. It is a component inside a large fraction of
+the formats already on your disk, and the alphabet-closed constraint that shapes
+this implementation is the real constraint in several of them.
+
+**Columnar databases — the closest match to what is built here.** Parquet and
+ORC encode dictionary-coded columns, and Parquet's repetition and definition
+levels, with a hybrid RLE + bit-packing scheme: run lengths written as varints
+over a small known symbol set. That is precisely the "self-delimiting count in
+base |Σ|" problem this module exists to solve. Column data is overwhelmingly
+runs of the same dictionary index, which is why it pays.
+
+**Bitmap indexes.** WAH, Concise, Oracle's BBC and Roaring's run containers are
+run-length codes over bit vectors, and they are what keep an index on a
+low-cardinality column (status, country, boolean flag) small enough to stay
+resident. Druid and Elasticsearch ship them.
+
+**Image and fax formats.** The `packbits` codec here *is* Apple's PackBits, a
+real TIFF encoding. BMP, PCX, TGA and ICO all carry RLE variants; fax Group 3/4
+is run-length over black and white runs; JPEG's entropy stage is a zero-run
+code feeding Huffman.
+
+**Genomics.** DNA over {A, C, G, T} is the case the alphabet-closed design was
+built for, and it is not hypothetical: 2-bit packing is how `.2bit` and BAM
+store sequence, and nanopore and PacBio reads produce exactly the long
+homopolymer runs RLE handles well. The benchmark's headline — this encoder
+beating zlib on a genome — is the practical form of a general point: **knowing
+your alphabet is worth more than a general-purpose compressor's cleverness.**
+
+**Screen and terminal diffing.** VNC/RFB's RRE encoding, and every terminal
+renderer that emits "repeat this cell 40 times" instead of forty cells.
+
+**And the count code is a format you have already shipped.** The
+continuation-style code generalizes LEB128 — the integer encoding in Protocol
+Buffers, DWARF debug info, WebAssembly binaries and LLVM bitcode. Writing one
+from scratch, and having to justify the radix, is the fastest available route to
+understanding why those formats settled on seven bits and a continuation flag.
+
+**The decompression-bomb section is a real vulnerability class.** A small input
+that expands to gigabytes has produced CVEs in image decoders (BMP and ICO RLE
+among them), archive handling and XML parsers. Any decoder that trusts a length
+field needs the output cap this one has.
+
 ## Run it
 
 ```bash

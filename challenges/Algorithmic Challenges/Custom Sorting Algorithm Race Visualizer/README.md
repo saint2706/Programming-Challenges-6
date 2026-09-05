@@ -36,6 +36,43 @@ Standouts:
 - `visualize.py` -- one generic `SortRaceScene` driver that reacts only to the `Step` fields above; it has no per-algorithm animation code. Bars stay at a fixed x-position per array index -- a swap is shown as two bars simultaneously changing height and flashing red, not as bars physically sliding past each other. This is what makes 14 correct, watchable animations tractable from one small driver instead of 14 bespoke ones. Each of the 14 `Scene` subclasses is just a title + subtitle + a lookup key into `ALGORITHMS`.
 - Auxiliary panels (rendered only for the algorithms that need them): a `[l, r)` bracket for merge segments, a pivot marker for Quick Sort, heap parent/child edges, a cycle-start marker, bucket/digit/hole columns for the non-comparison sorts, a colored mode banner for IntroSort, and colored run-bands for TimSort.
 
+## Where this is actually used
+
+The animations are a teaching artifact. The two things worth taking from this
+directory are the *pattern* and the *conclusions*.
+
+**Algorithms as instrumented generators.** `sorting_algorithms.py` yields a
+`Step` after every compare/swap/write and knows nothing about rendering. That
+separation is how you build a debugger's step-through, a deterministic replay
+log, or an operation *counter* — and counting operations is the honest metric
+whenever a comparison is expensive: comparing database rows, ICU collation of
+Unicode strings, or keys that have to be fetched over a network. Wall time
+measures your machine; comparison counts measure the algorithm.
+
+**Why the hybrids exist.** Two of the fourteen are what production actually
+runs, and the clips show exactly why:
+
+- **TimSort** is `list.sort` in Python and `Arrays.sort` for objects in Java.
+  It detects existing runs first, because real data is rarely random: log lines
+  arrive in time order, database rows come back sorted by some other key,
+  appended records are already ordered. The run-detection phase is the entire
+  reason it beats a textbook merge sort on real input.
+- **IntroSort** is `std::sort` in libstdc++. The mode switch that the banner
+  makes visible is a defence, not an optimization — Quicksort's O(n²) worst
+  case is reachable by anyone who can influence input order, so it bails out to
+  Heapsort on recursion depth.
+
+**Stability is not an aesthetic property.** The three duplicate pairs in the
+array exist to make it visible on screen, and the reason it matters is
+multi-key sorting: "sort by date, then stably by name" only produces the
+intended order if the second sort is stable. Every spreadsheet sort, every
+`ORDER BY a, b` plan that sorts in two passes, and every UI table with
+clickable column headers depends on it.
+
+Counting and radix sorts, meanwhile, are what GPU sorting libraries and
+columnar sort-merge joins use on fixed-width keys. The O(n log n) comparison
+lower bound only binds if you insist on comparing.
+
 ## Reproduce
 
 ```bash
