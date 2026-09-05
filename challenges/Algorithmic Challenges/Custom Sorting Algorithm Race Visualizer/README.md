@@ -243,6 +243,51 @@ Counting and radix sorts, meanwhile, are what GPU sorting libraries and
 columnar sort-merge joins use on fixed-width keys. The O(n log n) comparison
 lower bound only binds if you insist on comparing.
 
+### Where each one actually ships
+
+Sorting is not one algorithm with a winner; it is a family, and which member
+you want is decided by the constraint you are actually under — writes, memory,
+worst-case bounds, stability, key width, or whether the data even fits in RAM.
+
+| Algorithm | Where it genuinely runs, and the constraint that puts it there |
+| --- | --- |
+| **Insertion Sort** | Sweep-and-prune broad-phase collision detection in physics engines (Bullet, Box2D): object order barely changes between frames, so a nearly-sorted list re-sorts in ~O(n). Also the small-range base case inside `std::sort` and CPython's sort. |
+| **Merge Sort** | **External sorting** — the merge is the only phase that works on data you cannot hold in memory, so it is what `sort(1)`, database `ORDER BY`, sort-merge joins, and Hadoop/Spark shuffle all run. Also linked lists, where there is no random access to partition around: the Linux kernel's `list_sort()` is a merge sort. |
+| **k-way merge** (3-Way's generalisation) | **Log-structured merge trees** — RocksDB, LevelDB and Cassandra compact by k-way merging sorted runs. Merging k runs at once instead of pairwise is what cuts the number of passes over disk. Also the merge phase of any external sort, including [Anagram Grouping](../Anagram%20Grouping%20at%20Scale/)'s out-of-core path. |
+| **Quick Sort** | The default for arrays of primitives, because it is in-place with excellent cache locality. Java's `Arrays.sort` on primitives is a dual-pivot Quicksort. Stability is irrelevant when the elements *are* the keys, which is exactly when it is chosen. |
+| **Heap Sort** | O(1) space and a hard Θ(n log n) ceiling: real-time and embedded code that cannot allocate and cannot risk a worst case. Its sift-down is also the priority queue behind OS schedulers, Dijkstra, and top-k selection. |
+| **Selection / Cycle Sort** | Chosen only when **writes** are the scarce resource — EEPROM and flash have limited erase cycles. Selection does exactly n−1 swaps; Cycle Sort does the theoretical minimum number of writes. Both pay Θ(n²) comparisons for it. |
+| **Counting Sort** | Histogram operations in image processing, and the per-digit subroutine inside Radix Sort. Needs a bounded, small key range. |
+| **Radix Sort** | **The fastest sort on GPUs** — CUB and Thrust's radix sort is what large-scale GPU sorting actually uses. Also fixed-width database keys, IP routing table construction, and suffix array construction (SA-IS). |
+| **Bucket Sort** | Sample sort, its distributed cousin, is how parallel and cluster sorts partition work — Spark's range partitioner samples the data to pick bucket boundaries for exactly this reason. The catch is in the table above: it is the one algorithm whose cost depends on the input *distribution*. |
+| **IntroSort** | `std::sort` in libstdc++ and MSVC. |
+| **TimSort** | `list.sort` in Python, `Arrays.sort` for objects in Java and Android, and `Array.prototype.sort` in V8 — so every sort in Chrome and Node. Rust's stable sort is from the same lineage. |
+| **Bubble / Pigeonhole Sort** | Nowhere, honestly. Bubble Sort is a teaching device; Pigeonhole is Counting Sort with worse memory behaviour. They are in this set to be compared against, not adopted. |
+
+### Why sorting is worth this much attention
+
+Almost nothing here is sorted for the sake of being sorted. Sorting is the
+*enabling* step:
+
+- **Binary search, and every index built on it** — B-trees, sorted string
+  tables, and search-engine posting lists.
+- **Deduplication, `GROUP BY`, and joins.** A sort-merge join is two sorts and
+  one linear pass; grouping is a sort and a scan. Sorted order is what turns an
+  O(n²) pairwise problem into an O(n log n) one.
+- **Set intersection.** Two sorted posting lists intersect in a linear merge —
+  which is how a search engine answers a two-term query.
+- **Order statistics.** Median, percentiles and top-k all fall out of order,
+  and the partial versions (`nth_element`, heapselect) are sorting algorithms
+  stopped early.
+- **Compression.** The Burrows–Wheeler transform is a sort of rotations; it is
+  why `bzip2` works.
+
+That is also why the stability question in this README is not pedantry. The
+moment you sort *records* by a key rather than sorting the keys themselves —
+which is what every one of the uses above does — stability decides whether a
+second sort preserves the first one's work.
+
+
 ## Reproduce
 
 ```bash
