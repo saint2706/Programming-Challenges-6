@@ -19,11 +19,11 @@ This repo is organized around five categories that reflect where I want to spend
 | Category | Completed | Total | Progress |
 | --- | --- | --- | --- |
 | Practical Software | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| Algorithmic Challenges | 8 | 30 | ![27%](https://geps.dev/progress/27) |
+| Algorithmic Challenges | 10 | 30 | ![33%](https://geps.dev/progress/33) |
 | Web Development Showcase | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Data Analytics | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Practical ML | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| **Total** | **5** | **150** | ![3%](https://geps.dev/progress/3) |
+| **Total** | **10** | **150** | ![7%](https://geps.dev/progress/7) |
 
 ### Difficulty Legend
 
@@ -87,7 +87,7 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 
 | # | Challenge | Difficulty | Notes | Status |
 | --- | --- | --- | --- | --- |
-| 1 | [Custom Sorting Algorithm Race Visualizer](./challenges/Algorithmic%20Challenges/Custom%20Sorting%20Algorithm%20Race%20Visualizer/) | B | Manim race across 14 algorithms (comparison, non-comparison, hybrid) on one shared array. | Implemented (Python) |
+| 1 | [Custom Sorting Algorithm Race Visualizer](./challenges/Algorithmic%20Challenges/Custom%20Sorting%20Algorithm%20Race%20Visualizer/) | B | Manim race across 14 algorithms (comparison, non-comparison, hybrid) on one shared array. Captions paced by subtitle-standard reading time, charging only what changed since the last one. | Implemented (Python) |
 | 2 | [Balanced Bracket Validator for Multiple Bracket Types](./challenges/Algorithmic%20Challenges/Balanced%20Bracket%20Validator%20for%20Multiple%20Bracket%20Types/) | B | Configurable grammars: multi-character delimiters, opaque string/comment regions, escapes, self-pairing quotes, nesting rules, multi-error recovery, streaming. | Implemented (Python) |
 | 3 | [Prime Sieve Showdown (Eratosthenes vs Atkin)](./challenges/Algorithmic%20Challenges/Prime%20Sieve%20Showdown%20(Eratosthenes%20vs%20Atkin)/) | B | Six implementations (wheel-30 segmented, mod-60 Atkin, NumPy tiers) benchmarked to 10^9 with subprocess-isolated RSS measurement, plus `primes_in_range` for windows at 10^12. | Implemented (Python) |
 | 4 | [Josephus Problem Solver](./challenges/Algorithmic%20Challenges/Josephus%20Problem%20Solver/) | B | Five methods from O(n·k) simulation to the O(1) k=2 bit rotation, plus an O(k log n) solver and a Fenwick-tree elimination order. | Implemented (Python) |
@@ -95,8 +95,8 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 | 6 | [Anagram Grouping at Scale](./challenges/Algorithmic%20Challenges/Anagram%20Grouping%20at%20Scale/) | B | Five canonical keys benchmarked by time *and* retained bytes; a 128-bit additive multiset hash (homomorphic, O(1) insert/delete) with exact verification, out-of-core merge and hash-sharded parallelism. Unicode normalisation, grapheme clusters, and why sorting UTF-8 bytes is wrong. | Implemented (Python) |
 | 7 | [Count Inversions in an Array](./challenges/Algorithmic%20Challenges/Count%20Inversions%20in%20an%20Array/) | B | Six counters including two vectorised ones: a batched-searchsorted merge sort O(n log^2 n) and a value-split radix method O(n log n) -- where the *worse* complexity wins past 300k on cache locality. Plus Kendall tau-b, the Lehmer code bijection and the Mahonian generating function. | Implemented (Python) |
 | 8 | [Manacher's Algorithm for Longest Palindromic Substring](./challenges/Algorithmic%20Challenges/Manacher's%20Algorithm%20for%20Longest%20Palindromic%20Substring/) | I | d1/d2 formulation with no transformed string, so no reserved characters and any sequence works. O(1) substring palindrome queries, an eertree for distinct palindromes, O(n log n) factorisation via series links. The naive baseline is *faster* on real text and 1827x slower on a run. | Implemented (Python) |
-| 9 | [Z-Algorithm String Pattern Indexer](./challenges/Algorithmic%20Challenges/Z-Algorithm%20String%20Pattern%20Indexer/) | I | Build the Z-array, use it for multi-pattern matching. | Not started |
-| 10 | [Exact String Search Benchmark](./challenges/Algorithmic%20Challenges/Exact%20String%20Search%20Benchmark/) | I | Naive vs KMP vs Boyer-Moore vs Rabin-Karp, same corpus. | Not started |
+| 9 | [Z-Algorithm String Pattern Indexer](./challenges/Algorithmic%20Challenges/Z-Algorithm%20String%20Pattern%20Indexer/) | I | Separator-free search that never copies the text and streams in O(m) memory, plus multi-pattern matching in O(L·n) where L is the *trie leaf count*, not the pattern count -- provably the minimum number of Z-scans. Borders, periods, both prefix-function conversions, and Main-Lorentz tandem repeats. | Implemented (Python) |
+| 10 | [Exact String Search Benchmark](./challenges/Algorithmic%20Challenges/Exact%20String%20Search%20Benchmark/) | I | Eleven matchers, instrumented by a counting proxy rather than duplicated code, with two rankings that disagree: Boyer-Moore inspects the fewest characters and is among the slowest. Constructed worst cases for all three, including Rabin-Karp hash flooding. One transposed bit-parallel method beats `str.find`. | Implemented (Python) |
 | 11 | [Minimum Spanning Tree Visualizer](./challenges/Algorithmic%20Challenges/Minimum%20Spanning%20Tree%20Visualizer/) | I | Kruskal vs Prim, animate edge selection order. | Not started |
 | 12 | [N-Queens Solver with Bitmask Optimization](./challenges/Algorithmic%20Challenges/N-Queens%20Solver%20with%20Bitmask%20Optimization/) | I | Bitwise column/diagonal tracking; visualize solutions found. | Not started |
 | 13 | [T9 Predictive Text (Phone Keypad) Simulator](./challenges/Algorithmic%20Challenges/T9%20Predictive%20Text%20(Phone%20Keypad)%20Simulator/) | I | Trie over digit-groups, rank by frequency. | Not started |

@@ -32,9 +32,67 @@ Standouts:
 
 ## Design
 
-- `sorting_algorithms.py` -- 14 algorithms, each an instrumented generator that mutates the array in place and `yield`s a `Step` (compare / swap / write / sorted indices / an optional algorithm-specific `aux` payload) after every meaningful operation. Pure algorithm logic, no Manim import. Run directly (`python sorting_algorithms.py`) to self-check that every algorithm produces a correctly sorted array.
-- `visualize.py` -- one generic `SortRaceScene` driver that reacts only to the `Step` fields above; it has no per-algorithm animation code. Bars stay at a fixed x-position per array index -- a swap is shown as two bars simultaneously changing height and flashing red, not as bars physically sliding past each other. This is what makes 14 correct, watchable animations tractable from one small driver instead of 14 bespoke ones. Each of the 14 `Scene` subclasses is just a title + subtitle + a lookup key into `ALGORITHMS`.
+- `sorting_algorithms.py` -- 14 algorithms, each an instrumented generator that mutates the array in place and `yield`s a `Step` (compare / swap / write / sorted indices / an optional algorithm-specific `aux` payload) after every meaningful operation. Pure algorithm logic, no Manim import. Also holds `SUBTITLES`, the one-line characterisation shown under each title, because that is a fact about the algorithm rather than about the animation. Run directly (`uv run python sorting_algorithms.py`) to self-check that every algorithm produces a correctly sorted array.
+- `visualize.py` -- one generic `SortRaceScene` driver that reacts only to the `Step` fields above; it has no per-algorithm animation code. Bars stay at a fixed x-position per array index -- a swap is shown as two bars simultaneously changing height and flashing red, not as bars physically sliding past each other. This is what makes 14 correct, watchable animations tractable from one small driver instead of 14 bespoke ones. Each of the 14 `Scene` subclasses is now just a lookup key into `ALGORITHMS`.
+- `pacing.py` -- how long each step stays on screen. No Manim import, so the timings can be checked and tuned without rendering anything.
 - Auxiliary panels (rendered only for the algorithms that need them): a `[l, r)` bracket for merge segments, a pivot marker for Quick Sort, heap parent/child edges, a cycle-start marker, bucket/digit/hole columns for the non-comparison sorts, a colored mode banner for IntroSort, and colored run-bands for TimSort.
+
+### Pacing: the captions have to be readable
+
+The first version gave every step one `run_time` of 0.15-0.25 s and nothing
+else. That is not a duration a 30-character caption can be read in — and worse,
+the caption is being *transformed* glyph by glyph for the whole of it, so
+there was no legible frame at any point. A longer `run_time` would not have
+fixed it; it would just have made the illegible morph slower.
+
+So a step is now two phases: a short **motion** phase where the bars and the
+caption change, and a **hold** phase where nothing moves at all. The hold is
+the only part a viewer can actually read, and its length comes from subtitle
+practice rather than taste — Netflix's Timed Text Style Guide caps English at
+17 characters per second with a minimum cue of 5/6 s, and the BBC's guidance
+targets 160-180 wpm, which is about the same rate. These captions are denser
+than prose (indices and comparisons, read as symbols rather than skimmed as
+words), so the first-read rate is set below that ceiling at 14 cps.
+
+Charging every caption a full first read would be the obvious implementation
+and it is wrong — Selection Sort would run past two minutes and Cycle Sort
+past three, for no gain. Consecutive captions are overwhelmingly *the same
+sentence with different numbers*:
+
+```
+"Compare adjacent pair 3, 4"  ->  "Compare adjacent pair 4, 5"
+```
+
+A viewer who has read the template once only has to re-read what changed. So
+`CaptionPacer` charges three different amounts:
+
+| Case | Charge |
+| --- | --- |
+| Identical to the previous caption | nothing |
+| A caption *shape* seen before (digits normalised) | only the characters that differ, at 30 cps |
+| A new shape | the whole line, at 14 cps |
+
+`uv run python pacing.py` prints the result without rendering:
+
+```
+scene                 steps    motion      hold     total   s/step
+Selection Sort           63     13.9s     46.6s     60.5s    0.96s
+Bubble Sort              66     15.5s     45.8s     61.4s    0.93s
+Heap Sort                69     16.6s     54.5s     71.0s    1.03s
+Cycle Sort              107     22.1s     24.5s     46.7s    0.44s
+Pigeonhole Sort          11      2.8s     16.3s     19.0s    1.73s
+...                                                630.4s (10.5 min for all 14)
+```
+
+Cycle Sort is the row that justifies the design: 107 steps, but only 18 of
+them say anything the previous step did not, so it runs *shorter* than
+Bubble Sort's 66 despite having 60% more steps. Pigeonhole Sort is the other
+end — 11 steps, each of them saying something new, so each gets nearly two
+seconds. Total across all fourteen is 10.5 minutes against the original 2.2,
+and every frame of the difference is a still one.
+
+`SORT_RACE_HOLD_SCALE=0` drops every hold (not the motion) for fast iteration
+on layout.
 
 ## The fourteen algorithms
 
@@ -291,18 +349,30 @@ second sort preserves the first one's work.
 ## Reproduce
 
 ```bash
-pip install manim   # needs ffmpeg; no LaTeX required -- this uses plain Text throughout, no MathTex
 cd "challenges/Algorithmic Challenges/Custom Sorting Algorithm Race Visualizer"
-python sorting_algorithms.py                       # self-check: all 14 sort correctly
+
+# No install step and no virtualenv to manage: uv resolves manim per command.
+uv run python sorting_algorithms.py                # self-check: all 14 sort correctly
+uv run python pacing.py                            # per-scene durations, no rendering
+uv run --with pytest pytest -q                     # 46 pacing tests
 
 # One algorithm, fast iteration:
-manim -pql visualize.py BubbleSortScene
+uv run --with manim manim -pql visualize.py BubbleSortScene
+
+# Same, with the reading holds dropped so layout iterates quickly:
+SORT_RACE_HOLD_SCALE=0 uv run --with manim manim -pql visualize.py BubbleSortScene
 
 # Every algorithm, final quality:
-manim -qm visualize.py SelectionSortScene BubbleSortScene InsertionSortScene \
-    MergeSortScene QuickSortScene HeapSortScene CycleSortScene \
-    ThreeWayMergeSortScene CountingSortScene RadixSortScene BucketSortScene \
-    PigeonholeSortScene IntroSortScene TimSortScene
+uv run --with manim manim -qm visualize.py SelectionSortScene BubbleSortScene \
+    InsertionSortScene MergeSortScene QuickSortScene HeapSortScene \
+    CycleSortScene ThreeWayMergeSortScene CountingSortScene RadixSortScene \
+    BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene
 ```
+
+Manim needs **ffmpeg** on the PATH and the system Cairo and Pango
+development libraries (`manimpango` builds against them) — `uv` handles the
+Python side but not those. No LaTeX is required: this uses plain `Text`
+throughout, never `MathTex`. `sorting_algorithms.py`, `pacing.py` and the
+tests are pure standard library and need none of it.
 
 Rendered output lands in `media/videos/visualize/<quality>/<Scene>.mp4` and is not committed to the repo (regenerate with the command above -- `media/` is git-ignored).

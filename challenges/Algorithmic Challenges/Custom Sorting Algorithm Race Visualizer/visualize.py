@@ -8,19 +8,37 @@ changing height and flashing red, not as bars physically sliding past each
 other) -- this keeps 14 correct, watchable animations from one small driver
 instead of 14 bespoke ones.
 
+Every step is two phases: a short *motion* phase where the bars and the
+caption transform, and a *hold* phase where nothing moves and the caption can
+actually be read. Text that is mid-transform is unreadable, so a single
+combined duration -- however generous -- buys nothing; the hold is what makes
+a frame legible. `pacing.py` decides how long each hold lasts and why, and
+prints the resulting per-scene durations without rendering anything.
+
 Render one scene, low quality, to iterate fast:
-    manim -pql visualize.py BubbleSortScene
+    uv run --with manim manim -pql visualize.py BubbleSortScene
 
 Render everything at once:
-    manim -qm visualize.py SelectionSortScene BubbleSortScene InsertionSortScene \
-        MergeSortScene QuickSortScene HeapSortScene CycleSortScene \
-        ThreeWayMergeSortScene CountingSortScene RadixSortScene BucketSortScene \
-        PigeonholeSortScene IntroSortScene TimSortScene
+    uv run --with manim manim -qm visualize.py SelectionSortScene BubbleSortScene \
+        InsertionSortScene MergeSortScene QuickSortScene HeapSortScene \
+        CycleSortScene ThreeWayMergeSortScene CountingSortScene RadixSortScene \
+        BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene
+
+Preview at speed while iterating on layout (0 = drop every hold):
+    SORT_RACE_HOLD_SCALE=0 uv run --with manim manim -pql visualize.py TimSortScene
 """
 
 from manim import *
 
-from sorting_algorithms import ALGORITHMS, BASE_ARRAY
+from pacing import (
+    CLOSING_HOLD,
+    HOLD_SCALE,
+    TITLE_MIN_HOLD,
+    CaptionPacer,
+    motion_time,
+    reading_time,
+)
+from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES
 
 BG_COLOR = "#101418"
 DEFAULT_COLOR = "#3B82C4"
@@ -44,7 +62,11 @@ ABOVE_BARS_Y = 2.4
 class SortRaceScene(Scene):
     algo_title = "Algorithm"
     algo_key = None
-    subtitle = ""
+
+    @property
+    def subtitle(self):
+        """The algorithm's one-line characterisation, from `sorting_algorithms`."""
+        return SUBTITLES.get(self.algo_key, "")
 
     def bar_x(self, i, n):
         return (i - (n - 1) / 2) * SPACING
@@ -109,6 +131,13 @@ class SortRaceScene(Scene):
         self.aux_anchor = np.array([0.0, AUX_ANCHOR_Y, 0.0])
         self.add(self.aux)
         self._last_aux_data = None
+        self.pacer = CaptionPacer()
+
+        # The title and subtitle are the densest text in the scene (the
+        # TimSort subtitle is 63 characters) and they appear with nothing else
+        # on screen to look at, so they get a real first-read budget before
+        # the first step starts moving things.
+        self.hold(reading_time(f"{self.algo_title} {self.subtitle}", TITLE_MIN_HOLD))
 
         fn = ALGORITHMS[self.algo_key]
         arr = list(BASE_ARRAY)
@@ -116,7 +145,15 @@ class SortRaceScene(Scene):
             self.play_step(step, n)
 
         self.play(FadeOut(self.aux))
-        self.wait(1.2)
+        self.hold(CLOSING_HOLD)
+
+    # -- pacing -------------------------------------------------------------
+
+    def hold(self, seconds):
+        """A still frame of `seconds`, scaled by SORT_RACE_HOLD_SCALE."""
+        seconds *= HOLD_SCALE
+        if seconds > 0:
+            self.wait(seconds)
 
     def play_step(self, step, n):
         anims = []
@@ -130,7 +167,7 @@ class SortRaceScene(Scene):
         new_caption = Text(step.caption, font_size=22, color=WHITE).move_to([0, CAPTION_Y, 0])
         anims.append(Transform(self.caption, new_caption))
 
-        run_time = 0.25 if (step.swap or step.write) else (0.15 if step.compare else 0.2)
+        run_time = motion_time(step)
 
         pending_swap = None
         if step.aux is not None and step.aux != self._last_aux_data:
@@ -147,6 +184,11 @@ class SortRaceScene(Scene):
             old_aux, new_aux = pending_swap
             self.remove(old_aux)
             self.aux = new_aux
+
+        # Everything above is in motion, including the caption, which is being
+        # morphed glyph by glyph and is unreadable for the whole of it. The
+        # hold below is the only part of the step a viewer can actually read.
+        self.hold(self.pacer.hold_for(step.caption))
 
     # -- auxiliary panel dispatch -------------------------------------------------
 
@@ -261,69 +303,55 @@ class SortRaceScene(Scene):
 
 class SelectionSortScene(SortRaceScene):
     algo_title = algo_key = "Selection Sort"
-    subtitle = "Unstable | O(n^2) always | minimal writes"
 
 
 class BubbleSortScene(SortRaceScene):
     algo_title = algo_key = "Bubble Sort"
-    subtitle = "Stable | O(n^2) | early-exit when no swaps happen"
 
 
 class InsertionSortScene(SortRaceScene):
     algo_title = algo_key = "Insertion Sort"
-    subtitle = "Stable | O(n^2) worst | O(n) best on nearly-sorted input"
 
 
 class MergeSortScene(SortRaceScene):
     algo_title = algo_key = "Merge Sort"
-    subtitle = "Stable | O(n log n) always | needs O(n) extra space"
 
 
 class QuickSortScene(SortRaceScene):
     algo_title = algo_key = "Quick Sort"
-    subtitle = "Unstable | O(n log n) average | O(n^2) worst case"
 
 
 class HeapSortScene(SortRaceScene):
     algo_title = algo_key = "Heap Sort"
-    subtitle = "Unstable | O(n log n) always | O(1) extra space"
 
 
 class CycleSortScene(SortRaceScene):
     algo_title = algo_key = "Cycle Sort"
-    subtitle = "Stable-ish | O(n^2) | minimizes total number of writes"
 
 
 class ThreeWayMergeSortScene(SortRaceScene):
     algo_title = algo_key = "3-Way Merge Sort"
-    subtitle = "Stable | O(n log3 n) comparisons | fewer merge levels than 2-way"
 
 
 class CountingSortScene(SortRaceScene):
     algo_title = algo_key = "Counting Sort"
-    subtitle = "Stable | O(n + k), k = value range | non-comparison"
 
 
 class RadixSortScene(SortRaceScene):
     algo_title = algo_key = "Radix Sort"
-    subtitle = "Stable | O(d * (n + b)), d = digits | non-comparison"
 
 
 class BucketSortScene(SortRaceScene):
     algo_title = algo_key = "Bucket Sort"
-    subtitle = "Stable | O(n + k) average | needs a roughly uniform distribution"
 
 
 class PigeonholeSortScene(SortRaceScene):
     algo_title = algo_key = "Pigeonhole Sort"
-    subtitle = "Stable | O(n + range) | mechanically close to Counting Sort"
 
 
 class IntroSortScene(SortRaceScene):
     algo_title = algo_key = "IntroSort"
-    subtitle = "Unstable | O(n log n) worst-case guaranteed | Quick -> Heap -> Insertion"
 
 
 class TimSortScene(SortRaceScene):
     algo_title = algo_key = "TimSort"
-    subtitle = "Stable | O(n log n) worst, O(n) best | runs + merge, powers Python's sort"
