@@ -192,6 +192,45 @@ you want: the C engine skips the boring 99% of the file, and Python only wakes
 up for the delimiters. 200k-deep nesting is handled iteratively, so there is no
 recursion limit to hit.
 
+## Where this is actually used
+
+This is the challenge with the shortest distance to production code, because
+almost every tool that touches source text needs exactly this — and needs the
+generalized version, not the interview version.
+
+**Editors.** Bracket matching, jump-to-match, rainbow brackets, auto-close and
+code folding all run a delimiter scanner over the buffer on every keystroke.
+All of them need opaque-region handling: a `)` inside a string literal must not
+highlight, and one unterminated `"` must not make the rest of the file look
+unbalanced.
+
+**Template languages.** Jinja's `{% %}` and `{{ }}`, Handlebars, ERB's `<% %>`,
+Go templates and Liquid are all multi-character delimiters that shadow
+single-character ones. That is exactly the leftmost-longest matching problem,
+and exactly what breaks a naive validator on `<!--` versus `<`.
+
+**Cheap validation before expensive parsing.** Checking that a 10 GB JSON dump
+or a database export was not truncated does not require parsing it. A streaming
+delimiter check answers "did this file get cut off" in one pass with O(depth)
+memory, which is what `Validator.feed()` is for. The same check in a pre-commit
+hook catches an unbalanced brace before CI spends ten minutes rediscovering it.
+
+**Error recovery is what makes a linter usable.** Blaming the `[` in `{ [ }`
+rather than the `}`, and resynchronizing instead of giving up, is what clang and
+rustc do — and it is the only reason a compiler reports twenty errors per run
+instead of one. A validator that stops at the first fault turns every build into
+a serial bisect.
+
+**Security-adjacent.** Unbalanced or truncated delimiters are a signal in
+template-injection detection and in spotting payloads that close a quoted
+context early. The escape handling that makes `"a\"b"` parse as one string is
+the same machinery that stops a scanner being fooled by one.
+
+Tree-sitter and TextMate grammars solve a superset of this problem. The value of
+the standalone version is that it needs no grammar for the language — only a
+delimiter spec — so it works on the config format nobody has written a parser
+for yet.
+
 ## Run it
 
 ```bash

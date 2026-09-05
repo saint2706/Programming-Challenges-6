@@ -216,6 +216,46 @@ Separately: `start` wraps rather than being range-checked — `start=0` and
 `start=n` name the same person — and all five methods agree on that over the
 whole range −2n .. 3n, which is now a test.
 
+## Where this is actually used
+
+Honestly: nobody has the literal Josephus problem at work. It is a puzzle with a
+two-thousand-year-old cover story. What is worth having is the machinery
+underneath, and two pieces of it transfer directly.
+
+**"Remove the k-th remaining element", repeatedly.** The Fenwick tree behind
+`elimination_order` answers *find and delete the k-th survivor* in O(log n),
+which is a common primitive with a shortage of good names:
+
+- sampling without replacement in a prescribed order, and dealing algorithms
+  that count rather than index — the "under-down" deal is a Josephus process,
+  which is why a magician's stacked deck is computable in closed form;
+- fair queueing and round-robin scheduling where participants leave: token
+  passing on a ring, leader election over a shrinking membership, and load
+  shedding that has to stay deterministic across replicas;
+- editor and undo-system operations phrased as "the k-th remaining line", where
+  the naive list rebuild costs O(n) per deletion;
+- rank and select over a dynamic set generally — the same structure as an
+  order-statistic tree, and the same Fenwick tree that
+  [Count Inversions](../Count%20Inversions%20in%20an%20Array/) uses for an
+  entirely different question.
+
+**Jumping a recurrence over its constant stretches.** `survivor_fast` gets from
+O(n) to O(k log n) by noticing that `J(i) = (J(i-1) + k) mod i` only wraps
+occasionally, and computing *where* the next wrap happens rather than stepping
+to it. That is a general technique for any recurrence with long arithmetic
+stretches between irregularities, and it is the only reason the survivor of a
+circle of 10¹⁰⁰⁰ people is computable at all.
+
+**And the k = 2 bit rotation earns its place as a demonstration.** A closed form
+that turns out to be "move the leading 1 bit to the end" is the cleanest small
+argument for thinking in binary representations — the same instinct that finds
+`x & (x-1)`, `i & -i` (which the Fenwick tree here runs on), and popcount
+tricks.
+
+Where circular counting does appear literally: consistent-hashing rings,
+round-robin DNS and load balancers all walk a circle this way. They rarely
+remove on a count, so they need the walk and not the survivor formula.
+
 ## Run it
 
 ```bash

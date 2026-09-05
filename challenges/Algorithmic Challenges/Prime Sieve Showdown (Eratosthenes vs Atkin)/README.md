@@ -188,6 +188,46 @@ Plus structural property tests: that `W30`/`W60` really are the coprime
 residues, that the wheel index identity holds for arbitrary `p`, `r`, `k`, and
 that Atkin's three form-residue sets are disjoint and cover the wheel.
 
+## Where this is actually used
+
+**Screening candidates before a primality test.** This one runs in production
+constantly, and it is not "generate all primes below N". RSA and Diffie–Hellman
+key generation pick a random odd number and test it; a Miller–Rabin round is
+expensive, so implementations first trial-divide by a table of small primes to
+discard the large majority of candidates that have a tiny factor. Go's
+`crypto/rand.Prime` and OpenSSL both carry such a table, and a sieve is how you
+build one. The sieve runs once ever; the saving runs on every keygen.
+
+**Windowed sieving, for a range you cannot reach from zero.** `primes_in_range`
+is the piece with real reach: sieving [10¹², 10¹² + 10⁶] costs O(√N) memory and
+no time proportional to 10¹². That is how distributed prime searches
+(PrimeGrid), prime-gap and twin-prime verification, and any "find a prime near
+this specific bit length" parameter search actually work.
+
+**Small-prime bases everywhere else in number theory.** Pollard's rho, the
+quadratic sieve, ECM and factor-base construction all begin with "give me the
+primes below B". So does choosing prime moduli for hash tables, rolling hashes
+and CRC polynomials.
+
+**But the transferable result is the benchmark itself.** Three things here
+generalize well past primes:
+
+- *Better asymptotics lost, and the reason was memory.* Atkin performs fewer
+  operations and runs 10× slower, because its inner loop touches memory in a
+  pattern the cache hates while Eratosthenes' is a strided write that compiles
+  to something `memset`-shaped. The same shape of result turns up again in
+  [Count Inversions](../Count%20Inversions%20in%20an%20Array/), where an
+  O(n log n) method loses to an O(n log² n) one for precisely the same reason.
+  Complexity classes rank algorithms; the memory hierarchy ranks
+  implementations.
+- *Segmentation is cache blocking.* The segmented sieve wins because each
+  segment fits in L2 — the identical idea as tiled matrix multiplication and
+  chunked file processing. It is not a prime-numbers trick.
+- *Measuring memory honestly needs a subprocess.* Peak RSS sampled inside the
+  process that did the allocating is polluted by the interpreter and by the
+  allocator's freelists. Spawning a child and reading its high-water mark is the
+  technique, and it applies to any memory claim you want believed.
+
 ## Run it
 
 ```bash
