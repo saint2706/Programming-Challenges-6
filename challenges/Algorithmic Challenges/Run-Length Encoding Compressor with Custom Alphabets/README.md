@@ -47,11 +47,11 @@ because every symbol in Σ can legitimately appear in the data.
 
 Three codes, and the alphabet picks between them:
 
-| Code | Works when | Cost | Idea |
-| --- | --- | --- | --- |
-| **Elias gamma** | \|Σ\| = 2 | 2·log₂v + 1 | (bit_length−1) zeros, then the bits |
-| **Terminated** | \|Σ\| ≥ 3 | log_(k−1)v + 1 | Base-(k−1) digits, one symbol reserved as a full stop |
-| **Continuation** | \|Σ\| ≥ 4 | log_(k/2)v | LEB128 generalized: the top half of Σ marks the last digit |
+| Code             | Works when | Cost           | Idea                                                       |
+| ---------------- | ---------- | -------------- | ---------------------------------------------------------- |
+| **Elias gamma**  | \|Σ\| = 2  | 2·log₂v + 1    | (bit_length−1) zeros, then the bits                        |
+| **Terminated**   | \|Σ\| ≥ 3  | log_(k−1)v + 1 | Base-(k−1) digits, one symbol reserved as a full stop      |
+| **Continuation** | \|Σ\| ≥ 4  | log_(k/2)v     | LEB128 generalized: the top half of Σ marks the last digit |
 
 The terminator spends a symbol of the alphabet, which sounds wasteful and often
 isn't: at |Σ| = 4 the radix drops from 4 to 3, while continuation's flag bit
@@ -146,12 +146,12 @@ Naive `ceil(log2 k)` bits per symbol wastes 0.42 bits on every symbol of a
 integer, choosing the (m, b) that packs the most symbols per bit subject to
 `k^m ≤ 2^b`:
 
-| Alphabet | Packing | bits/symbol | Ideal |
-| --- | --- | --- | --- |
-| binary | 8 per byte | 1.000 | 1.000 |
-| DNA | 4 per byte | 2.000 | 2.000 |
-| 3 symbols | 5 per byte | 1.600 | 1.585 |
-| 10 digits | 12 per 40 bits | 3.333 | 3.322 |
+| Alphabet  | Packing        | bits/symbol | Ideal |
+| --------- | -------------- | ----------- | ----- |
+| binary    | 8 per byte     | 1.000       | 1.000 |
+| DNA       | 4 per byte     | 2.000       | 2.000 |
+| 3 symbols | 5 per byte     | 1.600       | 1.585 |
+| 10 digits | 12 per 40 bits | 3.333       | 3.322 |
 
 So "DNA at 2 bits per base" is a real file on disk, not a talking point.
 

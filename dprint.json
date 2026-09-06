@@ -1,0 +1,35 @@
+{
+    "lineWidth": 100,
+    "indentWidth": 4,
+    "useTabs": false,
+    "newLineKind": "lf",
+    "markdown": {
+        "emphasisKind": "asterisks",
+        "strongKind": "asterisks",
+        "codeBlock.skipFormat": true
+    },
+    "json": {},
+    "exec": {
+        "cwd": "${configDir}",
+        "commands": [
+            {
+                "command": "sh -c \"ruff check --fix --exit-zero --stdin-filename '{{file_path}}' - | ruff format --stdin-filename '{{file_path}}' -\"",
+                "exts": ["py"]
+            }
+        ]
+    },
+    "includes": ["**/*.{md,json,py}"],
+    "excludes": [
+        "**/media/**",
+        "**/__pycache__/**",
+        "**/.pytest_cache/**",
+        "**/*.pyc",
+        "**/node_modules/**",
+        ".remember/**"
+    ],
+    "plugins": [
+        "npm:@dprint/markdown@0.23.3",
+        "npm:@dprint/json@0.23.0",
+        "npm:@dprint/exec@0.7.3/plugin.json@704701df449dd7e942a71144773778ac529d68c2e4657bfc236d393b898b9a67"
+    ]
+}

@@ -14,6 +14,7 @@ BASE_ARRAY = [23, 8, 12, 29, 12, 4, 8, 19, 23, 15]
 ```
 
 Chosen deliberately:
+
 - **10 elements** -- small enough that every bar and every compare/swap is individually readable, large enough to show real algorithmic behavior (multiple merge levels, a real heap, three Radix Sort passes).
 - **Two-digit range (4-29)** -- gives Radix Sort two genuinely different digit passes (units, then tens) instead of a trivial single pass.
 - **Three duplicate pairs** (`8`, `12`, `23`) -- makes stability visible on screen: a stable algorithm keeps each pair's original left-to-right order; an unstable one may not.
@@ -25,6 +26,7 @@ All 14 are viable. One is weaker than the rest:
 - **Pigeonhole Sort** is mechanically almost identical to **Counting Sort** (both place elements directly by key into indexed slots). It's included for completeness, but its clip leans on the one real difference it has -- pigeonholes hold the literal duplicate elements as small stacks, while Counting Sort's story is about building a running-count / prefix-sum table -- rather than offering much new information.
 
 Standouts:
+
 - **Radix Sort** -- watching the array settle further with each digit pass is genuinely satisfying to watch.
 - **TimSort** -- identifies runs, insertion-sorts each one, then merges them; it calls back to both Insertion Sort and Merge Sort's visual grammar in one clip.
 - **IntroSort** -- the whole point is the *mode switch* (Quick -> Heap -> Insertion under recursion-depth/size pressure), and a color-coded "Mode: X" banner makes that switch unambiguous on screen.
@@ -66,11 +68,11 @@ sentence with different numbers*:
 A viewer who has read the template once only has to re-read what changed. So
 `CaptionPacer` charges three different amounts:
 
-| Case | Charge |
-| --- | --- |
-| Identical to the previous caption | nothing |
+| Case                                              | Charge                                     |
+| ------------------------------------------------- | ------------------------------------------ |
+| Identical to the previous caption                 | nothing                                    |
 | A caption *shape* seen before (digits normalised) | only the characters that differ, at 30 cps |
-| A new shape | the whole line, at 14 cps |
+| A new shape                                       | the whole line, at 14 cps                  |
 
 `uv run python pacing.py` prints the result without rendering:
 
@@ -100,22 +102,22 @@ All measurements below are from this repository's own code, on `BASE_ARRAY`:
 step counts from `python sorting_algorithms.py`, stability from a search over
 40 000 random arrays for a counterexample rather than from a textbook.
 
-| # | Algorithm | Family | Time (avg / worst) | Extra space | Stable? | Steps |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | Selection Sort | comparison | Θ(n²) / Θ(n²) | O(1) | **no** | 63 |
-| 2 | Bubble Sort | comparison | O(n²) / O(n²) | O(1) | yes | 66 |
-| 3 | Insertion Sort | comparison | O(n²) / O(n²) | O(1) | yes | 57 |
-| 4 | Merge Sort | comparison | Θ(n log n) | O(n) | yes | 66 |
-| 5 | Quick Sort | comparison | O(n log n) / O(n²) | O(log n) | **no** | 35 |
-| 6 | Heap Sort | comparison | Θ(n log n) | O(1) | **no** | 69 |
-| 7 | Cycle Sort | comparison | Θ(n²) / Θ(n²) | O(1) | **no** | 107 |
-| 8 | 3-Way Merge Sort | comparison | Θ(n log₃ n) | O(n) | yes | 50 |
-| 9 | Counting Sort | non-comparison | Θ(n + k) | O(n + k) | yes | 46 |
-| 10 | Radix Sort | non-comparison | Θ(d·(n + b)) | O(n + b) | yes | 23 |
-| 11 | Bucket Sort | non-comparison | Θ(n + k) avg / O(n²) | O(n + k) | yes | 16 |
-| 12 | Pigeonhole Sort | non-comparison | Θ(n + k) | O(n + k) | yes | 11 |
-| 13 | IntroSort | hybrid | Θ(n log n) guaranteed | O(log n) | **no** | 34 |
-| 14 | TimSort | hybrid | O(n) best / Θ(n log n) | O(n) | yes | 56 |
+| #  | Algorithm        | Family         | Time (avg / worst)     | Extra space | Stable? | Steps |
+| -- | ---------------- | -------------- | ---------------------- | ----------- | ------- | ----- |
+| 1  | Selection Sort   | comparison     | Θ(n²) / Θ(n²)          | O(1)        | **no**  | 63    |
+| 2  | Bubble Sort      | comparison     | O(n²) / O(n²)          | O(1)        | yes     | 66    |
+| 3  | Insertion Sort   | comparison     | O(n²) / O(n²)          | O(1)        | yes     | 57    |
+| 4  | Merge Sort       | comparison     | Θ(n log n)             | O(n)        | yes     | 66    |
+| 5  | Quick Sort       | comparison     | O(n log n) / O(n²)     | O(log n)    | **no**  | 35    |
+| 6  | Heap Sort        | comparison     | Θ(n log n)             | O(1)        | **no**  | 69    |
+| 7  | Cycle Sort       | comparison     | Θ(n²) / Θ(n²)          | O(1)        | **no**  | 107   |
+| 8  | 3-Way Merge Sort | comparison     | Θ(n log₃ n)            | O(n)        | yes     | 50    |
+| 9  | Counting Sort    | non-comparison | Θ(n + k)               | O(n + k)    | yes     | 46    |
+| 10 | Radix Sort       | non-comparison | Θ(d·(n + b))           | O(n + b)    | yes     | 23    |
+| 11 | Bucket Sort      | non-comparison | Θ(n + k) avg / O(n²)   | O(n + k)    | yes     | 16    |
+| 12 | Pigeonhole Sort  | non-comparison | Θ(n + k)               | O(n + k)    | yes     | 11    |
+| 13 | IntroSort        | hybrid         | Θ(n log n) guaranteed  | O(log n)    | **no**  | 34    |
+| 14 | TimSort          | hybrid         | O(n) best / Θ(n log n) | O(n)        | yes     | 56    |
 
 `k` is the value range, `d` the number of digits, `b` the radix (10 here).
 "Steps" is yielded animation frames, not operations — it is a rough proxy for
@@ -263,7 +265,6 @@ segment bracket during merging — which is exactly what the algorithm is.
 and a merge-invariant stack that this teaching version leaves out; what is here
 is the run-detect-then-merge skeleton the animation needs.)*
 
-
 ## Where this is actually used
 
 The animations are a teaching artifact. The two things worth taking from this
@@ -307,20 +308,20 @@ Sorting is not one algorithm with a winner; it is a family, and which member
 you want is decided by the constraint you are actually under — writes, memory,
 worst-case bounds, stability, key width, or whether the data even fits in RAM.
 
-| Algorithm | Where it genuinely runs, and the constraint that puts it there |
-| --- | --- |
-| **Insertion Sort** | Sweep-and-prune broad-phase collision detection in physics engines (Bullet, Box2D): object order barely changes between frames, so a nearly-sorted list re-sorts in ~O(n). Also the small-range base case inside `std::sort` and CPython's sort. |
-| **Merge Sort** | **External sorting** — the merge is the only phase that works on data you cannot hold in memory, so it is what `sort(1)`, database `ORDER BY`, sort-merge joins, and Hadoop/Spark shuffle all run. Also linked lists, where there is no random access to partition around: the Linux kernel's `list_sort()` is a merge sort. |
+| Algorithm                                | Where it genuinely runs, and the constraint that puts it there                                                                                                                                                                                                                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Insertion Sort**                       | Sweep-and-prune broad-phase collision detection in physics engines (Bullet, Box2D): object order barely changes between frames, so a nearly-sorted list re-sorts in ~O(n). Also the small-range base case inside `std::sort` and CPython's sort.                                                                               |
+| **Merge Sort**                           | **External sorting** — the merge is the only phase that works on data you cannot hold in memory, so it is what `sort(1)`, database `ORDER BY`, sort-merge joins, and Hadoop/Spark shuffle all run. Also linked lists, where there is no random access to partition around: the Linux kernel's `list_sort()` is a merge sort.   |
 | **k-way merge** (3-Way's generalisation) | **Log-structured merge trees** — RocksDB, LevelDB and Cassandra compact by k-way merging sorted runs. Merging k runs at once instead of pairwise is what cuts the number of passes over disk. Also the merge phase of any external sort, including [Anagram Grouping](../Anagram%20Grouping%20at%20Scale/)'s out-of-core path. |
-| **Quick Sort** | The default for arrays of primitives, because it is in-place with excellent cache locality. Java's `Arrays.sort` on primitives is a dual-pivot Quicksort. Stability is irrelevant when the elements *are* the keys, which is exactly when it is chosen. |
-| **Heap Sort** | O(1) space and a hard Θ(n log n) ceiling: real-time and embedded code that cannot allocate and cannot risk a worst case. Its sift-down is also the priority queue behind OS schedulers, Dijkstra, and top-k selection. |
-| **Selection / Cycle Sort** | Chosen only when **writes** are the scarce resource — EEPROM and flash have limited erase cycles. Selection does exactly n−1 swaps; Cycle Sort does the theoretical minimum number of writes. Both pay Θ(n²) comparisons for it. |
-| **Counting Sort** | Histogram operations in image processing, and the per-digit subroutine inside Radix Sort. Needs a bounded, small key range. |
-| **Radix Sort** | **The fastest sort on GPUs** — CUB and Thrust's radix sort is what large-scale GPU sorting actually uses. Also fixed-width database keys, IP routing table construction, and suffix array construction (SA-IS). |
-| **Bucket Sort** | Sample sort, its distributed cousin, is how parallel and cluster sorts partition work — Spark's range partitioner samples the data to pick bucket boundaries for exactly this reason. The catch is in the table above: it is the one algorithm whose cost depends on the input *distribution*. |
-| **IntroSort** | `std::sort` in libstdc++ and MSVC. |
-| **TimSort** | `list.sort` in Python, `Arrays.sort` for objects in Java and Android, and `Array.prototype.sort` in V8 — so every sort in Chrome and Node. Rust's stable sort is from the same lineage. |
-| **Bubble / Pigeonhole Sort** | Nowhere, honestly. Bubble Sort is a teaching device; Pigeonhole is Counting Sort with worse memory behaviour. They are in this set to be compared against, not adopted. |
+| **Quick Sort**                           | The default for arrays of primitives, because it is in-place with excellent cache locality. Java's `Arrays.sort` on primitives is a dual-pivot Quicksort. Stability is irrelevant when the elements *are* the keys, which is exactly when it is chosen.                                                                        |
+| **Heap Sort**                            | O(1) space and a hard Θ(n log n) ceiling: real-time and embedded code that cannot allocate and cannot risk a worst case. Its sift-down is also the priority queue behind OS schedulers, Dijkstra, and top-k selection.                                                                                                         |
+| **Selection / Cycle Sort**               | Chosen only when **writes** are the scarce resource — EEPROM and flash have limited erase cycles. Selection does exactly n−1 swaps; Cycle Sort does the theoretical minimum number of writes. Both pay Θ(n²) comparisons for it.                                                                                               |
+| **Counting Sort**                        | Histogram operations in image processing, and the per-digit subroutine inside Radix Sort. Needs a bounded, small key range.                                                                                                                                                                                                    |
+| **Radix Sort**                           | **The fastest sort on GPUs** — CUB and Thrust's radix sort is what large-scale GPU sorting actually uses. Also fixed-width database keys, IP routing table construction, and suffix array construction (SA-IS).                                                                                                                |
+| **Bucket Sort**                          | Sample sort, its distributed cousin, is how parallel and cluster sorts partition work — Spark's range partitioner samples the data to pick bucket boundaries for exactly this reason. The catch is in the table above: it is the one algorithm whose cost depends on the input *distribution*.                                 |
+| **IntroSort**                            | `std::sort` in libstdc++ and MSVC.                                                                                                                                                                                                                                                                                             |
+| **TimSort**                              | `list.sort` in Python, `Arrays.sort` for objects in Java and Android, and `Array.prototype.sort` in V8 — so every sort in Chrome and Node. Rust's stable sort is from the same lineage.                                                                                                                                        |
+| **Bubble / Pigeonhole Sort**             | Nowhere, honestly. Bubble Sort is a teaching device; Pigeonhole is Counting Sort with worse memory behaviour. They are in this set to be compared against, not adopted.                                                                                                                                                        |
 
 ### Why sorting is worth this much attention
 
@@ -344,7 +345,6 @@ That is also why the stability question in this README is not pedantry. The
 moment you sort *records* by a key rather than sorting the keys themselves —
 which is what every one of the uses above does — stability decides whether a
 second sort preserves the first one's work.
-
 
 ## Reproduce
 

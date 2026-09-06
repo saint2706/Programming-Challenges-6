@@ -1,0 +1,15 @@
+[lint]
+# `l`/`r` is the standard textbook notation for Z-Algorithm and Manacher's
+# Algorithm (the window/boundary pointer pair both are built around), and
+# the READMEs for those challenges already discuss the algorithms using
+# those exact names. Renaming away from it would fight the literature
+# these implementations are deliberately following.
+ignore = ["E741"]
+
+[lint.per-file-ignores]
+# `from manim import *` is standard practice for Manim scene files -- the
+# library exports hundreds of names (Scene subclasses, colors, mobjects,
+# animations) that scenes are expected to use unqualified. Ruff can't
+# resolve names from a star import, so every one of them would otherwise
+# flag as F405; only these three files use Manim.
+"**/visualize.py" = ["F403", "F405"]

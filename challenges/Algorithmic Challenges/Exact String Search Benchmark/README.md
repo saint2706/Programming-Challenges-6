@@ -11,10 +11,10 @@ because all four lose to `str.find` by one to two orders of magnitude.**
 
 So this is two benchmarks, kept apart on purpose:
 
-| Question | Answer lives in | What it measures |
-| --- | --- | --- |
-| How many characters does each method *look at*? | §1, §3, §4 | The algorithm |
-| How long does it *take*? | §2, §5 | The interpreter |
+| Question                                        | Answer lives in | What it measures |
+| ----------------------------------------------- | --------------- | ---------------- |
+| How many characters does each method *look at*? | §1, §3, §4      | The algorithm    |
+| How long does it *take*?                        | §2, §5          | The interpreter  |
 
 They disagree, and the disagreement is the finding. Boyer-Moore inspects the
 fewest characters of anything here — about `n/14` of them on 128-character
@@ -120,12 +120,12 @@ Yao (1979) proved that any exact matcher must inspect
 Ω(n·log_σ(m)/m) characters in expectation. The last column is that shape:
 
 ```
-      m        naive          kmp  boyer-moore     horspool       sunday      two-way  log_s(m)/m
-      2       1.111x       1.000x       1.176x       1.201x       0.872x       1.000x      0.1091
-      8       1.084x       1.000x       0.399x       0.426x       0.346x       1.000x      0.0818
-     32       1.181x       1.000x       0.175x       0.188x       0.179x       1.000x      0.0341
-    128       1.139x       1.000x       0.109x       0.109x       0.105x       0.999x      0.0119
-    512       1.015x       1.000x       0.074x       0.097x       0.086x       0.996x      0.0038
+  m        naive          kmp  boyer-moore     horspool       sunday      two-way  log_s(m)/m
+  2       1.111x       1.000x       1.176x       1.201x       0.872x       1.000x      0.1091
+  8       1.084x       1.000x       0.399x       0.426x       0.346x       1.000x      0.0818
+ 32       1.181x       1.000x       0.175x       0.188x       0.179x       1.000x      0.0341
+128       1.139x       1.000x       0.109x       0.109x       0.105x       0.999x      0.0119
+512       1.015x       1.000x       0.074x       0.097x       0.086x       0.996x      0.0038
 ```
 
 The Boyer-Moore family tracks the bound's *shape* within a constant of about
@@ -143,8 +143,8 @@ reproducible rather than asserted.
 `m-1` characters and then fails, and none is a match.
 
 ```
-         n          naive       /n          kmp      /n   boyer-moore      /n
-    32,000      1,023,008     32.0       32,000     1.0        63,938     2.0
+     n          naive       /n          kmp      /n   boyer-moore      /n
+32,000      1,023,008     32.0       32,000     1.0        63,938     2.0
 ```
 
 **(b) `boyer_moore_adversary`: `a^m` inside `a^n`.** Every alignment is a full
@@ -152,8 +152,8 @@ match, so the scan reads all `m` characters and the good-suffix shift after a
 match is the period, which is 1.
 
 ```
-         n     BM + Galil       /n   BM, no Galil       /n    ratio
-    32,000         32,000      1.0      1,023,008     32.0    32.0x
+     n     BM + Galil       /n   BM, no Galil       /n    ratio
+32,000         32,000      1.0      1,023,008     32.0    32.0x
 ```
 
 The **Galil rule** is one integer of state: after a match the pattern shifts by
@@ -175,8 +175,8 @@ characters before failing. Collision *plus* a long common prefix is what makes
 it quadratic.
 
 ```
-         n        mod 127       /n     mod 2^61-1       /n    ratio
-    32,000        591,968     18.5         64,992      2.0     9.1x
+     n        mod 127       /n     mod 2^61-1       /n    ratio
+32,000        591,968     18.5         64,992      2.0     9.1x
 ```
 
 Same text, same algorithm; only the modulus changed. That is the point: a
@@ -310,11 +310,11 @@ not fit, and being able to say why rather than guessing.
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `stringsearch.py` | Eleven matchers, the counting proxy, three adversary generators, CLI |
-| `test_stringsearch.py` | 69 tests: exhaustive agreement over binary and ternary inputs, the worst cases as assertions, Unicode, CLI |
-| `benchmark.py` | Accesses and seconds over five corpora, sublinearity against Yao's bound, the three worst cases, the bit-parallel sweep |
+| File                   | What it is                                                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `stringsearch.py`      | Eleven matchers, the counting proxy, three adversary generators, CLI                                                    |
+| `test_stringsearch.py` | 69 tests: exhaustive agreement over binary and ternary inputs, the worst cases as assertions, Unicode, CLI              |
+| `benchmark.py`         | Accesses and seconds over five corpora, sublinearity against Yao's bound, the three worst cases, the bit-parallel sweep |
 
 ## Running it
 

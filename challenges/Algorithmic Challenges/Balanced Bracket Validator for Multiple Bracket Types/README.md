@@ -20,17 +20,17 @@ pre-commit hook.
 
 ## What the generalization has to cover
 
-| Problem | What breaks without it | How it's handled |
-| --- | --- | --- |
-| Multi-character delimiters | `<` shadows `<!--`, so every HTML comment looks unbalanced | Leftmost-**longest** matching |
-| Strings and comments | A `)` in a string literal is text, not a delimiter | `opaque=True` suppresses the whole delimiter set until the region closes |
-| Escapes | `"a\"b"` is one string; naive scanning ends it early | Per-pair `escape`, consumed with the character it protects |
-| Self-pairing delimiters | `"`, `$`, ` ``` ` open *and* close with the same lexeme | Role resolved against the stack, not the lexeme |
-| Non-nesting pairs | `/* /* */` is one comment in C, not two | `nestable=False` |
-| Grammar shape | `{[}]` is "balanced" to a naive stack of one type | `may_contain` whitelists direct children |
-| Line comments | `//` ends at a newline — or at EOF | `optional_close=True` |
-| Huge inputs | A 10 GB file shouldn't need 10 GB of RAM | `Validator.feed()` streams; memory is O(depth) |
-| Bad input | Stopping at the first error makes a linter useless | Recovery heuristic, every fault reported |
+| Problem                    | What breaks without it                                     | How it's handled                                                         |
+| -------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Multi-character delimiters | `<` shadows `<!--`, so every HTML comment looks unbalanced | Leftmost-**longest** matching                                            |
+| Strings and comments       | A `)` in a string literal is text, not a delimiter         | `opaque=True` suppresses the whole delimiter set until the region closes |
+| Escapes                    | `"a\"b"` is one string; naive scanning ends it early       | Per-pair `escape`, consumed with the character it protects               |
+| Self-pairing delimiters    | `"`, `$`, ` ``` ` open *and* close with the same lexeme    | Role resolved against the stack, not the lexeme                          |
+| Non-nesting pairs          | `/* /* */` is one comment in C, not two                    | `nestable=False`                                                         |
+| Grammar shape              | `{[}]` is "balanced" to a naive stack of one type          | `may_contain` whitelists direct children                                 |
+| Line comments              | `//` ends at a newline — or at EOF                         | `optional_close=True`                                                    |
+| Huge inputs                | A 10 GB file shouldn't need 10 GB of RAM                   | `Validator.feed()` streams; memory is O(depth)                           |
+| Bad input                  | Stopping at the first error makes a linter useless         | Recovery heuristic, every fault reported                                 |
 
 ## The one design decision worth arguing about
 
@@ -63,10 +63,10 @@ Reporting only the first fault makes a linter unusable on a file that has two.
 On a closer that the stack top doesn't want, the validator does what production
 parsers do:
 
-* **The closer matches a frame further down the stack** → everything above it
+- **The closer matches a frame further down the stack** → everything above it
   was left open. Report each of those as `unclosed`, resynchronize at that
   depth. `{ [ }` blames the `[`, not the `}` — same as clang and rustc.
-* **The closer matches nothing on the stack** → the closer is the stray token.
+- **The closer matches nothing on the stack** → the closer is the stray token.
   Report it and *discard it*, leaving the stack intact so the remaining
   diagnostics stay meaningful instead of cascading.
 
@@ -181,10 +181,10 @@ uv run python brackets.py --spec c --dump-spec        # a preset, as editable JS
 
 Measured on this repository's own source, validated against the `python` spec:
 
-| Mode | Throughput |
-| --- | --- |
-| `validate()` (collects matched spans) | ~5–6 MB/s |
-| `validate_stream()` (spans off) | ~14 MB/s |
+| Mode                                  | Throughput |
+| ------------------------------------- | ---------- |
+| `validate()` (collects matched spans) | ~5–6 MB/s  |
+| `validate_stream()` (spans off)       | ~14 MB/s   |
 
 The gap is span construction, not scanning — profiling puts ~90% of the time in
 per-token Python work and only ~7% in `re.search`, which is exactly the shape
@@ -252,10 +252,10 @@ suite. Exit code is 1 when any input fails, so it drops straight into CI.
 
 138 tests, including two that earn their keep more than the rest:
 
-* **Differential fuzzing** — 20,000 random strings over `([{}])xy `, comparing
+- **Differential fuzzing** — 20,000 random strings over `([{}])xy `, comparing
   against the deliberately naive ten-line validator, which is a *correct*
   oracle for the `plain` spec. Any disagreement is a bug in the general one.
-* **Deletion fuzzing** — 2,000 generated balanced strings, each with one
+- **Deletion fuzzing** — 2,000 generated balanced strings, each with one
   random delimiter deleted; every result must be rejected. This catches the
   failure mode that fuzzing for false positives misses.
 

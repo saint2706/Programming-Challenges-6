@@ -35,14 +35,14 @@ not very interesting — so this directory adds two methods that move the work
 out of the interpreter, and the comparison between *those* is where the real
 result is.
 
-| Method | Complexity | n = 10⁵ | n = 10⁶ | Notes |
-| --- | --- | --- | --- | --- |
-| `count_brute` | O(n²) | — | — | The definition; the test oracle |
-| `count_insort` | O(n²) memmove | 0.835 | 84.6 | **Fastest below n ≈ 20 000** |
-| `count_mergesort` | O(n log n) | 0.171 | 2.75 | Iterative — no recursion limit |
-| `count_fenwick` | O(n log n) | 0.196 | 3.65 | Also gives per-element counts |
-| `count_numpy` | O(n log² n) | 0.132 | **1.11** | Vectorised merge sort |
-| `count_numpy_radix` | **O(n log n)** | **0.074** | 1.46 | Vectorised radix; best asymptotics |
+| Method              | Complexity     | n = 10⁵   | n = 10⁶  | Notes                              |
+| ------------------- | -------------- | --------- | -------- | ---------------------------------- |
+| `count_brute`       | O(n²)          | —         | —        | The definition; the test oracle    |
+| `count_insort`      | O(n²) memmove  | 0.835     | 84.6     | **Fastest below n ≈ 20 000**       |
+| `count_mergesort`   | O(n log n)     | 0.171     | 2.75     | Iterative — no recursion limit     |
+| `count_fenwick`     | O(n log n)     | 0.196     | 3.65     | Also gives per-element counts      |
+| `count_numpy`       | O(n log² n)    | 0.132     | **1.11** | Vectorised merge sort              |
+| `count_numpy_radix` | **O(n log n)** | **0.074** | 1.46     | Vectorised radix; best asymptotics |
 
 ## `count_numpy`: batching a merge sort level with one binary search
 
@@ -101,13 +101,13 @@ stable within each group.
 here:
 
 ```
-        n     MiB     radix     numpy     winner
-    10000     0.1    0.0061    0.0073      radix
-   100000     0.8    0.0791    0.0802      radix
-   300000     2.3    0.2938    0.3691      radix
-   500000     3.8    0.6807    0.4083      numpy
-  1000000     7.6    1.5047    1.1326      numpy
-  2000000    15.3    3.2683    2.1223      numpy
+      n     MiB     radix     numpy     winner
+  10000     0.1    0.0061    0.0073      radix
+ 100000     0.8    0.0791    0.0802      radix
+ 300000     2.3    0.2938    0.3691      radix
+ 500000     3.8    0.6807    0.4083      numpy
+1000000     7.6    1.5047    1.1326      numpy
+2000000    15.3    3.2683    2.1223      numpy
 ```
 
 The radix method scatters across the whole array once per bit. Below ~300k the
@@ -127,11 +127,11 @@ moves gigabytes per second, while a Python-level merge step manages about one
 element per microsecond:
 
 ```
-       n      insort   mergesort     fenwick      winner
-     100     0.00002     0.00007     0.00008      insort
-    3000     0.00155     0.00338     0.00657      insort
-   10000     0.01139     0.01350     0.01466      insort
-   30000     0.08321     0.04424     0.04998   mergesort
+    n      insort   mergesort     fenwick      winner
+  100     0.00002     0.00007     0.00008      insort
+ 3000     0.00155     0.00338     0.00657      insort
+10000     0.01139     0.01350     0.01466      insort
+30000     0.08321     0.04424     0.04998   mergesort
 ```
 
 `method="auto"` uses n = 3000 as the threshold rather than the ~20 000 measured
@@ -140,16 +140,16 @@ sizes.
 
 ## What else is in here
 
-| Function | What it gives you |
-| --- | --- |
-| `count_smaller_to_right` | Per element: how many later elements are smaller. Sums to the total |
-| `count_greater_to_left` | The same pairs, attributed to the later index |
-| `count_significant_inversions(a, f)` | Pairs with `a[i] > f·a[j]`. Uses `bisect`, not a two-pointer, so negative factors are correct |
-| `kendall_tau_distance` | Discordant pairs between two rankings; a genuine metric |
-| `kendall_tau_b` | Tie-corrected rank correlation, Knight's O(n log n) form |
-| `inversion_table` / `from_inversion_table` | Knuth's inversion table and its inverse — the bijection |
-| `inversion_polynomial(n)` | The Mahonian numbers `[n]_q!` |
-| `Fenwick` | Standalone BIT with an O(n) bulk constructor |
+| Function                                   | What it gives you                                                                             |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `count_smaller_to_right`                   | Per element: how many later elements are smaller. Sums to the total                           |
+| `count_greater_to_left`                    | The same pairs, attributed to the later index                                                 |
+| `count_significant_inversions(a, f)`       | Pairs with `a[i] > f·a[j]`. Uses `bisect`, not a two-pointer, so negative factors are correct |
+| `kendall_tau_distance`                     | Discordant pairs between two rankings; a genuine metric                                       |
+| `kendall_tau_b`                            | Tie-corrected rank correlation, Knight's O(n log n) form                                      |
+| `inversion_table` / `from_inversion_table` | Knuth's inversion table and its inverse — the bijection                                       |
+| `inversion_polynomial(n)`                  | The Mahonian numbers `[n]_q!`                                                                 |
+| `Fenwick`                                  | Standalone BIT with an O(n) bulk constructor                                                  |
 
 ### `inversion_table` is indexed by value, not position
 
@@ -237,11 +237,11 @@ per-group interpolation, segment-wise rank assignment.
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `inversions.py` | Six counters, per-element views, Kendall tau, Lehmer code, `Fenwick`, CLI |
+| File                 | What it is                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| `inversions.py`      | Six counters, per-element views, Kendall tau, Lehmer code, `Fenwick`, CLI                       |
 | `test_inversions.py` | 252 tests: exhaustive over Sₙ (n ≤ 7) and all 2¹² binary arrays, plus identities and edge cases |
-| `benchmark.py` | Scaling, both crossovers, input-shape sensitivity, empirical complexity check |
+| `benchmark.py`       | Scaling, both crossovers, input-shape sensitivity, empirical complexity check                   |
 
 ## Running it
 

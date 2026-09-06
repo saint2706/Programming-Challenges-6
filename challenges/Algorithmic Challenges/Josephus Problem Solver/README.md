@@ -14,13 +14,13 @@ problem](https://arxiv.org/pdf/2411.16696).
 
 So instead of one derivation, this is a ladder of five, each earning its place:
 
-| Method | Time | Space | Gives you |
-| --- | --- | --- | --- |
-| `simulate` | O(n·k) | O(n) | Full death order; the oracle everything is tested against |
-| `elimination_order` | O(n log n) | O(n) | Full death order, k-independent |
-| `survivor_recurrence` | O(n) | O(1) | The survivor |
-| `survivor_fast` | O(k log n) | O(1) | The survivor, for astronomical n |
-| `survivor_pow2` | O(1) | O(1) | The survivor, k = 2 only |
+| Method                | Time       | Space | Gives you                                                 |
+| --------------------- | ---------- | ----- | --------------------------------------------------------- |
+| `simulate`            | O(n·k)     | O(n)  | Full death order; the oracle everything is tested against |
+| `elimination_order`   | O(n log n) | O(n)  | Full death order, k-independent                           |
+| `survivor_recurrence` | O(n)       | O(1)  | The survivor                                              |
+| `survivor_fast`       | O(k log n) | O(1)  | The survivor, for astronomical n                          |
+| `survivor_pow2`       | O(1)       | O(1)  | The survivor, k = 2 only                                  |
 
 `survivor(n, k)` dispatches to whichever is cheapest.
 
@@ -117,11 +117,11 @@ self.tree = [i & -i for i in range(n + 1)]
 ### But the asymptotically better version loses — until it doesn't
 
 ```
-         n                k    simulate     Fenwick   winner
-   100,000                7      0.020s      0.322s   simulate
-   100,000            1,000      0.088s      0.329s   simulate
-    50,000           25,000      0.187s      0.150s   Fenwick
-   100,000    1,000,000,000      0.655s      0.323s   Fenwick
+      n                k    simulate     Fenwick   winner
+100,000                7      0.020s      0.322s   simulate
+100,000            1,000      0.088s      0.329s   simulate
+ 50,000           25,000      0.187s      0.150s   Fenwick
+100,000    1,000,000,000      0.655s      0.323s   Fenwick
 ```
 
 `deque.rotate` is a C `memmove` while the Fenwick tree is interpreted Python,

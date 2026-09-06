@@ -14,25 +14,25 @@ benchmark built to answer *why*, without stacking the deck.
 
 N = 10^8, Python 3.11 on x86-64, one run each, measured by `benchmark.py`:
 
-| Implementation | Family | Time | Peak RSS | bytes/int | Memory | π(N) |
-| --- | --- | --- | --- | --- | --- | --- |
-| Eratosthenes, wheel-30 segmented | eratosthenes | **0.34 s** | **6.6 MB** | 0.069 | O(√N) | 5,761,455 |
-| Eratosthenes, wheel-30 packed | eratosthenes | 0.82 s | 25.9 MB | 0.272 | O(N) | 5,761,455 |
-| Eratosthenes, odds-only NumPy | eratosthenes | 0.82 s | 47.8 MB | 0.502 | O(N) | 5,761,455 |
-| Eratosthenes, odds-only bytearray | eratosthenes | 1.24 s | 66.8 MB | 0.700 | O(N) | 5,761,455 |
-| Atkin, mod-60 packed NumPy | atkin | 3.54 s | 216.3 MB | 2.268 | O(N) | 5,761,455 |
-| Atkin, mod-60 packed | atkin | 20.99 s | 25.5 MB | 0.267 | O(N) | 5,761,455 |
+| Implementation                    | Family       | Time       | Peak RSS   | bytes/int | Memory | π(N)      |
+| --------------------------------- | ------------ | ---------- | ---------- | --------- | ------ | --------- |
+| Eratosthenes, wheel-30 segmented  | eratosthenes | **0.34 s** | **6.6 MB** | 0.069     | O(√N)  | 5,761,455 |
+| Eratosthenes, wheel-30 packed     | eratosthenes | 0.82 s     | 25.9 MB    | 0.272     | O(N)   | 5,761,455 |
+| Eratosthenes, odds-only NumPy     | eratosthenes | 0.82 s     | 47.8 MB    | 0.502     | O(N)   | 5,761,455 |
+| Eratosthenes, odds-only bytearray | eratosthenes | 1.24 s     | 66.8 MB    | 0.700     | O(N)   | 5,761,455 |
+| Atkin, mod-60 packed NumPy        | atkin        | 3.54 s     | 216.3 MB   | 2.268     | O(N)   | 5,761,455 |
+| Atkin, mod-60 packed              | atkin        | 20.99 s    | 25.5 MB    | 0.267     | O(N)   | 5,761,455 |
 
 Atkin's best showing is **10× slower** than Eratosthenes' best, and needs **33×
 the memory** to get there. At 10^9 the gap holds in time and widens sharply in
 space:
 
-| Implementation | Time | Peak RSS |
-| --- | --- | --- |
+| Implementation                   | Time       | Peak RSS   |
+| -------------------------------- | ---------- | ---------- |
 | Eratosthenes, wheel-30 segmented | **3.71 s** | **8.9 MB** |
-| Eratosthenes, wheel-30 packed | 9.75 s | 258.9 MB |
-| Eratosthenes, odds-only NumPy | 10.75 s | 477.0 MB |
-| Atkin, mod-60 packed NumPy | 37.93 s | 1.9 GB |
+| Eratosthenes, wheel-30 packed    | 9.75 s     | 258.9 MB   |
+| Eratosthenes, odds-only NumPy    | 10.75 s    | 477.0 MB   |
+| Atkin, mod-60 packed NumPy       | 37.93 s    | 1.9 GB     |
 
 This is not a Python artifact. [primesieve](https://github.com/kimwalisch/primesieve/blob/master/doc/ALGORITHMS.md),
 the fastest sieve anyone has written in C++, uses a **segmented Eratosthenes
@@ -75,6 +75,7 @@ A benchmark where one side is a textbook transcription and the other is tuned
 proves nothing. Both got real engineering:
 
 **Eratosthenes**
+
 - Odds-only (0.5 bytes/int) → wheel-30, one byte per number coprime to 2, 3, 5
   (0.267 bytes/int).
 - The identity that makes wheel-30 practical in Python: within a fixed residue
@@ -90,6 +91,7 @@ proves nothing. Both got real engineering:
 - Segmented variant with per-prime, per-residue rolling offsets.
 
 **Atkin**
+
 - The full mod-60 form, not the simplified mod-12 one: three quadratic forms
   over the sixteen residues coprime to 60, which between them partition every
   residue class a prime above 5 can occupy.
@@ -125,13 +127,13 @@ that same C loop. Reaching for NumPy is not automatically the optimization.
 **The optimal segment size is 64× larger than the textbook says.** C sieves use
 L1/L2-sized segments (32–256 KB). Measured here at 10^8:
 
-| Segment | Time |
-| --- | --- |
-| 32 KiB | 2.78 s |
-| 128 KiB | 0.85 s |
-| 512 KiB | 0.31 s |
+| Segment   | Time       |
+| --------- | ---------- |
+| 32 KiB    | 2.78 s     |
+| 128 KiB   | 0.85 s     |
+| 512 KiB   | 0.31 s     |
 | **2 MiB** | **0.25 s** |
-| 8 MiB | 0.35 s |
+| 8 MiB     | 0.35 s     |
 
 An 11× inversion, because in Python the per-segment bookkeeping is *interpreted*
 while the striking is `memcpy` in C. Cache locality only starts to matter once
@@ -277,11 +279,11 @@ parameter. Negative limits are empty results, not errors.
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `sieves.py` | Six implementations plus the shared wheel tables and a registry with per-implementation caveats |
-| `benchmark.py` | Subprocess-isolated harness: wall time, peak RSS, bytes/integer, correctness |
-| `test_sieves.py` | 148 tests — oracle agreement, wheel boundaries, structural invariants, harness behavior |
+| File             | What it is                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| `sieves.py`      | Six implementations plus the shared wheel tables and a registry with per-implementation caveats |
+| `benchmark.py`   | Subprocess-isolated harness: wall time, peak RSS, bytes/integer, correctness                    |
+| `test_sieves.py` | 148 tests — oracle agreement, wheel boundaries, structural invariants, harness behavior         |
 
 ## Sources
 

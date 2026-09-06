@@ -15,13 +15,13 @@ question is not "which key is asymptotically fastest" but "which key is small,
 and can you still be exact once it is". This directory answers that with five
 keys, three execution modes, and measurements for all of them.
 
-| Key | Build | Retained size (L=8 / L=64) | Exact? |
-| --- | --- | --- | --- |
-| `key_sorted` — sorted characters | O(L log L) | 57 B / 113 B | yes |
-| `key_counter` — `((atom, count), ...)` | O(L + s log s) | 96 B / 231 B | yes |
-| `key_primes` — product of per-letter primes | O(L²/64) bignum | 32 B / 68 B | yes, by unique factorisation |
-| `key_bincount` — numpy count vector | O(L) in C | 1 KiB, flat | yes |
-| `multiset_hash` — 128-bit additive hash | O(L) | **44 B, flat** | yes, after verification |
+| Key                                         | Build           | Retained size (L=8 / L=64) | Exact?                       |
+| ------------------------------------------- | --------------- | -------------------------- | ---------------------------- |
+| `key_sorted` — sorted characters            | O(L log L)      | 57 B / 113 B               | yes                          |
+| `key_counter` — `((atom, count), ...)`      | O(L + s log s)  | 96 B / 231 B               | yes                          |
+| `key_primes` — product of per-letter primes | O(L²/64) bignum | 32 B / 68 B                | yes, by unique factorisation |
+| `key_bincount` — numpy count vector         | O(L) in C       | 1 KiB, flat                | yes                          |
+| `multiset_hash` — 128-bit additive hash     | O(L)            | **44 B, flat**             | yes, after verification      |
 
 Sizes are `sys.getsizeof` of the key object, measured by `benchmark.py --only bytes`.
 
@@ -116,14 +116,14 @@ roughly halves; the corpus size does not enter into it.
 `uv run --with numpy python benchmark.py`. Key construction, nanoseconds per
 word, 26-letter alphabet:
 
-| L | sorted | counter | hash | primes | bincount |
-| --- | --- | --- | --- | --- | --- |
-| 4 | **290** | 1556 | 1761 | 281 | 2260 |
-| 8 | **484** | 2230 | 2509 | 514 | 2271 |
-| 32 | **2167** | 5024 | 4968 | 2109 | 2311 |
-| 64 | 5053 | 7016 | 6845 | 4771 | **2363** |
-| 256 | 26069 | 12713 | 12412 | 21140 | **2694** |
-| 4096 | 500884 | 129848 | 117713 | 1690583 | **8379** |
+| L    | sorted   | counter | hash   | primes  | bincount |
+| ---- | -------- | ------- | ------ | ------- | -------- |
+| 4    | **290**  | 1556    | 1761   | 281     | 2260     |
+| 8    | **484**  | 2230    | 2509   | 514     | 2271     |
+| 32   | **2167** | 5024    | 4968   | 2109    | 2311     |
+| 64   | 5053     | 7016    | 6845   | 4771    | **2363** |
+| 256  | 26069    | 12713   | 12412  | 21140   | **2694** |
+| 4096 | 500884   | 129848  | 117713 | 1690583 | **8379** |
 
 The asymptotics predict the *shape* of that table and get the *ordering*
 wrong everywhere it matters. `key_sorted` is O(L log L) and beats three O(L)
@@ -211,11 +211,11 @@ composition, where the multiset genuinely is the feature you want to index on.
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `anagrams.py` | Keys, `Normalizer`, `group_anagrams`, external and parallel modes, `AnagramIndex`, CLI |
-| `test_anagrams.py` | 95 tests: oracle agreement, Unicode, hash properties, combinatorial identities, CLI |
-| `benchmark.py` | Key timing, end-to-end memory, key sizes, prime bit-lengths, hash quality, out-of-core |
+| File               | What it is                                                                             |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `anagrams.py`      | Keys, `Normalizer`, `group_anagrams`, external and parallel modes, `AnagramIndex`, CLI |
+| `test_anagrams.py` | 95 tests: oracle agreement, Unicode, hash properties, combinatorial identities, CLI    |
+| `benchmark.py`     | Key timing, end-to-end memory, key sizes, prime bit-lengths, hash quality, out-of-core |
 
 ## Running it
 

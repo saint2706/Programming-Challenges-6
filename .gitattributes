@@ -1,0 +1,8 @@
+# Normalize line endings to LF in the repository itself, regardless of a
+# contributor's local core.autocrlf setting -- this is what dprint.json's
+# newLineKind: "lf" assumes. Without this, a commit made from a machine
+# with different line-ending settings could reintroduce CRLF into the
+# stored objects, which the scheduled Lint and Format workflow would then
+# revert on its next run: a permanent churn loop between contributors and
+# CI rather than a one-time normalization.
+* text=auto eol=lf

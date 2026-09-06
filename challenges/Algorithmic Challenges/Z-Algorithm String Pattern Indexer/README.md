@@ -41,9 +41,9 @@ recurrence over a *virtual* concatenation: the box `[l, r)` lives in the text
 and mirrors against `z_array(pattern)`, which is `O(m)` ints built once.
 
 ```
-        n     m   z_search     concat  speedup  peak KiB (search)  peak KiB (concat)
-  800,000     8     0.0726     0.0846    1.17x                  1              7,033
-  800,000    40     0.0759     0.0915    1.20x                  1              7,032
+      n     m   z_search     concat  speedup  peak KiB (search)  peak KiB (concat)
+800,000     8     0.0726     0.0846    1.17x                  1              7,033
+800,000    40     0.0759     0.0915    1.20x                  1              7,032
 ```
 
 7 MB against 1 KB, for the same answer. The speedup is the smaller half of the
@@ -55,10 +55,10 @@ character it has already passed. `z_search_stream` therefore searches an
 iterator of unbounded length in a buffer of at most `m + 1` elements:
 
 ```
-           n   peak KiB  matches
-      20,000        3.0
-      80,000        3.0
-     320,000        3.0
+      n   peak KiB  matches
+ 20,000        3.0
+ 80,000        3.0
+320,000        3.0
 ```
 
 Flat. The concatenation formulation cannot do this at all — it needs the whole
@@ -117,14 +117,14 @@ terms and you already have a Z-array.
 
 Once `z_array(s)` exists, the following are one pass each:
 
-| From the Z-array | Cost |
-| --- | --- |
-| `all_borders` — every proper prefix that is also a suffix | O(n) |
-| `smallest_period`, `string_power` | O(n) |
-| `prefix_occurrence_counts` — how often *every* prefix occurs, at once | O(n) |
-| `prefix_function` ⇄ `z_array`, both directions | O(n) |
-| `count_distinct_substrings`, online | O(n²) |
-| `tandem_repeat_runs` — every square, Main-Lorentz | O(n log n) |
+| From the Z-array                                                      | Cost       |
+| --------------------------------------------------------------------- | ---------- |
+| `all_borders` — every proper prefix that is also a suffix             | O(n)       |
+| `smallest_period`, `string_power`                                     | O(n)       |
+| `prefix_occurrence_counts` — how often *every* prefix occurs, at once | O(n)       |
+| `prefix_function` ⇄ `z_array`, both directions                        | O(n)       |
+| `count_distinct_substrings`, online                                   | O(n²)      |
+| `tandem_repeat_runs` — every square, Main-Lorentz                     | O(n log n) |
 
 The borders derivation is the one worth stating: `s` has a border of length
 `n − i` exactly when `i + z[i] == n`, so reading them off is a single scan
@@ -198,13 +198,13 @@ never exceeds `n`, so the extension loop runs **at most n times in total**.
 inputs built to break it:
 
 ```
-  input                 extensions   bound n   naive comparisons
-  all one character         19,999    20,000         200,009,999
-  alternating ab            19,998    20,000         100,009,999
-  abacaba fractal           19,997    20,000          28,595,713
-  one big border            19,998    20,000         100,009,999
-  random binary             17,582    20,000              40,106
-  random 26 letters            772    20,000              20,772
+input                 extensions   bound n   naive comparisons
+all one character         19,999    20,000         200,009,999
+alternating ab            19,998    20,000         100,009,999
+abacaba fractal           19,997    20,000          28,595,713
+one big border            19,998    20,000         100,009,999
+random binary             17,582    20,000              40,106
+random 26 letters            772    20,000              20,772
 ```
 
 The left column never exceeds the bound; the right column has no bound at all.
@@ -214,11 +214,11 @@ because the inner loop almost never runs. Against the clock it is *faster*
 there. The quadratic only materialises when the alphabet collapses:
 
 ```
-       n   random-26       naive    ratio         a^n   naive a^n    ratio
-    1000      0.0001      0.0001     1.8x      0.0001      0.0209   196.3x
-    4000      0.0003      0.0002     0.8x      0.0004      0.3674   844.9x
-   16000      0.0012      0.0011     0.9x      0.0020      6.0137  3060.9x
-   64000      0.0044      0.0037     0.8x      0.0077     93.5060 12221.1x
+    n   random-26       naive    ratio         a^n   naive a^n    ratio
+ 1000      0.0001      0.0001     1.8x      0.0001      0.0209   196.3x
+ 4000      0.0003      0.0002     0.8x      0.0004      0.3674   844.9x
+16000      0.0012      0.0011     0.9x      0.0020      6.0137  3060.9x
+64000      0.0044      0.0037     0.8x      0.0077     93.5060 12221.1x
 ```
 
 0.8× on prose, 12,000× on a run — same two functions. The reason to ship the
@@ -295,11 +295,11 @@ margin.
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `zalgorithm.py` | `z_array`, separator-free and streaming search, `MultiZMatcher` + `AhoCorasick`, both conversions, borders/periods/prefix counts, Main-Lorentz, CLI |
-| `test_zalgorithm.py` | 21,564 tests: exhaustive over all binary strings to length 11, linearity measured, the chain bound, Unicode, CLI |
-| `benchmark.py` | Construction scaling, concatenation memory, streaming, `L` vs `k` vs Aho-Corasick, Main-Lorentz |
+| File                 | What it is                                                                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `zalgorithm.py`      | `z_array`, separator-free and streaming search, `MultiZMatcher` + `AhoCorasick`, both conversions, borders/periods/prefix counts, Main-Lorentz, CLI |
+| `test_zalgorithm.py` | 21,564 tests: exhaustive over all binary strings to length 11, linearity measured, the chain bound, Unicode, CLI                                    |
+| `benchmark.py`       | Construction scaling, concatenation memory, streaming, `L` vs `k` vs Aho-Corasick, Main-Lorentz                                                     |
 
 ## Running it
 

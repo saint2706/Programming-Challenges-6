@@ -13,12 +13,12 @@ it — and the longest substring is one `max` over that array.
 
 Once you have the array, you also get:
 
-| From the radii | Cost |
-| --- | --- |
-| `is_palindrome(i, j)` for **any** substring | O(1), after an O(n) build |
-| `count_palindromic_substrings` (occurrences, up to ~n²/2 of them) | O(n) |
-| `all_maximal_palindromes` — the n cores everything else nests inside | O(n) |
-| `longest_palindromic_prefix` → `shortest_palindrome_by_prepending` | O(n) |
+| From the radii                                                       | Cost                      |
+| -------------------------------------------------------------------- | ------------------------- |
+| `is_palindrome(i, j)` for **any** substring                          | O(1), after an O(n) build |
+| `count_palindromic_substrings` (occurrences, up to ~n²/2 of them)    | O(n)                      |
+| `all_maximal_palindromes` — the n cores everything else nests inside | O(n)                      |
+| `longest_palindromic_prefix` → `shortest_palindrome_by_prepending`   | O(n)                      |
 
 ## Three choices that differ from the version everyone writes
 
@@ -104,20 +104,20 @@ materialises. The naive method is not merely competitive there — it is
 a saving it never gets to collect:
 
 ```
-        n   manacher      naive    ratio    longest
-     1000     0.0005     0.0004     0.8x          4
-    10000     0.0047     0.0035     0.7x          7
-    50000     0.0241     0.0180     0.7x          7
+    n   manacher      naive    ratio    longest
+ 1000     0.0005     0.0004     0.8x          4
+10000     0.0047     0.0035     0.7x          7
+50000     0.0241     0.0180     0.7x          7
 ```
 
 On **a run of equal characters** every one of the 2n−1 naive expansions runs to
 full width, and the ratio is proportional to n and unbounded:
 
 ```
-        n   manacher      naive     ratio   longest
-     1000     0.0007     0.0300     40.1x      1000
-    10000     0.0082     3.0949    379.2x     10000
-    50000     0.0412    77.0224   1869.7x     50000
+    n   manacher      naive     ratio   longest
+ 1000     0.0007     0.0300     40.1x      1000
+10000     0.0082     3.0949    379.2x     10000
+50000     0.0412    77.0224   1869.7x     50000
 ```
 
 Same two implementations, same table format, and a factor of 2600 between the
@@ -125,13 +125,13 @@ conclusions you would draw. The hidden variable is palindrome density, and
 sweeping alphabet size at n = 50 000 shows it is not a gradient at all — it is
 a cliff, entirely between one letter and two:
 
-| \|Σ\| | longest | occurrences | distinct | manacher | naive | ratio |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | 50000 | 1,250,025,000 | 50,000 | 0.042 | 76.887 | **1827×** |
-| 2 | 34 | 149,680 | 1,427 | 0.039 | 0.025 | 0.6× |
-| 4 | 25 | 109,598 | 1,026 | 0.034 | 0.022 | 0.7× |
-| 26 | 15 | 86,282 | 924 | 0.029 | 0.021 | 0.7× |
-| 256 | 7 | 56,428 | 778 | 0.025 | 0.018 | 0.7× |
+| \|Σ\| | longest | occurrences   | distinct | manacher | naive  | ratio     |
+| ----- | ------- | ------------- | -------- | -------- | ------ | --------- |
+| 1     | 50000   | 1,250,025,000 | 50,000   | 0.042    | 76.887 | **1827×** |
+| 2     | 34      | 149,680       | 1,427    | 0.039    | 0.025  | 0.6×      |
+| 4     | 25      | 109,598       | 1,026    | 0.034    | 0.022  | 0.7×      |
+| 26    | 15      | 86,282        | 924      | 0.029    | 0.021  | 0.7×      |
+| 256   | 7       | 56,428        | 778      | 0.025    | 0.018  | 0.7×      |
 
 The expected longest palindrome in random text over an alphabet of size k is
 about 2·log_k(n), which collapses immediately once k > 1, and the naive
@@ -147,14 +147,14 @@ of the two methods has a worst case you can state.
 
 The same claim without a stopwatch, at n = 5000:
 
-| Input | Manacher | bound 2n | naive | naive/n |
-| --- | --- | --- | --- | --- |
-| all one character | 9,997 | 10,000 | 12,502,500 | 2500.5 |
-| alternating `ab` | 4,998 | 10,000 | 6,252,500 | 1250.5 |
-| one giant palindrome | 9,994 | 10,000 | 6,252,500 | 1250.5 |
-| random binary | 7,333 | 10,000 | 15,078 | 3.0 |
-| `abacaba` fractal | 4,987 | 10,000 | 29,809 | 6.0 |
-| random 26 letters | 395 | 10,000 | 5,396 | 1.1 |
+| Input                | Manacher | bound 2n | naive      | naive/n |
+| -------------------- | -------- | -------- | ---------- | ------- |
+| all one character    | 9,997    | 10,000   | 12,502,500 | 2500.5  |
+| alternating `ab`     | 4,998    | 10,000   | 6,252,500  | 1250.5  |
+| one giant palindrome | 9,994    | 10,000   | 6,252,500  | 1250.5  |
+| random binary        | 7,333    | 10,000   | 15,078     | 3.0     |
+| `abacaba` fractal    | 4,987    | 10,000   | 29,809     | 6.0     |
+| random 26 letters    | 395      | 10,000   | 5,396      | 1.1     |
 
 The Manacher column never exceeds the bound — that is the amortisation proof as
 a measurement. The naive column has no bound at all, and `naive/n` is its
@@ -183,10 +183,10 @@ actually has many suffixes to compress.
 The gap is not subtle, even against a DP whose palindrome test is already O(1):
 
 ```
-       n   series links   DP + O(1) test    ratio   pieces
-    1000         0.0008           0.0725    87.7x      158
-   10000         0.0082           7.4993   919.6x     1516
-   50000         0.0369          skipped       --     7575
+    n   series links   DP + O(1) test    ratio   pieces
+ 1000         0.0008           0.0725    87.7x      158
+10000         0.0082           7.4993   919.6x     1516
+50000         0.0369          skipped       --     7575
 ```
 
 ## Unicode: what counts as "the same character read backwards"
@@ -273,11 +273,11 @@ The literal use — does this phrase read the same backwards — is where
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `palindromes.py` | `manacher_odd_even`, `PalindromeIndex`, `Eertree`, factorisation, Unicode views, three baselines, CLI |
-| `test_palindromes.py` | 76 tests: exhaustive over all binary strings to length 12, linearity measured, Unicode, CLI |
-| `benchmark.py` | Best/worst-case scaling, alphabet sweep, machine-independent step counts, structure timings |
+| File                  | What it is                                                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------- |
+| `palindromes.py`      | `manacher_odd_even`, `PalindromeIndex`, `Eertree`, factorisation, Unicode views, three baselines, CLI |
+| `test_palindromes.py` | 76 tests: exhaustive over all binary strings to length 12, linearity measured, Unicode, CLI           |
+| `benchmark.py`        | Best/worst-case scaling, alphabet sweep, machine-independent step counts, structure timings           |
 
 ## Running it
 

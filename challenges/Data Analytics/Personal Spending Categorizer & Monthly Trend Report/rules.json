@@ -1,12 +1,30 @@
 {
-  "Income": ["payroll", "salary", "direct dep", "employer", "interest paid"],
-  "Groceries": ["grocery", "supermarket", "whole foods", "trader joe", "safeway", "kroger"],
-  "Dining": ["starbucks", "restaurant", "cafe", "coffee", "chipotle", "mcdonald", "doordash", "ubereats"],
-  "Transport": ["uber", "lyft", "shell", "chevron", "exxon", "gas station", "transit", "parking"],
-  "Utilities": ["electric", "gas company", "water dept", "internet", "comcast", "verizon", "at&t", "phone bill"],
-  "Rent/Mortgage": ["rent payment", "mortgage", "property mgmt"],
-  "Entertainment": ["netflix", "spotify", "hulu", "cinema", "movie", "steam", "playstation"],
-  "Shopping": ["amazon", "target", "walmart", "best buy", "ebay"],
-  "Health": ["pharmacy", "cvs", "walgreens", "clinic", "hospital", "dental"],
-  "Fees & Interest": ["overdraft fee", "atm fee", "interest charge", "late fee"]
+    "Income": ["payroll", "salary", "direct dep", "employer", "interest paid"],
+    "Groceries": ["grocery", "supermarket", "whole foods", "trader joe", "safeway", "kroger"],
+    "Dining": [
+        "starbucks",
+        "restaurant",
+        "cafe",
+        "coffee",
+        "chipotle",
+        "mcdonald",
+        "doordash",
+        "ubereats"
+    ],
+    "Transport": ["uber", "lyft", "shell", "chevron", "exxon", "gas station", "transit", "parking"],
+    "Utilities": [
+        "electric",
+        "gas company",
+        "water dept",
+        "internet",
+        "comcast",
+        "verizon",
+        "at&t",
+        "phone bill"
+    ],
+    "Rent/Mortgage": ["rent payment", "mortgage", "property mgmt"],
+    "Entertainment": ["netflix", "spotify", "hulu", "cinema", "movie", "steam", "playstation"],
+    "Shopping": ["amazon", "target", "walmart", "best buy", "ebay"],
+    "Health": ["pharmacy", "cvs", "walgreens", "clinic", "hospital", "dental"],
+    "Fees & Interest": ["overdraft fee", "atm fee", "interest charge", "late fee"]
 }
