@@ -13,8 +13,14 @@
         "cwd": "${configDir}",
         "commands": [
             {
-                "command": "sh -c \"ruff check --fix --exit-zero --stdin-filename '{{file_path}}' - | ruff format --stdin-filename '{{file_path}}' -\"",
-                "exts": ["py"]
+                "command": "ruff check --fix --exit-zero --stdin-filename {{file_path}} -",
+                "exts": ["py"],
+                "associations": "**/*.py"
+            },
+            {
+                "command": "ruff format --stdin-filename {{file_path}} -",
+                "exts": ["py"],
+                "associations": "**/*.py"
             }
         ]
     },
