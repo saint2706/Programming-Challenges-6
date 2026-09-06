@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Sales Dashboard</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #0f1115;
+    --panel: #1a1d24;
+    --border: #2a2d34;
+    --text: #e8e8e8;
+    --muted: #9aa0aa;
+    --accent: #4C78A8;
+    --accent-2: #F58518;
+    --danger: #e5484d;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --border: #e2e4e9;
+      --text: #1a1d24;
+      --muted: #5b6270;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 1.75rem;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
+  .subtitle { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.9rem; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .field { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; }
+  .field label { color: var(--muted); }
+  select, input[type="date"], button {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+  }
+  button {
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    border: none;
+  }
+  button.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .field select[data-missing="true"] { border-color: var(--danger); }
+  .summary { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .stat { min-width: 140px; }
+  .stat .value { font-size: 1.4rem; font-weight: 600; }
+  .stat .label { font-size: 0.78rem; color: var(--muted); }
+  .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; }
+  .charts .panel.wide { grid-column: 1 / -1; }
+  figure { margin: 0; }
+  table.products { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  table.products th, table.products td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--border); }
+  table.products td:last-child, table.products th:last-child { text-align: right; }
+  .status { font-size: 0.85rem; color: var(--muted); }
+  .hint { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; }
+  @media (max-width: 900px) { .charts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Interactive Sales Dashboard</h1>
+<p class="subtitle">Load any sales spreadsheet (CSV or XLSX) and explore it &mdash; entirely in this page, no server involved.</p>
+
+<div class="panel">
+  <div class="row">
+    <input type="file" id="file-input" accept=".csv,.xlsx,.xls">
+    <button id="load-sample" class="secondary" type="button">Load sample data</button>
+    <span class="status" id="status">No file loaded yet.</span>
+  </div>
+</div>
+
+<div class="panel" id="mapping-panel" hidden>
+  <strong>Column mapping</strong>
+  <p class="hint">Auto-detected from your headers &mdash; override anything that looks wrong.</p>
+  <div class="row" id="mapping-fields"></div>
+</div>
+
+<div class="panel" id="filters-panel" hidden>
+  <div class="row">
+    <div class="field">
+      <label for="filter-category">Category</label>
+      <select id="filter-category"><option value="">All</option></select>
+    </div>
+    <div class="field">
+      <label for="filter-region">Region</label>
+      <select id="filter-region"><option value="">All</option></select>
+    </div>
+    <div class="field">
+      <label for="filter-from">From</label>
+      <input type="date" id="filter-from">
+    </div>
+    <div class="field">
+      <label for="filter-to">To</label>
+      <input type="date" id="filter-to">
+    </div>
+    <button id="reset-filters" class="secondary" type="button">Reset filters</button>
+  </div>
+</div>
+
+<div id="dashboard" hidden>
+  <div class="panel">
+    <div class="summary">
+      <div class="stat"><div class="value" id="stat-total">-</div><div class="label">total sales</div></div>
+      <div class="stat"><div class="value" id="stat-count">-</div><div class="label">transactions</div></div>
+      <div class="stat"><div class="value" id="stat-qty">-</div><div class="label">units sold</div></div>
+      <div class="stat"><div class="value" id="stat-range">-</div><div class="label">date range</div></div>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="panel wide">
+      <strong>Sales over time</strong>
+      <figure id="chart-trend"></figure>
+    </div>
+    <div class="panel">
+      <strong>Sales by category</strong>
+      <p class="hint">Click a bar to drill down.</p>
+      <figure id="chart-category"></figure>
+    </div>
+    <div class="panel">
+      <strong>Top products</strong>
+      <table class="products" id="table-products">
+        <thead><tr><th>Product</th><th>Sales</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+        integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"
+        integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/dist/plot.umd.min.js"
+        integrity="sha384-JUpn2GgRr0gxU0xOBd8D8P634jhRCwobtG8G2MMEkX1RnGJ7/FJNnuukpfT+H2w1"
+        crossorigin="anonymous"></script>
+<script>
+"use strict";
+
+const ROLES = {
+  date: { label: "Date", aliases: ["date", "order date", "sale date", "transaction date"], required: true },
+  category: { label: "Category", aliases: ["category", "product category", "type"], required: true },
+  region: { label: "Region", aliases: ["region", "territory", "area"], required: true },
+  product: { label: "Product", aliases: ["product", "item", "product name"], required: true },
+  amount: { label: "Amount", aliases: ["amount", "sales", "total", "revenue", "price"], required: true },
+  quantity: { label: "Quantity", aliases: ["quantity", "qty", "units"], required: false },
+};
+
+const state = {
+  headers: [],
+  rawRows: [],
+  mapping: {},
+  filters: { category: "", region: "", from: "", to: "" },
+  drillCategory: null,
+};
+
+const el = (id) => document.getElementById(id);
+
+function guessColumn(headers, aliases) {
+  const lowered = headers.map((h) => [h, String(h).trim().toLowerCase()]);
+  for (const alias of aliases) {
+    const hit = lowered.find(([, l]) => l === alias);
+    if (hit) return hit[0];
+  }
+  for (const alias of aliases) {
+    const hit = lowered.find(([, l]) => l.includes(alias));
+    if (hit) return hit[0];
+  }
+  return "";
+}
+
+function parseAmount(value) {
+  if (value == null || value === "") return null;
+  if (typeof value === "number") return value;
+  const cleaned = String(value).replace(/[$,]/g, "").trim();
+  const negative = /^\(.*\)$/.test(cleaned);
+  const num = parseFloat(cleaned.replace(/[()]/g, ""));
+  if (Number.isNaN(num)) return null;
+  return negative ? -num : num;
+}
+
+function parseDate(value) {
+  if (value instanceof Date) return value;
+  if (typeof value === "number") {
+    // Excel serial date fallback (days since 1899-12-30).
+    return new Date(Math.round((value - 25569) * 86400 * 1000));
+  }
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function readWorkbook(data) {
+  const workbook = XLSX.read(data, { type: "array", cellDates: true });
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  return XLSX.utils.sheet_to_json(sheet, { defval: null, raw: true });
+}
+
+function onRowsLoaded(rows) {
+  if (!rows.length) {
+    el("status").textContent = "That file has no rows.";
+    return;
+  }
+  state.rawRows = rows;
+  state.headers = Object.keys(rows[0]);
+  state.mapping = {};
+  for (const [role, def] of Object.entries(ROLES)) {
+    state.mapping[role] = guessColumn(state.headers, def.aliases);
+  }
+  state.filters = { category: "", region: "", from: "", to: "" };
+  state.drillCategory = null;
+
+  renderMappingPanel();
+  el("status").textContent = `Loaded ${rows.length.toLocaleString()} rows.`;
+  tryBuildDashboard();
+}
+
+function renderMappingPanel() {
+  const container = el("mapping-fields");
+  container.replaceChildren();
+  for (const [role, def] of Object.entries(ROLES)) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "field";
+    const label = document.createElement("label");
+    label.textContent = def.label + (def.required ? " *" : "");
+    label.htmlFor = `map-${role}`;
+    const select = document.createElement("select");
+    select.id = `map-${role}`;
+    select.dataset.role = role;
+    const blank = document.createElement("option");
+    blank.value = "";
+    blank.textContent = "-- choose --";
+    select.appendChild(blank);
+    for (const header of state.headers) {
+      const opt = document.createElement("option");
+      opt.value = header;
+      opt.textContent = header;
+      if (header === state.mapping[role]) opt.selected = true;
+      select.appendChild(opt);
+    }
+    select.dataset.missing = def.required && !state.mapping[role] ? "true" : "false";
+    select.addEventListener("change", () => {
+      state.mapping[role] = select.value;
+      select.dataset.missing = def.required && !select.value ? "true" : "false";
+      tryBuildDashboard();
+    });
+    wrapper.append(label, select);
+    container.appendChild(wrapper);
+  }
+  el("mapping-panel").hidden = false;
+}
+
+function tryBuildDashboard() {
+  const missingRequired = Object.entries(ROLES)
+    .filter(([, def]) => def.required)
+    .some(([role]) => !state.mapping[role]);
+  if (missingRequired) {
+    el("filters-panel").hidden = true;
+    el("dashboard").hidden = true;
+    return;
+  }
+  buildNormalizedRows();
+  populateFilterOptions();
+  el("filters-panel").hidden = false;
+  el("dashboard").hidden = false;
+  render();
+}
+
+let normalizedRows = [];
+
+function buildNormalizedRows() {
+  const m = state.mapping;
+  normalizedRows = state.rawRows
+    .map((row) => ({
+      date: parseDate(row[m.date]),
+      category: row[m.category] == null ? "" : String(row[m.category]),
+      region: row[m.region] == null ? "" : String(row[m.region]),
+      product: row[m.product] == null ? "" : String(row[m.product]),
+      amount: parseAmount(row[m.amount]),
+      quantity: m.quantity ? Number(row[m.quantity]) || 0 : 0,
+    }))
+    .filter((r) => r.date && r.amount != null);
+}
+
+function populateFilterOptions() {
+  const categories = Array.from(new Set(normalizedRows.map((r) => r.category))).sort();
+  const regions = Array.from(new Set(normalizedRows.map((r) => r.region))).sort();
+  fillSelect(el("filter-category"), categories, state.filters.category);
+  fillSelect(el("filter-region"), regions, state.filters.region);
+}
+
+function fillSelect(select, values, current) {
+  select.replaceChildren();
+  const allOpt = document.createElement("option");
+  allOpt.value = "";
+  allOpt.textContent = "All";
+  select.appendChild(allOpt);
+  for (const v of values) {
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v;
+    if (v === current) opt.selected = true;
+    select.appendChild(opt);
+  }
+  select.value = current;
+}
+
+function filteredRows() {
+  const { category, region, from, to } = state.filters;
+  const effectiveCategory = state.drillCategory || category;
+  const fromDate = from ? new Date(from) : null;
+  const toDate = to ? new Date(to) : null;
+  return normalizedRows.filter((r) => {
+    if (effectiveCategory && r.category !== effectiveCategory) return false;
+    if (region && r.region !== region) return false;
+    if (fromDate && r.date < fromDate) return false;
+    if (toDate && r.date > toDate) return false;
+    return true;
+  });
+}
+
+function render() {
+  const rows = filteredRows();
+  renderSummary(rows);
+  renderTrendChart(rows);
+  renderCategoryChart(rows);
+  renderProductTable(rows);
+}
+
+function renderSummary(rows) {
+  const total = d3.sum(rows, (r) => r.amount);
+  const qty = d3.sum(rows, (r) => r.quantity);
+  const dates = rows.map((r) => r.date).filter(Boolean);
+  el("stat-total").textContent = total.toLocaleString(undefined, { style: "currency", currency: "USD" });
+  el("stat-count").textContent = rows.length.toLocaleString();
+  el("stat-qty").textContent = qty.toLocaleString();
+  el("stat-range").textContent = dates.length
+    ? `${d3.min(dates).toISOString().slice(0, 10)} .. ${d3.max(dates).toISOString().slice(0, 10)}`
+    : "-";
+}
+
+function renderTrendChart(rows) {
+  const container = el("chart-trend");
+  if (!rows.length) {
+    container.replaceChildren("No data for the current filters.");
+    return;
+  }
+  const monthly = d3.rollups(
+    rows,
+    (v) => d3.sum(v, (r) => r.amount),
+    (r) => d3.utcMonth.floor(r.date)
+  ).sort((a, b) => a[0] - b[0]);
+
+  const plot = Plot.plot({
+    width: container.clientWidth || 640,
+    height: 260,
+    marginLeft: 60,
+    x: { label: null },
+    y: { label: "Sales ($)", grid: true },
+    marks: [
+      Plot.lineY(monthly, { x: (d) => d[0], y: (d) => d[1], stroke: "#4C78A8" }),
+      Plot.dot(monthly, { x: (d) => d[0], y: (d) => d[1], fill: "#4C78A8" }),
+    ],
+  });
+  container.replaceChildren(plot);
+}
+
+function renderCategoryChart(rows) {
+  const container = el("chart-category");
+  const totals = d3
+    .rollups(rows, (v) => d3.sum(v, (r) => r.amount), (r) => r.category)
+    .sort((a, b) => d3.descending(a[1], b[1]));
+  if (!totals.length) {
+    container.replaceChildren("No data for the current filters.");
+    return;
+  }
+  const data = totals.map(([category, amount]) => ({ category, amount }));
+  const categories = data.map((d) => d.category);
+
+  const plot = Plot.plot({
+    width: container.clientWidth || 320,
+    height: Math.max(200, categories.length * 34),
+    marginLeft: 130,
+    y: { domain: categories, label: null },
+    x: { label: "Sales ($)" },
+    marks: [
+      Plot.barX(data, {
+        y: "category",
+        x: "amount",
+        fill: (d) => (d.category === state.drillCategory ? "#F58518" : "#4C78A8"),
+      }),
+      Plot.ruleX([0]),
+    ],
+  });
+
+  const bars = plot.querySelectorAll("[aria-label='bar'] rect");
+  bars.forEach((rect, i) => {
+    rect.style.cursor = "pointer";
+    rect.addEventListener("click", () => {
+      const clicked = data[i].category;
+      state.drillCategory = state.drillCategory === clicked ? null : clicked;
+      render();
+    });
+  });
+
+  container.replaceChildren(plot);
+}
+
+function renderProductTable(rows) {
+  const tbody = el("table-products").querySelector("tbody");
+  const totals = d3
+    .rollups(rows, (v) => d3.sum(v, (r) => r.amount), (r) => r.product)
+    .sort((a, b) => d3.descending(a[1], b[1]))
+    .slice(0, 10);
+  tbody.replaceChildren(
+    ...totals.map(([product, amount]) => {
+      const tr = document.createElement("tr");
+      const tdName = document.createElement("td");
+      tdName.textContent = product;
+      const tdAmount = document.createElement("td");
+      tdAmount.textContent = amount.toLocaleString(undefined, { style: "currency", currency: "USD" });
+      tr.append(tdName, tdAmount);
+      return tr;
+    })
+  );
+}
+
+el("file-input").addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => onRowsLoaded(readWorkbook(new Uint8Array(reader.result)));
+  reader.readAsArrayBuffer(file);
+});
+
+el("load-sample").addEventListener("click", async () => {
+  try {
+    const response = await fetch("sample_data/sales_sample.csv");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const buffer = await response.arrayBuffer();
+    onRowsLoaded(readWorkbook(new Uint8Array(buffer)));
+  } catch (err) {
+    el("status").textContent =
+      "Couldn't fetch the sample file (opened via file://? serve this folder over http instead, " +
+      "e.g. `python -m http.server`) - or use the file picker to select sample_data/sales_sample.csv directly.";
+  }
+});
+
+el("filter-category").addEventListener("change", (e) => {
+  state.filters.category = e.target.value;
+  state.drillCategory = null;
+  render();
+});
+el("filter-region").addEventListener("change", (e) => {
+  state.filters.region = e.target.value;
+  render();
+});
+el("filter-from").addEventListener("change", (e) => {
+  state.filters.from = e.target.value;
+  render();
+});
+el("filter-to").addEventListener("change", (e) => {
+  state.filters.to = e.target.value;
+  render();
+});
+el("reset-filters").addEventListener("click", () => {
+  state.filters = { category: "", region: "", from: "", to: "" };
+  state.drillCategory = null;
+  el("filter-category").value = "";
+  el("filter-region").value = "";
+  el("filter-from").value = "";
+  el("filter-to").value = "";
+  render();
+});
+</script>
+</body>
+</html>

@@ -21,9 +21,9 @@ This repo is organized around five categories that reflect where I want to spend
 | Practical Software | 0 | 30 | ![0%](https://geps.dev/progress/0) |
 | Algorithmic Challenges | 10 | 30 | ![33%](https://geps.dev/progress/33) |
 | Web Development Showcase | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| Data Analytics | 0 | 30 | ![0%](https://geps.dev/progress/0) |
+| Data Analytics | 5 | 30 | ![17%](https://geps.dev/progress/17) |
 | Practical ML | 0 | 30 | ![0%](https://geps.dev/progress/0) |
-| **Total** | **10** | **150** | ![7%](https://geps.dev/progress/7) |
+| **Total** | **15** | **150** | ![10%](https://geps.dev/progress/10) |
 
 ### Difficulty Legend
 
@@ -157,11 +157,11 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 
 | # | Challenge | Difficulty | Notes | Status |
 | --- | --- | --- | --- | --- |
-| 1 | [CSV Data Profiler](./challenges/Data%20Analytics/CSV%20Data%20Profiler/) | B | Auto-detect types/nulls/distributions, emit an HTML report. | Not started |
-| 2 | [Personal Spending Categorizer & Monthly Trend Report](./challenges/Data%20Analytics/Personal%20Spending%20Categorizer%20&%20Monthly%20Trend%20Report/) | B | Parse bank CSV exports, categorize, chart trends over time. | Not started |
-| 3 | [Interactive Sales Dashboard from a Spreadsheet](./challenges/Data%20Analytics/Interactive%20Sales%20Dashboard%20from%20a%20Spreadsheet/) | B | Filter/drill-down client-side, no backend required. | Not started |
-| 4 | [A/B Test Significance Calculator](./challenges/Data%20Analytics/A-B%20Test%20Significance%20Calculator/) | B | Chi-square and t-test with plain-English interpretation. | Not started |
-| 5 | [Public API Data Aggregator & Daily Snapshot Logger](./challenges/Data%20Analytics/Public%20API%20Data%20Aggregator%20&%20Daily%20Snapshot%20Logger/) | B | Build your own longitudinal dataset by polling an API daily. | Not started |
+| 1 | [CSV Data Profiler](./challenges/Data%20Analytics/CSV%20Data%20Profiler/) | B | Polars + Plotly: semantic type inference (numeric/categorical/datetime/boolean), null/outlier/duplicate detection, correlation heatmap, all embedded in one self-contained HTML report. | Implemented (Python) |
+| 2 | [Personal Spending Categorizer & Monthly Trend Report](./challenges/Data%20Analytics/Personal%20Spending%20Categorizer%20&%20Monthly%20Trend%20Report/) | B | Configurable column mapping for differently-shaped bank exports, editable keyword-rule categorization, monthly spend-by-category trend report. | Implemented (Python) |
+| 3 | [Interactive Sales Dashboard from a Spreadsheet](./challenges/Data%20Analytics/Interactive%20Sales%20Dashboard%20from%20a%20Spreadsheet/) | B | Single static HTML file, no backend or build step: SheetJS parses CSV/XLSX, Observable Plot renders filterable, click-to-drill-down charts. | Implemented (JavaScript) |
+| 4 | [A/B Test Significance Calculator](./challenges/Data%20Analytics/A-B%20Test%20Significance%20Calculator/) | B | Chi-square (proportions) or Welch's t-test (means), auto-picked from the data; effect size + CI + a plain-English verdict, not just a p-value. | Implemented (Python) |
+| 5 | [Public API Data Aggregator & Daily Snapshot Logger](./challenges/Data%20Analytics/Public%20API%20Data%20Aggregator%20&%20Daily%20Snapshot%20Logger/) | B | Polls Open-Meteo, upserts into SQLite for a longitudinal dataset; demo seeded from 14 real (not synthetic) historical days. | Implemented (Python) |
 | 6 | [Correlation Matrix Explorer for Any Uploaded Dataset](./challenges/Data%20Analytics/Correlation%20Matrix%20Explorer%20for%20Any%20Uploaded%20Dataset/) | B | Upload CSV, get an interactive heatmap with significance flags. | Not started |
 | 7 | [Survey Results Visualizer](./challenges/Data%20Analytics/Survey%20Results%20Visualizer/) | B | Likert-scale charts, word clouds for open-ended answers. | Not started |
 | 8 | [Cohort Retention Analysis Tool](./challenges/Data%20Analytics/Cohort%20Retention%20Analysis%20Tool/) | I | Build retention curves from raw event logs. | Not started |

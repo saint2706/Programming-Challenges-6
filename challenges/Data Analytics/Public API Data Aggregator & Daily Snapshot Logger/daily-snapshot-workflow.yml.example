@@ -1,0 +1,44 @@
+# Example GitHub Actions workflow -- NOT active.
+#
+# This file lives here (not under .github/workflows/) and uses a .example
+# extension specifically so it can never trigger by accident. To actually
+# enable daily polling for this repo:
+#
+#   1. Copy this file to .github/workflows/daily-snapshot.yml
+#   2. Commit it
+#
+# It then polls Open-Meteo once a day and commits the updated snapshots.db
+# back to the repo -- a real, ongoing scheduled job with real effects
+# (commit noise, Actions minutes, a live dependency on an external API), so
+# don't enable it without meaning to.
+
+name: Daily weather snapshot
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 12:00 UTC daily
+  workflow_dispatch: {} # allows manual triggering from the Actions tab
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Poll Open-Meteo and store the snapshot
+        working-directory: "challenges/Data Analytics/Public API Data Aggregator & Daily Snapshot Logger"
+        run: uv run --with httpx python aggregator.py poll --db snapshots.db
+
+      - name: Commit the updated snapshot database
+        working-directory: "challenges/Data Analytics/Public API Data Aggregator & Daily Snapshot Logger"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add snapshots.db
+          git diff --cached --quiet || git commit -m "Daily weather snapshot $(date -u +%Y-%m-%d)"
+          git push

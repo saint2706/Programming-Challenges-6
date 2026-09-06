@@ -1,0 +1,16 @@
+id,name,department,salary,hire_date,active
+1,Alice Chen,Engineering,95000,2019-03-01,true
+2,Bharat Singh,Engineering,88000,2020-07-15,true
+3,Chidinma Okoro,Sales,72000,2018-11-20,true
+4,Diego Ramirez,Sales,74500,2021-01-10,false
+5,Elena Petrova,Marketing,68000,2022-05-05,true
+6,Fatima Zahra,Marketing,71000,2017-09-12,true
+7,Grace Kim,Engineering,102000,2016-02-28,true
+8,Hiroshi Tanaka,Engineering,99000,2019-08-19,true
+9,Ines Duarte,Sales,69000,2020-12-01,false
+10,Jamal Wright,Support,54000,2021-03-22,true
+11,Kavya Iyer,Support,56000,2022-02-14,true
+12,Liam O'Brien,Engineering,91000,2018-06-30,true
+13,Mei Lin,Marketing,73000,2020-09-09,true
+14,Noor Hassan,Sales,77000,2019-12-05,true
+15,Omar Farouk,Support,58000,2021-07-01,false

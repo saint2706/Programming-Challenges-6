@@ -1,0 +1,16 @@
+order_id,customer,amount,region,order_date,notes
+1001,Priya Nair,42.50,West,2023-01-05,
+1002,Tom Baxter,19.99,East,2023-01-06,gift wrap
+1003,Priya Nair,42.50,West,2023-01-05,
+1004,,15.00,North,2023-01-07,missing customer
+1005,Sam Osei,9999.00,East,2023-01-08,likely data entry error
+1006,Lucia Marchetti,33.20,South,2023-01-09,
+1007,Wei Zhang,27.80,West,,no date recorded
+1008,Ahmed Al-Farsi,,North,2023-01-10,amount missing
+1009,Kofi Mensah,21.00,East,2023-01-11,
+1010,Nina Petrov,18.75,South,2023-01-12,
+1011,Tom Baxter,19.99,East,2023-01-06,gift wrap
+1012,Yara Haddad,4500.00,West,2023-01-13,likely data entry error
+1013,Ben Okafor,26.40,North,2023-01-14,
+1014,Ravi Chandran,31.10,South,2023-01-15,
+1015,Elin Karlsson,22.60,East,2023-01-16,
