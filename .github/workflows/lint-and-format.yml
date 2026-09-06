@@ -1,0 +1,117 @@
+name: Lint and Format
+
+# Scheduled maintenance only: never runs on pushes or pull requests, so it
+# never blocks or comments on a PR. `workflow_dispatch` allows running it
+# on demand from the Actions tab or `gh workflow run`, but only the
+# `schedule` trigger is allowed to open an issue (see the last job step) --
+# a manual run just formats and commits, silently.
+#
+# GitHub Actions cron has no native "every 14 days"; the 1st and 15th of
+# each month is the common approximation for "twice a month" and is what's
+# used here instead of exactly-14-day spacing.
+on:
+  schedule:
+    - cron: "0 3 1,15 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: lint-and-format
+  cancel-in-progress: false
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (for dprint via npx)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Python (for ruff)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install "ruff==0.14.6"
+
+      - name: Format with dprint (markdown, JSON, and Python via ruff)
+        id: dprint
+        run: |
+          set +e
+          npx --yes dprint@0.57.4 fmt --config dprint.json > "$RUNNER_TEMP/dprint-output.log" 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/dprint-output.log"
+
+      - name: Check for remaining lint issues ruff couldn't auto-fix
+        id: ruff
+        run: |
+          set +e
+          ruff check . > "$RUNNER_TEMP/ruff-output.log" 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/ruff-output.log"
+
+      - name: Check for file changes
+        id: git-check
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push formatting changes
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: automated lint and format"
+          git push
+
+      - name: Open or update an issue for unfixable errors (scheduled runs only)
+        if: github.event_name == 'schedule' && (steps.dprint.outputs.exit_code != '0' || steps.ruff.outputs.exit_code != '0')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+
+          gh label create automated-lint-format \
+            --description "Opened by the scheduled Lint and Format workflow" \
+            --color "d73a4a" \
+            --force
+
+          {
+            echo "Automated lint/format run on $(date -u +%Y-%m-%dT%H:%M:%SZ) found issues that could not be fixed automatically."
+            echo
+            if [ "${{ steps.dprint.outputs.exit_code }}" != "0" ]; then
+              echo "## dprint (exit code ${{ steps.dprint.outputs.exit_code }})"
+              echo '```'
+              tail -c 30000 "$RUNNER_TEMP/dprint-output.log"
+              echo '```'
+              echo
+            fi
+            if [ "${{ steps.ruff.outputs.exit_code }}" != "0" ]; then
+              echo "## ruff check (exit code ${{ steps.ruff.outputs.exit_code }})"
+              echo '```'
+              tail -c 30000 "$RUNNER_TEMP/ruff-output.log"
+              echo '```'
+            fi
+          } > "$RUNNER_TEMP/issue-body.md"
+
+          existing=$(gh issue list --label automated-lint-format --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file "$RUNNER_TEMP/issue-body.md"
+          else
+            gh issue create \
+              --title "Scheduled lint/format run found issues needing manual attention" \
+              --label automated-lint-format \
+              --body-file "$RUNNER_TEMP/issue-body.md"
+          fi
