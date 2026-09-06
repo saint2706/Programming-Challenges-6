@@ -19,7 +19,6 @@ from categorizer import (
     load_transactions,
     render_report,
     resolve_column,
-    resolve_mapping,
 )
 
 SAMPLE_DIR = Path(__file__).parent / "sample_data"
@@ -45,7 +44,9 @@ def test_resolve_column_honors_override() -> None:
 
 
 def test_load_transactions_format_a(tmp_path: Path) -> None:
-    df, mapping = load_transactions(SAMPLE_DIR / "checking_export_a.csv", (None, None, None))
+    df, mapping = load_transactions(
+        SAMPLE_DIR / "checking_export_a.csv", (None, None, None)
+    )
     assert mapping.date == "Date"
     assert mapping.amount == "Amount"
     assert len(df) == 19
@@ -55,7 +56,9 @@ def test_load_transactions_format_a(tmp_path: Path) -> None:
 
 
 def test_load_transactions_format_b_parses_parens_and_currency(tmp_path: Path) -> None:
-    df, mapping = load_transactions(SAMPLE_DIR / "checking_export_b.csv", (None, None, None))
+    df, mapping = load_transactions(
+        SAMPLE_DIR / "checking_export_b.csv", (None, None, None)
+    )
     assert mapping.date == "Posted Date"
     assert mapping.description == "Memo"
     assert mapping.amount == "Debit"
@@ -109,7 +112,9 @@ def test_main_writes_report(tmp_path: Path) -> None:
     assert "Monthly Spending Report" in output.read_text(encoding="utf-8")
 
 
-def test_main_missing_file_returns_error(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_missing_file_returns_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     from categorizer import main
 
     exit_code = main([str(tmp_path / "nope.csv")])
@@ -117,7 +122,9 @@ def test_main_missing_file_returns_error(tmp_path: Path, capsys: pytest.CaptureF
     assert "does not exist" in capsys.readouterr().err
 
 
-def test_main_reports_unmappable_columns(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_reports_unmappable_columns(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     from categorizer import main
 
     bad = tmp_path / "bad.csv"

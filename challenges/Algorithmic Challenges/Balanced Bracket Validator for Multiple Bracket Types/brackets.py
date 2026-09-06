@@ -204,8 +204,10 @@ class BracketSpec:
         for p in self.pairs:
             if not p.opaque:
                 continue
-            alts = [p.close] if p.escape is None else sorted(
-                {p.close, p.escape}, key=lambda s: (-len(s), s)
+            alts = (
+                [p.close]
+                if p.escape is None
+                else sorted({p.close, p.escape}, key=lambda s: (-len(s), s))
             )
             self._opaque_scanners[p.name] = re.compile(
                 "|".join(re.escape(s) for s in alts)
@@ -441,14 +443,19 @@ class Validator:
         # capped (or zero) diagnostic budget hides detail without ever turning
         # a broken document into a valid one.
         self._faults += 1
-        if self.max_diagnostics is not None and len(self._diagnostics) >= self.max_diagnostics:
+        if (
+            self.max_diagnostics is not None
+            and len(self._diagnostics) >= self.max_diagnostics
+        ):
             return
         line, column = self._line_col(offset)
         rl = rc = None
         if related is not None:
             rl, rc = self._line_col(related)
         self._diagnostics.append(
-            Diagnostic(kind, message, offset, line, column, lexeme, pair, related, rl, rc)
+            Diagnostic(
+                kind, message, offset, line, column, lexeme, pair, related, rl, rc
+            )
         )
 
     # -- core scan -----------------------------------------------------------
@@ -564,7 +571,9 @@ class Validator:
 
         # Only closers left, and none matches the top of the stack.
         pair = candidates[0][0]
-        self._close_unmatched(offset, lex, [p for p, r in candidates if r == "close"] or [pair])
+        self._close_unmatched(
+            offset, lex, [p for p, r in candidates if r == "close"] or [pair]
+        )
         return m.end()
 
     def _open_frame(self, offset: int, lex: str, pair: Pair) -> None:
@@ -713,7 +722,9 @@ class Validator:
         """
         if final and not self._finished:
             self._consume(final=True)
-        return [f.pair.close for f in reversed(self._stack) if not f.pair.optional_close]
+        return [
+            f.pair.close for f in reversed(self._stack) if not f.pair.optional_close
+        ]
 
     @property
     def pending(self) -> list[str]:
@@ -1015,17 +1026,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.stream:
                 # Never materializes the file; source context is unavailable,
                 # so diagnostics print without carets.
-                opener = (
-                    _stdin_chunks() if path == "-" else _file_chunks(path)
-                )
+                opener = _stdin_chunks() if path == "-" else _file_chunks(path)
                 report = validate_stream(opener, spec, max_depth=args.max_depth)
                 text = None
             else:
-                text = (
-                    sys.stdin.read()
-                    if path == "-"
-                    else _read_text(path)
-                )
+                text = sys.stdin.read() if path == "-" else _read_text(path)
                 report = validate(text, spec, max_depth=args.max_depth)
         except OSError as exc:
             print(f"{label}: cannot read: {exc.strerror or exc}", file=sys.stderr)
@@ -1040,8 +1045,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.json:
             results.append({"file": label, **report.to_dict()})
         else:
-            print(f"{label}: {'ok' if report.ok else 'FAILED'} "
-                  f"(max depth {report.max_depth})")
+            print(
+                f"{label}: {'ok' if report.ok else 'FAILED'} "
+                f"(max depth {report.max_depth})"
+            )
             if not report.ok:
                 rendered = (
                     report.render(text, context=True)
@@ -1140,8 +1147,11 @@ def _self_check() -> int:
     # Jump-to-match, including from inside a multi-character delimiter.
     doc = "a <!-- b --> c"
     jumps = {0: None, 2: 9, 4: 9, 9: 2, 11: 2, 13: None}
-    bad = {o: matching_index(doc, o, "html") for o in jumps
-           if matching_index(doc, o, "html") != jumps[o]}
+    bad = {
+        o: matching_index(doc, o, "html")
+        for o in jumps
+        if matching_index(doc, o, "html") != jumps[o]
+    }
     if bad:
         print(f"  [FAIL] matching_index -> {bad}")
         failures += 1

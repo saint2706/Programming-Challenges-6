@@ -128,9 +128,7 @@ def test_fast_iteration_count_is_logarithmic_in_n(monkeypatch):
 
 def test_survivor_dispatch_agrees_with_both_backends():
     for n, k in [(10, 3), (10**6, 3), (10, 10**6), (5, 10**7), (10**9, 5)]:
-        expected = (
-            survivor_recurrence(n, k) if n <= 10**7 else survivor_fast(n, k)
-        )
+        expected = survivor_recurrence(n, k) if n <= 10**7 else survivor_fast(n, k)
         assert survivor(n, k) == expected, (n, k)
 
 
@@ -322,7 +320,8 @@ def test_cli_pow2_rejects_other_k():
 def test_cli_verify_subcommand():
     proc = subprocess.run(
         [sys.executable, str(HERE / "josephus.py"), "--verify"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "all methods agree" in proc.stdout

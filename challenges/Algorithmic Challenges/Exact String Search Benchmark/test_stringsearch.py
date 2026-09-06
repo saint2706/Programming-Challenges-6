@@ -27,7 +27,6 @@ from stringsearch import (
     boyer_moore_search,
     builtin_search,
     count_accesses,
-    horspool_search,
     kmp_search,
     main,
     naive_adversary,
@@ -37,8 +36,6 @@ from stringsearch import (
     rabin_karp_randomized_search,
     rabin_karp_search,
     shift_or_search,
-    sunday_search,
-    two_way_search,
     verify,
 )
 
@@ -57,7 +54,9 @@ def all_agree(pattern, text):
     expected = brute(pattern, text)
     for name in NAMES:
         got = list(ALGORITHMS[name](pattern, text))
-        assert got == expected, f"{name} on {pattern!r} in {text!r}: {got} != {expected}"
+        assert got == expected, (
+            f"{name} on {pattern!r} in {text!r}: {got} != {expected}"
+        )
     return expected
 
 
@@ -79,7 +78,9 @@ def test_exhaustive_binary(name):
 @pytest.mark.parametrize("name", NAMES)
 def test_exhaustive_ternary_short(name):
     algo = ALGORITHMS[name]
-    patterns = ["".join(p) for k in range(4) for p in itertools.product("abc", repeat=k)]
+    patterns = [
+        "".join(p) for k in range(4) for p in itertools.product("abc", repeat=k)
+    ]
     texts = ["".join(t) for k in range(7) for t in itertools.product("abc", repeat=k)]
     for pat in patterns:
         for txt in texts:
@@ -142,8 +143,10 @@ def test_bytes_inputs():
     rng = random.Random(103)
     for _ in range(300):
         txt = bytes(rng.randrange(256) for _ in range(rng.randint(0, 60)))
-        pat = txt[3:9] if len(txt) > 9 and rng.random() < 0.5 else bytes(
-            rng.randrange(256) for _ in range(rng.randint(0, 4))
+        pat = (
+            txt[3:9]
+            if len(txt) > 9 and rng.random() < 0.5
+            else bytes(rng.randrange(256) for _ in range(rng.randint(0, 4)))
         )
         all_agree(pat, txt)
 
@@ -233,7 +236,11 @@ def test_boyer_moore_is_sublinear_on_a_large_alphabet():
 
 def test_shift_or_cost_is_independent_of_content():
     """Bitap reads exactly n characters whatever the text says."""
-    for txt in ("a" * 500, "ab" * 250, "".join(random.Random(2).choice("abc") for _ in range(500))):
+    for txt in (
+        "a" * 500,
+        "ab" * 250,
+        "".join(random.Random(2).choice("abc") for _ in range(500)),
+    ):
         _, accesses = count_accesses(shift_or_search, "abc", txt)
         assert accesses == len(txt)
 
@@ -260,8 +267,8 @@ def test_galil_rule_turns_the_quadratic_case_linear():
     matches_a, with_galil = count_accesses(boyer_moore_search, pat, txt)
     matches_b, without = count_accesses(boyer_moore_no_galil_search, pat, txt)
     assert matches_a == matches_b == brute(pat, txt)
-    assert with_galil <= 2 * n            # linear
-    assert without > 10 * n               # quadratic
+    assert with_galil <= 2 * n  # linear
+    assert without > 10 * n  # quadratic
     assert without / with_galil > m / 4
 
 
@@ -335,10 +342,18 @@ def test_algorithms_are_generators_that_can_stop_early():
 def test_large_text_agreement():
     rng = random.Random(311)
     text = "".join(rng.choice("acgt") for _ in range(200_000))
-    pat = text[123_456:123_456 + 24]
+    pat = text[123_456 : 123_456 + 24]
     expected = brute(pat, text)
-    for name in ("kmp", "boyer-moore", "horspool", "sunday", "two-way",
-                 "rabin-karp", "bitparallel", "builtin"):
+    for name in (
+        "kmp",
+        "boyer-moore",
+        "horspool",
+        "sunday",
+        "two-way",
+        "rabin-karp",
+        "bitparallel",
+        "builtin",
+    ):
         assert list(ALGORITHMS[name](pat, text)) == expected
 
 

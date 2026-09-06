@@ -276,7 +276,9 @@ class Alphabet:
     def __repr__(self) -> str:
         head = "".join(map(str, self.symbols[:8]))
         tail = "..." if self._size > 8 else ""
-        return f"<Alphabet size={self._size} [{head}{tail}] counts={self.count_code.name}>"
+        return (
+            f"<Alphabet size={self._size} [{head}{tail}] counts={self.count_code.name}>"
+        )
 
     @property
     def bits_per_symbol(self) -> float:
@@ -613,9 +615,9 @@ class AdaptiveCodec(Codec):
     name = "adaptive"
 
     def __init__(self, members: Sequence[Codec] | None = None) -> None:
-        self.members = list(members) if members else [
-            PairCodec(), PackBitsCodec(), EscapeCodec()
-        ]
+        self.members = (
+            list(members) if members else [PairCodec(), PackBitsCodec(), EscapeCodec()]
+        )
 
     def _usable(self, alpha: Alphabet) -> list[Codec]:
         usable = [c for c in self.members if c.applicable(alpha)]
@@ -1036,8 +1038,11 @@ def _self_check() -> int:
                 ok = False
         if ok:
             best = min(
-                (len(compress(data, alpha, n)[0]) for n in CODECS
-                 if CODECS[n].applicable(alpha)),
+                (
+                    len(compress(data, alpha, n)[0])
+                    for n in CODECS
+                    if CODECS[n].applicable(alpha)
+                ),
                 default=0,
             )
             ratio = f"{best / len(data):.3f}x" if data else "n/a"
@@ -1089,10 +1094,16 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     def add_common(p):
         p.add_argument("input", help="input file, or '-' for stdin")
-        p.add_argument("--binary", action="store_true",
-                       help="treat the file as bytes rather than UTF-8 text")
-        p.add_argument("--alphabet", default="auto",
-                       help=f"auto, or one of: {', '.join(NAMED_ALPHABETS)}")
+        p.add_argument(
+            "--binary",
+            action="store_true",
+            help="treat the file as bytes rather than UTF-8 text",
+        )
+        p.add_argument(
+            "--alphabet",
+            default="auto",
+            help=f"auto, or one of: {', '.join(NAMED_ALPHABETS)}",
+        )
 
     c = sub.add_parser("compress", help="write an .rle container")
     add_common(c)
@@ -1116,8 +1127,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "decompress":
         with open(args.input, "rb") as fh:
             symbols = unpack_file(fh.read())
-        out = (bytes(symbols) if all(isinstance(s, int) for s in symbols)
-               else "".join(map(str, symbols)).encode("utf-8"))
+        out = (
+            bytes(symbols)
+            if all(isinstance(s, int) for s in symbols)
+            else "".join(map(str, symbols)).encode("utf-8")
+        )
         with open(args.output, "wb") as fh:
             fh.write(out)
         print(f"{args.input} -> {args.output}: {len(symbols):,} symbols")
@@ -1138,15 +1152,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         raw = len(BitPacker(alpha).pack(data))
         print(f"{args.input} -> {args.output}")
         print(f"  {len(data):,} symbols, |Sigma| = {len(alpha)}, codec = {args.codec}")
-        print(f"  {raw:,} bytes packed -> {len(blob):,} bytes "
-              f"({len(blob) / raw:.3f}x, container included)")
+        print(
+            f"  {raw:,} bytes packed -> {len(blob):,} bytes "
+            f"({len(blob) / raw:.3f}x, container included)"
+        )
         return 0
 
     report = analyze(data, alpha)
     if args.json:
         json.dump(
             {**report.__dict__, "codecs": [c.__dict__ for c in report.codecs]},
-            sys.stdout, indent=2,
+            sys.stdout,
+            indent=2,
         )
         print()
     else:

@@ -5,7 +5,6 @@ Run with:  uv run --with pytest --with polars --with plotly pytest -q
 
 from __future__ import annotations
 
-import io
 from pathlib import Path
 
 import polars as pl
@@ -42,7 +41,9 @@ def test_classify_semantic_type_numeric() -> None:
 
 
 def test_classify_semantic_type_boolean_from_strings() -> None:
-    assert classify_semantic_type(pl.Series("x", ["true", "false", "true"])) == "boolean"
+    assert (
+        classify_semantic_type(pl.Series("x", ["true", "false", "true"])) == "boolean"
+    )
 
 
 def test_classify_semantic_type_categorical_vs_text() -> None:
@@ -120,7 +121,9 @@ def test_main_writes_report(tmp_path: Path) -> None:
     assert "CSV Data Profile" in output.read_text(encoding="utf-8")
 
 
-def test_main_missing_file_returns_error(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_missing_file_returns_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     from profiler import main
 
     exit_code = main([str(tmp_path / "does_not_exist.csv")])

@@ -8,7 +8,6 @@ Run with:  uv run --with pytest --with httpx --with polars --with plotly pytest 
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import httpx
@@ -84,16 +83,30 @@ def test_store_snapshot_upserts_without_duplicating(tmp_path: Path) -> None:
     conn = connect(db_path)
 
     snap1 = Snapshot(
-        date="2026-09-06", location="New York", fetched_at="t1",
-        temperature_c=18.0, humidity_pct=80, wind_speed_kmh=5.0,
-        temp_max_c=25.0, temp_min_c=17.0, precipitation_mm=0.0, raw_json=None,
+        date="2026-09-06",
+        location="New York",
+        fetched_at="t1",
+        temperature_c=18.0,
+        humidity_pct=80,
+        wind_speed_kmh=5.0,
+        temp_max_c=25.0,
+        temp_min_c=17.0,
+        precipitation_mm=0.0,
+        raw_json=None,
     )
     store_snapshot(conn, snap1)
 
     snap2 = Snapshot(
-        date="2026-09-06", location="New York", fetched_at="t2",
-        temperature_c=19.5, humidity_pct=75, wind_speed_kmh=6.0,
-        temp_max_c=25.0, temp_min_c=17.0, precipitation_mm=0.0, raw_json=None,
+        date="2026-09-06",
+        location="New York",
+        fetched_at="t2",
+        temperature_c=19.5,
+        humidity_pct=75,
+        wind_speed_kmh=6.0,
+        temp_max_c=25.0,
+        temp_min_c=17.0,
+        precipitation_mm=0.0,
+        raw_json=None,
     )
     store_snapshot(conn, snap2)
 
@@ -111,9 +124,16 @@ def test_store_snapshot_distinguishes_locations(tmp_path: Path) -> None:
         store_snapshot(
             conn,
             Snapshot(
-                date="2026-09-06", location=loc, fetched_at="t",
-                temperature_c=10.0, humidity_pct=50, wind_speed_kmh=1.0,
-                temp_max_c=12.0, temp_min_c=8.0, precipitation_mm=0.0, raw_json=None,
+                date="2026-09-06",
+                location=loc,
+                fetched_at="t",
+                temperature_c=10.0,
+                humidity_pct=50,
+                wind_speed_kmh=1.0,
+                temp_max_c=12.0,
+                temp_min_c=8.0,
+                precipitation_mm=0.0,
+                raw_json=None,
             ),
         )
     rows = load_snapshots(conn)
@@ -122,8 +142,12 @@ def test_store_snapshot_distinguishes_locations(tmp_path: Path) -> None:
     conn.close()
 
 
-def test_cmd_poll_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
-    monkeypatch.setattr(httpx, "get", lambda *a, **k: FakeResponse(FAKE_FORECAST_RESPONSE))
+def test_cmd_poll_end_to_end(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        httpx, "get", lambda *a, **k: FakeResponse(FAKE_FORECAST_RESPONSE)
+    )
     db_path = tmp_path / "snapshots.db"
     exit_code = main(["poll", "--db", str(db_path), "--location", "New York"])
     assert exit_code == 0
@@ -136,9 +160,19 @@ def test_cmd_poll_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, ca
     assert rows[0]["date"] == "2026-09-06"
 
 
-def test_cmd_seed_loads_historical_json(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_cmd_seed_loads_historical_json(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     db_path = tmp_path / "seeded.db"
-    exit_code = main(["seed", "--db", str(db_path), "--input", str(SAMPLE_DIR / "historical_nyc.json")])
+    exit_code = main(
+        [
+            "seed",
+            "--db",
+            str(db_path),
+            "--input",
+            str(SAMPLE_DIR / "historical_nyc.json"),
+        ]
+    )
     assert exit_code == 0
     assert "Seeded 14 snapshots" in capsys.readouterr().out
 
@@ -150,7 +184,9 @@ def test_cmd_seed_loads_historical_json(tmp_path: Path, capsys: pytest.CaptureFi
     assert rows[-1]["date"] == "2026-09-05"
 
 
-def test_cmd_report_requires_data(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_cmd_report_requires_data(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     db_path = tmp_path / "empty.db"
     output = tmp_path / "report.html"
     exit_code = main(["report", "--db", str(db_path), "-o", str(output)])
@@ -161,7 +197,15 @@ def test_cmd_report_requires_data(tmp_path: Path, capsys: pytest.CaptureFixture[
 def test_cmd_report_builds_self_contained_html(tmp_path: Path) -> None:
     db_path = tmp_path / "seeded.db"
     output = tmp_path / "report.html"
-    main(["seed", "--db", str(db_path), "--input", str(SAMPLE_DIR / "historical_nyc.json")])
+    main(
+        [
+            "seed",
+            "--db",
+            str(db_path),
+            "--input",
+            str(SAMPLE_DIR / "historical_nyc.json"),
+        ]
+    )
     exit_code = main(["report", "--db", str(db_path), "-o", str(output)])
     assert exit_code == 0
     report_html = output.read_text(encoding="utf-8")

@@ -76,8 +76,9 @@ def test_depth_limit_is_fatal_and_does_not_cascade():
 
 def test_depth_limit_is_fatal_when_streaming_too():
     text = "(" * 20 + ")" * 20
-    report = validate_stream((text[i : i + 3] for i in range(0, len(text), 3)),
-                             "plain", max_depth=3)
+    report = validate_stream(
+        (text[i : i + 3] for i in range(0, len(text), 3)), "plain", max_depth=3
+    )
     assert [d.kind for d in report.diagnostics] == ["depth-exceeded"]
 
 
@@ -154,9 +155,11 @@ def test_custom_pairs_from_dict():
 
 
 def test_spec_round_trips_through_json():
-    spec = BracketSpec.from_json(BracketSpec.from_dict(
-        {"pairs": [{"open": "<<", "close": ">>", "name": "heredoc"}]}
-    ).to_json())
+    spec = BracketSpec.from_json(
+        BracketSpec.from_dict(
+            {"pairs": [{"open": "<<", "close": ">>", "name": "heredoc"}]}
+        ).to_json()
+    )
     assert validate("<< << >> >>", spec).ok
     assert not validate("<< >> >>", spec).ok
 
@@ -296,7 +299,11 @@ def test_diagnostics_come_back_in_source_order():
     report = validate("( { ] ", "plain")
     offsets = [d.offset for d in report.diagnostics]
     assert offsets == sorted(offsets)
-    assert [d.kind for d in report.diagnostics] == ["unclosed", "unclosed", "mismatched"]
+    assert [d.kind for d in report.diagnostics] == [
+        "unclosed",
+        "unclosed",
+        "mismatched",
+    ]
 
 
 def test_recovery_pops_to_the_frame_the_closer_matches():
@@ -381,8 +388,10 @@ def test_streaming_matches_whole_string(spec, text, size):
 
 
 def test_streaming_memory_is_bounded_by_depth():
-    v = Validator(BracketSpec.from_dict({"pairs": [{"open": "(", "close": ")"}]}),
-                  collect_spans=False)
+    v = Validator(
+        BracketSpec.from_dict({"pairs": [{"open": "(", "close": ")"}]}),
+        collect_spans=False,
+    )
     for _ in range(1000):
         v.feed("()" * 500)
     assert v.finish().ok

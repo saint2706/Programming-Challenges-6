@@ -64,8 +64,12 @@ def random_strings(count: int, seed: int, max_len: int = 30):
 
 
 def brute_spans(s: str) -> set[tuple[int, int]]:
-    return {(i, j) for i in range(len(s)) for j in range(i + 1, len(s) + 1)
-            if s[i:j] == s[i:j][::-1]}
+    return {
+        (i, j)
+        for i in range(len(s))
+        for j in range(i + 1, len(s) + 1)
+        if s[i:j] == s[i:j][::-1]
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -78,13 +82,21 @@ def test_d1_d2_match_their_definitions():
         d1, d2 = manacher_odd_even(s)
         n = len(s)
         for i in range(n):
-            expected = max(r for r in range(1, n + 1)
-                           if i - r + 1 >= 0 and i + r <= n
-                           and s[i - r + 1:i + r] == s[i - r + 1:i + r][::-1])
+            expected = max(
+                r
+                for r in range(1, n + 1)
+                if i - r + 1 >= 0
+                and i + r <= n
+                and s[i - r + 1 : i + r] == s[i - r + 1 : i + r][::-1]
+            )
             assert d1[i] == expected, (s, i)
             even = 0
-            while i - even - 1 >= 0 and i + even + 1 <= n and s[i - even - 1] == s[i + even]:
-                candidate = s[i - even - 1:i + even + 1]
+            while (
+                i - even - 1 >= 0
+                and i + even + 1 <= n
+                and s[i - even - 1] == s[i + even]
+            ):
+                candidate = s[i - even - 1 : i + even + 1]
                 if candidate != candidate[::-1]:
                     break
                 even += 1
@@ -129,7 +141,7 @@ def test_radii_recover_the_palindrome_at_every_centre():
     for s in itertools.chain(all_binary(8), random_strings(100, seed=6)):
         rad = palindrome_radii(s)
         for c, r in enumerate(rad):
-            chunk = s[(c - r) // 2:(c + r) // 2]
+            chunk = s[(c - r) // 2 : (c + r) // 2]
             assert chunk == chunk[::-1], (s, c)
             assert len(chunk) == r
 
@@ -179,12 +191,12 @@ def test_expansion_work_is_linear_even_on_the_worst_inputs():
     is O(n) and not O(n^2).
     """
     cases = [
-        "a" * 2000,                       # every centre expands maximally
+        "a" * 2000,  # every centre expands maximally
         "ab" * 1000,
         ("a" * 50 + "b") * 40,
         "abacaba" * 300,
         "".join(random.Random(7).choice("ab") for _ in range(2000)),
-        "x" * 1000 + "y" + "x" * 1000,    # one giant palindrome
+        "x" * 1000 + "y" + "x" * 1000,  # one giant palindrome
     ]
     for s in cases:
         d1, d2, steps = instrumented_manacher(s)
@@ -204,8 +216,8 @@ def test_naive_really_is_quadratic_where_manacher_is_not():
             j += 1
             naive_steps += 1
     _d1, _d2, manacher_steps = instrumented_manacher(worst)
-    assert naive_steps > n * n // 4          # quadratic
-    assert manacher_steps <= 2 * n           # linear
+    assert naive_steps > n * n // 4  # quadratic
+    assert manacher_steps <= 2 * n  # linear
     assert naive_steps > 100 * manacher_steps
 
 
@@ -240,11 +252,11 @@ def test_all_methods_agree_with_the_oracle(method):
         expected = brute_force_longest_palindrome_span(s)
         got = method(s)
         assert got[1] - got[0] == expected[1] - expected[0], (s, method.__name__)
-        assert s[got[0]:got[1]] == s[got[0]:got[1]][::-1]
+        assert s[got[0] : got[1]] == s[got[0] : got[1]][::-1]
 
 
 def test_ties_are_broken_leftmost():
-    """"abaxyzyx" has two length-3... no: use a case with two equal-length ones."""
+    """ "abaxyzyx" has two length-3... no: use a case with two equal-length ones."""
     assert longest_palindrome("aabb") == "aa"
     assert longest_palindrome("abba" + "cddc") == "abba"
     assert longest_palindrome("xyzzyxabccba") == "xyzzyx"
@@ -292,8 +304,14 @@ def test_separator_and_sentinel_characters_are_ordinary_input(sentinel):
     variant is the one that pads with "$" and "^" to skip bounds checks. This
     module has neither, so all of these are just characters.
     """
-    for text in [sentinel, sentinel * 5, f"a{sentinel}a", f"{sentinel}a{sentinel}",
-                 f"ab{sentinel}{sentinel}ba", f"{sentinel}#$^{sentinel}"]:
+    for text in [
+        sentinel,
+        sentinel * 5,
+        f"a{sentinel}a",
+        f"{sentinel}a{sentinel}",
+        f"ab{sentinel}{sentinel}ba",
+        f"{sentinel}#$^{sentinel}",
+    ]:
         expected = brute_force_longest_palindrome_span(text)
         got = longest_palindrome_span(text)
         assert got[1] - got[0] == expected[1] - expected[0], text
@@ -407,7 +425,11 @@ def test_all_maximal_palindromes_are_palindromes_and_cover_everything():
             assert s[i:j] == s[i:j][::-1]
         for i, j in brute_spans(s):
             centre = i + j
-            assert any(a + b == centre and a <= i and j <= b for a, b in maximal), (s, i, j)
+            assert any(a + b == centre and a <= i and j <= b for a, b in maximal), (
+                s,
+                i,
+                j,
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -448,8 +470,8 @@ def test_index_on_the_empty_string():
 
 def test_index_longest_at_centre():
     idx = PalindromeIndex("abacaba")
-    assert idx.longest_at_centre(7) == (0, 7)   # centred on the middle 'c'
-    assert idx.longest_at_centre(0) == (0, 0)   # before the first character
+    assert idx.longest_at_centre(7) == (0, 7)  # centred on the middle 'c'
+    assert idx.longest_at_centre(0) == (0, 0)  # before the first character
 
 
 def test_index_agrees_with_the_free_functions():
@@ -471,10 +493,13 @@ def test_index_repr():
 
 def test_longest_palindromic_prefix_and_suffix():
     for s in itertools.chain(all_binary(10), random_strings(200, seed=15)):
-        expected_prefix = max((k for k in range(len(s) + 1) if s[:k] == s[:k][::-1]),
-                              default=0)
-        expected_suffix = max((k for k in range(len(s) + 1) if s[len(s) - k:] ==
-                               s[len(s) - k:][::-1]), default=0)
+        expected_prefix = max(
+            (k for k in range(len(s) + 1) if s[:k] == s[:k][::-1]), default=0
+        )
+        expected_suffix = max(
+            (k for k in range(len(s) + 1) if s[len(s) - k :] == s[len(s) - k :][::-1]),
+            default=0,
+        )
         assert longest_palindromic_prefix(s) == expected_prefix, s
         assert longest_palindromic_suffix(s) == expected_suffix, s
 
@@ -486,7 +511,7 @@ def test_shortest_palindrome_by_prepending_is_a_palindrome_and_minimal():
         assert out.endswith(s), s
         # Nothing shorter works: check every shorter candidate ending in s.
         for k in range(len(out) - len(s)):
-            shorter = out[len(out) - len(s) - k:]
+            shorter = out[len(out) - len(s) - k :]
             if len(shorter) < len(out):
                 assert shorter != shorter[::-1] or shorter == s == s[::-1], s
 
@@ -607,7 +632,7 @@ def test_partition_reassembles_and_is_minimal():
 
 
 def test_partition_known_answers():
-    assert min_palindromic_partition("aab") == 2          # "aa" + "b"
+    assert min_palindromic_partition("aab") == 2  # "aa" + "b"
     assert min_palindromic_partition("abacaba") == 1
     assert min_palindromic_partition("abcde") == 5
     assert min_palindromic_partition("a") == 1
@@ -640,8 +665,13 @@ def test_partition_series_links_on_periodic_strings():
     fib = ["b", "a"]
     while len(fib[-1]) < 400:
         fib.append(fib[-1] + fib[-2])
-    cases = [w for w in fib if w] + ["ab" * 100, "aab" * 60, "a" * 300,
-                                     "abc" * 80, ("abacaba" * 30)]
+    cases = [w for w in fib if w] + [
+        "ab" * 100,
+        "aab" * 60,
+        "a" * 300,
+        "abc" * 80,
+        ("abacaba" * 30),
+    ]
     for s in cases:
         assert min_palindromic_partition(s) == dp_min_partition(s), s[:30]
 
@@ -732,6 +762,9 @@ def test_cli_joins_multiple_words(capsys):
 def test_module_runs_as_a_script():
     result = subprocess.run(
         [sys.executable, "palindromes.py", "--verify"],
-        cwd=HERE, capture_output=True, text=True, check=True,
+        cwd=HERE,
+        capture_output=True,
+        text=True,
+        check=True,
     )
     assert "OK" in result.stdout

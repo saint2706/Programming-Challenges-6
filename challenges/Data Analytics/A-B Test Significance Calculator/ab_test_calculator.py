@@ -9,7 +9,6 @@ import argparse
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import plotly.graph_objects as go
@@ -68,10 +67,14 @@ class MeansResult:
         return self.p_value < self.alpha
 
 
-def resolve_column(columns: list[str], aliases: list[str], override: str | None, role: str) -> str:
+def resolve_column(
+    columns: list[str], aliases: list[str], override: str | None, role: str
+) -> str:
     if override:
         if override not in columns:
-            raise ValueError(f"column {override!r} not found; available columns: {columns}")
+            raise ValueError(
+                f"column {override!r} not found; available columns: {columns}"
+            )
         return override
     lowered = [(c, c.lower()) for c in columns]
     for alias in aliases:
@@ -82,12 +85,25 @@ def resolve_column(columns: list[str], aliases: list[str], override: str | None,
         for original, low in lowered:
             if alias in low:
                 return original
-    raise ValueError(f"couldn't auto-detect the {role} column; pass --{role}-col explicitly. Available columns: {columns}")
+    raise ValueError(
+        f"couldn't auto-detect the {role} column; pass --{role}-col explicitly. Available columns: {columns}"
+    )
 
 
 def is_binary_outcome(series: pl.Series) -> bool:
-    values = set(series.drop_nulls().cast(pl.Utf8).str.to_lowercase().unique().to_list())
-    return values <= {"0", "1", "true", "false", "yes", "no", "converted", "not converted"}
+    values = set(
+        series.drop_nulls().cast(pl.Utf8).str.to_lowercase().unique().to_list()
+    )
+    return values <= {
+        "0",
+        "1",
+        "true",
+        "false",
+        "yes",
+        "no",
+        "converted",
+        "not converted",
+    }
 
 
 def to_binary(series: pl.Series) -> pl.Series:
@@ -118,7 +134,9 @@ def two_proportion_test(
 
     # Wald CI on the difference in proportions (unpooled variance) -- gives direction
     # and a plausible-range effect size that the chi-square test alone doesn't.
-    se_diff = ((p_c * (1 - p_c) / control_total) + (p_v * (1 - p_v) / variant_total)) ** 0.5
+    se_diff = (
+        (p_c * (1 - p_c) / control_total) + (p_v * (1 - p_v) / variant_total)
+    ) ** 0.5
     z_crit = stats.norm.ppf(1 - alpha / 2)
     ci = (diff - z_crit * se_diff, diff + z_crit * se_diff)
 
@@ -155,19 +173,27 @@ def welch_t_test_from_stats(
     alpha: float,
 ) -> MeansResult:
     t_stat, p_value = stats.ttest_ind_from_stats(
-        mean1=variant_mean, std1=variant_std, nobs1=variant_n,
-        mean2=control_mean, std2=control_std, nobs2=control_n,
+        mean1=variant_mean,
+        std1=variant_std,
+        nobs1=variant_n,
+        mean2=control_mean,
+        std2=control_std,
+        nobs2=control_n,
         equal_var=False,
     )
     diff = variant_mean - control_mean
     se = ((control_std**2 / control_n) + (variant_std**2 / variant_n)) ** 0.5
     df = se**4 / (
-        (control_std**2 / control_n) ** 2 / (control_n - 1) + (variant_std**2 / variant_n) ** 2 / (variant_n - 1)
+        (control_std**2 / control_n) ** 2 / (control_n - 1)
+        + (variant_std**2 / variant_n) ** 2 / (variant_n - 1)
     )
     t_crit = stats.t.ppf(1 - alpha / 2, df)
     ci = (diff - t_crit * se, diff + t_crit * se)
 
-    pooled_std = (((control_n - 1) * control_std**2 + (variant_n - 1) * variant_std**2) / (control_n + variant_n - 2)) ** 0.5
+    pooled_std = (
+        ((control_n - 1) * control_std**2 + (variant_n - 1) * variant_std**2)
+        / (control_n + variant_n - 2)
+    ) ** 0.5
     cohens_d = diff / pooled_std if pooled_std > 0 else float("nan")
 
     return MeansResult(
@@ -189,23 +215,38 @@ def welch_t_test_from_stats(
     )
 
 
-def welch_t_test_from_raw(control_label: str, variant_label: str, control: np.ndarray, variant: np.ndarray, alpha: float) -> MeansResult:
+def welch_t_test_from_raw(
+    control_label: str,
+    variant_label: str,
+    control: np.ndarray,
+    variant: np.ndarray,
+    alpha: float,
+) -> MeansResult:
     return welch_t_test_from_stats(
-        control_label, variant_label,
-        control_mean=float(control.mean()), control_std=float(control.std(ddof=1)), control_n=len(control),
-        variant_mean=float(variant.mean()), variant_std=float(variant.std(ddof=1)), variant_n=len(variant),
+        control_label,
+        variant_label,
+        control_mean=float(control.mean()),
+        control_std=float(control.std(ddof=1)),
+        control_n=len(control),
+        variant_mean=float(variant.mean()),
+        variant_std=float(variant.std(ddof=1)),
+        variant_n=len(variant),
         alpha=alpha,
     )
 
 
-def analyze_csv(path: Path, group_col: str | None, outcome_col: str | None, alpha: float) -> ProportionResult | MeansResult:
+def analyze_csv(
+    path: Path, group_col: str | None, outcome_col: str | None, alpha: float
+) -> ProportionResult | MeansResult:
     df = pl.read_csv(path, infer_schema_length=10_000)
     group_col = resolve_column(df.columns, GROUP_ALIASES, group_col, "group")
     outcome_col = resolve_column(df.columns, OUTCOME_ALIASES, outcome_col, "outcome")
 
     groups = df[group_col].unique().to_list()
     if len(groups) != 2:
-        raise ValueError(f"expected exactly 2 groups in {group_col!r}, found {len(groups)}: {groups}")
+        raise ValueError(
+            f"expected exactly 2 groups in {group_col!r}, found {len(groups)}: {groups}"
+        )
     groups.sort()
     control_label, variant_label = groups
 
@@ -216,7 +257,8 @@ def analyze_csv(path: Path, group_col: str | None, outcome_col: str | None, alph
         control_rows = df.filter(pl.col(group_col) == control_label)
         variant_rows = df.filter(pl.col(group_col) == variant_label)
         return two_proportion_test(
-            control_label, variant_label,
+            control_label,
+            variant_label,
             control_conversions=int(control_rows["_binary_outcome"].sum()),
             control_total=len(control_rows),
             variant_conversions=int(variant_rows["_binary_outcome"].sum()),
@@ -224,9 +266,19 @@ def analyze_csv(path: Path, group_col: str | None, outcome_col: str | None, alph
             alpha=alpha,
         )
 
-    control_values = df.filter(pl.col(group_col) == control_label)[outcome_col].drop_nulls().to_numpy()
-    variant_values = df.filter(pl.col(group_col) == variant_label)[outcome_col].drop_nulls().to_numpy()
-    return welch_t_test_from_raw(control_label, variant_label, control_values, variant_values, alpha)
+    control_values = (
+        df.filter(pl.col(group_col) == control_label)[outcome_col]
+        .drop_nulls()
+        .to_numpy()
+    )
+    variant_values = (
+        df.filter(pl.col(group_col) == variant_label)[outcome_col]
+        .drop_nulls()
+        .to_numpy()
+    )
+    return welch_t_test_from_raw(
+        control_label, variant_label, control_values, variant_values, alpha
+    )
 
 
 def format_pct(x: float) -> str:
@@ -234,7 +286,11 @@ def format_pct(x: float) -> str:
 
 
 def plain_english(result: ProportionResult | MeansResult) -> str:
-    verdict = "statistically significant" if result.significant else "not statistically significant"
+    verdict = (
+        "statistically significant"
+        if result.significant
+        else "not statistically significant"
+    )
     conclusion = (
         "it's unlikely this difference is due to random chance alone."
         if result.significant
@@ -262,7 +318,9 @@ def plain_english(result: ProportionResult | MeansResult) -> str:
 
 
 def _fig_to_div(fig: go.Figure) -> str:
-    return pio.to_html(fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False})
+    return pio.to_html(
+        fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False}
+    )
 
 
 def build_chart(result: ProportionResult | MeansResult) -> str:
@@ -285,7 +343,9 @@ def build_chart(result: ProportionResult | MeansResult) -> str:
             error_y=dict(type="data", array=errors, visible=True),
         )
     )
-    fig.update_layout(title=title, yaxis_title=ylabel, margin=dict(l=50, r=20, t=40, b=30), height=320)
+    fig.update_layout(
+        title=title, yaxis_title=ylabel, margin=dict(l=50, r=20, t=40, b=30), height=320
+    )
     return _fig_to_div(fig)
 
 
@@ -321,11 +381,18 @@ def render_report(result: ProportionResult | MeansResult) -> str:
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("csv_path", type=Path, nargs="?", help="CSV with a group column and an outcome column")
+    parser.add_argument(
+        "csv_path",
+        type=Path,
+        nargs="?",
+        help="CSV with a group column and an outcome column",
+    )
     parser.add_argument("--group-col", type=str, default=None)
     parser.add_argument("--outcome-col", type=str, default=None)
     parser.add_argument("--alpha", type=float, default=0.05)
-    parser.add_argument("-o", "--output", type=Path, default=None, help="Optional HTML report path")
+    parser.add_argument(
+        "-o", "--output", type=Path, default=None, help="Optional HTML report path"
+    )
 
     group = parser.add_argument_group("summary stats: proportions")
     group.add_argument("--control-conversions", type=int)
@@ -348,44 +415,79 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
 
-    proportions_flags = [args.control_conversions, args.control_total, args.variant_conversions, args.variant_total]
-    means_flags = [args.control_mean, args.control_std, args.control_n, args.variant_mean, args.variant_std, args.variant_n]
+    proportions_flags = [
+        args.control_conversions,
+        args.control_total,
+        args.variant_conversions,
+        args.variant_total,
+    ]
+    means_flags = [
+        args.control_mean,
+        args.control_std,
+        args.control_n,
+        args.variant_mean,
+        args.variant_std,
+        args.variant_n,
+    ]
     has_proportions_flags = any(f is not None for f in proportions_flags)
     has_means_flags = any(f is not None for f in means_flags)
 
     if args.csv_path and (has_proportions_flags or has_means_flags):
-        print("error: pass either a CSV path or summary-stat flags, not both", file=sys.stderr)
+        print(
+            "error: pass either a CSV path or summary-stat flags, not both",
+            file=sys.stderr,
+        )
         return 1
     if has_proportions_flags and has_means_flags:
-        print("error: pass either proportions flags or means flags, not both", file=sys.stderr)
+        print(
+            "error: pass either proportions flags or means flags, not both",
+            file=sys.stderr,
+        )
         return 1
 
     try:
         if has_proportions_flags:
             if not all(f is not None for f in proportions_flags):
-                raise ValueError("all of --control-conversions/--control-total/--variant-conversions/--variant-total are required together")
+                raise ValueError(
+                    "all of --control-conversions/--control-total/--variant-conversions/--variant-total are required together"
+                )
             result = two_proportion_test(
-                "control", "variant",
-                args.control_conversions, args.control_total,
-                args.variant_conversions, args.variant_total,
+                "control",
+                "variant",
+                args.control_conversions,
+                args.control_total,
+                args.variant_conversions,
+                args.variant_total,
                 args.alpha,
             )
         elif has_means_flags:
             if not all(f is not None for f in means_flags):
-                raise ValueError("all of --control-mean/--control-std/--control-n/--variant-mean/--variant-std/--variant-n are required together")
+                raise ValueError(
+                    "all of --control-mean/--control-std/--control-n/--variant-mean/--variant-std/--variant-n are required together"
+                )
             result = welch_t_test_from_stats(
-                "control", "variant",
-                args.control_mean, args.control_std, args.control_n,
-                args.variant_mean, args.variant_std, args.variant_n,
+                "control",
+                "variant",
+                args.control_mean,
+                args.control_std,
+                args.control_n,
+                args.variant_mean,
+                args.variant_std,
+                args.variant_n,
                 args.alpha,
             )
         elif args.csv_path:
             if not args.csv_path.exists():
                 print(f"error: {args.csv_path} does not exist", file=sys.stderr)
                 return 1
-            result = analyze_csv(args.csv_path, args.group_col, args.outcome_col, args.alpha)
+            result = analyze_csv(
+                args.csv_path, args.group_col, args.outcome_col, args.alpha
+            )
         else:
-            print("error: provide a CSV path or a complete set of summary-stat flags", file=sys.stderr)
+            print(
+                "error: provide a CSV path or a complete set of summary-stat flags",
+                file=sys.stderr,
+            )
             return 1
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)

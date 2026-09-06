@@ -23,7 +23,6 @@ from sieves import (
     atkin,
     eratosthenes_segmented,
     eratosthenes_simple,
-    eratosthenes_wheel30,
     iter_primes,
     primes_below,
 )
@@ -122,7 +121,7 @@ def test_integral_floats_are_accepted(key):
 
 
 @pytest.mark.parametrize("key", ALL_AVAILABLE)
-@pytest.mark.parametrize("limit", [-1, -10**9])
+@pytest.mark.parametrize("limit", [-1, -(10**9)])
 def test_negative_limits_are_empty_not_an_error(key, limit):
     assert IMPLEMENTATIONS[key].fn(limit) == 0
 
@@ -197,7 +196,7 @@ def test_primes_in_range_against_every_small_window(oracle):
 @pytest.mark.parametrize(
     "lo,hi,expected",
     [
-        (10, 5, []),          # inverted
+        (10, 5, []),  # inverted
         (0, 1, []),
         (-100, -1, []),
         (-10, 5, [2, 3, 5]),  # negative lower bound
@@ -205,7 +204,7 @@ def test_primes_in_range_against_every_small_window(oracle):
         (5, 7, [5, 7]),
         (7, 7, [7]),
         (6, 6, []),
-        (30, 30, []),         # exactly on the wheel modulus
+        (30, 30, []),  # exactly on the wheel modulus
         (29, 31, [29, 31]),
     ],
 )
@@ -216,7 +215,10 @@ def test_primes_in_range_edges(lo, hi, expected):
 def test_primes_in_range_does_not_sieve_from_zero():
     """The point of the exercise: a window at 10^12 without 10^12 of work."""
     assert sieves.primes_in_range(10**12, 10**12 + 100) == [
-        1000000000039, 1000000000061, 1000000000063, 1000000000091
+        1000000000039,
+        1000000000061,
+        1000000000063,
+        1000000000091,
     ]
 
 
@@ -225,7 +227,9 @@ def test_primes_in_range_spans_many_segments():
     lo, hi = 10**7, 10**7 + 3 * (1 << 21)
     got = sieves.primes_in_range(lo, hi)
     assert got == sorted(set(got))
-    assert len(got) == sieves.eratosthenes_simple(hi) - sieves.eratosthenes_simple(lo - 1)
+    assert len(got) == sieves.eratosthenes_simple(hi) - sieves.eratosthenes_simple(
+        lo - 1
+    )
 
 
 def test_iter_primes_is_lazy():
@@ -323,7 +327,8 @@ def test_render_table_markdown_and_text():
 def test_cli_list():
     proc = subprocess.run(
         [sys.executable, str(HERE / "benchmark.py"), "--list"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert proc.returncode == 0
     for key in ALL_KEYS:
@@ -332,9 +337,17 @@ def test_cli_list():
 
 def test_cli_json_roundtrip():
     proc = subprocess.run(
-        [sys.executable, str(HERE / "benchmark.py"),
-         "--limit", "1e5", "--only", "era-simple,era-segmented", "--json"],
-        capture_output=True, text=True,
+        [
+            sys.executable,
+            str(HERE / "benchmark.py"),
+            "--limit",
+            "1e5",
+            "--only",
+            "era-simple,era-segmented",
+            "--json",
+        ],
+        capture_output=True,
+        text=True,
     )
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
@@ -345,7 +358,8 @@ def test_cli_json_roundtrip():
 def test_cli_rejects_unknown_implementation():
     proc = subprocess.run(
         [sys.executable, str(HERE / "benchmark.py"), "--only", "quantum-sieve"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert proc.returncode != 0
     assert "unknown implementation" in proc.stderr

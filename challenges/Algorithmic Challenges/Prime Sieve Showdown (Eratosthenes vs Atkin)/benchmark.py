@@ -171,14 +171,30 @@ def measure(key: str, limit: int, repeat: int) -> Measurement:
         )
 
     proc = subprocess.run(
-        [sys.executable, str(HERE), "--worker", key,
-         "--limit", str(limit), "--repeat", str(repeat)],
+        [
+            sys.executable,
+            str(HERE),
+            "--worker",
+            key,
+            "--limit",
+            str(limit),
+            "--repeat",
+            str(repeat),
+        ],
         capture_output=True,
         text=True,
     )
     if proc.returncode != 0:
         return Measurement(
-            key, impl.label, impl.family, limit, 0, 0.0, 0, impl.memory, False,
+            key,
+            impl.label,
+            impl.family,
+            limit,
+            0,
+            0.0,
+            0,
+            impl.memory,
+            False,
             f"worker failed: {proc.stderr.strip().splitlines()[-1:] or ['?']}",
         )
 
@@ -186,8 +202,15 @@ def measure(key: str, limit: int, repeat: int) -> Measurement:
     expected = sieves.PI_REFERENCE.get(limit)
     correct = expected is None or data["count"] == expected
     return Measurement(
-        key, impl.label, impl.family, limit, data["count"], data["seconds"],
-        data["rss_bytes"], impl.memory, correct,
+        key,
+        impl.label,
+        impl.family,
+        limit,
+        data["count"],
+        data["seconds"],
+        data["rss_bytes"],
+        impl.memory,
+        correct,
     )
 
 
@@ -201,31 +224,57 @@ def _fmt_bytes(n: int) -> str:
 
 
 def render_table(results: list[Measurement], markdown: bool) -> str:
-    header = ["Implementation", "Family", "Time", "Peak RSS", "bytes/int", "Memory", "pi(N)"]
+    header = [
+        "Implementation",
+        "Family",
+        "Time",
+        "Peak RSS",
+        "bytes/int",
+        "Memory",
+        "pi(N)",
+    ]
     rows = []
     for m in results:
         if m.skipped:
-            rows.append([m.label, m.family, f"skipped ({m.skipped})", "-", "-", m.memory_class, "-"])
+            rows.append(
+                [
+                    m.label,
+                    m.family,
+                    f"skipped ({m.skipped})",
+                    "-",
+                    "-",
+                    m.memory_class,
+                    "-",
+                ]
+            )
             continue
-        rows.append([
-            m.label,
-            m.family,
-            f"{m.seconds:.2f} s",
-            _fmt_bytes(m.rss_bytes),
-            f"{m.bytes_per_int:.3f}",
-            m.memory_class,
-            f"{m.count:,}" + ("" if m.correct else "  WRONG"),
-        ])
+        rows.append(
+            [
+                m.label,
+                m.family,
+                f"{m.seconds:.2f} s",
+                _fmt_bytes(m.rss_bytes),
+                f"{m.bytes_per_int:.3f}",
+                m.memory_class,
+                f"{m.count:,}" + ("" if m.correct else "  WRONG"),
+            ]
+        )
 
     if markdown:
-        out = ["| " + " | ".join(header) + " |",
-               "| " + " | ".join("---" for _ in header) + " |"]
+        out = [
+            "| " + " | ".join(header) + " |",
+            "| " + " | ".join("---" for _ in header) + " |",
+        ]
         out += ["| " + " | ".join(r) + " |" for r in rows]
         return "\n".join(out)
 
-    widths = [max(len(header[i]), *(len(r[i]) for r in rows)) for i in range(len(header))]
-    lines = ["  ".join(h.ljust(w) for h, w in zip(header, widths)),
-             "  ".join("-" * w for w in widths)]
+    widths = [
+        max(len(header[i]), *(len(r[i]) for r in rows)) for i in range(len(header))
+    ]
+    lines = [
+        "  ".join(h.ljust(w) for h, w in zip(header, widths)),
+        "  ".join("-" * w for w in widths),
+    ]
     lines += ["  ".join(c.ljust(w) for c, w in zip(r, widths)) for r in rows]
     return "\n".join(lines)
 
@@ -234,10 +283,14 @@ def summarize(results: list[Measurement]) -> str:
     ran = [m for m in results if not m.skipped]
     if not ran:
         return ""
-    best_era = min((m for m in ran if m.family == "eratosthenes"),
-                   key=lambda m: m.seconds, default=None)
-    best_atkin = min((m for m in ran if m.family == "atkin"),
-                     key=lambda m: m.seconds, default=None)
+    best_era = min(
+        (m for m in ran if m.family == "eratosthenes"),
+        key=lambda m: m.seconds,
+        default=None,
+    )
+    best_atkin = min(
+        (m for m in ran if m.family == "atkin"), key=lambda m: m.seconds, default=None
+    )
     lines = []
     if best_era and best_atkin:
         ratio = best_atkin.seconds / best_era.seconds
@@ -257,7 +310,9 @@ def summarize(results: list[Measurement]) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--limit", default="1e8", help="upper bound N (accepts 1e8)")
-    ap.add_argument("--repeat", type=int, default=1, help="runs per implementation; best wins")
+    ap.add_argument(
+        "--repeat", type=int, default=1, help="runs per implementation; best wins"
+    )
     ap.add_argument("--only", help="comma-separated implementation keys")
     ap.add_argument("--markdown", action="store_true", help="emit a Markdown table")
     ap.add_argument("--json", action="store_true", help="emit raw JSON")
@@ -288,8 +343,10 @@ def main(argv: list[str] | None = None) -> int:
         print()
         return 0
 
-    print(f"N = {limit:,}   repeat = {args.repeat}   "
-          f"python {platform.python_version()} on {platform.machine()}")
+    print(
+        f"N = {limit:,}   repeat = {args.repeat}   "
+        f"python {platform.python_version()} on {platform.machine()}"
+    )
     if limit in sieves.PI_REFERENCE:
         print(f"expected pi(N) = {sieves.PI_REFERENCE[limit]:,}")
     print()

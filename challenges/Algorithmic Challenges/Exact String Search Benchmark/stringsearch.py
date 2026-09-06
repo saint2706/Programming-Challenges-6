@@ -70,7 +70,7 @@ __all__ = [
 ]
 
 _DEFAULT_MOD = (1 << 61) - 1  # a Mersenne prime; wide enough that the
-_DEFAULT_BASE = 257           # birthday bound is not reachable in practice
+_DEFAULT_BASE = 257  # birthday bound is not reachable in practice
 
 
 # ---------------------------------------------------------------------------
@@ -883,7 +883,9 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
                 if list(ALGORITHMS[name](pat, txt)) != expected:
                     agree[name] = False
     for name in names:
-        checks.append((f"{name}: exhaustive binary patterns <=4 x texts <=8", agree[name]))
+        checks.append(
+            (f"{name}: exhaustive binary patterns <=4 x texts <=8", agree[name])
+        )
 
     # Random, over several alphabets, including bytes and lists.
     ok_random = True
@@ -974,8 +976,10 @@ def _demo() -> None:
     print(f"\ntext length {len(text)}; every method agrees on {matches}")
 
     print("\nWorst cases, in text accesses (m = 30, n = 3000):")
-    print(f"\n{'input':<34} {'naive':>12} {'kmp':>10} {'BM':>10} {'BM no Galil':>13} "
-          f"{'rabin-karp':>12}")
+    print(
+        f"\n{'input':<34} {'naive':>12} {'kmp':>10} {'BM':>10} {'BM no Galil':>13} "
+        f"{'rabin-karp':>12}"
+    )
     cases = {
         "a^(m-1)b in a^n (naive killer)": naive_adversary(30, 3000),
         "a^m in a^n (Galil killer)": boyer_moore_adversary(30, 3000),
@@ -986,11 +990,11 @@ def _demo() -> None:
         for name in ("naive", "kmp", "boyer-moore", "bm-no-galil"):
             _, acc = count_accesses(ALGORITHMS[name], pat, txt)
             row.append(acc)
-        _, rk = count_accesses(
-            lambda p, t: rabin_karp_search(p, t, mod=127), pat, txt
+        _, rk = count_accesses(lambda p, t: rabin_karp_search(p, t, mod=127), pat, txt)
+        print(
+            f"{label:<34} {row[0]:>12,} {row[1]:>10,} {row[2]:>10,} {row[3]:>13,} "
+            f"{rk:>12,}"
         )
-        print(f"{label:<34} {row[0]:>12,} {row[1]:>10,} {row[2]:>10,} {row[3]:>13,} "
-              f"{rk:>12,}")
     print("\nEach column is quadratic in exactly one row, and it is a different")
     print("row each time. 'Which algorithm is fastest' has no input-free answer.")
 

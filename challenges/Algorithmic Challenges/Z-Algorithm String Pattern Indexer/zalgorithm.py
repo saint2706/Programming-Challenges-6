@@ -343,8 +343,12 @@ def z_search_concat(
         yield from range(n + 1)
         return
     if isinstance(pattern, str) and isinstance(text, str):
-        joined: Sequence[Any] = pattern + ("" if separator is None else separator) + text
-    elif isinstance(pattern, (bytes, bytearray)) and isinstance(text, (bytes, bytearray)):
+        joined: Sequence[Any] = (
+            pattern + ("" if separator is None else separator) + text
+        )
+    elif isinstance(pattern, (bytes, bytearray)) and isinstance(
+        text, (bytes, bytearray)
+    ):
         mid = b"" if separator is None else bytes(separator)
         joined = bytes(pattern) + mid + bytes(text)
     else:
@@ -830,7 +834,9 @@ def smallest_period(s: Sequence[Any], *, z: Sequence[int] | None = None) -> int:
     return n
 
 
-def string_power(s: Sequence[Any], *, z: Sequence[int] | None = None) -> tuple[int, int]:
+def string_power(
+    s: Sequence[Any], *, z: Sequence[int] | None = None
+) -> tuple[int, int]:
     """``(period, exponent)`` for the largest ``e`` with ``s == base * e``.
 
     ``("abcabcabc")`` gives ``(3, 3)``; ``("aabaa")`` gives ``(5, 1)`` because
@@ -1033,7 +1039,9 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
         alpha = "ab" if rng.random() < 0.7 else "abcde"
         text = "".join(rng.choice(alpha) for _ in range(rng.randint(0, 60)))
         pat = "".join(rng.choice(alpha) for _ in range(rng.randint(0, 5)))
-        brute = [i for i in range(len(text) - len(pat) + 1) if text[i : i + len(pat)] == pat]
+        brute = [
+            i for i in range(len(text) - len(pat) + 1) if text[i : i + len(pat)] == pat
+        ]
         ok_search &= list(z_search(pat, text)) == brute
         ok_stream &= list(z_search_stream(pat, iter(text))) == brute
         ok_concat &= list(z_search_concat(pat, text)) == brute
@@ -1058,12 +1066,16 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
         )
         mz = MultiZMatcher(pats)
         ok_multi &= sorted((pos, idx) for idx, pos in mz.search(text)) == brute
-        ok_multi &= sorted((pos, idx) for idx, pos in AhoCorasick(pats).search(text)) == brute
+        ok_multi &= (
+            sorted((pos, idx) for idx, pos in AhoCorasick(pats).search(text)) == brute
+        )
         ok_multi &= [(pos, idx) for idx, pos in mz.finditer(text)] == sorted(
             (pos, idx) for idx, pos in mz.search(text)
         )
         distinct = {p for p in pats}
-        maximal = {p for p in distinct if not any(q != p and q.startswith(p) for q in distinct)}
+        maximal = {
+            p for p in distinct if not any(q != p and q.startswith(p) for q in distinct)
+        }
         ok_chains &= mz.chain_count == len(maximal)
     check("MultiZMatcher == AhoCorasick == brute force", ok_multi)
     check("chain count equals the number of maximal patterns", ok_chains)
@@ -1100,7 +1112,12 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
 
     # The amortisation bound, on the inputs designed to break it.
     ok_linear = True
-    for s in ("a" * 4000, "ab" * 2000, ("abacaba" * 600), "a" * 2000 + "b" + "a" * 2000):
+    for s in (
+        "a" * 4000,
+        "ab" * 2000,
+        ("abacaba" * 600),
+        "a" * 2000 + "b" + "a" * 2000,
+    ):
         _, ext = z_array_counted(s)
         ok_linear &= ext <= len(s)
     check("extension loop total <= n on adversarial inputs", ok_linear)
@@ -1143,8 +1160,10 @@ def _demo() -> None:
 
     for word in ("abaabaabaaba", "aabaab", "mississippi"):
         runs = tandem_repeat_runs(word)
-        print(f"tandem repeats of {word!r}: {count_tandem_repeats(word)} squares, "
-              f"{len(runs)} runs -> {runs}")
+        print(
+            f"tandem repeats of {word!r}: {count_tandem_repeats(word)} squares, "
+            f"{len(runs)} runs -> {runs}"
+        )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -1162,7 +1181,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         metavar="PATTERN",
         help="patterns for a multi-pattern search; text follows after --",
     )
-    parser.add_argument("--z", action="store_true", help="print the Z-array of the text")
+    parser.add_argument(
+        "--z", action="store_true", help="print the Z-array of the text"
+    )
     args = parser.parse_args(argv)
 
     if args.demo:
@@ -1194,7 +1215,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     hits = list(z_search(args.pattern, args.text))
     print(f"{len(hits)} occurrence(s) of {args.pattern!r}")
     for pos in hits:
-        print(f"{pos:6d}  {args.text[max(0, pos - 10):pos + len(args.pattern) + 10]!r}")
+        print(
+            f"{pos:6d}  {args.text[max(0, pos - 10) : pos + len(args.pattern) + 10]!r}"
+        )
     if args.z:
         print("Z:", z_array(args.text))
     return 0

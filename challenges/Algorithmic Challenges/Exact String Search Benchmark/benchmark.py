@@ -39,12 +39,9 @@ from stringsearch import (
     builtin_search,
     count_accesses,
     horspool_search,
-    kmp_search,
     naive_adversary,
-    naive_search,
     rabin_karp_adversary,
     rabin_karp_search,
-    sunday_search,
     two_way_search,
 )
 
@@ -156,7 +153,9 @@ def bench_time(quick: bool) -> None:
             pat = sample_pattern(text, m, rng)
             cells = []
             for algo in names:
-                t, hits = timed(lambda: sum(1 for _ in ALGORITHMS[algo](pat, text)), repeat=1)
+                t, hits = timed(
+                    lambda: sum(1 for _ in ALGORITHMS[algo](pat, text)), repeat=1
+                )
                 cells.append(f"{t:>12.4f}s")
             print(f"  {m:>5}" + "".join(cells))
     print("\n  Read the last two columns first. `builtin` wins every row, by 1.2-100x,")
@@ -181,7 +180,12 @@ def bench_sublinear(quick: bool) -> None:
     text = prose(n, rng)
     methods = ("naive", "kmp", "boyer-moore", "horspool", "sunday", "two-way")
     print(f"\n  english prose, n = {len(text):,}; pattern present in the text\n")
-    print("  " + f"{'m':>5}" + "".join(f"{a:>13}" for a in methods) + f"{'log_s(m)/m':>12}")
+    print(
+        "  "
+        + f"{'m':>5}"
+        + "".join(f"{a:>13}" for a in methods)
+        + f"{'log_s(m)/m':>12}"
+    )
     for m in (2, 4, 8, 16, 32, 64, 128, 256, 512):
         pat = sample_pattern(text, m, rng)
         cells = []
@@ -208,40 +212,52 @@ def bench_worstcase(quick: bool) -> None:
     sizes = [2_000, 8_000] if quick else [2_000, 8_000, 32_000]
 
     print("\n  (a) naive: a^(m-1)b inside a^n. Accesses, and accesses / n.\n")
-    print(f"  {'n':>8} {'naive':>14} {'/n':>8} {'kmp':>12} {'/n':>7} "
-          f"{'boyer-moore':>13} {'/n':>7}")
+    print(
+        f"  {'n':>8} {'naive':>14} {'/n':>8} {'kmp':>12} {'/n':>7} "
+        f"{'boyer-moore':>13} {'/n':>7}"
+    )
     for n in sizes:
         pat, text = naive_adversary(m, n)
         row = []
         for algo in ("naive", "kmp", "boyer-moore"):
             _, acc = count_accesses(ALGORITHMS[algo], pat, text)
             row.append(acc)
-        print(f"  {n:>8,} {row[0]:>14,} {row[0] / n:>8.1f} {row[1]:>12,} "
-              f"{row[1] / n:>7.1f} {row[2]:>13,} {row[2] / n:>7.1f}")
+        print(
+            f"  {n:>8,} {row[0]:>14,} {row[0] / n:>8.1f} {row[1]:>12,} "
+            f"{row[1] / n:>7.1f} {row[2]:>13,} {row[2] / n:>7.1f}"
+        )
 
     print("\n  (b) the Galil rule: a^m inside a^n, every alignment a full match.\n")
-    print(f"  {'n':>8} {'BM + Galil':>14} {'/n':>8} {'BM, no Galil':>14} {'/n':>8} "
-          f"{'ratio':>8}")
+    print(
+        f"  {'n':>8} {'BM + Galil':>14} {'/n':>8} {'BM, no Galil':>14} {'/n':>8} "
+        f"{'ratio':>8}"
+    )
     for n in sizes:
         pat, text = boyer_moore_adversary(m, n)
         _, with_galil = count_accesses(boyer_moore_search, pat, text)
         _, without = count_accesses(boyer_moore_no_galil_search, pat, text)
-        print(f"  {n:>8,} {with_galil:>14,} {with_galil / n:>8.1f} {without:>14,} "
-              f"{without / n:>8.1f} {without / with_galil:>7.1f}x")
+        print(
+            f"  {n:>8,} {with_galil:>14,} {with_galil / n:>8.1f} {without:>14,} "
+            f"{without / n:>8.1f} {without / with_galil:>7.1f}x"
+        )
     print("\n  One integer of state -- 'how much of this alignment did the previous")
     print("  shift already prove' -- is the whole difference between O(n) and O(nm).")
 
     print("\n  (c) Rabin-Karp under hash flooding: every window collides (mod 127).\n")
-    print(f"  {'n':>8} {'mod 127':>14} {'/n':>8} {'mod 2^61-1':>14} {'/n':>8} "
-          f"{'ratio':>8}")
+    print(
+        f"  {'n':>8} {'mod 127':>14} {'/n':>8} {'mod 2^61-1':>14} {'/n':>8} "
+        f"{'ratio':>8}"
+    )
     for n in sizes:
         pat, text = rabin_karp_adversary(m, n, 127)
         _, flooded = count_accesses(
             lambda p, t: rabin_karp_search(p, t, mod=127), pat, text
         )
         _, wide = count_accesses(rabin_karp_search, pat, text)
-        print(f"  {n:>8,} {flooded:>14,} {flooded / n:>8.1f} {wide:>14,} "
-              f"{wide / n:>8.1f} {flooded / wide:>7.1f}x")
+        print(
+            f"  {n:>8,} {flooded:>14,} {flooded / n:>8.1f} {wide:>14,} "
+            f"{wide / n:>8.1f} {flooded / wide:>7.1f}x"
+        )
     print("\n  The wide modulus is unaffected by the same text -- the attack is on")
     print("  the modulus, not the algorithm. A fixed small modulus in a public")
     print("  codebase is a denial-of-service surface; 2^61-1, or a per-process")
@@ -256,8 +272,10 @@ def bench_bitparallel(quick: bool) -> None:
     sizes = [200_000, 1_000_000] if quick else [200_000, 1_000_000, 4_000_000]
 
     print("\n  (a) Sparse matches: a random 16-mer in random DNA.\n")
-    print(f"  {'n':>10} {'bitparallel':>13} {'builtin':>13} {'two-way':>13} "
-          f"{'horspool':>13} {'occ':>8}")
+    print(
+        f"  {'n':>10} {'bitparallel':>13} {'builtin':>13} {'two-way':>13} "
+        f"{'horspool':>13} {'occ':>8}"
+    )
     for n in sizes:
         text = "".join(rng.choice("acgt") for _ in range(n))
         pat = sample_pattern(text, 16, rng)
@@ -278,8 +296,10 @@ def bench_bitparallel(quick: bool) -> None:
         pat = "a" * 8
         t_bp, hits = timed(lambda: list(bitparallel_search(pat, text)))
         t_bi, _ = timed(lambda: list(builtin_search(pat, text)))
-        print(f"  {n:>10,} {t_bp:>12.4f}s {t_bi:>12.4f}s {t_bi / t_bp:>8.2f}x "
-              f"{len(hits):>12,}")
+        print(
+            f"  {n:>10,} {t_bp:>12.4f}s {t_bi:>12.4f}s {t_bi / t_bp:>8.2f}x "
+            f"{len(hits):>12,}"
+        )
 
     print("\n  (c) Alphabet sensitivity: cost is O(distinct pattern characters).\n")
     n = sizes[-1]

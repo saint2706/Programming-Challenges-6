@@ -271,13 +271,13 @@ def shortest_palindrome_by_prepending(s: Sequence[Any]) -> Any:
 class PalindromeIndex:
     """Precomputed palindromic structure of a sequence. O(n) build, O(1) queries.
 
-        >>> idx = PalindromeIndex("abacaba")
-        >>> idx.longest()
-        'abacaba'
-        >>> idx.is_palindrome(0, 3), idx.is_palindrome(0, 4)
-        (True, False)
-        >>> idx.count()
-        12
+    >>> idx = PalindromeIndex("abacaba")
+    >>> idx.longest()
+    'abacaba'
+    >>> idx.is_palindrome(0, 3), idx.is_palindrome(0, 4)
+    (True, False)
+    >>> idx.count()
+    12
     """
 
     __slots__ = ("_s", "_d1", "_d2", "_rad")
@@ -375,8 +375,17 @@ class Eertree:
         ['a', 'aba', 'ababa', 'b', 'bab']
     """
 
-    __slots__ = ("_s", "_len", "_link", "_trans", "_suffix", "_occ", "_diff",
-                 "_series", "_ends")
+    __slots__ = (
+        "_s",
+        "_len",
+        "_link",
+        "_trans",
+        "_suffix",
+        "_occ",
+        "_diff",
+        "_series",
+        "_ends",
+    )
 
     ROOT_IMAGINARY = 0  # length -1
     ROOT_EMPTY = 1  # length 0
@@ -620,7 +629,7 @@ def palindromic_partition(s: Sequence[Any]) -> list[Any]:
     pieces = []
     j = n
     while j:
-        pieces.append(s[cut[j]:j])
+        pieces.append(s[cut[j] : j])
         j = cut[j]
     return pieces[::-1]
 
@@ -778,8 +787,20 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
     import random
 
     rng = random.Random(seed)
-    cases: list[str] = ["", "a", "aa", "ab", "aba", "abba", "aaaa", "#", "$^#",
-                        "abacaba", "forgeeksskeegfor", "racecar"]
+    cases: list[str] = [
+        "",
+        "a",
+        "aa",
+        "ab",
+        "aba",
+        "abba",
+        "aaaa",
+        "#",
+        "$^#",
+        "abacaba",
+        "forgeeksskeegfor",
+        "racecar",
+    ]
     # Every binary string up to length 12: the densest palindrome structure there is.
     for length in range(0, 11):
         cases.extend("".join(b) for b in itertools.product("ab", repeat=length))
@@ -798,9 +819,11 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
     for case in cases:
         expected = brute_force_longest_palindrome_span(case)
         length = expected[1] - expected[0]
-        for name, fn in [("manacher", longest_palindrome_span),
-                         ("naive", naive_longest_palindrome_span),
-                         ("dp", dp_longest_palindrome_span)]:
+        for name, fn in [
+            ("manacher", longest_palindrome_span),
+            ("naive", naive_longest_palindrome_span),
+            ("dp", dp_longest_palindrome_span),
+        ]:
             got = fn(case)
             if got[1] - got[0] != length:
                 fail(f"{name} length on {case!r}: {got} vs {expected}")
@@ -814,13 +837,21 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
                 if idx.is_palindrome(i, j) != (case[i:j] == case[i:j][::-1]):
                     fail(f"is_palindrome({i},{j}) on {case!r}")
 
-        occurrences = sum(1 for i in range(n) for j in range(i + 1, n + 1)
-                          if case[i:j] == case[i:j][::-1])
+        occurrences = sum(
+            1
+            for i in range(n)
+            for j in range(i + 1, n + 1)
+            if case[i:j] == case[i:j][::-1]
+        )
         if count_palindromic_substrings(case) != occurrences:
             fail(f"occurrence count on {case!r}")
 
-        distinct = {case[i:j] for i in range(n) for j in range(i + 1, n + 1)
-                    if case[i:j] == case[i:j][::-1]}
+        distinct = {
+            case[i:j]
+            for i in range(n)
+            for j in range(i + 1, n + 1)
+            if case[i:j] == case[i:j][::-1]
+        }
         if count_distinct_palindromes(case) != len(distinct):
             fail(f"distinct count on {case!r}")
         if set(Eertree(case).distinct()) != distinct:
@@ -833,12 +864,16 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
             if any(p != p[::-1] for p in pieces):
                 fail(f"partition piece is not a palindrome in {case!r}")
             if len(pieces) != min_palindromic_partition(case):
-                fail(f"partition size on {case!r}: {len(pieces)} vs "
-                     f"{min_palindromic_partition(case)}")
+                fail(
+                    f"partition size on {case!r}: {len(pieces)} vs "
+                    f"{min_palindromic_partition(case)}"
+                )
 
     if verbose:
-        print(f"verify: {len(cases)} strings, Manacher + eertree + partitions vs "
-              f"brute force -- {'OK' if ok else 'FAILED'}")
+        print(
+            f"verify: {len(cases)} strings, Manacher + eertree + partitions vs "
+            f"brute force -- {'OK' if ok else 'FAILED'}"
+        )
     return ok
 
 
@@ -855,9 +890,15 @@ def _report(text: str, relaxed: bool) -> None:
         print(f"relaxed: {''.join(units)!r}   (alphanumeric, case-folded)")
         if end > start:
             origin = indices[start]
-            stop = indices[end - 1] + len(graphemes(text)[end - 1]) if end <= len(indices) else len(text)
-            print(f"longest: {''.join(units[start:end])!r}  "
-                  f"({end - start} units, from original index {origin})")
+            stop = (
+                indices[end - 1] + len(graphemes(text)[end - 1])
+                if end <= len(indices)
+                else len(text)
+            )
+            print(
+                f"longest: {''.join(units[start:end])!r}  "
+                f"({end - start} units, from original index {origin})"
+            )
             print(f"         as written: {text[origin:stop]!r}")
         else:
             print("longest: '' (no alphanumeric characters)")
@@ -869,16 +910,26 @@ def _report(text: str, relaxed: bool) -> None:
     print(f"input:   {text!r}  ({len(units)} grapheme clusters)")
     print(f"longest: {''.join(units[start:end])!r}  at [{start}, {end})")
     print(f"occurrences of palindromic substrings: {idx.count()}")
-    print(f"distinct palindromic substrings:       {count_distinct_palindromes(units)}"
-          f"   (at most {len(units)}, always)")
+    print(
+        f"distinct palindromic substrings:       {count_distinct_palindromes(units)}"
+        f"   (at most {len(units)}, always)"
+    )
     parts = palindromic_partition(units)
-    print(f"minimum palindromic partition ({len(parts)} pieces): "
-          f"{[''.join(p) for p in parts]}")
+    print(
+        f"minimum palindromic partition ({len(parts)} pieces): "
+        f"{[''.join(p) for p in parts]}"
+    )
 
 
 def _demo() -> None:
-    for text in ["forgeeksskeegfor", "abacaba", "aaaa", "abcde", "",
-                 "A man, a plan, a canal: Panama"]:
+    for text in [
+        "forgeeksskeegfor",
+        "abacaba",
+        "aaaa",
+        "abcde",
+        "",
+        "A man, a plan, a canal: Panama",
+    ]:
         _report(text, relaxed=False)
         print()
     print("-- the same phrase, ignoring case and punctuation --")
@@ -897,8 +948,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("text", nargs="*", help="the string (reads stdin if omitted)")
     parser.add_argument("--demo", action="store_true")
     parser.add_argument("--verify", action="store_true")
-    parser.add_argument("--relaxed", action="store_true",
-                        help="ignore case and non-alphanumeric characters")
+    parser.add_argument(
+        "--relaxed",
+        action="store_true",
+        help="ignore case and non-alphanumeric characters",
+    )
     args = parser.parse_args(argv)
 
     if args.verify:

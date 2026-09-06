@@ -60,7 +60,7 @@ import string
 import sys
 import tempfile
 import unicodedata
-from collections import Counter, defaultdict
+from collections import Counter
 from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -174,7 +174,9 @@ class Normalizer:
 
     def __post_init__(self) -> None:
         if self.form is not None and self.form not in ("NFC", "NFD", "NFKC", "NFKD"):
-            raise ValueError(f"form must be one of NFC/NFD/NFKC/NFKD or None, got {self.form!r}")
+            raise ValueError(
+                f"form must be one of NFC/NFD/NFKC/NFKD or None, got {self.form!r}"
+            )
         if isinstance(self.ignore, str):
             object.__setattr__(self, "ignore", frozenset(self.ignore))
 
@@ -253,8 +255,32 @@ def key_counter(atoms: Sequence[str]) -> tuple[tuple[str, int], ...]:
 #: minimises the expected bit length of a prime-product key (see README).
 _ENGLISH_FREQUENCY_ORDER = "etaoinshrdlcumwfgypbvkjxqz"
 _FIRST_PRIMES = (
-    2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-    59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
+    2,
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    19,
+    23,
+    29,
+    31,
+    37,
+    41,
+    43,
+    47,
+    53,
+    59,
+    61,
+    67,
+    71,
+    73,
+    79,
+    83,
+    89,
+    97,
+    101,
 )
 PRIME_TABLE: dict[str, int] = dict(zip(_ENGLISH_FREQUENCY_ORDER, _FIRST_PRIMES))
 
@@ -469,7 +495,9 @@ def group_anagrams(
     return groups
 
 
-def _split_hash_collisions(groups: list[list[str]], norm: Normalizer) -> list[list[str]]:
+def _split_hash_collisions(
+    groups: list[list[str]], norm: Normalizer
+) -> list[list[str]]:
     """Re-split hash buckets by exact multiset equality.
 
     O(total length): building a Counter per word is linear, and this is the
@@ -579,7 +607,9 @@ def _read_run(fh: Any) -> Iterator[tuple[str, int, str]]:
             return
 
 
-def _cut_runs(records: Iterator[tuple[str, int, str]], min_size: int) -> Iterator[list[str]]:
+def _cut_runs(
+    records: Iterator[tuple[str, int, str]], min_size: int
+) -> Iterator[list[str]]:
     """Cut a key-sorted record stream into groups at key boundaries."""
     group: list[str] = []
     current: str | None = None
@@ -602,7 +632,9 @@ def _cut_runs(records: Iterator[tuple[str, int, str]], min_size: int) -> Iterato
 def _shard_worker(payload: tuple[list[str], str, bool, bool, Any]) -> list[list[str]]:
     """Module-level so it survives pickling into a process pool."""
     words, form, casefold, use_graphemes, ignore = payload
-    norm = Normalizer(form=form or None, casefold=casefold, graphemes=use_graphemes, ignore=ignore)
+    norm = Normalizer(
+        form=form or None, casefold=casefold, graphemes=use_graphemes, ignore=ignore
+    )
     return group_anagrams(words, normalizer=norm, method="hash")
 
 
@@ -635,7 +667,9 @@ def group_anagrams_parallel(
     for word in words:
         shards[multiset_hash(norm.units(word)) % workers].append(word)
 
-    payloads = [(s, norm.form or "", norm.casefold, norm.graphemes, norm.ignore) for s in shards]
+    payloads = [
+        (s, norm.form or "", norm.casefold, norm.graphemes, norm.ignore) for s in shards
+    ]
     try:
         from concurrent.futures import ProcessPoolExecutor
 
@@ -678,7 +712,9 @@ class AnagramIndex:
         self._normalizer = normalizer or DEFAULT_NORMALIZER
         # hash -> list of (exact multiset, words); the list has one entry
         # unless a 128-bit collision has actually happened.
-        self._buckets: dict[int, list[tuple[tuple[tuple[str, int], ...], list[str]]]] = {}
+        self._buckets: dict[
+            int, list[tuple[tuple[tuple[str, int], ...], list[str]]]
+        ] = {}
         self._size = 0
         self.extend(words)
 
@@ -711,7 +747,9 @@ class AnagramIndex:
         exact = key_counter(atoms)
         for stored, members in entries:
             if stored == exact:
-                return list(members) if include_self else [w for w in members if w != word]
+                return (
+                    list(members) if include_self else [w for w in members if w != word]
+                )
         return []
 
     def groups(self, *, min_size: int = 1) -> list[list[str]]:
@@ -804,8 +842,10 @@ def verify(*, seed: int = 0, trials: int = 200, verbose: bool = True) -> bool:
                 print(f"  MISMATCH index words={words}", file=sys.stderr)
 
     if verbose:
-        print(f"verify: {trials} random corpora, all methods vs brute force -- "
-              f"{'OK' if ok else 'FAILED'}")
+        print(
+            f"verify: {trials} random corpora, all methods vs brute force -- "
+            f"{'OK' if ok else 'FAILED'}"
+        )
     return ok
 
 
@@ -837,18 +877,33 @@ def _read_words(path: str) -> list[str]:
         return [line.rstrip("\n") for line in sys.stdin if line.strip()]
     return [
         line.rstrip("\n")
-        for line in Path(path).read_text(encoding="utf-8", errors="replace").splitlines()
+        for line in Path(path)
+        .read_text(encoding="utf-8", errors="replace")
+        .splitlines()
         if line.strip()
     ]
 
 
 DEMO_WORDS = [
-    "listen", "silent", "enlist", "inlets", "tinsel",
-    "evil", "vile", "live", "veil", "levi",
-    "stressed", "desserts",
-    "café", "café", "facé",       # NFC folds the first two together
-    "Dormitory", "Dirty Room",           # only anagrams under Normalizer.phrase()
-    "google", "elgoog",
+    "listen",
+    "silent",
+    "enlist",
+    "inlets",
+    "tinsel",
+    "evil",
+    "vile",
+    "live",
+    "veil",
+    "levi",
+    "stressed",
+    "desserts",
+    "café",
+    "café",
+    "facé",  # NFC folds the first two together
+    "Dormitory",
+    "Dirty Room",  # only anagrams under Normalizer.phrase()
+    "google",
+    "elgoog",
     "unique",
 ]
 
@@ -859,16 +914,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__.split("Run directly")[-1],
     )
-    parser.add_argument("path", nargs="?", help="word list, one per line ('-' for stdin)")
-    parser.add_argument("--demo", action="store_true", help="run on a built-in word list")
-    parser.add_argument("--verify", action="store_true", help="cross-validate every method")
+    parser.add_argument(
+        "path", nargs="?", help="word list, one per line ('-' for stdin)"
+    )
+    parser.add_argument(
+        "--demo", action="store_true", help="run on a built-in word list"
+    )
+    parser.add_argument(
+        "--verify", action="store_true", help="cross-validate every method"
+    )
     parser.add_argument("--method", default="auto", choices=METHODS)
-    parser.add_argument("--min-size", type=int, default=2, help="hide groups smaller than this")
-    parser.add_argument("--top", type=int, default=20, help="show at most this many groups")
-    parser.add_argument("--phrase", action="store_true",
-                        help="case-insensitive, ignore non-alphanumerics")
-    parser.add_argument("--external", action="store_true",
-                        help="use the out-of-core path (bounded memory)")
+    parser.add_argument(
+        "--min-size", type=int, default=2, help="hide groups smaller than this"
+    )
+    parser.add_argument(
+        "--top", type=int, default=20, help="show at most this many groups"
+    )
+    parser.add_argument(
+        "--phrase",
+        action="store_true",
+        help="case-insensitive, ignore non-alphanumerics",
+    )
+    parser.add_argument(
+        "--external",
+        action="store_true",
+        help="use the out-of-core path (bounded memory)",
+    )
     parser.add_argument("--chunk-size", type=int, default=1_000_000)
     args = parser.parse_args(argv)
 
@@ -885,19 +956,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     norm = Normalizer.phrase() if args.phrase else DEFAULT_NORMALIZER
 
     if args.external:
-        groups = list(group_anagrams_external(
-            words, normalizer=norm, chunk_size=args.chunk_size, min_size=args.min_size
-        ))
+        groups = list(
+            group_anagrams_external(
+                words,
+                normalizer=norm,
+                chunk_size=args.chunk_size,
+                min_size=args.min_size,
+            )
+        )
         groups.sort(key=lambda g: (-len(g), g[0]))
     else:
         groups = group_anagrams(
-            words, normalizer=norm, method=args.method,
-            min_size=args.min_size, sort_groups=True,
+            words,
+            normalizer=norm,
+            method=args.method,
+            min_size=args.min_size,
+            sort_groups=True,
         )
 
     total = sum(len(g) for g in groups)
-    print(f"{len(words)} words -> {len(groups)} groups of size >= {args.min_size} "
-          f"({total} words)")
+    print(
+        f"{len(words)} words -> {len(groups)} groups of size >= {args.min_size} "
+        f"({total} words)"
+    )
     for group in groups[: args.top]:
         print(f"  {len(group):>4}  {', '.join(group)}")
     if len(groups) > args.top:

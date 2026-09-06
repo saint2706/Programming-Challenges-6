@@ -74,22 +74,26 @@ def random_text(n: int, alphabet: str, seed: int = 0) -> str:
 
 def bench_scaling(sizes: list[int]) -> None:
     for label, build, ceiling in [
-        ("random over 26 letters (naive's best case)",
-         lambda n: random_text(n, string.ascii_lowercase, seed=n), 10**9),
-        ("a run of one character (naive's worst case)",
-         lambda n: "a" * n, 200_000),
+        (
+            "random over 26 letters (naive's best case)",
+            lambda n: random_text(n, string.ascii_lowercase, seed=n),
+            10**9,
+        ),
+        ("a run of one character (naive's worst case)", lambda n: "a" * n, 200_000),
     ]:
         print(f"\n== {label} ==")
-        header = (f"{'n':>10} {'manacher':>11} {'naive':>11} {'ratio':>8} "
-                  f"{'longest':>9}")
+        header = f"{'n':>10} {'manacher':>11} {'naive':>11} {'ratio':>8} {'longest':>9}"
         print(header)
         print("-" * len(header))
         for n in sizes:
             text = build(n)
-            fast, span = timed(longest_palindrome_span, text, repeat=1 if n > 10**5 else 3)
+            fast, span = timed(
+                longest_palindrome_span, text, repeat=1 if n > 10**5 else 3
+            )
             if n <= ceiling:
-                slow, naive_span = timed(naive_longest_palindrome_span, text,
-                                         repeat=1 if n > 10**5 else 3)
+                slow, naive_span = timed(
+                    naive_longest_palindrome_span, text, repeat=1 if n > 10**5 else 3
+                )
                 assert naive_span[1] - naive_span[0] == span[1] - span[0]
                 ratio = f"{slow / fast:>8.1f}x"
                 slow_cell = f"{slow:>11.4f}"
@@ -114,20 +118,26 @@ def bench_scaling(sizes: list[int]) -> None:
 
 def bench_alphabet(n: int = 100_000) -> None:
     print(f"\n== palindrome density vs alphabet size, n = {n} ==")
-    header = (f"{'|alphabet|':>11} {'longest':>9} {'occurrences':>13} "
-              f"{'distinct':>9} {'manacher':>10} {'naive':>10} {'ratio':>8}")
+    header = (
+        f"{'|alphabet|':>11} {'longest':>9} {'occurrences':>13} "
+        f"{'distinct':>9} {'manacher':>10} {'naive':>10} {'ratio':>8}"
+    )
     print(header)
     print("-" * len(header))
     for size in (1, 2, 3, 4, 8, 26, 256):
-        alphabet = "".join(chr(97 + i % 26) + chr(65 + i // 26) for i in range(size))[:size]
+        alphabet = "".join(chr(97 + i % 26) + chr(65 + i // 26) for i in range(size))[
+            :size
+        ]
         alphabet = alphabet or "a"
         text = random_text(n, alphabet, seed=size)
         fast, span = timed(longest_palindrome_span, text, repeat=2)
         slow, _ = timed(naive_longest_palindrome_span, text, repeat=1)
-        print(f"{size:>11} {span[1] - span[0]:>9} "
-              f"{count_palindromic_substrings(text):>13,} "
-              f"{count_distinct_palindromes(text):>9,} "
-              f"{fast:>10.4f} {slow:>10.4f} {slow / fast:>7.1f}x")
+        print(
+            f"{size:>11} {span[1] - span[0]:>9} "
+            f"{count_palindromic_substrings(text):>13,} "
+            f"{count_distinct_palindromes(text):>9,} "
+            f"{fast:>10.4f} {slow:>10.4f} {slow / fast:>7.1f}x"
+        )
     print("\nThe expected longest palindrome in random text over an alphabet of size")
     print("k is about 2*log_k(n), so it collapses the moment k > 1 -- and the naive")
     print("method's cost collapses with it. This is not a gradient, it is a cliff:")
@@ -181,8 +191,9 @@ def count_naive_steps(s: str) -> int:
 
 def bench_steps(n: int = 20_000) -> None:
     print(f"\n== expansion steps (machine-independent), n = {n} ==")
-    header = (f"{'input':>24} {'manacher':>10} {'bound 2n':>10} {'naive':>12} "
-              f"{'naive/n':>9}")
+    header = (
+        f"{'input':>24} {'manacher':>10} {'bound 2n':>10} {'naive':>12} {'naive/n':>9}"
+    )
     print(header)
     print("-" * len(header))
     inputs = {
@@ -195,7 +206,9 @@ def bench_steps(n: int = 20_000) -> None:
     }
     for label, text in inputs.items():
         m, nv = count_manacher_steps(text), count_naive_steps(text)
-        print(f"{label:>24} {m:>10,} {2 * len(text):>10,} {nv:>12,} {nv / len(text):>9.1f}")
+        print(
+            f"{label:>24} {m:>10,} {2 * len(text):>10,} {nv:>12,} {nv / len(text):>9.1f}"
+        )
     print("\nThe `manacher` column never exceeds `bound 2n`, which is the amortisation")
     print("argument as a measurement: every inner-loop step pushes the right boundary")
     print("one place right, and it never moves left or past the end. The naive column")
@@ -228,9 +241,15 @@ def bench_structures(n: int = 200_000) -> None:
         print(f"\n  {label}:")
         for name, fn in [
             ("manacher_odd_even (via index)", lambda t=text: PalindromeIndex(t)),
-            ("count_palindromic_substrings", lambda t=text: count_palindromic_substrings(t)),
+            (
+                "count_palindromic_substrings",
+                lambda t=text: count_palindromic_substrings(t),
+            ),
             ("Eertree build", lambda t=text: Eertree(t)),
-            ("count_distinct_palindromes", lambda t=text: count_distinct_palindromes(t)),
+            (
+                "count_distinct_palindromes",
+                lambda t=text: count_distinct_palindromes(t),
+            ),
             ("min_palindromic_partition", lambda t=text: min_palindromic_partition(t)),
         ]:
             secs, _ = timed(fn, repeat=1)
@@ -238,11 +257,15 @@ def bench_structures(n: int = 200_000) -> None:
 
     idx = PalindromeIndex(random_text(n, "ab", seed=5))
     rng = random.Random(6)
-    queries = [(lambda a, b: (min(a, b), max(a, b)))(rng.randrange(n), rng.randrange(n))
-               for _ in range(200_000)]
+    queries = [
+        (lambda a, b: (min(a, b), max(a, b)))(rng.randrange(n), rng.randrange(n))
+        for _ in range(200_000)
+    ]
     secs, _ = timed(lambda: [idx.is_palindrome(i, j) for i, j in queries], repeat=3)
-    print(f"\n  is_palindrome: {secs / len(queries) * 1e9:.0f} ns/query over "
-          f"{len(queries)} random spans")
+    print(
+        f"\n  is_palindrome: {secs / len(queries) * 1e9:.0f} ns/query over "
+        f"{len(queries)} random spans"
+    )
     print("  (that is one list index and one comparison -- the O(n) build is what")
     print("   buys it, and it is the same build the longest-substring answer needs)")
 
@@ -277,8 +300,10 @@ def bench_dp_memory(n: int = 4000) -> None:
     print(f"\n== the O(n^2)-space DP, n = {n} ==")
     secs, span = timed(dp_longest_palindrome_span, "ab" * (n // 2), repeat=1)
     fast, _ = timed(longest_palindrome_span, "ab" * (n // 2), repeat=3)
-    print(f"  dp_longest_palindrome_span: {secs:.3f}s, table is {n}^2 = {n*n:,} booleans")
-    print(f"  longest_palindrome_span:    {fast:.4f}s, arrays are 2n = {2*n:,} ints")
+    print(
+        f"  dp_longest_palindrome_span: {secs:.3f}s, table is {n}^2 = {n * n:,} booleans"
+    )
+    print(f"  longest_palindrome_span:    {fast:.4f}s, arrays are 2n = {2 * n:,} ints")
     print(f"  ratio: {secs / fast:.0f}x slower, {n // 2:,}x more memory")
     print("\n  The DP is the version most tutorials teach first. At n = 100000 its")
     print("  table would be 10^10 booleans -- it is not a slower way to get the")
@@ -290,7 +315,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--quick", action="store_true", help="smaller inputs, ~20s")
     parser.add_argument("--sizes", type=int, nargs="+")
     parser.add_argument(
-        "--only", nargs="+",
+        "--only",
+        nargs="+",
         choices=["scaling", "alphabet", "steps", "structures", "partition", "dp"],
     )
     args = parser.parse_args(argv)

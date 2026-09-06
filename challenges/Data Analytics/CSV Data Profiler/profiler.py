@@ -109,7 +109,9 @@ def iqr_outlier_count(values: pl.Series) -> int:
 
 
 def _fig_to_div(fig: go.Figure) -> str:
-    return pio.to_html(fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False})
+    return pio.to_html(
+        fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False}
+    )
 
 
 def profile_numeric(series: pl.Series) -> tuple[dict[str, Any], str]:
@@ -122,7 +124,9 @@ def profile_numeric(series: pl.Series) -> tuple[dict[str, Any], str]:
         "stddev": non_null.std(),
         "outliers": iqr_outlier_count(series),
     }
-    fig = go.Figure(go.Histogram(x=non_null.to_list(), nbinsx=30, marker_color="#4C78A8"))
+    fig = go.Figure(
+        go.Histogram(x=non_null.to_list(), nbinsx=30, marker_color="#4C78A8")
+    )
     fig.update_layout(
         title=f"Distribution of {series.name}",
         margin=dict(l=40, r=20, t=40, b=30),
@@ -151,7 +155,11 @@ def profile_datetime(series: pl.Series) -> tuple[dict[str, Any], str]:
     stats = {"min": non_null.min(), "max": non_null.max()}
     counts = non_null.dt.truncate("1mo").value_counts(sort=True).sort(series.name)
     fig = go.Figure(
-        go.Scatter(x=counts[series.name].to_list(), y=counts["count"].to_list(), mode="lines+markers")
+        go.Scatter(
+            x=counts[series.name].to_list(),
+            y=counts["count"].to_list(),
+            mode="lines+markers",
+        )
     )
     fig.update_layout(
         title=f"Row count by month for {series.name}",
@@ -167,7 +175,11 @@ def profile_boolean(series: pl.Series) -> tuple[dict[str, Any], str]:
     values = counts["count"].to_list()
     stats = {"counts": list(zip(labels, values))}
     fig = go.Figure(go.Bar(x=labels, y=values, marker_color="#54A24B"))
-    fig.update_layout(title=f"Value counts for {series.name}", margin=dict(l=40, r=20, t=40, b=30), height=260)
+    fig.update_layout(
+        title=f"Value counts for {series.name}",
+        margin=dict(l=40, r=20, t=40, b=30),
+        height=260,
+    )
     return stats, _fig_to_div(fig)
 
 
@@ -187,14 +199,24 @@ def build_correlation_heatmap(df: pl.DataFrame, numeric_cols: list[str]) -> str:
             texttemplate="%{text}",
         )
     )
-    fig.update_layout(title="Correlation matrix (numeric columns)", margin=dict(l=80, r=20, t=40, b=60), height=400)
+    fig.update_layout(
+        title="Correlation matrix (numeric columns)",
+        margin=dict(l=80, r=20, t=40, b=60),
+        height=400,
+    )
     return _fig_to_div(fig)
 
 
 def profile_dataset(path: Path, sep: str | None, top_n: int) -> DatasetProfile:
     encoding, delimiter = sniff_dialect(path)
     delimiter = sep or delimiter
-    df = pl.read_csv(path, separator=delimiter, encoding=encoding, try_parse_dates=True, infer_schema_length=10_000)
+    df = pl.read_csv(
+        path,
+        separator=delimiter,
+        encoding=encoding,
+        try_parse_dates=True,
+        infer_schema_length=10_000,
+    )
 
     n_rows, n_cols = df.shape
     duplicate_rows = int(df.is_duplicated().sum())
@@ -268,7 +290,10 @@ def render_column_section(col: ColumnProfile) -> str:
             ("Outliers (IQR rule)", col.stats["outliers"]),
         ]
     elif col.semantic_type == "datetime":
-        rows += [("Earliest", _fmt(col.stats["min"])), ("Latest", _fmt(col.stats["max"]))]
+        rows += [
+            ("Earliest", _fmt(col.stats["min"])),
+            ("Latest", _fmt(col.stats["max"])),
+        ]
 
     table_rows = "\n".join(
         f"<tr><th>{html.escape(str(k))}</th><td>{_fmt(v) if not isinstance(v, str) else html.escape(v)}</td></tr>"
@@ -343,9 +368,25 @@ def render_report(profile: DatasetProfile) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("csv_path", type=Path, help="Path to the input CSV file")
-    parser.add_argument("-o", "--output", type=Path, default=Path("report.html"), help="Output HTML report path")
-    parser.add_argument("--sep", type=str, default=None, help="Force a delimiter instead of auto-detecting")
-    parser.add_argument("--top-n", type=int, default=TOP_N_DEFAULT, help="Top-N values for categorical columns")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        default=Path("report.html"),
+        help="Output HTML report path",
+    )
+    parser.add_argument(
+        "--sep",
+        type=str,
+        default=None,
+        help="Force a delimiter instead of auto-detecting",
+    )
+    parser.add_argument(
+        "--top-n",
+        type=int,
+        default=TOP_N_DEFAULT,
+        help="Top-N values for categorical columns",
+    )
     args = parser.parse_args(argv)
 
     if not args.csv_path.exists():
@@ -354,7 +395,9 @@ def main(argv: list[str] | None = None) -> int:
 
     profile = profile_dataset(args.csv_path, args.sep, args.top_n)
     args.output.write_text(render_report(profile), encoding="utf-8")
-    print(f"Profiled {profile.n_rows:,} rows x {profile.n_cols} columns -> {args.output}")
+    print(
+        f"Profiled {profile.n_rows:,} rows x {profile.n_cols} columns -> {args.output}"
+    )
     return 0
 
 

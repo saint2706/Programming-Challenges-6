@@ -43,8 +43,14 @@ from inversions import (
 HERE = Path(__file__).parent
 np = pytest.importorskip("numpy", reason="the vectorised method needs numpy")
 
-IMPLS = [count_brute, count_insort, count_mergesort, count_fenwick, count_numpy,
-         count_numpy_radix]
+IMPLS = [
+    count_brute,
+    count_insort,
+    count_mergesort,
+    count_fenwick,
+    count_numpy,
+    count_numpy_radix,
+]
 FAST_IMPLS = IMPLS[1:]
 VECTORISED = [count_numpy, count_numpy_radix]
 
@@ -70,7 +76,9 @@ def test_random_arrays_match_brute_force(impl):
 def test_exhaustive_over_all_permutations(impl, n):
     """For n <= 7 there is no need to sample: check every permutation."""
     for perm in itertools.permutations(range(n)):
-        expected = sum(1 for i in range(n) for j in range(i + 1, n) if perm[j] < perm[i])
+        expected = sum(
+            1 for i in range(n) for j in range(i + 1, n) if perm[j] < perm[i]
+        )
         assert impl(list(perm)) == expected
 
 
@@ -122,7 +130,28 @@ def test_sorted_has_none_and_reversed_has_all(impl):
 def test_lengths_around_powers_of_two(method):
     """The vectorised path pads to a power of two; check both sides of each."""
     rng = random.Random(5)
-    for n in [1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 17, 31, 32, 33, 63, 64, 65, 127, 128, 129]:
+    for n in [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        15,
+        16,
+        17,
+        31,
+        32,
+        33,
+        63,
+        64,
+        65,
+        127,
+        128,
+        129,
+    ]:
         a = [rng.randrange(50) for _ in range(n)]
         assert count_inversions(a, method=method) == count_brute(a), (method, n)
 
@@ -228,7 +257,7 @@ def test_negative_zero_ties_with_zero():
 @pytest.mark.parametrize("impl", FAST_IMPLS)
 def test_key_is_applied_before_comparing(impl):
     words = ["bbb", "a", "cc"]
-    assert impl(words, key=len) == 2          # lengths 3, 1, 2
+    assert impl(words, key=len) == 2  # lengths 3, 1, 2
     assert impl(words) == count_brute(words) == 1  # only "bbb" > "a" alphabetically
 
 
@@ -249,7 +278,9 @@ def test_reverse_counts_the_complementary_pairs(impl):
     rng = random.Random(8)
     for _ in range(100):
         a = [rng.randrange(4) for _ in range(rng.randint(0, 20))]
-        ties = sum(1 for i in range(len(a)) for j in range(i + 1, len(a)) if a[i] == a[j])
+        ties = sum(
+            1 for i in range(len(a)) for j in range(i + 1, len(a)) if a[i] == a[j]
+        )
         assert impl(a) + impl(a, reverse=True) == max_inversions(len(a)) - ties
 
 
@@ -274,7 +305,9 @@ def test_count_smaller_to_right_matches_the_definition():
     rng = random.Random(12)
     for _ in range(200):
         a = [rng.randrange(6) for _ in range(rng.randint(0, 25))]
-        expected = [sum(1 for j in range(i + 1, len(a)) if a[j] < a[i]) for i in range(len(a))]
+        expected = [
+            sum(1 for j in range(i + 1, len(a)) if a[j] < a[i]) for i in range(len(a))
+        ]
         assert count_smaller_to_right(a) == expected
 
 
@@ -332,8 +365,9 @@ def test_fenwick_from_counts_matches_repeated_add():
     added = Fenwick(len(counts))
     for i, c in enumerate(counts):
         added.add(i, c)
-    assert [built.prefix(k) for k in range(len(counts) + 1)] == \
-           [added.prefix(k) for k in range(len(counts) + 1)]
+    assert [built.prefix(k) for k in range(len(counts) + 1)] == [
+        added.prefix(k) for k in range(len(counts) + 1)
+    ]
 
 
 def test_fenwick_bounds():
@@ -397,7 +431,22 @@ def test_inversion_polynomial_is_the_mahonian_triangle():
     assert inversion_polynomial(4) == [1, 3, 5, 6, 5, 3, 1]
     assert inversion_polynomial(5) == [1, 4, 9, 15, 20, 22, 20, 15, 9, 4, 1]
     assert inversion_polynomial(6) == [
-        1, 5, 14, 29, 49, 71, 90, 101, 101, 90, 71, 49, 29, 14, 5, 1
+        1,
+        5,
+        14,
+        29,
+        49,
+        71,
+        90,
+        101,
+        101,
+        90,
+        71,
+        49,
+        29,
+        14,
+        5,
+        1,
     ]
 
 
@@ -458,7 +507,11 @@ def test_inversion_table_is_indexed_by_value_not_position():
     perm = [2, 0, 3, 1]
     assert inversion_table(perm) == [1, 2, 0, 0]
     assert count_greater_to_left(perm) == [0, 1, 0, 2]  # the position-indexed cousin
-    assert sum(inversion_table(perm)) == sum(count_greater_to_left(perm)) == count_brute(perm)
+    assert (
+        sum(inversion_table(perm))
+        == sum(count_greater_to_left(perm))
+        == count_brute(perm)
+    )
 
 
 def test_inversion_table_rejects_non_permutations():
@@ -484,7 +537,9 @@ def test_concatenation_inequality():
         x = [rng.randrange(10) for _ in range(rng.randint(0, 12))]
         y = [rng.randrange(10) for _ in range(rng.randint(0, 12))]
         cross = sum(1 for a in x for b in y if a > b)
-        assert count_inversions(x + y) == count_inversions(x) + count_inversions(y) + cross
+        assert (
+            count_inversions(x + y) == count_inversions(x) + count_inversions(y) + cross
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -498,7 +553,10 @@ def test_significant_inversions_match_brute_force():
         for _ in range(60):
             a = [rng.randrange(-20, 20) for _ in range(rng.randint(0, 30))]
             expected = sum(
-                1 for i in range(len(a)) for j in range(i + 1, len(a)) if a[i] > factor * a[j]
+                1
+                for i in range(len(a))
+                for j in range(i + 1, len(a))
+                if a[i] > factor * a[j]
             )
             assert count_significant_inversions(a, factor) == expected, (factor, a)
 
@@ -515,7 +573,10 @@ def test_significant_handles_negative_factors():
     a = [-5, 3, -1, 4, -2]
     for factor in (-1.0, -2.5):
         expected = sum(
-            1 for i in range(len(a)) for j in range(i + 1, len(a)) if a[i] > factor * a[j]
+            1
+            for i in range(len(a))
+            for j in range(i + 1, len(a))
+            if a[i] > factor * a[j]
         )
         assert count_significant_inversions(a, factor) == expected
 
@@ -578,8 +639,9 @@ def test_tau_distance_is_a_metric():
             assert kendall_tau_distance(a, b) == kendall_tau_distance(b, a)
             assert (kendall_tau_distance(a, b) == 0) == (a == b)
             for c in perms:
-                assert (kendall_tau_distance(a, c)
-                        <= kendall_tau_distance(a, b) + kendall_tau_distance(b, c))
+                assert kendall_tau_distance(a, c) <= kendall_tau_distance(
+                    a, b
+                ) + kendall_tau_distance(b, c)
 
 
 def test_tau_distance_on_empty_and_singleton():
@@ -611,7 +673,9 @@ def brute_tau_b(x, y):
             if dy == 0:
                 n2 += 1
             con_minus_dis += (dx > 0) - (dx < 0) if False else 0
-            s = (1 if dx > 0 else -1 if dx < 0 else 0) * (1 if dy > 0 else -1 if dy < 0 else 0)
+            s = (1 if dx > 0 else -1 if dx < 0 else 0) * (
+                1 if dy > 0 else -1 if dy < 0 else 0
+            )
             con_minus_dis += s
     denom = math.sqrt((n0 - n1) * (n0 - n2))
     return con_minus_dis / denom if denom else math.nan
@@ -733,7 +797,7 @@ def test_numpy_ranks_fast_path_and_fallback_agree():
     from fractions import Fraction as F
 
     plain = [5, 2, 9, 2, 7]
-    exotic = [F(5), F(2), F(9), F(2), F(7)]        # object dtype -> fallback
+    exotic = [F(5), F(2), F(9), F(2), F(7)]  # object dtype -> fallback
     huge = [10**30, 10**20, 10**40, 10**20, 10**35]  # object dtype -> fallback
     for impl in VECTORISED:
         assert impl(plain) == impl(exotic) == impl(huge) == count_brute(plain)
@@ -833,6 +897,9 @@ def test_cli_honours_every_method(method, capsys):
 def test_module_runs_as_a_script():
     result = subprocess.run(
         [sys.executable, "inversions.py", "--verify"],
-        cwd=HERE, capture_output=True, text=True, check=True,
+        cwd=HERE,
+        capture_output=True,
+        text=True,
+        check=True,
     )
     assert "OK" in result.stdout

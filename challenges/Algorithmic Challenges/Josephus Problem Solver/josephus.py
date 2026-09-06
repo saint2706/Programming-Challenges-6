@@ -341,8 +341,13 @@ def frames(n: int, k: int, *, start: int = 1, width: int = 72) -> Iterator[str]:
     def row() -> str:
         cells = []
         for p in range(1, n + 1):
-            cells.append(("--".rjust(label_width, "-") if p in dead
-                          else str(p).rjust(label_width)))
+            cells.append(
+                (
+                    "--".rjust(label_width, "-")
+                    if p in dead
+                    else str(p).rjust(label_width)
+                )
+            )
         line = " ".join(cells)
         return line if len(line) <= width else line[: width - 3] + "..."
 
@@ -375,11 +380,15 @@ def verify(max_n: int = 120, max_k: int = 20) -> list[str]:
                 checks["pow2"] = survivor_pow2(n)
             for name, got in checks.items():
                 if got != expected:
-                    problems.append(f"{name}(n={n}, k={k}) = {got}, expected {expected}")
+                    problems.append(
+                        f"{name}(n={n}, k={k}) = {got}, expected {expected}"
+                    )
 
             got_order = elimination_order(n, k)
             if got_order != order:
-                problems.append(f"elimination_order(n={n}, k={k}) differs from simulation")
+                problems.append(
+                    f"elimination_order(n={n}, k={k}) differs from simulation"
+                )
 
             for m in (1, 2, 3):
                 if m <= n:
@@ -472,12 +481,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("n", nargs="?", type=int, help="number of people")
     ap.add_argument("k", nargs="?", type=int, default=2, help="count (default 2)")
     ap.add_argument("--start", type=int, default=1, help="position counting starts at")
-    ap.add_argument("--survivors", type=int, default=1, metavar="M",
-                    help="report the last M survivors")
+    ap.add_argument(
+        "--survivors",
+        type=int,
+        default=1,
+        metavar="M",
+        help="report the last M survivors",
+    )
     ap.add_argument("--order", action="store_true", help="print the elimination order")
     ap.add_argument("--animate", action="store_true", help="draw the circle each step")
-    ap.add_argument("--method", choices=["auto", "simulate", "recurrence", "fast", "pow2"],
-                    default="auto")
+    ap.add_argument(
+        "--method",
+        choices=["auto", "simulate", "recurrence", "fast", "pow2"],
+        default="auto",
+    )
     ap.add_argument("--verify", action="store_true", help="cross-validate every method")
     ap.add_argument("--benchmark", action="store_true", help="compare method speeds")
     args = ap.parse_args(argv)
@@ -523,8 +540,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"n={n} k={k}: survivor is position {answer}")
 
     if args.order:
-        print("elimination order:",
-              ", ".join(map(str, elimination_order(n, k, start=args.start))))
+        print(
+            "elimination order:",
+            ", ".join(map(str, elimination_order(n, k, start=args.start))),
+        )
 
     if args.animate:
         if n > 40:

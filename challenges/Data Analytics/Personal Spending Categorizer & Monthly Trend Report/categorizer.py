@@ -41,7 +41,9 @@ class ColumnMapping:
 def resolve_column(df: pl.DataFrame, role: str, override: str | None) -> str:
     if override:
         if override not in df.columns:
-            raise ValueError(f"column {override!r} not found; available columns: {df.columns}")
+            raise ValueError(
+                f"column {override!r} not found; available columns: {df.columns}"
+            )
         return override
     lowered = {c.lower(): c for c in df.columns}
     for alias in COLUMN_ALIASES[role]:
@@ -72,23 +74,30 @@ def parse_amount_expr(col: str) -> pl.Expr:
     return pl.when(is_paren_negative).then(-value.abs()).otherwise(value)
 
 
-def load_transactions(path: Path, mapping_overrides: tuple[str | None, str | None, str | None]) -> tuple[
-    pl.DataFrame, ColumnMapping
-]:
+def load_transactions(
+    path: Path, mapping_overrides: tuple[str | None, str | None, str | None]
+) -> tuple[pl.DataFrame, ColumnMapping]:
     raw = pl.read_csv(path, infer_schema_length=10_000)
     mapping = resolve_mapping(raw, *mapping_overrides)
 
-    df = raw.select(
-        pl.col(mapping.date).alias("_date_raw"),
-        pl.col(mapping.description).cast(pl.Utf8).fill_null("").alias("description"),
-        parse_amount_expr(mapping.amount).alias("amount"),
-    ).with_columns(
-        pl.coalesce(
-            pl.col("_date_raw").str.to_date("%Y-%m-%d", strict=False),
-            pl.col("_date_raw").str.to_date("%m/%d/%Y", strict=False),
-            pl.col("_date_raw").str.to_date("%m-%d-%Y", strict=False),
-        ).alias("date")
-    ).drop("_date_raw")
+    df = (
+        raw.select(
+            pl.col(mapping.date).alias("_date_raw"),
+            pl.col(mapping.description)
+            .cast(pl.Utf8)
+            .fill_null("")
+            .alias("description"),
+            parse_amount_expr(mapping.amount).alias("amount"),
+        )
+        .with_columns(
+            pl.coalesce(
+                pl.col("_date_raw").str.to_date("%Y-%m-%d", strict=False),
+                pl.col("_date_raw").str.to_date("%m/%d/%Y", strict=False),
+                pl.col("_date_raw").str.to_date("%m-%d-%Y", strict=False),
+            ).alias("date")
+        )
+        .drop("_date_raw")
+    )
 
     df = df.filter(pl.col("amount").is_not_null())
     return df, mapping
@@ -106,21 +115,29 @@ def compile_rules(rules: dict[str, list[str]]) -> list[tuple[str, re.Pattern[str
     return compiled
 
 
-def categorize(description: str, compiled_rules: list[tuple[str, re.Pattern[str]]]) -> str:
+def categorize(
+    description: str, compiled_rules: list[tuple[str, re.Pattern[str]]]
+) -> str:
     for category, pattern in compiled_rules:
         if pattern.search(description):
             return category
     return UNCATEGORIZED
 
 
-def categorize_transactions(df: pl.DataFrame, rules: dict[str, list[str]]) -> pl.DataFrame:
+def categorize_transactions(
+    df: pl.DataFrame, rules: dict[str, list[str]]
+) -> pl.DataFrame:
     compiled_rules = compile_rules(rules)
-    categories = [categorize(desc, compiled_rules) for desc in df["description"].to_list()]
+    categories = [
+        categorize(desc, compiled_rules) for desc in df["description"].to_list()
+    ]
     return df.with_columns(pl.Series("category", categories))
 
 
 def _fig_to_div(fig: go.Figure) -> str:
-    return pio.to_html(fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False})
+    return pio.to_html(
+        fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False}
+    )
 
 
 def build_monthly_category_chart(spend: pl.DataFrame) -> str:
@@ -137,7 +154,9 @@ def build_monthly_category_chart(spend: pl.DataFrame) -> str:
     for category in sorted(pivot["category"].unique().to_list()):
         cat_rows = pivot.filter(pl.col("category") == category)
         by_month = dict(zip(cat_rows["month"].to_list(), cat_rows["spend"].to_list()))
-        fig.add_trace(go.Bar(name=category, x=months, y=[by_month.get(m, 0.0) for m in months]))
+        fig.add_trace(
+            go.Bar(name=category, x=months, y=[by_month.get(m, 0.0) for m in months])
+        )
     fig.update_layout(
         barmode="stack",
         title="Monthly spend by category",
@@ -157,13 +176,25 @@ def build_total_trend_chart(spend: pl.DataFrame) -> str:
         .agg(pl.col("spend").sum())
         .sort("month")
     )
-    fig = go.Figure(go.Scatter(x=monthly["month"].to_list(), y=monthly["spend"].to_list(), mode="lines+markers"))
-    fig.update_layout(title="Total monthly spend", margin=dict(l=40, r=20, t=40, b=30), height=280)
+    fig = go.Figure(
+        go.Scatter(
+            x=monthly["month"].to_list(),
+            y=monthly["spend"].to_list(),
+            mode="lines+markers",
+        )
+    )
+    fig.update_layout(
+        title="Total monthly spend", margin=dict(l=40, r=20, t=40, b=30), height=280
+    )
     return _fig_to_div(fig)
 
 
 def build_category_totals_table(spend: pl.DataFrame) -> str:
-    totals = spend.group_by("category").agg(pl.col("spend").sum()).sort("spend", descending=True)
+    totals = (
+        spend.group_by("category")
+        .agg(pl.col("spend").sum())
+        .sort("spend", descending=True)
+    )
     rows = "\n".join(
         f"<tr><td>{html.escape(cat)}</td><td>{amt:,.2f}</td></tr>"
         for cat, amt in zip(totals["category"].to_list(), totals["spend"].to_list())
@@ -178,7 +209,9 @@ def build_uncategorized_sample(spend: pl.DataFrame, limit: int = 15) -> str:
     rows = "\n".join(
         f"<tr><td>{d}</td><td>{html.escape(desc)}</td><td>{amt:,.2f}</td></tr>"
         for d, desc, amt in zip(
-            uncategorized["date"].to_list(), uncategorized["description"].to_list(), uncategorized["spend"].to_list()
+            uncategorized["date"].to_list(),
+            uncategorized["description"].to_list(),
+            uncategorized["spend"].to_list(),
         )
     )
     return f"<table class='totals'><tr><th>Date</th><th>Description</th><th>Amount</th></tr>{rows}</table>"
@@ -200,7 +233,9 @@ table.totals td:last-child, table.totals th:last-child { text-align: right; }
 
 
 def render_report(df: pl.DataFrame) -> str:
-    spend = df.filter(pl.col("amount") < 0).with_columns((-pl.col("amount")).alias("spend"))
+    spend = df.filter(pl.col("amount") < 0).with_columns(
+        (-pl.col("amount")).alias("spend")
+    )
     income_total = df.filter(pl.col("amount") > 0)["amount"].sum() or 0.0
     spend_total = spend["spend"].sum() or 0.0
     uncategorized_count = spend.filter(pl.col("category") == UNCATEGORIZED).height
@@ -244,7 +279,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("csv_path", type=Path, help="Path to the bank transactions CSV")
     parser.add_argument("-o", "--output", type=Path, default=Path("report.html"))
-    parser.add_argument("--rules", type=Path, default=DEFAULT_RULES_PATH, help="Path to a category rules JSON file")
+    parser.add_argument(
+        "--rules",
+        type=Path,
+        default=DEFAULT_RULES_PATH,
+        help="Path to a category rules JSON file",
+    )
     parser.add_argument("--date-col", type=str, default=None)
     parser.add_argument("--desc-col", type=str, default=None)
     parser.add_argument("--amount-col", type=str, default=None)
@@ -255,7 +295,9 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     try:
-        df, mapping = load_transactions(args.csv_path, (args.date_col, args.desc_col, args.amount_col))
+        df, mapping = load_transactions(
+            args.csv_path, (args.date_col, args.desc_col, args.amount_col)
+        )
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

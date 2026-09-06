@@ -54,7 +54,10 @@ def make_corpus(n: int, length: int, alphabet: str, seed: int = 0) -> list[str]:
     realistic lengths, and grouping is only interesting when groups exist.
     """
     rng = random.Random(seed)
-    pool = ["".join(rng.choice(alphabet) for _ in range(length)) for _ in range(max(1, n // 4))]
+    pool = [
+        "".join(rng.choice(alphabet) for _ in range(length))
+        for _ in range(max(1, n // 4))
+    ]
     out = []
     for _ in range(n):
         chars = list(rng.choice(pool))
@@ -97,12 +100,18 @@ def bench_keys(lengths: list[int], per_length: int = 20_000) -> None:
 
     for length in lengths:
         rng = random.Random(length)
-        words = ["".join(rng.choice(string.ascii_lowercase) for _ in range(length))
-                 for _ in range(per_length)]
+        words = [
+            "".join(rng.choice(string.ascii_lowercase) for _ in range(length))
+            for _ in range(per_length)
+        ]
 
         row = [f"{length:>8}"]
-        for name, fn in [("sorted", key_sorted), ("counter", key_counter),
-                         ("hash", multiset_hash), ("primes", key_primes)]:
+        for name, fn in [
+            ("sorted", key_sorted),
+            ("counter", key_counter),
+            ("hash", multiset_hash),
+            ("primes", key_primes),
+        ]:
             secs, _ = timed(lambda: [fn(w) for w in words], repeat=2)
             row.append(f"{secs / len(words) * 1e9:>12.0f}")
         if np is not None:
@@ -125,8 +134,10 @@ def bench_keys(lengths: list[int], per_length: int = 20_000) -> None:
 
 def bench_grouping(sizes: list[int], length: int = 8) -> None:
     print(f"\n== end-to-end grouping, words of length {length} ==")
-    header = (f"{'words':>10} {'method':>10} {'seconds':>10} {'us/word':>9} "
-              f"{'peak MiB':>10} {'groups':>10}")
+    header = (
+        f"{'words':>10} {'method':>10} {'seconds':>10} {'us/word':>9} "
+        f"{'peak MiB':>10} {'groups':>10}"
+    )
     print(header)
     print("-" * len(header))
 
@@ -143,9 +154,13 @@ def bench_grouping(sizes: list[int], length: int = 8) -> None:
             tracemalloc.stop()
             if baseline is None:
                 baseline = len(groups)
-            assert len(groups) == baseline, f"{method} disagreed: {len(groups)} vs {baseline}"
-            print(f"{n:>10} {method:>10} {secs:>10.3f} {secs / n * 1e6:>9.2f} "
-                  f"{peak / 2**20:>10.1f} {len(groups):>10}")
+            assert len(groups) == baseline, (
+                f"{method} disagreed: {len(groups)} vs {baseline}"
+            )
+            print(
+                f"{n:>10} {method:>10} {secs:>10.3f} {secs / n * 1e6:>9.2f} "
+                f"{peak / 2**20:>10.1f} {len(groups):>10}"
+            )
             del groups
         print()
 
@@ -165,8 +180,10 @@ def bench_key_bytes(lengths: list[int]) -> None:
     print("-" * len(header))
     for length in lengths:
         rng = random.Random(length + 1)
-        words = ["".join(rng.choice(string.ascii_lowercase) for _ in range(length))
-                 for _ in range(2000)]
+        words = [
+            "".join(rng.choice(string.ascii_lowercase) for _ in range(length))
+            for _ in range(2000)
+        ]
         row = [f"{length:>8}"]
         for fn in (key_sorted, key_counter, key_primes, multiset_hash):
             row.append(f"{statistics.mean(sys.getsizeof(fn(w)) for w in words):>10.0f}")
@@ -183,17 +200,43 @@ def bench_prime_bits() -> None:
     alphabetical = dict(zip(letters, sorted(PRIME_TABLE.values())))
 
     uniform_pred = statistics.mean(math.log2(p) for p in PRIME_TABLE.values())
-    print(f"E[log2 p] over a uniform letter, either ordering: {uniform_pred:.3f} bits/char")
+    print(
+        f"E[log2 p] over a uniform letter, either ordering: {uniform_pred:.3f} bits/char"
+    )
 
     # English letter frequencies (Norvig's Google Books count, rounded).
     freq = {
-        "e": .1249, "t": .0928, "a": .0804, "o": .0764, "i": .0757, "n": .0723,
-        "s": .0651, "r": .0628, "h": .0505, "l": .0407, "d": .0382, "c": .0334,
-        "u": .0273, "m": .0251, "f": .0240, "p": .0214, "g": .0187, "w": .0168,
-        "y": .0166, "b": .0148, "v": .0105, "k": .0054, "x": .0023, "j": .0016,
-        "q": .0012, "z": .0009,
+        "e": 0.1249,
+        "t": 0.0928,
+        "a": 0.0804,
+        "o": 0.0764,
+        "i": 0.0757,
+        "n": 0.0723,
+        "s": 0.0651,
+        "r": 0.0628,
+        "h": 0.0505,
+        "l": 0.0407,
+        "d": 0.0382,
+        "c": 0.0334,
+        "u": 0.0273,
+        "m": 0.0251,
+        "f": 0.0240,
+        "p": 0.0214,
+        "g": 0.0187,
+        "w": 0.0168,
+        "y": 0.0166,
+        "b": 0.0148,
+        "v": 0.0105,
+        "k": 0.0054,
+        "x": 0.0023,
+        "j": 0.0016,
+        "q": 0.0012,
+        "z": 0.0009,
     }
-    for name, table in [("frequency-ordered", PRIME_TABLE), ("alphabetical", alphabetical)]:
+    for name, table in [
+        ("frequency-ordered", PRIME_TABLE),
+        ("alphabetical", alphabetical),
+    ]:
         pred = sum(freq[c] * math.log2(table[c]) for c in letters) / sum(freq.values())
         text = "".join(rng_word(freq) for _ in range(20_000))
         measured = key_primes(text, table).bit_length() / len(text)
@@ -236,10 +279,14 @@ def bench_external(n: int = 400_000, chunk: int = 25_000) -> None:
     tracemalloc.stop()
 
     print(f"  in-memory:  {mem_secs:6.2f}s  peak {mem_peak / 2**20:7.1f} MiB")
-    print(f"  external:   {ext_secs:6.2f}s  peak {ext_peak / 2**20:7.1f} MiB  "
-          f"({n // chunk + 1} runs)")
+    print(
+        f"  external:   {ext_secs:6.2f}s  peak {ext_peak / 2**20:7.1f} MiB  "
+        f"({n // chunk + 1} runs)"
+    )
     print(f"  groups agree: {count}")
-    print("\nThe external path trades wall time for a memory ceiling set by chunk_size,")
+    print(
+        "\nThe external path trades wall time for a memory ceiling set by chunk_size,"
+    )
     print("not by the corpus. Halve chunk_size and the peak roughly halves.")
 
 
@@ -253,7 +300,9 @@ def bench_hash_quality(n: int = 300_000) -> None:
     words = ["".join(p) for p in _distinct_multisets("abcdefgh", 8)][:n]
     hashes = {multiset_hash(w) for w in words}
     print(f"  distinct multisets: {len(words)}")
-    print(f"  distinct 128-bit hashes: {len(hashes)}  (collisions: {len(words) - len(hashes)})")
+    print(
+        f"  distinct 128-bit hashes: {len(hashes)}  (collisions: {len(words) - len(hashes)})"
+    )
     expected = len(words) ** 2 / 2**129
     print(f"  birthday expectation at 128 bits: {expected:.3g} collisions")
 
@@ -261,9 +310,11 @@ def bench_hash_quality(n: int = 300_000) -> None:
     shards = Counter(h % 1024 for h in hashes)
     counts = list(shards.values())
     mean = statistics.mean(counts)
-    print(f"  1024-way shard balance: mean {mean:.1f}, "
-          f"stdev {statistics.pstdev(counts):.1f}, "
-          f"Poisson stdev {math.sqrt(mean):.1f}")
+    print(
+        f"  1024-way shard balance: mean {mean:.1f}, "
+        f"stdev {statistics.pstdev(counts):.1f}, "
+        f"Poisson stdev {math.sqrt(mean):.1f}"
+    )
     print("  (a good hash matches the Poisson prediction; a bad one clusters)")
 
 
@@ -286,7 +337,9 @@ def bench_index(n: int = 200_000) -> None:
     queries = words[::37]
     lookup, _ = timed(lambda: [idx.lookup(w) for w in queries], repeat=3)
     print(f"  build:  {build:.2f}s  ({build / n * 1e6:.2f} us/word)")
-    print(f"  lookup: {lookup / len(queries) * 1e6:.2f} us/query over {len(queries)} queries")
+    print(
+        f"  lookup: {lookup / len(queries) * 1e6:.2f} us/query over {len(queries)} queries"
+    )
     for k, v in idx.stats().items():
         print(f"    {k:>16}: {v:.3f}" if isinstance(v, float) else f"    {k:>16}: {v}")
 
@@ -297,10 +350,15 @@ def bench_index(n: int = 200_000) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--sizes", type=int, nargs="+", default=[100_000, 1_000_000])
-    parser.add_argument("--lengths", type=int, nargs="+", default=[4, 8, 16, 64, 256, 1024])
-    parser.add_argument("--quick", action="store_true", help="smaller inputs, ~15s total")
     parser.add_argument(
-        "--only", nargs="+",
+        "--lengths", type=int, nargs="+", default=[4, 8, 16, 64, 256, 1024]
+    )
+    parser.add_argument(
+        "--quick", action="store_true", help="smaller inputs, ~15s total"
+    )
+    parser.add_argument(
+        "--only",
+        nargs="+",
         choices=["keys", "grouping", "bytes", "primes", "external", "hash", "index"],
     )
     args = parser.parse_args(argv)
@@ -317,8 +375,12 @@ def main(argv: list[str] | None = None) -> int:
     run("grouping", bench_grouping, sizes)
     run("bytes", bench_key_bytes, [4, 8, 16, 64])
     run("primes", bench_prime_bits)
-    run("external", bench_external, 50_000 if args.quick else 400_000,
-        5_000 if args.quick else 25_000)
+    run(
+        "external",
+        bench_external,
+        50_000 if args.quick else 400_000,
+        5_000 if args.quick else 25_000,
+    )
     run("hash", bench_hash_quality, 50_000 if args.quick else 300_000)
     run("index", bench_index, 20_000 if args.quick else 200_000)
     return 0

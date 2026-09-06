@@ -38,7 +38,9 @@ from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES, Step
 
 
 def test_caption_template_erases_numbers():
-    assert caption_template("Compare adjacent pair 3, 4") == "Compare adjacent pair #, #"
+    assert (
+        caption_template("Compare adjacent pair 3, 4") == "Compare adjacent pair #, #"
+    )
     assert caption_template("Compare adjacent pair 3, 4") == caption_template(
         "Compare adjacent pair 12, 13"
     )
@@ -50,7 +52,10 @@ def test_caption_template_distinguishes_different_sentences():
 
 
 def test_novel_characters_counts_only_the_middle():
-    assert novel_characters("Compare adjacent pair 3, 4", "Compare adjacent pair 4, 5") == 4
+    assert (
+        novel_characters("Compare adjacent pair 3, 4", "Compare adjacent pair 4, 5")
+        == 4
+    )
     assert novel_characters("Swap 1, 2", "Swap 1, 2") == 0
     assert novel_characters(None, "anything") == len("anything")
     assert novel_characters("", "abc") == 3
@@ -193,7 +198,8 @@ def test_the_template_trick_actually_saves_time():
         steps = list(fn(list(BASE_ARRAY)))
         total_now += scene_duration(steps, key, SUBTITLES[key])["total"]
         total_naive += sum(
-            max(MIN_HOLD_FIRST, min(len(s.caption) / CPS_FIRST, MAX_HOLD)) for s in steps
+            max(MIN_HOLD_FIRST, min(len(s.caption) / CPS_FIRST, MAX_HOLD))
+            for s in steps
         )
     assert total_naive > 1.4 * total_now
 

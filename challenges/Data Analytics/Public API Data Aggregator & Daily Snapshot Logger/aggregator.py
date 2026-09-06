@@ -134,7 +134,9 @@ def store_snapshot(conn: sqlite3.Connection, snapshot: Snapshot) -> None:
     conn.commit()
 
 
-def load_snapshots(conn: sqlite3.Connection, location: str | None = None) -> list[dict[str, Any]]:
+def load_snapshots(
+    conn: sqlite3.Connection, location: str | None = None
+) -> list[dict[str, Any]]:
     query = "SELECT * FROM snapshots"
     params: tuple[Any, ...] = ()
     if location:
@@ -190,25 +192,63 @@ def cmd_report(args: argparse.Namespace) -> int:
     conn.close()
 
     if not rows:
-        print("error: no snapshots found -- run `poll` or `seed` first", file=sys.stderr)
+        print(
+            "error: no snapshots found -- run `poll` or `seed` first", file=sys.stderr
+        )
         return 1
 
     df = pl.DataFrame(rows).sort("date")
     dates = df["date"].to_list()
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=dates, y=df["temp_max_c"].to_list(), name="Max temp (°C)", line=dict(color="#F58518")))
-    fig.add_trace(go.Scatter(x=dates, y=df["temperature_c"].to_list(), name="Reading (°C)", line=dict(color="#4C78A8")))
-    fig.add_trace(go.Scatter(x=dates, y=df["temp_min_c"].to_list(), name="Min temp (°C)", line=dict(color="#54A24B")))
-    fig.update_layout(title="Temperature over time", margin=dict(l=50, r=20, t=40, b=30), height=320)
-    temp_chart = pio.to_html(fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False})
+    fig.add_trace(
+        go.Scatter(
+            x=dates,
+            y=df["temp_max_c"].to_list(),
+            name="Max temp (°C)",
+            line=dict(color="#F58518"),
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=dates,
+            y=df["temperature_c"].to_list(),
+            name="Reading (°C)",
+            line=dict(color="#4C78A8"),
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=dates,
+            y=df["temp_min_c"].to_list(),
+            name="Min temp (°C)",
+            line=dict(color="#54A24B"),
+        )
+    )
+    fig.update_layout(
+        title="Temperature over time", margin=dict(l=50, r=20, t=40, b=30), height=320
+    )
+    temp_chart = pio.to_html(
+        fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False}
+    )
 
-    precip_fig = go.Figure(go.Bar(x=dates, y=df["precipitation_mm"].to_list(), marker_color="#4C78A8"))
-    precip_fig.update_layout(title="Precipitation (mm)", margin=dict(l=50, r=20, t=40, b=30), height=260)
-    precip_chart = pio.to_html(precip_fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False})
+    precip_fig = go.Figure(
+        go.Bar(x=dates, y=df["precipitation_mm"].to_list(), marker_color="#4C78A8")
+    )
+    precip_fig.update_layout(
+        title="Precipitation (mm)", margin=dict(l=50, r=20, t=40, b=30), height=260
+    )
+    precip_chart = pio.to_html(
+        precip_fig,
+        include_plotlyjs=False,
+        full_html=False,
+        config={"displaylogo": False},
+    )
 
     plotly_js = pio.to_html(go.Figure(), include_plotlyjs="inline", full_html=False)
-    bundle = plotly_js[plotly_js.index("<script") : plotly_js.index("</script>") + len("</script>")]
+    bundle = plotly_js[
+        plotly_js.index("<script") : plotly_js.index("</script>") + len("</script>")
+    ]
 
     locations = df["location"].unique().to_list()
     location_label = locations[0] if len(locations) == 1 else ", ".join(locations)
@@ -239,19 +279,26 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    poll = subparsers.add_parser("poll", help="Fetch one snapshot and upsert it into the database")
+    poll = subparsers.add_parser(
+        "poll", help="Fetch one snapshot and upsert it into the database"
+    )
     poll.add_argument("--db", type=Path, default=DEFAULT_DB)
     poll.add_argument("--location", type=str, default="New York")
     poll.add_argument("--lat", type=float, default=40.7128)
     poll.add_argument("--lon", type=float, default=-74.0060)
     poll.set_defaults(func=cmd_poll)
 
-    seed = subparsers.add_parser("seed", help="Load pre-fetched real snapshots (e.g. historical data) into the database")
+    seed = subparsers.add_parser(
+        "seed",
+        help="Load pre-fetched real snapshots (e.g. historical data) into the database",
+    )
     seed.add_argument("--db", type=Path, default=DEFAULT_DB)
     seed.add_argument("--input", type=Path, required=True)
     seed.set_defaults(func=cmd_seed)
 
-    report = subparsers.add_parser("report", help="Render a self-contained HTML trend report from the database")
+    report = subparsers.add_parser(
+        "report", help="Render a self-contained HTML trend report from the database"
+    )
     report.add_argument("--db", type=Path, default=DEFAULT_DB)
     report.add_argument("--location", type=str, default=None)
     report.add_argument("-o", "--output", type=Path, default=Path("report.html"))

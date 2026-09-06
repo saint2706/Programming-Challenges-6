@@ -18,8 +18,6 @@ from pathlib import Path
 import pytest
 
 from anagrams import (
-    DEFAULT_NORMALIZER,
-    METHODS,
     PRIME_TABLE,
     AnagramIndex,
     Normalizer,
@@ -77,7 +75,9 @@ def test_prime_method_matches_oracle_on_its_alphabet():
     rng = random.Random(99)
     for _ in range(200):
         words = [
-            "".join(rng.choice(string.ascii_lowercase) for _ in range(rng.randint(0, 7)))
+            "".join(
+                rng.choice(string.ascii_lowercase) for _ in range(rng.randint(0, 7))
+            )
             for _ in range(rng.randint(0, 30))
         ]
         assert canonical(group_anagrams(words, method="primes")) == oracle(words)
@@ -85,7 +85,10 @@ def test_prime_method_matches_oracle_on_its_alphabet():
 
 def test_external_matches_in_memory_across_chunk_sizes():
     rng = random.Random(7)
-    words = ["".join(rng.choice("abcd") for _ in range(rng.randint(0, 6))) for _ in range(400)]
+    words = [
+        "".join(rng.choice("abcd") for _ in range(rng.randint(0, 6)))
+        for _ in range(400)
+    ]
     expected = oracle(words)
     # chunk_size 1 forces one spilled run per word: the worst case for the merge.
     for chunk in (1, 2, 7, 399, 400, 401, 10_000):
@@ -94,7 +97,9 @@ def test_external_matches_in_memory_across_chunk_sizes():
 
 def test_index_matches_grouping():
     rng = random.Random(21)
-    words = ["".join(rng.choice("abc") for _ in range(rng.randint(0, 5))) for _ in range(300)]
+    words = [
+        "".join(rng.choice("abc") for _ in range(rng.randint(0, 5))) for _ in range(300)
+    ]
     assert canonical(AnagramIndex(words).groups()) == oracle(words)
 
 
@@ -163,7 +168,12 @@ def test_ordering_is_first_appearance():
 
 def test_sort_groups_orders_by_size_then_first_word():
     words = ["cd", "b", "a", "dc", "e"]
-    assert group_anagrams(words, sort_groups=True) == [["cd", "dc"], ["a"], ["b"], ["e"]]
+    assert group_anagrams(words, sort_groups=True) == [
+        ["cd", "dc"],
+        ["a"],
+        ["b"],
+        ["e"],
+    ]
 
 
 def test_long_word_takes_the_counter_path_and_still_agrees():
@@ -171,7 +181,9 @@ def test_long_word_takes_the_counter_path_and_still_agrees():
     for length in (99, 100, 101, 400):
         a = "ab" * (length // 2) + "a" * (length % 2)
         b = "".join(sorted(a, reverse=True))
-        assert canonical(group_anagrams([a, b])) == canonical(group_anagrams([a, b], method="sorted"))
+        assert canonical(group_anagrams([a, b])) == canonical(
+            group_anagrams([a, b], method="sorted")
+        )
         assert len(group_anagrams([a, b])) == 1
 
 
@@ -201,20 +213,28 @@ def test_nfc_merges_precomposed_and_decomposed():
     assert precomposed != decomposed
     assert group_anagrams([precomposed, decomposed]) == [[precomposed, decomposed]]
     # ...and Normalizer.exact() keeps them apart, as documented.
-    assert len(group_anagrams([precomposed, decomposed], normalizer=Normalizer.exact())) == 2
+    assert (
+        len(group_anagrams([precomposed, decomposed], normalizer=Normalizer.exact()))
+        == 2
+    )
 
 
 def test_graphemes_keep_accents_attached_to_their_base():
     """Under NFD, "éa" and "eá" have equal codepoint multisets but are not anagrams."""
     ea, e_a = "éa", "eá"
     assert len(group_anagrams([ea, e_a], normalizer=Normalizer(form="NFD"))) == 1
-    assert len(group_anagrams([ea, e_a], normalizer=Normalizer(form="NFD", graphemes=True))) == 2
+    assert (
+        len(
+            group_anagrams([ea, e_a], normalizer=Normalizer(form="NFD", graphemes=True))
+        )
+        == 2
+    )
     # NFC also fixes it, by never splitting the accent off in the first place.
     assert len(group_anagrams([ea, e_a])) == 2
 
 
 def test_casefold_beats_lower_on_sharp_s():
-    """"ß".lower() is itself; "ß".casefold() is "ss"."""
+    """ "ß".lower() is itself; "ß".casefold() is "ss"."""
     norm = Normalizer(casefold=True)
     assert are_anagrams("straße", "strasse", normalizer=norm)
     assert not are_anagrams("straße", "strasse")
@@ -240,7 +260,7 @@ def test_phrase_normalizer_handles_the_classics():
 
 
 def test_default_normalizer_is_case_and_space_sensitive():
-    """"The eyes"/"They see" needs no normaliser (the spaces line up); the rest do."""
+    """ "The eyes"/"They see" needs no normaliser (the spaces line up); the rest do."""
     assert are_anagrams("The eyes", "They see")
     for a, b in [
         ("Dormitory", "Dirty Room"),
@@ -342,8 +362,32 @@ def test_key_primes_rejects_letters_outside_its_table():
 def test_prime_table_is_a_bijection_onto_the_first_26_primes():
     assert sorted(PRIME_TABLE) == list(string.ascii_lowercase)
     assert sorted(PRIME_TABLE.values()) == [
-        2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
-        59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
+        2,
+        3,
+        5,
+        7,
+        11,
+        13,
+        17,
+        19,
+        23,
+        29,
+        31,
+        37,
+        41,
+        43,
+        47,
+        53,
+        59,
+        61,
+        67,
+        71,
+        73,
+        79,
+        83,
+        89,
+        97,
+        101,
     ]
 
 
@@ -356,11 +400,14 @@ def test_frequency_ordered_primes_beat_alphabetical_ones():
     alphabetical = dict(zip(string.ascii_lowercase, sorted(PRIME_TABLE.values())))
     text = "the quick brown fox jumps over the lazy dog" * 20
     letters = [c for c in text if c in PRIME_TABLE]
-    assert key_primes(letters).bit_length() < key_primes(letters, alphabetical).bit_length()
+    assert (
+        key_primes(letters).bit_length()
+        < key_primes(letters, alphabetical).bit_length()
+    )
 
 
 def test_key_bincount_matches_key_counter_grouping():
-    np = pytest.importorskip("numpy")
+    pytest.importorskip("numpy")
     words = ["aabbc", "abcab", "abcde", "edcba", "zzz"]
     by_bincount: dict[bytes, list[str]] = {}
     for w in words:
@@ -370,7 +417,7 @@ def test_key_bincount_matches_key_counter_grouping():
 
 def test_key_bincount_counts_do_not_overflow_uint8():
     """A word with 300 copies of one letter would wrap a byte-wide count vector."""
-    np = pytest.importorskip("numpy")
+    pytest.importorskip("numpy")
     assert key_bincount("a" * 300) != key_bincount("a" * 44)
 
 
@@ -414,8 +461,12 @@ def test_multiset_hash_is_deterministic_across_processes():
     script = "import anagrams; print(anagrams.multiset_hash('scale'))"
     runs = {
         subprocess.run(
-            [sys.executable, "-c", script], cwd=HERE, capture_output=True, text=True,
-            env={"PYTHONHASHSEED": str(seed), "PATH": "/usr/bin:/bin"}, check=True,
+            [sys.executable, "-c", script],
+            cwd=HERE,
+            capture_output=True,
+            text=True,
+            env={"PYTHONHASHSEED": str(seed), "PATH": "/usr/bin:/bin"},
+            check=True,
         ).stdout.strip()
         for seed in (0, 1, 42)
     }
@@ -483,14 +534,19 @@ def test_shard_count_must_be_positive():
 
 def test_parallel_matches_serial_below_the_pool_threshold():
     rng = random.Random(11)
-    words = ["".join(rng.choice("abc") for _ in range(rng.randint(0, 5))) for _ in range(500)]
+    words = [
+        "".join(rng.choice("abc") for _ in range(rng.randint(0, 5))) for _ in range(500)
+    ]
     assert canonical(group_anagrams_parallel(words, workers=4)) == oracle(words)
 
 
 @pytest.mark.slow
 def test_parallel_matches_serial_above_the_pool_threshold():
     rng = random.Random(13)
-    words = ["".join(rng.choice("abcd") for _ in range(rng.randint(1, 6))) for _ in range(60_000)]
+    words = [
+        "".join(rng.choice("abcd") for _ in range(rng.randint(1, 6)))
+        for _ in range(60_000)
+    ]
     assert canonical(group_anagrams_parallel(words, workers=2)) == oracle(words)
 
 
@@ -595,7 +651,9 @@ def test_external_on_empty_input():
 def test_groups_partition_the_corpus():
     """Every word appears exactly once, across every method."""
     rng = random.Random(17)
-    words = ["".join(rng.choice("abc") for _ in range(rng.randint(0, 5))) for _ in range(200)]
+    words = [
+        "".join(rng.choice("abc") for _ in range(rng.randint(0, 5))) for _ in range(200)
+    ]
     for method in EXACT_METHODS:
         groups = group_anagrams(words, method=method)
         assert Counter(w for g in groups for w in g) == Counter(words)
@@ -604,7 +662,9 @@ def test_groups_partition_the_corpus():
 def test_anagram_relation_is_an_equivalence():
     """Reflexive, symmetric, transitive -- so "group" is even well defined."""
     rng = random.Random(19)
-    words = ["".join(rng.choice("abc") for _ in range(rng.randint(0, 4))) for _ in range(40)]
+    words = [
+        "".join(rng.choice("abc") for _ in range(rng.randint(0, 4))) for _ in range(40)
+    ]
     for a in words:
         assert are_anagrams(a, a)
         for b in words:
@@ -617,7 +677,10 @@ def test_anagram_relation_is_an_equivalence():
 def test_group_count_equals_distinct_multiset_count():
     """|groups| = |{multisets}|, the statement the whole module implements."""
     rng = random.Random(23)
-    words = ["".join(rng.choice("abcd") for _ in range(rng.randint(0, 6))) for _ in range(500)]
+    words = [
+        "".join(rng.choice("abcd") for _ in range(rng.randint(0, 6)))
+        for _ in range(500)
+    ]
     distinct = {tuple(sorted(Counter(w).items())) for w in words}
     for method in EXACT_METHODS:
         assert len(group_anagrams(words, method=method)) == len(distinct)
@@ -660,8 +723,10 @@ def test_class_sizes_sum_to_the_alphabet_power():
 def test_half_a_million_words():
     """Grouping stays linear-ish and every method still agrees."""
     rng = random.Random(31)
-    words = ["".join(rng.choice(string.ascii_lowercase[:12]) for _ in range(7))
-             for _ in range(500_000)]
+    words = [
+        "".join(rng.choice(string.ascii_lowercase[:12]) for _ in range(7))
+        for _ in range(500_000)
+    ]
     baseline = len(group_anagrams(words, method="sorted"))
     assert len(group_anagrams(words, method="hash")) == baseline
     assert len(group_anagrams(words, method="counter")) == baseline
@@ -725,6 +790,9 @@ def test_cli_requires_input():
 def test_module_runs_as_a_script():
     result = subprocess.run(
         [sys.executable, "anagrams.py", "--verify"],
-        cwd=HERE, capture_output=True, text=True, check=True,
+        cwd=HERE,
+        capture_output=True,
+        text=True,
+        check=True,
     )
     assert "OK" in result.stdout

@@ -37,14 +37,14 @@ from __future__ import annotations
 import os
 import re
 
-CPS_FIRST = 14.0          # characters/second, first time a caption shape appears
-CPS_REPEAT = 30.0         # characters/second for the changed part of a repeat
-MIN_HOLD_FIRST = 0.9      # even "Sorted" needs a beat to register
-MIN_HOLD_REPEAT = 0.40    # a changed digit still needs a fixation
-MAX_HOLD = 4.0            # nothing here is long enough to justify more
-TITLE_MIN_HOLD = 2.0      # title + subtitle, before the first step
+CPS_FIRST = 14.0  # characters/second, first time a caption shape appears
+CPS_REPEAT = 30.0  # characters/second for the changed part of a repeat
+MIN_HOLD_FIRST = 0.9  # even "Sorted" needs a beat to register
+MIN_HOLD_REPEAT = 0.40  # a changed digit still needs a fixation
+MAX_HOLD = 4.0  # nothing here is long enough to justify more
+TITLE_MIN_HOLD = 2.0  # title + subtitle, before the first step
 
-MOTION_SWAP = 0.30        # a swap moves two bars and needs to be followed
+MOTION_SWAP = 0.30  # a swap moves two bars and needs to be followed
 MOTION_WRITE = 0.30
 MOTION_COMPARE = 0.20
 MOTION_PLAIN = 0.25
@@ -163,18 +163,24 @@ def scene_duration(steps, title: str = "", subtitle: str = "") -> dict[str, floa
 def _report() -> None:
     from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES
 
-    print(f"{'scene':<20} {'steps':>6} {'motion':>9} {'hold':>9} {'total':>9} "
-          f"{'s/step':>8}")
+    print(
+        f"{'scene':<20} {'steps':>6} {'motion':>9} {'hold':>9} {'total':>9} "
+        f"{'s/step':>8}"
+    )
     grand = 0.0
     for key, fn in ALGORITHMS.items():
         steps = list(fn(list(BASE_ARRAY)))
         info = scene_duration(steps, key, SUBTITLES.get(key, ""))
         grand += info["total"]
-        print(f"{key:<20} {info['steps']:>6d} {info['motion']:>8.1f}s "
-              f"{info['hold']:>8.1f}s {info['total']:>8.1f}s "
-              f"{info['total'] / info['steps']:>7.2f}s")
-    print(f"{'':<20} {'':>6} {'':>9} {'':>9} {grand:>8.1f}s "
-          f"({grand / 60:.1f} min for all 14)")
+        print(
+            f"{key:<20} {info['steps']:>6d} {info['motion']:>8.1f}s "
+            f"{info['hold']:>8.1f}s {info['total']:>8.1f}s "
+            f"{info['total'] / info['steps']:>7.2f}s"
+        )
+    print(
+        f"{'':<20} {'':>6} {'':>9} {'':>9} {grand:>8.1f}s "
+        f"({grand / 60:.1f} min for all 14)"
+    )
     if HOLD_SCALE != 1.0:
         print(f"\n(SORT_RACE_HOLD_SCALE={HOLD_SCALE} is in effect)")
 

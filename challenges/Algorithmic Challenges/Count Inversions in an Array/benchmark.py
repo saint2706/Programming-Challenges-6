@@ -120,7 +120,9 @@ def bench_scaling(sizes: list[int]) -> None:
         print(f"{n:>10} " + " ".join(cells))
 
     print("\n'--' means the method was skipped as too slow to be informative.")
-    print("Every timed method returned the identical count, which is asserted, not hoped.")
+    print(
+        "Every timed method returned the identical count, which is asserted, not hoped."
+    )
 
 
 def bench_per_element(sizes: list[int]) -> None:
@@ -135,9 +137,16 @@ def bench_per_element(sizes: list[int]) -> None:
         for name in names:
             secs, _ = timed(METHODS[name], a, repeat=1 if n > 200_000 else 3)
             per[name] = secs / n * 1e9
-        best = min(per[m] for m in names if m in ("numpy", "radix")) if np else float("nan")
-        print(f"{n:>10} " + " ".join(f"{per[m]:>11.1f}" for m in names)
-              + f" {per['mergesort'] / best:>8.1f}x")
+        best = (
+            min(per[m] for m in names if m in ("numpy", "radix"))
+            if np
+            else float("nan")
+        )
+        print(
+            f"{n:>10} "
+            + " ".join(f"{per[m]:>11.1f}" for m in names)
+            + f" {per['mergesort'] / best:>8.1f}x"
+        )
     print("\n'speedup' is mergesort over the better of the two vectorised methods.")
     print("`radix` is O(n log n) and `numpy` is O(n log^2 n), yet `numpy` wins at the")
     print("top of the table: the radix method scatters across the whole array once")
@@ -157,11 +166,16 @@ def bench_insort_crossover() -> None:
     print("-" * len(header))
     for n in [100, 300, 1000, 2000, 3000, 5000, 10_000, 30_000]:
         a = random_array(n, seed=n + 2)
-        times = {name: timed(METHODS[name], a, repeat=5 if n < 5000 else 2)[0]
-                 for name in ("insort", "mergesort", "fenwick")}
+        times = {
+            name: timed(METHODS[name], a, repeat=5 if n < 5000 else 2)[0]
+            for name in ("insort", "mergesort", "fenwick")
+        }
         winner = min(times, key=times.get)
-        print(f"{n:>8} " + " ".join(f"{times[m]:>11.5f}" for m in
-                                    ("insort", "mergesort", "fenwick")) + f" {winner:>11}")
+        print(
+            f"{n:>8} "
+            + " ".join(f"{times[m]:>11.5f}" for m in ("insort", "mergesort", "fenwick"))
+            + f" {winner:>11}"
+        )
     print("\nThe quadratic method wins for a surprisingly long time because a list")
     print("insertion is one memmove of a few kilobytes, while a merge step is n")
     print("bytecode dispatches. `count_inversions(method='auto')` uses n = 3000.")
@@ -179,10 +193,14 @@ def _vectorised_crossover() -> None:
     for n in [10_000, 30_000, 100_000, 300_000, 500_000, 1_000_000, 2_000_000]:
         a = random_array(n, seed=n + 7)
         reps = 3 if n <= 300_000 else 1
-        times = {name: timed(METHODS[name], a, repeat=reps)[0] for name in ("radix", "numpy")}
+        times = {
+            name: timed(METHODS[name], a, repeat=reps)[0] for name in ("radix", "numpy")
+        }
         winner = min(times, key=times.get)
-        print(f"{n:>9} {n * 8 / 2**20:>7.1f} {times['radix']:>9.4f} "
-              f"{times['numpy']:>9.4f} {winner:>9}")
+        print(
+            f"{n:>9} {n * 8 / 2**20:>7.1f} {times['radix']:>9.4f} "
+            f"{times['numpy']:>9.4f} {winner:>9}"
+        )
     print("\nThe MiB column is one int64 array; both methods keep several live. The")
     print("crossover lands where that working set stops fitting in last-level cache,")
     print("which is the whole explanation -- nothing about the algorithms changes.")
@@ -210,11 +228,13 @@ def bench_shapes(n: int = 200_000) -> None:
         "random": random_array(n, seed=4),
         "all equal": [0] * n,
         "two values": [rng.randrange(2) for _ in range(n)],
-        "sorted blocks": [x for b in range(0, n, 1000) for x in range(b + 999, b - 1, -1)],
+        "sorted blocks": [
+            x for b in range(0, n, 1000) for x in range(b + 999, b - 1, -1)
+        ],
     }
 
     names = ["mergesort", "fenwick"] + (["numpy", "radix"] if np is not None else [])
-    header = (f"{'shape':>15} {'inversions':>14} " + " ".join(f"{m:>10}" for m in names))
+    header = f"{'shape':>15} {'inversions':>14} " + " ".join(f"{m:>10}" for m in names)
     print(header)
     print("-" * len(header))
     for label, a in shapes.items():
@@ -225,8 +245,11 @@ def bench_shapes(n: int = 200_000) -> None:
             assert got == count, f"{name} disagreed on {label}"
             times.append(secs)
         frac = count / max_inversions(n) if n > 1 else 0
-        print(f"{label:>15} {count:>14,} " + " ".join(f"{t:>10.3f}" for t in times)
-              + f"   ({frac:.1%} of max)")
+        print(
+            f"{label:>15} {count:>14,} "
+            + " ".join(f"{t:>10.3f}" for t in times)
+            + f"   ({frac:.1%} of max)"
+        )
 
     print("\nAll three are data-oblivious: the work is the same whether the answer is")
     print("0 or C(n,2). That is a feature -- no adversarial input degrades them --")
@@ -293,10 +316,13 @@ def bench_variants(n: int = 200_000) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--quick", action="store_true", help="smaller inputs, ~20s total")
+    parser.add_argument(
+        "--quick", action="store_true", help="smaller inputs, ~20s total"
+    )
     parser.add_argument("--sizes", type=int, nargs="+")
     parser.add_argument(
-        "--only", nargs="+",
+        "--only",
+        nargs="+",
         choices=["scaling", "per-element", "crossover", "shapes", "levels", "variants"],
     )
     args = parser.parse_args(argv)

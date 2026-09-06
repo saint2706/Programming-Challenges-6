@@ -605,7 +605,9 @@ def iter_primes(limit: int) -> Iterator[int]:
         step = 8 * p
         next_hit.append(
             [
-                (p * r // 30) * 8 + POS30[(p * r) % 30] + step * max(0, -((r - p) // 30))
+                (p * r // 30) * 8
+                + POS30[(p * r) % 30]
+                + step * max(0, -((r - p) // 30))
                 for r in W30
             ]
         )
@@ -684,29 +686,55 @@ IMPLEMENTATIONS: dict[str, Implementation] = {
     impl.key: impl
     for impl in [
         Implementation(
-            "era-simple", "Eratosthenes, odds-only bytearray",
-            eratosthenes_simple, "eratosthenes", 0.5, "O(N)",
+            "era-simple",
+            "Eratosthenes, odds-only bytearray",
+            eratosthenes_simple,
+            "eratosthenes",
+            0.5,
+            "O(N)",
         ),
         Implementation(
-            "era-wheel30", "Eratosthenes, wheel-30 packed",
-            eratosthenes_wheel30, "eratosthenes", 8 / 30, "O(N)",
+            "era-wheel30",
+            "Eratosthenes, wheel-30 packed",
+            eratosthenes_wheel30,
+            "eratosthenes",
+            8 / 30,
+            "O(N)",
         ),
         Implementation(
-            "era-segmented", "Eratosthenes, wheel-30 segmented",
-            eratosthenes_segmented, "eratosthenes", 0.0, "O(sqrt N)",
+            "era-segmented",
+            "Eratosthenes, wheel-30 segmented",
+            eratosthenes_segmented,
+            "eratosthenes",
+            0.0,
+            "O(sqrt N)",
         ),
         Implementation(
-            "atkin", "Atkin, mod-60 packed",
-            atkin, "atkin", 16 / 60, "O(N)",
+            "atkin",
+            "Atkin, mod-60 packed",
+            atkin,
+            "atkin",
+            16 / 60,
+            "O(N)",
             max_limit=10**8,  # ~19 s at 10^8; 10^9 would be most of an hour
         ),
         Implementation(
-            "era-numpy", "Eratosthenes, odds-only NumPy",
-            eratosthenes_numpy, "eratosthenes", 0.5, "O(N)", needs_numpy=True,
+            "era-numpy",
+            "Eratosthenes, odds-only NumPy",
+            eratosthenes_numpy,
+            "eratosthenes",
+            0.5,
+            "O(N)",
+            needs_numpy=True,
         ),
         Implementation(
-            "atkin-numpy", "Atkin, mod-60 packed NumPy",
-            atkin_numpy, "atkin", 16 / 60, "O(N)", needs_numpy=True,
+            "atkin-numpy",
+            "Atkin, mod-60 packed NumPy",
+            atkin_numpy,
+            "atkin",
+            16 / 60,
+            "O(N)",
+            needs_numpy=True,
         ),
     ]
 }
@@ -727,7 +755,9 @@ def _self_check() -> int:
         if not ok:
             print(f"  [skip] {impl.label}: {why}")
             continue
-        bad = [(n, impl.fn(n), reference[n]) for n in limits if impl.fn(n) != reference[n]]
+        bad = [
+            (n, impl.fn(n), reference[n]) for n in limits if impl.fn(n) != reference[n]
+        ]
         if bad:
             failures += 1
             print(f"  [FAIL] {impl.label}: {bad[:3]}")

@@ -159,7 +159,9 @@ class _Reversed:
         return not (self.v < other.v)
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, _Reversed) and not (self.v < other.v or other.v < self.v)
+        return isinstance(other, _Reversed) and not (
+            self.v < other.v or other.v < self.v
+        )
 
     def __hash__(self) -> int:  # pragma: no cover - only needed to stay hashable
         return 0
@@ -196,8 +198,9 @@ def max_inversions(n: int) -> int:
 # ---------------------------------------------------------------------------
 
 
-def count_brute(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                validate: bool = True) -> int:
+def count_brute(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> int:
     """O(n^2) pair enumeration. Correct by construction; the reference."""
     v = _prepare(seq, key, reverse, validate)
     return sum(1 for i in range(len(v)) for j in range(i + 1, len(v)) if v[j] < v[i])
@@ -208,8 +211,9 @@ def count_brute(seq: Iterable[Any], *, key=None, reverse: bool = False,
 # ---------------------------------------------------------------------------
 
 
-def count_insort(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                 validate: bool = True) -> int:
+def count_insort(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> int:
     """Walk right to left, keeping the suffix sorted; count what is smaller.
 
     ``bisect.insort`` is O(n) per insertion because of the list shift, so this
@@ -233,8 +237,14 @@ def count_insort(seq: Iterable[Any], *, key=None, reverse: bool = False,
 # ---------------------------------------------------------------------------
 
 
-def count_mergesort(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                    validate: bool = True, return_sorted: bool = False):
+def count_mergesort(
+    seq: Iterable[Any],
+    *,
+    key=None,
+    reverse: bool = False,
+    validate: bool = True,
+    return_sorted: bool = False,
+):
     """Bottom-up merge sort, counting as it merges. O(n log n) time, O(n) space.
 
     When the merge takes an element from the right half while ``mid - i``
@@ -359,8 +369,9 @@ class Fenwick:
         return tree
 
 
-def count_fenwick(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                  validate: bool = True) -> int:
+def count_fenwick(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> int:
     """Coordinate-compress, then sweep right to left counting smaller elements.
 
     O(n log n), with the log coming from the tree rather than the recursion.
@@ -378,8 +389,9 @@ def count_fenwick(seq: Iterable[Any], *, key=None, reverse: bool = False,
     return total
 
 
-def count_smaller_to_right(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                           validate: bool = True) -> list[int]:
+def count_smaller_to_right(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> list[int]:
     """``out[i]`` = how many elements after ``i`` are strictly smaller than ``a[i]``.
 
     ``sum(out)`` is the inversion count, so this is a strictly more informative
@@ -397,8 +409,9 @@ def count_smaller_to_right(seq: Iterable[Any], *, key=None, reverse: bool = Fals
     return out
 
 
-def count_greater_to_left(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                          validate: bool = True) -> list[int]:
+def count_greater_to_left(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> list[int]:
     """``out[j]`` = how many elements before ``j`` are strictly greater than ``a[j]``.
 
     The other half of the same pairing, and the *inversion table* (Lehmer code)
@@ -456,8 +469,9 @@ def _numpy_ranks(seq: Iterable[Any], key, reverse: bool, validate: bool):
     return inverse.reshape(-1).astype(np.int64, copy=False)
 
 
-def count_numpy(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                validate: bool = True) -> int:
+def count_numpy(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> int:
     """Bottom-up merge sort with every level batched into three ndarray calls.
 
     The trick that makes a level batchable: at width ``w`` the array is a
@@ -503,7 +517,9 @@ def count_numpy(seq: Iterable[Any], *, key=None, reverse: bool = False,
     if n < 2:
         return 0
     if n > 2**31:  # pragma: no cover - unreachable at any realistic memory size
-        raise ValueError("count_numpy addresses at most 2^31 elements; use count_mergesort")
+        raise ValueError(
+            "count_numpy addresses at most 2^31 elements; use count_mergesort"
+        )
 
     # Pad to a power of two with a value above every rank. Padding sits at the
     # tail, so it is never in a left half that has real elements to its right,
@@ -541,8 +557,9 @@ def count_numpy(seq: Iterable[Any], *, key=None, reverse: bool = False,
     return total
 
 
-def count_numpy_radix(seq: Iterable[Any], *, key=None, reverse: bool = False,
-                      validate: bool = True) -> int:
+def count_numpy_radix(
+    seq: Iterable[Any], *, key=None, reverse: bool = False, validate: bool = True
+) -> int:
     """Split by *value* instead of by index. O(n log n), fully vectorised.
 
     :func:`count_numpy` is a merge sort: it splits the array by index and asks
@@ -573,7 +590,9 @@ def count_numpy_radix(seq: Iterable[Any], *, key=None, reverse: bool = False,
     try:
         import numpy as np
     except ImportError as exc:  # pragma: no cover
-        raise ImportError("count_numpy_radix requires numpy; use method='mergesort'") from exc
+        raise ImportError(
+            "count_numpy_radix requires numpy; use method='mergesort'"
+        ) from exc
 
     dense = _numpy_ranks(seq, key, reverse, validate)
     if dense is None:
@@ -609,9 +628,11 @@ def count_numpy_radix(seq: Iterable[Any], *, key=None, reverse: bool = False,
 
         # Stable partition inside each group: zeros keep their order and go
         # first, ones follow. Both halves become groups for the next bit.
-        destination = np.where(is_zero,
-                               group_start + zeros_before,
-                               group_start + zeros_in_group + ones_before)
+        destination = np.where(
+            is_zero,
+            group_start + zeros_before,
+            group_start + zeros_in_group + ones_before,
+        )
         next_start = np.where(is_zero, group_start, group_start + zeros_in_group)
         next_end = np.where(is_zero, group_start + zeros_in_group, group_end)
 
@@ -640,8 +661,14 @@ _IMPLS: dict[str, Callable[..., int]] = {
 }
 
 
-def count_inversions(seq: Iterable[Any], *, method: str = "auto", key=None,
-                     reverse: bool = False, validate: bool = True) -> int:
+def count_inversions(
+    seq: Iterable[Any],
+    *,
+    method: str = "auto",
+    key=None,
+    reverse: bool = False,
+    validate: bool = True,
+) -> int:
     """Count pairs i < j with ``a[i] > a[j]``. The main entry point.
 
     ``key`` decorates each element before comparing, like ``sorted``.
@@ -679,8 +706,9 @@ def _auto(seq: Sequence[Any]) -> str:
 # ---------------------------------------------------------------------------
 
 
-def count_significant_inversions(seq: Iterable[Any], factor: float = 2.0, *,
-                                 validate: bool = True) -> int:
+def count_significant_inversions(
+    seq: Iterable[Any], factor: float = 2.0, *, validate: bool = True
+) -> int:
     """Count pairs i < j with ``a[i] > factor * a[j]``. O(n log^2 n).
 
     The generalisation from the "significant inversions" exercise: with
@@ -701,7 +729,9 @@ def count_significant_inversions(seq: Iterable[Any], factor: float = 2.0, *,
     if n < 2:
         return 0
     if any(not isinstance(x, (int, float)) for x in arr):
-        raise TypeError("count_significant_inversions needs numbers, not arbitrary orderings")
+        raise TypeError(
+            "count_significant_inversions needs numbers, not arbitrary orderings"
+        )
 
     def rec(lo: int, hi: int) -> int:
         if hi - lo < 2:
@@ -718,8 +748,9 @@ def count_significant_inversions(seq: Iterable[Any], factor: float = 2.0, *,
     return rec(0, n)
 
 
-def kendall_tau_distance(a: Sequence[Any], b: Sequence[Any], *,
-                         normalize: bool = False) -> float | int:
+def kendall_tau_distance(
+    a: Sequence[Any], b: Sequence[Any], *, normalize: bool = False
+) -> float | int:
     """Number of pairs the two rankings order differently.
 
     Both sequences must be permutations of the same multiset of *distinct*
@@ -733,14 +764,20 @@ def kendall_tau_distance(a: Sequence[Any], b: Sequence[Any], *,
     1 for exactly reversed ones.
     """
     if len(a) != len(b):
-        raise ValueError(f"sequences must be the same length, got {len(a)} and {len(b)}")
+        raise ValueError(
+            f"sequences must be the same length, got {len(a)} and {len(b)}"
+        )
     position = {x: i for i, x in enumerate(b)}
     if len(position) != len(b):
-        raise ValueError("kendall_tau_distance needs distinct elements; use kendall_tau_b for ties")
+        raise ValueError(
+            "kendall_tau_distance needs distinct elements; use kendall_tau_b for ties"
+        )
     try:
         relabelled = [position[x] for x in a]
     except KeyError as exc:
-        raise ValueError(f"{exc.args[0]!r} appears in the first sequence but not the second") from None
+        raise ValueError(
+            f"{exc.args[0]!r} appears in the first sequence but not the second"
+        ) from None
     distance = count_inversions(relabelled, validate=False)
     if not normalize:
         return distance
@@ -764,7 +801,9 @@ def kendall_tau_b(x: Sequence[Any], y: Sequence[Any]) -> float:
     pair is tied in it and the correlation is genuinely undefined.
     """
     if len(x) != len(y):
-        raise ValueError(f"sequences must be the same length, got {len(x)} and {len(y)}")
+        raise ValueError(
+            f"sequences must be the same length, got {len(x)} and {len(y)}"
+        )
     n = len(x)
     if n < 2:
         return math.nan
@@ -910,6 +949,7 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
     rng = random.Random(seed)
     try:
         import numpy  # noqa: F401
+
         methods = ["insort", "mergesort", "fenwick", "numpy", "radix"]
     except ImportError:
         methods = ["insort", "mergesort", "fenwick"]
@@ -917,9 +957,16 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
             print("  (numpy not installed; skipping count_numpy)", file=sys.stderr)
 
     cases: list[list[int]] = [
-        [], [1], [1, 1], [2, 1], [1, 2],
-        list(range(50)), list(range(50))[::-1], [7] * 50,
-        [0, 1] * 25, list(range(25)) + list(range(25)),
+        [],
+        [1],
+        [1, 1],
+        [2, 1],
+        [1, 2],
+        list(range(50)),
+        list(range(50))[::-1],
+        [7] * 50,
+        [0, 1] * 25,
+        list(range(25)) + list(range(25)),
     ]
     for _ in range(trials):
         n = rng.randint(0, 60)
@@ -934,7 +981,10 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
             if got != expected:
                 ok = False
                 if verbose:
-                    print(f"  MISMATCH {method}: {got} != {expected} on {case}", file=sys.stderr)
+                    print(
+                        f"  MISMATCH {method}: {got} != {expected} on {case}",
+                        file=sys.stderr,
+                    )
         # Structural identities that must hold for every input.
         if sum(count_smaller_to_right(case)) != expected:
             ok = False
@@ -944,8 +994,10 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
             ok = False
 
     if verbose:
-        print(f"verify: {len(cases)} arrays x {len(methods)} methods vs brute force -- "
-              f"{'OK' if ok else 'FAILED'}")
+        print(
+            f"verify: {len(cases)} arrays x {len(methods)} methods vs brute force -- "
+            f"{'OK' if ok else 'FAILED'}"
+        )
     return ok
 
 
@@ -957,8 +1009,10 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
 def _demo() -> None:
     array = [8, 4, 2, 1]
     print(f"array: {array}")
-    print(f"  inversions:            {count_inversions(array)}  (of at most "
-          f"{max_inversions(len(array))} -- strictly decreasing, so all of them)")
+    print(
+        f"  inversions:            {count_inversions(array)}  (of at most "
+        f"{max_inversions(len(array))} -- strictly decreasing, so all of them)"
+    )
     print(f"  smaller to the right:  {count_smaller_to_right(array)}")
     print(f"  greater to the left:   {count_greater_to_left(array)}  (the Lehmer code)")
     print(f"  bubble sort swaps:     {bubble_sort_swaps(array)}")
@@ -966,32 +1020,47 @@ def _demo() -> None:
     mixed = [3, 1, 4, 1, 5, 9, 2, 6]
     print(f"\narray: {mixed}")
     print(f"  inversions:            {count_inversions(mixed)}")
-    print(f"  significant (f=2):     {count_significant_inversions(mixed, 2)}"
-          f"   pairs with a[i] > 2*a[j]")
-    print(f"  tau distance to sorted:{kendall_tau_distance(mixed, sorted(mixed)) if len(set(mixed)) == len(mixed) else 'n/a (ties)'}")
+    print(
+        f"  significant (f=2):     {count_significant_inversions(mixed, 2)}"
+        f"   pairs with a[i] > 2*a[j]"
+    )
+    print(
+        f"  tau distance to sorted:{kendall_tau_distance(mixed, sorted(mixed)) if len(set(mixed)) == len(mixed) else 'n/a (ties)'}"
+    )
 
     with_ties = [1, 2, 2, 3]
-    print(f"\ntau-b({with_ties}, {[1, 2, 3, 4]}) = "
-          f"{kendall_tau_b(with_ties, [1, 2, 3, 4]):.6f}   (ties cost you the last 0.09)")
-    print(f"tau-b({[1, 2, 3, 4]}, {[4, 3, 2, 1]}) = "
-          f"{kendall_tau_b([1, 2, 3, 4], [4, 3, 2, 1]):.6f}")
+    print(
+        f"\ntau-b({with_ties}, {[1, 2, 3, 4]}) = "
+        f"{kendall_tau_b(with_ties, [1, 2, 3, 4]):.6f}   (ties cost you the last 0.09)"
+    )
+    print(
+        f"tau-b({[1, 2, 3, 4]}, {[4, 3, 2, 1]}) = "
+        f"{kendall_tau_b([1, 2, 3, 4], [4, 3, 2, 1]):.6f}"
+    )
 
     print(f"\npermutations of 4 by inversion count: {inversion_polynomial(4)}")
-    print(f"  (1 sorted, 3 with one inversion, ..., 1 fully reversed; sums to "
-          f"{sum(inversion_polynomial(4))} = 4!)")
+    print(
+        f"  (1 sorted, 3 with one inversion, ..., 1 fully reversed; sums to "
+        f"{sum(inversion_polynomial(4))} = 4!)"
+    )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Count inversions in an array, five ways.",
     )
-    parser.add_argument("numbers", nargs="*", type=float,
-                        help="the array; reads whitespace-separated stdin if empty")
+    parser.add_argument(
+        "numbers",
+        nargs="*",
+        type=float,
+        help="the array; reads whitespace-separated stdin if empty",
+    )
     parser.add_argument("--demo", action="store_true")
     parser.add_argument("--verify", action="store_true")
     parser.add_argument("--method", default="auto", choices=METHODS)
-    parser.add_argument("--detail", action="store_true",
-                        help="also print the per-element counts")
+    parser.add_argument(
+        "--detail", action="store_true", help="also print the per-element counts"
+    )
     args = parser.parse_args(argv)
 
     if args.verify:
@@ -1007,8 +1076,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         numbers = [float(tok) for tok in sys.stdin.read().split()]
 
     total = count_inversions(numbers, method=args.method)
-    print(f"{len(numbers)} elements, {total} inversions "
-          f"(max {max_inversions(len(numbers))})")
+    print(
+        f"{len(numbers)} elements, {total} inversions "
+        f"(max {max_inversions(len(numbers))})"
+    )
     if args.detail:
         print(f"  smaller to the right: {count_smaller_to_right(numbers)}")
         print(f"  greater to the left:  {count_greater_to_left(numbers)}")

@@ -69,9 +69,14 @@ def test_two_proportion_test_not_significant_case() -> None:
 
 def test_welch_t_test_from_stats_matches_scipy() -> None:
     result = welch_t_test_from_stats(
-        "control", "variant",
-        control_mean=2.4, control_std=0.5, control_n=300,
-        variant_mean=2.1, variant_std=0.45, variant_n=300,
+        "control",
+        "variant",
+        control_mean=2.4,
+        control_std=0.5,
+        control_n=300,
+        variant_mean=2.1,
+        variant_std=0.45,
+        variant_n=300,
         alpha=0.05,
     )
     t_stat, p = scipy_stats.ttest_ind_from_stats(
@@ -88,9 +93,14 @@ def test_welch_t_test_from_raw_matches_from_stats() -> None:
     variant = rng.normal(2.1, 0.45, 300)
     from_raw = welch_t_test_from_raw("control", "variant", control, variant, alpha=0.05)
     from_stats = welch_t_test_from_stats(
-        "control", "variant",
-        control_mean=control.mean(), control_std=control.std(ddof=1), control_n=len(control),
-        variant_mean=variant.mean(), variant_std=variant.std(ddof=1), variant_n=len(variant),
+        "control",
+        "variant",
+        control_mean=control.mean(),
+        control_std=control.std(ddof=1),
+        control_n=len(control),
+        variant_mean=variant.mean(),
+        variant_std=variant.std(ddof=1),
+        variant_n=len(variant),
         alpha=0.05,
     )
     assert from_raw.t_stat == pytest.approx(from_stats.t_stat)
@@ -107,7 +117,9 @@ def test_analyze_csv_conversion_data_auto_detects_proportions() -> None:
 def test_analyze_csv_load_time_data_detects_means() -> None:
     # "load_time_seconds" is a domain-specific metric name, not one of the generic
     # outcome aliases -- this is exactly what --outcome-col is for.
-    result = analyze_csv(SAMPLE_DIR / "page_load_time.csv", None, "load_time_seconds", alpha=0.05)
+    result = analyze_csv(
+        SAMPLE_DIR / "page_load_time.csv", None, "load_time_seconds", alpha=0.05
+    )
     assert result.kind == "means"
     assert result.control_n == 300
     assert result.variant_n == 300
@@ -145,8 +157,14 @@ def test_main_writes_html_report(tmp_path: Path) -> None:
 def test_main_summary_flags_proportions(capsys: pytest.CaptureFixture[str]) -> None:
     exit_code = main(
         [
-            "--control-conversions", "120", "--control-total", "1000",
-            "--variant-conversions", "145", "--variant-total", "1000",
+            "--control-conversions",
+            "120",
+            "--control-total",
+            "1000",
+            "--variant-conversions",
+            "145",
+            "--variant-total",
+            "1000",
         ]
     )
     assert exit_code == 0
@@ -156,20 +174,38 @@ def test_main_summary_flags_proportions(capsys: pytest.CaptureFixture[str]) -> N
 def test_main_summary_flags_means(capsys: pytest.CaptureFixture[str]) -> None:
     exit_code = main(
         [
-            "--control-mean", "2.4", "--control-std", "0.5", "--control-n", "300",
-            "--variant-mean", "2.1", "--variant-std", "0.45", "--variant-n", "300",
+            "--control-mean",
+            "2.4",
+            "--control-std",
+            "0.5",
+            "--control-n",
+            "300",
+            "--variant-mean",
+            "2.1",
+            "--variant-std",
+            "0.45",
+            "--variant-n",
+            "300",
         ]
     )
     assert exit_code == 0
     assert "Cohen's d" in capsys.readouterr().out
 
 
-def test_main_rejects_csv_and_flags_together(capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_rejects_csv_and_flags_together(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     exit_code = main(
         [
             str(SAMPLE_DIR / "checkout_conversion.csv"),
-            "--control-conversions", "1", "--control-total", "2",
-            "--variant-conversions", "1", "--variant-total", "2",
+            "--control-conversions",
+            "1",
+            "--control-total",
+            "2",
+            "--variant-conversions",
+            "1",
+            "--variant-total",
+            "2",
         ]
     )
     assert exit_code == 1
@@ -182,7 +218,9 @@ def test_main_rejects_incomplete_flag_set(capsys: pytest.CaptureFixture[str]) ->
     assert "required together" in capsys.readouterr().err
 
 
-def test_main_missing_file_returns_error(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+def test_main_missing_file_returns_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
     exit_code = main([str(tmp_path / "nope.csv")])
     assert exit_code == 1
     assert "does not exist" in capsys.readouterr().err

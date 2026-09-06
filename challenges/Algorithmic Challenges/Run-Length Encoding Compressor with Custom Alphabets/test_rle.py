@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import json
 import random
-import string
 import subprocess
 import sys
 from pathlib import Path
@@ -30,15 +29,12 @@ from rle import (
     ContinuationCount,
     EscapeCodec,
     GammaCount,
-    PackBitsCodec,
-    PairCodec,
     TerminatedCount,
     analyze,
     compress,
     decompress,
     main,
     pack_file,
-    runs,
     unpack_file,
 )
 
@@ -58,11 +54,14 @@ def roundtrip(data, alpha, codec):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("code,k", [
-    (GammaCount(), 2),
-    *[(TerminatedCount(), k) for k in (3, 4, 5, 10, 256)],
-    *[(ContinuationCount(), k) for k in (4, 5, 10, 256)],
-])
+@pytest.mark.parametrize(
+    "code,k",
+    [
+        (GammaCount(), 2),
+        *[(TerminatedCount(), k) for k in (3, 4, 5, 10, 256)],
+        *[(ContinuationCount(), k) for k in (4, 5, 10, 256)],
+    ],
+)
 def test_count_codes_round_trip(code, k):
     for value in [0, 1, 2, 3, 7, 8, 100, 255, 256, 10**6, 10**15]:
         encoded = code.encode(value, k)
@@ -72,9 +71,14 @@ def test_count_codes_round_trip(code, k):
         assert (got, pos) == (value, len(encoded))
 
 
-@pytest.mark.parametrize("code,k", [
-    (GammaCount(), 2), (TerminatedCount(), 4), (ContinuationCount(), 256),
-])
+@pytest.mark.parametrize(
+    "code,k",
+    [
+        (GammaCount(), 2),
+        (TerminatedCount(), 4),
+        (ContinuationCount(), 256),
+    ],
+)
 def test_count_codes_are_self_delimiting_when_concatenated(code, k):
     """The whole point: a decoder must find the boundaries with no separator."""
     values = [0, 5, 1, 900, 3, 77777, 2]
@@ -87,13 +91,21 @@ def test_count_codes_are_self_delimiting_when_concatenated(code, k):
 
 
 def test_count_codes_reject_negatives():
-    for code, k in ((GammaCount(), 2), (TerminatedCount(), 4), (ContinuationCount(), 8)):
+    for code, k in (
+        (GammaCount(), 2),
+        (TerminatedCount(), 4),
+        (ContinuationCount(), 8),
+    ):
         with pytest.raises(ValueError):
             code.encode(-1, k)
 
 
 def test_count_codes_reject_truncated_input():
-    for code, k in ((GammaCount(), 2), (TerminatedCount(), 4), (ContinuationCount(), 8)):
+    for code, k in (
+        (GammaCount(), 2),
+        (TerminatedCount(), 4),
+        (ContinuationCount(), 8),
+    ):
         stream = code.encode(10**9, k)[:-1]
         with pytest.raises(ValueError):
             code.decode(stream, 0, k)
@@ -273,9 +285,7 @@ def test_binary_run_coding_beats_packbits_on_bilevel_data():
     """The fax scheme should win on the data faxes were built for."""
     alpha = Alphabet("01")
     rng = random.Random(3)
-    scan = "".join(
-        rng.choice("01") * rng.randint(30, 300) for _ in range(400)
-    )
+    scan = "".join(rng.choice("01") * rng.randint(30, 300) for _ in range(400))
     assert len(compress(scan, alpha, "pair")[0]) < len(
         compress(scan, alpha, "packbits")[0]
     )
@@ -350,9 +360,7 @@ def test_run_entropy_is_a_real_lower_bound():
     rng = random.Random(11)
     data = "".join(rng.choice("ACGT") * rng.randint(1, 60) for _ in range(2000))
     report = analyze(data, "dna")
-    best_bits = min(
-        c.packed_bytes * 8 for c in report.codecs if not c.error
-    )
+    best_bits = min(c.packed_bytes * 8 for c in report.codecs if not c.error)
     assert best_bits >= report.run_entropy_bits
 
 
@@ -404,7 +412,9 @@ def test_container_blocks_a_bomb_by_default():
     header = json.dumps(
         {"codec": "pair", "symbols": list(alpha.symbols)}, separators=(",", ":")
     ).encode("utf-8")
-    blob = rle.MAGIC + rle._leb128(len(header)) + header + BitPacker(alpha).pack(payload)
+    blob = (
+        rle.MAGIC + rle._leb128(len(header)) + header + BitPacker(alpha).pack(payload)
+    )
     assert len(blob) < 2000
     with pytest.raises(DecompressionBomb):
         unpack_file(blob)
@@ -517,7 +527,9 @@ def test_cli_binary_mode(tmp_path):
     src.write_bytes(bytes(range(256)) + bytes(2000))
     out = tmp_path / "blob.rle"
     back = tmp_path / "blob.out"
-    assert main(["compress", str(src), str(out), "--binary", "--alphabet", "bytes"]) == 0
+    assert (
+        main(["compress", str(src), str(out), "--binary", "--alphabet", "bytes"]) == 0
+    )
     assert main(["decompress", str(out), str(back)]) == 0
     assert back.read_bytes() == src.read_bytes()
 
@@ -541,7 +553,8 @@ def test_cli_rejects_unknown_alphabet(tmp_path):
 def test_module_runs_as_a_script():
     proc = subprocess.run(
         [sys.executable, str(HERE / "rle.py"), "--self-check"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "all self-checks passed" in proc.stdout

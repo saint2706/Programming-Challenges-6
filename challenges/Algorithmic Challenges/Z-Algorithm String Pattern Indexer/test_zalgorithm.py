@@ -172,7 +172,9 @@ def test_overlapping_occurrences_are_all_reported():
 @pytest.mark.parametrize("pattern", ["", "a", "b", "aa", "ab", "aab", "aba", "abab"])
 def test_search_agrees_with_brute_force_exhaustively(pattern):
     for text in binary_strings(9):
-        expected = brute_search(pattern, text) if pattern else list(range(len(text) + 1))
+        expected = (
+            brute_search(pattern, text) if pattern else list(range(len(text) + 1))
+        )
         assert list(z_search(pattern, text)) == expected
         assert list(z_search_concat(pattern, text)) == expected
         assert list(z_search_stream(pattern, iter(text))) == expected
@@ -355,7 +357,9 @@ def test_prefix_occurrence_counts_exhaustively(s):
     assert len(counts) == n + 1
     assert counts[0] == n + 1
     for length in range(1, n + 1):
-        expected = sum(1 for i in range(n - length + 1) if s[i : i + length] == s[:length])
+        expected = sum(
+            1 for i in range(n - length + 1) if s[i : i + length] == s[:length]
+        )
         assert counts[length] == expected
 
 
@@ -386,9 +390,7 @@ def brute_multi(patterns, text):
     return sorted(
         (i, p)
         for p, pat in enumerate(patterns)
-        for i in (
-            brute_search(pat, text) if pat else range(len(text) + 1)
-        )
+        for i in (brute_search(pat, text) if pat else range(len(text) + 1))
     )
 
 
@@ -413,7 +415,9 @@ def test_chain_count_matches_the_antichain_bound():
             for _ in range(rng.randint(1, 8))
         ]
         distinct = set(pats)
-        maximal = {p for p in distinct if not any(q != p and q.startswith(p) for q in distinct)}
+        maximal = {
+            p for p in distinct if not any(q != p and q.startswith(p) for q in distinct)
+        }
         assert MultiZMatcher(pats).chain_count == len(maximal)
 
 
@@ -437,7 +441,9 @@ def test_multi_matches_brute_force_and_aho_corasick():
             for _ in range(rng.randint(1, 6))
         ]
         expected = brute_multi(pats, text)
-        assert sorted((pos, i) for i, pos in MultiZMatcher(pats).search(text)) == expected
+        assert (
+            sorted((pos, i) for i, pos in MultiZMatcher(pats).search(text)) == expected
+        )
         assert sorted((pos, i) for i, pos in AhoCorasick(pats).search(text)) == expected
 
 
@@ -474,7 +480,12 @@ def test_multi_with_only_empty_patterns():
     mz = MultiZMatcher(["", ""])
     assert mz.chain_count == 0
     assert sorted((pos, i) for i, pos in mz.search("ab")) == [
-        (0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)
+        (0, 0),
+        (0, 1),
+        (1, 0),
+        (1, 1),
+        (2, 0),
+        (2, 1),
     ]
 
 
@@ -489,7 +500,9 @@ def test_multi_with_no_patterns():
 def test_multi_on_non_string_sequences():
     mz = MultiZMatcher([[1, 2], [1, 2, 3]])
     assert sorted((pos, i) for i, pos in mz.search([0, 1, 2, 3, 1, 2])) == [
-        (1, 0), (1, 1), (4, 0)
+        (1, 0),
+        (1, 1),
+        (4, 0),
     ]
     assert mz.chain_count == 1
 
@@ -541,7 +554,9 @@ def test_tandem_repeat_runs_are_contiguous_and_valid():
             for d in range(count):
                 start = first + d
                 assert start >= 0 and start + 2 * period <= len(s)
-                assert s[start : start + period] == s[start + period : start + 2 * period]
+                assert (
+                    s[start : start + period] == s[start + period : start + 2 * period]
+                )
 
 
 def test_tandem_repeats_on_a_run_is_the_quadratic_count():

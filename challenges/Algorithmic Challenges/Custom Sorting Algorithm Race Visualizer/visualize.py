@@ -75,16 +75,30 @@ class SortRaceScene(Scene):
         x = self.bar_x(i, n)
         if value is None:
             h = 0.15
-            rect = Rectangle(width=BAR_WIDTH, height=h, fill_color=EMPTY_COLOR,
-                              fill_opacity=0.25, stroke_color=EMPTY_COLOR, stroke_width=1)
+            rect = Rectangle(
+                width=BAR_WIDTH,
+                height=h,
+                fill_color=EMPTY_COLOR,
+                fill_opacity=0.25,
+                stroke_color=EMPTY_COLOR,
+                stroke_width=1,
+            )
             rect.move_to([x, BASELINE_Y + h / 2, 0])
             label = Text("", font_size=22).move_to([x, BASELINE_Y + h + 0.25, 0])
             return rect, label
         h = max(value * HEIGHT_SCALE, 0.15)
-        rect = Rectangle(width=BAR_WIDTH, height=h, fill_color=color, fill_opacity=0.9,
-                          stroke_color=WHITE, stroke_width=1)
+        rect = Rectangle(
+            width=BAR_WIDTH,
+            height=h,
+            fill_color=color,
+            fill_opacity=0.9,
+            stroke_color=WHITE,
+            stroke_width=1,
+        )
         rect.move_to([x, BASELINE_Y + h / 2, 0])
-        label = Text(str(value), font_size=22, color=WHITE).move_to([x, BASELINE_Y + h + 0.28, 0])
+        label = Text(str(value), font_size=22, color=WHITE).move_to(
+            [x, BASELINE_Y + h + 0.28, 0]
+        )
         return rect, label
 
     def classify_color(self, i, step):
@@ -105,13 +119,19 @@ class SortRaceScene(Scene):
         title = Text(self.algo_title, font_size=40, color=WHITE).to_edge(UP, buff=0.4)
         self.add(title)
         if self.subtitle:
-            sub = Text(self.subtitle, font_size=20, color=GRAY_B).next_to(title, DOWN, buff=0.15)
+            sub = Text(self.subtitle, font_size=20, color=GRAY_B).next_to(
+                title, DOWN, buff=0.15
+            )
             self.add(sub)
 
-        idx_labels = VGroup(*[
-            Text(str(i), font_size=18, color=GRAY_B).move_to([self.bar_x(i, n), INDEX_LABEL_Y, 0])
-            for i in range(n)
-        ])
+        idx_labels = VGroup(
+            *[
+                Text(str(i), font_size=18, color=GRAY_B).move_to(
+                    [self.bar_x(i, n), INDEX_LABEL_Y, 0]
+                )
+                for i in range(n)
+            ]
+        )
         self.add(idx_labels)
 
         self.bars, self.labels = [], []
@@ -164,7 +184,9 @@ class SortRaceScene(Scene):
             anims.append(Transform(self.bars[i], new_rect))
             anims.append(Transform(self.labels[i], new_label))
 
-        new_caption = Text(step.caption, font_size=22, color=WHITE).move_to([0, CAPTION_Y, 0])
+        new_caption = Text(step.caption, font_size=22, color=WHITE).move_to(
+            [0, CAPTION_Y, 0]
+        )
         anims.append(Transform(self.caption, new_caption))
 
         run_time = motion_time(step)
@@ -220,37 +242,61 @@ class SortRaceScene(Scene):
             Line([x1, y - 0.1, 0], [x1, y + 0.1, 0], color=YELLOW),
             Line([x2, y - 0.1, 0], [x2, y + 0.1, 0], color=YELLOW),
         )
-        label = Text(f"[{l}, {r})", font_size=18, color=YELLOW).next_to(line, UP, buff=0.1)
+        label = Text(f"[{l}, {r})", font_size=18, color=YELLOW).next_to(
+            line, UP, buff=0.1
+        )
         return VGroup(line, ticks, label)
 
     def _aux_pivot(self, aux, n):
         x = self.bar_x(aux["idx"], n)
-        marker = Triangle(color=ORANGE, fill_opacity=1).scale(0.15).rotate(PI).move_to([x, ABOVE_BARS_Y, 0])
+        marker = (
+            Triangle(color=ORANGE, fill_opacity=1)
+            .scale(0.15)
+            .rotate(PI)
+            .move_to([x, ABOVE_BARS_Y, 0])
+        )
         label = Text("pivot", font_size=16, color=ORANGE).next_to(marker, UP, buff=0.05)
         return VGroup(marker, label)
 
     def _aux_heap(self, aux, n):
         size = aux["size"]
         y = ABOVE_BARS_Y
-        dots = VGroup(*[Dot([self.bar_x(i, n), y, 0], radius=0.05, color=PURPLE_B) for i in range(size)])
+        dots = VGroup(
+            *[
+                Dot([self.bar_x(i, n), y, 0], radius=0.05, color=PURPLE_B)
+                for i in range(size)
+            ]
+        )
         lines = VGroup()
         for i in range(size):
             for child in (2 * i + 1, 2 * i + 2):
                 if child < size:
-                    lines.add(Line([self.bar_x(i, n), y, 0], [self.bar_x(child, n), y, 0],
-                                    color=PURPLE_B, stroke_width=1.5))
+                    lines.add(
+                        Line(
+                            [self.bar_x(i, n), y, 0],
+                            [self.bar_x(child, n), y, 0],
+                            color=PURPLE_B,
+                            stroke_width=1.5,
+                        )
+                    )
         return VGroup(lines, dots)
 
     def _aux_cycle(self, aux, n):
         x = self.bar_x(aux["start"], n)
-        marker = Circle(radius=0.15, color=TEAL, fill_opacity=0.6).move_to([x, ABOVE_BARS_Y, 0])
-        label = Text("cycle start", font_size=16, color=TEAL).next_to(marker, UP, buff=0.05)
+        marker = Circle(radius=0.15, color=TEAL, fill_opacity=0.6).move_to(
+            [x, ABOVE_BARS_Y, 0]
+        )
+        label = Text("cycle start", font_size=16, color=TEAL).next_to(
+            marker, UP, buff=0.05
+        )
         return VGroup(marker, label)
 
     def _aux_mode(self, aux):
         mode = aux["mode"]
         colors = {"quick": "#3B82C4", "heap": PURPLE_B, "insertion": ORANGE}
-        label = Text(f"Mode: {mode.upper()}", font_size=22, color=colors.get(mode, WHITE))
+        label = Text(
+            f"Mode: {mode.upper()}", font_size=22, color=colors.get(mode, WHITE)
+        )
         label.to_corner(UR, buff=0.5)
         return VGroup(label)
 
@@ -260,8 +306,13 @@ class SortRaceScene(Scene):
         for k, (l, r) in enumerate(aux["runs"]):
             x1 = self.bar_x(l, n) - BAR_WIDTH / 2
             x2 = self.bar_x(r - 1, n) + BAR_WIDTH / 2
-            band = Rectangle(width=(x2 - x1), height=0.12, fill_color=palette[k % len(palette)],
-                              fill_opacity=0.9, stroke_width=0)
+            band = Rectangle(
+                width=(x2 - x1),
+                height=0.12,
+                fill_color=palette[k % len(palette)],
+                fill_opacity=0.9,
+                stroke_width=0,
+            )
             band.move_to([(x1 + x2) / 2, RUNS_BAND_Y, 0])
             group.add(band)
         return group
