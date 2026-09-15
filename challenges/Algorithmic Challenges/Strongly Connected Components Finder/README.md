@@ -10,11 +10,11 @@ vertices where every vertex can reach every other vertex by following
 directed edges. Three classic single-DFS-pass algorithms compute the same
 partition with different bookkeeping:
 
-| Method                | Idea                                          | Time     | Space |
-| --------------------- | ---------------------------------------------- | -------- | ----- |
-| `tarjan_scc`           | One DFS, a low-link value per vertex          | O(V + E) | O(V)  |
-| `kosaraju_scc`         | DFS finish order, then DFS the transpose      | O(V + E) | O(V)  |
-| `gabow_scc`            | One DFS, two stacks, no low-link arithmetic   | O(V + E) | O(V)  |
+| Method         | Idea                                        | Time     | Space |
+| -------------- | ------------------------------------------- | -------- | ----- |
+| `tarjan_scc`   | One DFS, a low-link value per vertex        | O(V + E) | O(V)  |
+| `kosaraju_scc` | DFS finish order, then DFS the transpose    | O(V + E) | O(V)  |
+| `gabow_scc`    | One DFS, two stacks, no low-link arithmetic | O(V + E) | O(V)  |
 
 All three are implemented **iteratively** (an explicit stack standing in for
 the call stack) -- the brief only asked for Tarjan and Kosaraju; Gabow's

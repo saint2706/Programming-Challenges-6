@@ -11,12 +11,12 @@ count is the graph's **chromatic number**, and deciding it is NP-hard --
 so everything here except the exact solver is a heuristic with no
 optimality guarantee, however good it looks in practice:
 
-| Method                | Idea                                                  | Guarantee                     |
-| ---------------------- | ------------------------------------------------------ | ------------------------------ |
-| `greedy_color`         | Color in a given/natural order, smallest free color   | <= max degree + 1 colors      |
-| `welsh_powell`         | Greedy, pre-sorted by descending *static* degree      | Often better, no guarantee    |
-| `dsatur`               | Greedy, always recompute the most-constrained vertex  | Exact on bipartite/chordal    |
-| `rlf`                  | Build one whole color class at a time                 | No guarantee, often tight     |
+| Method                   | Idea                                                 | Guarantee                     |
+| ------------------------ | ---------------------------------------------------- | ----------------------------- |
+| `greedy_color`           | Color in a given/natural order, smallest free color  | <= max degree + 1 colors      |
+| `welsh_powell`           | Greedy, pre-sorted by descending *static* degree     | Often better, no guarantee    |
+| `dsatur`                 | Greedy, always recompute the most-constrained vertex | Exact on bipartite/chordal    |
+| `rlf`                    | Build one whole color class at a time                | No guarantee, often tight     |
 | `exact_chromatic_number` | Clique lower bound + backtracking, binary-searched k | Always optimal (NP-hard cost) |
 
 The brief names greedy, backtracking, and Welsh-Powell. DSATUR (Brelaz,

@@ -10,14 +10,14 @@ find the shortest cycle visiting every city exactly once. NP-hard -- the
 two exact methods below only stay practical for small n, in exchange for a
 provable optimum; everything else trades that guarantee for polynomial time.
 
-| Method                     | Time               | Space      | Optimal?                       |
-| --------------------------- | ------------------ | ---------- | -------------------------------- |
-| `held_karp`                 | O(2^n * n^2)       | O(2^n * n) | Always                          |
-| `branch_and_bound`          | O(2^n) worst case  | O(n)/branch | Always, often far faster        |
-| `nearest_neighbor`          | O(n^2)             | O(n)       | No guarantee                    |
-| `greedy_edge`               | O(n^2 log n)       | O(n)       | No guarantee                    |
-| `two_opt`                   | O(n^2) per pass    | O(n)       | Local optimum only              |
-| `christofides` (via networkx) | O(n^3)           | O(n^2)     | <= 1.5x optimal, metric instances only |
+| Method                        | Time              | Space       | Optimal?                               |
+| ----------------------------- | ----------------- | ----------- | -------------------------------------- |
+| `held_karp`                   | O(2^n * n^2)      | O(2^n * n)  | Always                                 |
+| `branch_and_bound`            | O(2^n) worst case | O(n)/branch | Always, often far faster               |
+| `nearest_neighbor`            | O(n^2)            | O(n)        | No guarantee                           |
+| `greedy_edge`                 | O(n^2 log n)      | O(n)        | No guarantee                           |
+| `two_opt`                     | O(n^2) per pass   | O(n)        | Local optimum only                     |
+| `christofides` (via networkx) | O(n^3)            | O(n^2)      | <= 1.5x optimal, metric instances only |
 
 The brief names Held-Karp and "vs heuristics." Branch and bound is added as
 the second exact method because it's the other half of Held & Karp's own
