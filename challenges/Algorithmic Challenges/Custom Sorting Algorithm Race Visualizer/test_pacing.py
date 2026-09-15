@@ -9,7 +9,6 @@ Run with:  uv run --with pytest pytest -q
 from __future__ import annotations
 
 import pytest
-
 from pacing import (
     CLOSING_HOLD,
     CPS_FIRST,
@@ -30,7 +29,6 @@ from pacing import (
     scene_duration,
 )
 from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES, Step
-
 
 # ---------------------------------------------------------------------------
 # The two text measures

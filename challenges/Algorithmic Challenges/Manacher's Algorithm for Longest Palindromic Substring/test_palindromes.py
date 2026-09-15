@@ -13,7 +13,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from palindromes import (
     Eertree,
     PalindromeIndex,
@@ -393,7 +392,7 @@ def test_occurrence_count_matches_enumeration():
 
 def test_occurrence_count_on_a_run_of_equal_characters():
     """n equal characters give exactly n(n+1)/2 palindromic substrings."""
-    for n in range(0, 60):
+    for n in range(60):
         assert count_palindromic_substrings("a" * n) == n * (n + 1) // 2
 
 
@@ -645,7 +644,7 @@ def test_partition_of_a_run_is_one_piece():
 
 
 def test_partition_of_all_distinct_characters_is_n_pieces():
-    for n in range(0, 20):
+    for n in range(20):
         s = "".join(chr(ord("a") + i) for i in range(n))
         assert min_palindromic_partition(s) == n
 

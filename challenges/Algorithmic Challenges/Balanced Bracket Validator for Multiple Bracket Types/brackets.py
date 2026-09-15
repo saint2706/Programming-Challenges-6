@@ -34,22 +34,22 @@ import bisect
 import json
 import re
 import sys
+from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass, field
-from typing import Iterable, Iterator, Sequence
 
 __all__ = [
-    "Pair",
+    "SPECS",
     "BracketSpec",
     "Diagnostic",
-    "Span",
+    "Pair",
     "Report",
+    "Span",
     "Validator",
+    "auto_close",
+    "longest_balanced_span",
+    "matching_index",
     "validate",
     "validate_stream",
-    "matching_index",
-    "longest_balanced_span",
-    "auto_close",
-    "SPECS",
 ]
 
 
@@ -130,7 +130,7 @@ class Pair:
         return d
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Pair":
+    def from_dict(cls, d: dict) -> Pair:
         may = d.get("may_contain")
         return cls(
             open=d["open"],
@@ -227,7 +227,7 @@ class BracketSpec:
     def opaque_scanner(self, pair: Pair) -> re.Pattern[str]:
         return self._opaque_scanners[pair.name]
 
-    def with_pairs(self, *extra: Pair, name: str | None = None) -> "BracketSpec":
+    def with_pairs(self, *extra: Pair, name: str | None = None) -> BracketSpec:
         """Derive a spec by appending pairs -- the cheap way to customize."""
         return BracketSpec(self.pairs + extra, name or f"{self.name}+")
 
@@ -237,11 +237,11 @@ class BracketSpec:
         )
 
     @classmethod
-    def from_dict(cls, d: dict) -> "BracketSpec":
+    def from_dict(cls, d: dict) -> BracketSpec:
         return cls([Pair.from_dict(p) for p in d["pairs"]], d.get("name", "custom"))
 
     @classmethod
-    def from_json(cls, text: str) -> "BracketSpec":
+    def from_json(cls, text: str) -> BracketSpec:
         return cls.from_dict(json.loads(text))
 
     def __repr__(self) -> str:  # pragma: no cover - debugging aid
@@ -589,17 +589,20 @@ class Validator:
                 owner.offset,
             )
             return
-        if top is not None and top.pair.may_contain is not None:
-            if pair.name not in top.pair.may_contain:
-                self._emit(
-                    FORBIDDEN_NESTING,
-                    f"{pair.name!r} is not allowed directly inside {top.pair.name!r}",
-                    offset,
-                    lex,
-                    pair.name,
-                    top.offset,
-                )
-                return
+        if (
+            top is not None
+            and top.pair.may_contain is not None
+            and pair.name not in top.pair.may_contain
+        ):
+            self._emit(
+                FORBIDDEN_NESTING,
+                f"{pair.name!r} is not allowed directly inside {top.pair.name!r}",
+                offset,
+                lex,
+                pair.name,
+                top.offset,
+            )
+            return
         if self.max_depth is not None and len(self._stack) >= self.max_depth:
             # Fatal, not recoverable. Dropping the frame and carrying on turns
             # every subsequent closer into a spurious "unexpected close": a
@@ -734,7 +737,7 @@ class Validator:
 
 def validate(
     text: str,
-    spec: "BracketSpec | str" = "plain",
+    spec: BracketSpec | str = "plain",
     *,
     max_depth: int | None = None,
     max_diagnostics: int | None = 100,
@@ -747,7 +750,7 @@ def validate(
 
 def validate_stream(
     chunks: Iterable[str],
-    spec: "BracketSpec | str" = "plain",
+    spec: BracketSpec | str = "plain",
     *,
     max_depth: int | None = None,
     max_diagnostics: int | None = 100,
@@ -770,7 +773,7 @@ def validate_stream(
 
 
 def matching_index(
-    text: str, offset: int, spec: "BracketSpec | str" = "plain"
+    text: str, offset: int, spec: BracketSpec | str = "plain"
 ) -> int | None:
     """Start offset of the delimiter matching the one at ``offset``.
 
@@ -788,7 +791,7 @@ def matching_index(
 
 
 def longest_balanced_span(
-    text: str, spec: "BracketSpec | str" = "plain"
+    text: str, spec: BracketSpec | str = "plain"
 ) -> tuple[int, int]:
     """Longest substring that is itself balanced, as a half-open ``(start, end)``.
 
@@ -825,7 +828,7 @@ def longest_balanced_span(
     return best
 
 
-def auto_close(text: str, spec: "BracketSpec | str" = "plain") -> str:
+def auto_close(text: str, spec: BracketSpec | str = "plain") -> str:
     """The closers that would balance ``text``, innermost first.
 
     This is the "type ``{`` and get ``}``" editor feature, applied to a whole
@@ -952,7 +955,7 @@ SPECS: dict[str, BracketSpec] = {
 SPECS["angle"] = BracketSpec(PLAIN.pairs + (_ANGLE,), "angle")
 
 
-def _resolve(spec: "BracketSpec | str") -> BracketSpec:
+def _resolve(spec: BracketSpec | str) -> BracketSpec:
     if isinstance(spec, BracketSpec):
         return spec
     try:

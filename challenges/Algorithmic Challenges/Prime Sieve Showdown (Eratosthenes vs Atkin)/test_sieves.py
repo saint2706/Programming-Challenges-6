@@ -11,9 +11,8 @@ import sys
 from math import isqrt
 from pathlib import Path
 
-import pytest
-
 import benchmark
+import pytest
 import sieves
 from sieves import (
     IMPLEMENTATIONS,
@@ -67,7 +66,7 @@ def test_matches_oracle_at_every_small_limit(key, oracle):
         if p <= 300:
             for n in range(p, 301):
                 counts[n] += 1
-    for n in range(0, 301):
+    for n in range(301):
         assert fn(n) == counts[n], f"{key} disagrees at limit {n}"
 
 
@@ -187,7 +186,7 @@ def test_iter_primes_matches_primes_below():
 
 def test_primes_in_range_against_every_small_window(oracle):
     """Exhaustive: every [lo, hi] with lo < 300 and width < 120."""
-    for lo in range(0, 300):
+    for lo in range(300):
         for hi in range(lo, lo + 120):
             expected = [p for p in oracle if lo <= p <= hi]
             assert sieves.primes_in_range(lo, hi) == expected, (lo, hi)
@@ -329,6 +328,7 @@ def test_cli_list():
         [sys.executable, str(HERE / "benchmark.py"), "--list"],
         capture_output=True,
         text=True,
+        check=False,
     )
     assert proc.returncode == 0
     for key in ALL_KEYS:
@@ -348,6 +348,7 @@ def test_cli_json_roundtrip():
         ],
         capture_output=True,
         text=True,
+        check=False,
     )
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
@@ -360,6 +361,7 @@ def test_cli_rejects_unknown_implementation():
         [sys.executable, str(HERE / "benchmark.py"), "--only", "quantum-sieve"],
         capture_output=True,
         text=True,
+        check=False,
     )
     assert proc.returncode != 0
     assert "unknown implementation" in proc.stderr
@@ -367,7 +369,10 @@ def test_cli_rejects_unknown_implementation():
 
 def test_sieves_module_self_check():
     proc = subprocess.run(
-        [sys.executable, str(HERE / "sieves.py")], capture_output=True, text=True
+        [sys.executable, str(HERE / "sieves.py")],
+        capture_output=True,
+        text=True,
+        check=False,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "all self-checks passed" in proc.stdout

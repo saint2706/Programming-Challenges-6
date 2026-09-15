@@ -45,17 +45,150 @@ from stringsearch import (
     two_way_search,
 )
 
-WORDS = (
-    "the of and to in a is that it for as was with be by on not he this are or "
-    "his from at which but have an they one you had we all their has been more "
-    "when there who will no if out so said what up its about into than them can "
-    "only other new some time these two may then do first any my now such like "
-    "our over man me even most made after also did many before must through back "
-    "years where much your way well down should because each just those people "
-    "mr how too little state good very make world still own see men work long "
-    "here between both life being under never day same another know while last "
-    "might us great old year off come since against go came right used take three"
-).split()
+WORDS = [
+    "the",
+    "of",
+    "and",
+    "to",
+    "in",
+    "a",
+    "is",
+    "that",
+    "it",
+    "for",
+    "as",
+    "was",
+    "with",
+    "be",
+    "by",
+    "on",
+    "not",
+    "he",
+    "this",
+    "are",
+    "or",
+    "his",
+    "from",
+    "at",
+    "which",
+    "but",
+    "have",
+    "an",
+    "they",
+    "one",
+    "you",
+    "had",
+    "we",
+    "all",
+    "their",
+    "has",
+    "been",
+    "more",
+    "when",
+    "there",
+    "who",
+    "will",
+    "no",
+    "if",
+    "out",
+    "so",
+    "said",
+    "what",
+    "up",
+    "its",
+    "about",
+    "into",
+    "than",
+    "them",
+    "can",
+    "only",
+    "other",
+    "new",
+    "some",
+    "time",
+    "these",
+    "two",
+    "may",
+    "then",
+    "do",
+    "first",
+    "any",
+    "my",
+    "now",
+    "such",
+    "like",
+    "our",
+    "over",
+    "man",
+    "me",
+    "even",
+    "most",
+    "made",
+    "after",
+    "also",
+    "did",
+    "many",
+    "before",
+    "must",
+    "through",
+    "back",
+    "years",
+    "where",
+    "much",
+    "your",
+    "way",
+    "well",
+    "down",
+    "should",
+    "because",
+    "each",
+    "just",
+    "those",
+    "people",
+    "mr",
+    "how",
+    "too",
+    "little",
+    "state",
+    "good",
+    "very",
+    "make",
+    "world",
+    "still",
+    "own",
+    "see",
+    "men",
+    "work",
+    "long",
+    "here",
+    "between",
+    "both",
+    "life",
+    "being",
+    "under",
+    "never",
+    "day",
+    "same",
+    "another",
+    "know",
+    "while",
+    "last",
+    "might",
+    "us",
+    "great",
+    "old",
+    "year",
+    "off",
+    "come",
+    "since",
+    "against",
+    "go",
+    "came",
+    "right",
+    "used",
+    "take",
+    "three",
+]
 
 
 def prose(n: int, rng: random.Random) -> str:
@@ -153,8 +286,11 @@ def bench_time(quick: bool) -> None:
             pat = sample_pattern(text, m, rng)
             cells = []
             for algo in names:
-                t, hits = timed(
-                    lambda: sum(1 for _ in ALGORITHMS[algo](pat, text)), repeat=1
+                t, _hits = timed(
+                    lambda algo=algo, pat=pat, text=text: sum(
+                        1 for _ in ALGORITHMS[algo](pat, text)
+                    ),
+                    repeat=1,
                 )
                 cells.append(f"{t:>12.4f}s")
             print(f"  {m:>5}" + "".join(cells))
@@ -279,11 +415,17 @@ def bench_bitparallel(quick: bool) -> None:
     for n in sizes:
         text = "".join(rng.choice("acgt") for _ in range(n))
         pat = sample_pattern(text, 16, rng)
-        t_bp, hits = timed(lambda: list(bitparallel_search(pat, text)))
-        t_bi, _ = timed(lambda: list(builtin_search(pat, text)))
+        t_bp, hits = timed(
+            lambda pat=pat, text=text: list(bitparallel_search(pat, text))
+        )
+        t_bi, _ = timed(lambda pat=pat, text=text: list(builtin_search(pat, text)))
         if n <= 1_000_000:
-            t_tw, _ = timed(lambda: list(two_way_search(pat, text)), repeat=1)
-            t_hs, _ = timed(lambda: list(horspool_search(pat, text)), repeat=1)
+            t_tw, _ = timed(
+                lambda pat=pat, text=text: list(two_way_search(pat, text)), repeat=1
+            )
+            t_hs, _ = timed(
+                lambda pat=pat, text=text: list(horspool_search(pat, text)), repeat=1
+            )
             tw, hs = f"{t_tw:>12.4f}s", f"{t_hs:>12.4f}s"
         else:
             tw = hs = f"{'skipped':>13}"
@@ -294,8 +436,10 @@ def bench_bitparallel(quick: bool) -> None:
     for n in sizes:
         text = "a" * n
         pat = "a" * 8
-        t_bp, hits = timed(lambda: list(bitparallel_search(pat, text)))
-        t_bi, _ = timed(lambda: list(builtin_search(pat, text)))
+        t_bp, hits = timed(
+            lambda pat=pat, text=text: list(bitparallel_search(pat, text))
+        )
+        t_bi, _ = timed(lambda pat=pat, text=text: list(builtin_search(pat, text)))
         print(
             f"  {n:>10,} {t_bp:>12.4f}s {t_bi:>12.4f}s {t_bi / t_bp:>8.2f}x "
             f"{len(hits):>12,}"
@@ -308,8 +452,12 @@ def bench_bitparallel(quick: bool) -> None:
     for distinct in (1, 2, 4, 8, 16, 32):
         alpha = string.printable[:62][:distinct]
         pat = alpha + "".join(rng.choice(alpha) for _ in range(64 - distinct))
-        t_bp, _ = timed(lambda: list(bitparallel_search(pat, text)), repeat=1)
-        t_bi, _ = timed(lambda: list(builtin_search(pat, text)), repeat=1)
+        t_bp, _ = timed(
+            lambda pat=pat, text=text: list(bitparallel_search(pat, text)), repeat=1
+        )
+        t_bi, _ = timed(
+            lambda pat=pat, text=text: list(builtin_search(pat, text)), repeat=1
+        )
         print(f"  {len(set(pat)):>27} {t_bp:>12.4f}s {t_bi:>12.4f}s")
 
     print("\n  Sparse matches: `builtin` wins, and should -- it is the same idea in")

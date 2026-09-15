@@ -15,7 +15,6 @@ from fractions import Fraction
 from pathlib import Path
 
 import pytest
-
 from inversions import (
     METHODS,
     Fenwick,
@@ -72,7 +71,7 @@ def test_random_arrays_match_brute_force(impl):
 
 
 @pytest.mark.parametrize("impl", IMPLS)
-@pytest.mark.parametrize("n", range(0, 8))
+@pytest.mark.parametrize("n", range(8))
 def test_exhaustive_over_all_permutations(impl, n):
     """For n <= 7 there is no need to sample: check every permutation."""
     for perm in itertools.permutations(range(n)):
@@ -404,7 +403,7 @@ def test_inversions_equal_bubble_sort_swaps():
 
 def test_inversion_polynomial_matches_exhaustive_enumeration():
     """sum over S_n of q^inv = [n]_q!, checked against every permutation."""
-    for n in range(0, 8):
+    for n in range(8):
         counts = [0] * (max_inversions(n) + 1)
         for perm in itertools.permutations(range(n)):
             counts[count_brute(list(perm))] += 1
@@ -412,13 +411,13 @@ def test_inversion_polynomial_matches_exhaustive_enumeration():
 
 
 def test_inversion_polynomial_sums_to_n_factorial():
-    for n in range(0, 10):
+    for n in range(10):
         assert sum(inversion_polynomial(n)) == math.factorial(n)
 
 
 def test_inversion_polynomial_is_palindromic():
     """inv(pi) + inv(reverse of pi) = C(n,2), so the coefficients mirror."""
-    for n in range(0, 10):
+    for n in range(10):
         poly = inversion_polynomial(n)
         assert poly == poly[::-1]
 
@@ -468,7 +467,7 @@ def test_mean_and_variance_of_a_random_permutation():
 
 def test_lehmer_code_is_a_bijection():
     """Every permutation has one table, every valid table one permutation."""
-    for n in range(0, 7):
+    for n in range(7):
         tables = set()
         for perm in itertools.permutations(range(n)):
             table = inversion_table(list(perm))

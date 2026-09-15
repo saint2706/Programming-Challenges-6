@@ -6,13 +6,12 @@ Run with:  uv run --with pytest pytest -q
 from __future__ import annotations
 
 import random
-import time
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 import pytest
-
 from josephus import (
     Fenwick,
     elimination_order,
@@ -84,7 +83,7 @@ def test_pow2_closed_form_matches_recurrence():
 
 
 def test_pow2_powers_of_two_survive_at_position_one():
-    for m in range(0, 40):
+    for m in range(40):
         assert survivor_pow2(1 << m) == 1
 
 
@@ -322,6 +321,7 @@ def test_cli_verify_subcommand():
         [sys.executable, str(HERE / "josephus.py"), "--verify"],
         capture_output=True,
         text=True,
+        check=False,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "all methods agree" in proc.stdout

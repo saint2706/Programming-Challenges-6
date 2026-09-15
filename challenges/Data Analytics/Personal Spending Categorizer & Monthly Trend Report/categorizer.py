@@ -160,9 +160,9 @@ def build_monthly_category_chart(spend: pl.DataFrame) -> str:
     fig.update_layout(
         barmode="stack",
         title="Monthly spend by category",
-        margin=dict(l=40, r=20, t=40, b=30),
+        margin={"l": 40, "r": 20, "t": 40, "b": 30},
         height=380,
-        legend=dict(orientation="h", y=-0.2),
+        legend={"orientation": "h", "y": -0.2},
     )
     return _fig_to_div(fig)
 
@@ -184,7 +184,9 @@ def build_total_trend_chart(spend: pl.DataFrame) -> str:
         )
     )
     fig.update_layout(
-        title="Total monthly spend", margin=dict(l=40, r=20, t=40, b=30), height=280
+        title="Total monthly spend",
+        margin={"l": 40, "r": 20, "t": 40, "b": 30},
+        height=280,
     )
     return _fig_to_div(fig)
 

@@ -12,7 +12,6 @@ from pathlib import Path
 
 import httpx
 import pytest
-
 from aggregator import (
     Snapshot,
     build_arg_parser,

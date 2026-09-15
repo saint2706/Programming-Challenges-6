@@ -40,7 +40,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install ruff
-        run: pip install "ruff==0.14.6"
+        run: pip install "ruff==0.16.7"
 
       - name: Format with dprint (markdown, JSON, and Python via ruff)
         id: dprint

@@ -183,9 +183,9 @@ def cmd_seed(args: argparse.Namespace) -> int:
 
 
 def cmd_report(args: argparse.Namespace) -> int:
-    import polars as pl
     import plotly.graph_objects as go
     import plotly.io as pio
+    import polars as pl
 
     conn = connect(args.db)
     rows = load_snapshots(conn, args.location)
@@ -206,7 +206,7 @@ def cmd_report(args: argparse.Namespace) -> int:
             x=dates,
             y=df["temp_max_c"].to_list(),
             name="Max temp (°C)",
-            line=dict(color="#F58518"),
+            line={"color": "#F58518"},
         )
     )
     fig.add_trace(
@@ -214,7 +214,7 @@ def cmd_report(args: argparse.Namespace) -> int:
             x=dates,
             y=df["temperature_c"].to_list(),
             name="Reading (°C)",
-            line=dict(color="#4C78A8"),
+            line={"color": "#4C78A8"},
         )
     )
     fig.add_trace(
@@ -222,11 +222,13 @@ def cmd_report(args: argparse.Namespace) -> int:
             x=dates,
             y=df["temp_min_c"].to_list(),
             name="Min temp (°C)",
-            line=dict(color="#54A24B"),
+            line={"color": "#54A24B"},
         )
     )
     fig.update_layout(
-        title="Temperature over time", margin=dict(l=50, r=20, t=40, b=30), height=320
+        title="Temperature over time",
+        margin={"l": 50, "r": 20, "t": 40, "b": 30},
+        height=320,
     )
     temp_chart = pio.to_html(
         fig, include_plotlyjs=False, full_html=False, config={"displaylogo": False}
@@ -236,7 +238,9 @@ def cmd_report(args: argparse.Namespace) -> int:
         go.Bar(x=dates, y=df["precipitation_mm"].to_list(), marker_color="#4C78A8")
     )
     precip_fig.update_layout(
-        title="Precipitation (mm)", margin=dict(l=50, r=20, t=40, b=30), height=260
+        title="Precipitation (mm)",
+        margin={"l": 50, "r": 20, "t": 40, "b": 30},
+        height=260,
     )
     precip_chart = pio.to_html(
         precip_fig,

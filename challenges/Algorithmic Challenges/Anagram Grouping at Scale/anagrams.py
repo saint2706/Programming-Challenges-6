@@ -67,21 +67,21 @@ from pathlib import Path
 from typing import Any
 
 __all__ = [
-    "Normalizer",
     "AnagramIndex",
-    "key_sorted",
-    "key_counter",
-    "key_primes",
-    "key_bincount",
-    "multiset_hash",
+    "Normalizer",
+    "are_anagrams",
     "char_value",
     "group_anagrams",
     "group_anagrams_external",
     "group_anagrams_parallel",
-    "are_anagrams",
+    "key_bincount",
+    "key_counter",
+    "key_primes",
+    "key_sorted",
+    "main",
+    "multiset_hash",
     "shard_of",
     "verify",
-    "main",
 ]
 
 _MASK64 = (1 << 64) - 1
@@ -183,12 +183,12 @@ class Normalizer:
     # -- presets ------------------------------------------------------------
 
     @classmethod
-    def exact(cls) -> "Normalizer":
+    def exact(cls) -> Normalizer:
         """No normalisation at all: raw codepoint multisets."""
         return cls(form=None)
 
     @classmethod
-    def phrase(cls) -> "Normalizer":
+    def phrase(cls) -> Normalizer:
         """Case-insensitive, alphanumeric-only: for multi-word phrase anagrams."""
         return cls(form="NFKC", casefold=True, graphemes=True, ignore=_not_alnum)
 
@@ -564,7 +564,6 @@ def group_anagrams_external(
     with tempfile.TemporaryDirectory(dir=tmpdir, prefix="anagram-runs-") as workdir:
         runs: list[Path] = []
         buf: list[tuple[str, int, str]] = []
-        counter = 0
 
         def spill() -> None:
             buf.sort()
@@ -575,9 +574,8 @@ def group_anagrams_external(
             runs.append(path)
             buf.clear()
 
-        for word in words:
+        for counter, word in enumerate(words):
             buf.append((key_sorted(norm.units(word)), counter, word))
-            counter += 1
             if len(buf) >= chunk_size:
                 spill()
 
@@ -701,7 +699,7 @@ class AnagramIndex:
         []
     """
 
-    __slots__ = ("_normalizer", "_buckets", "_size")
+    __slots__ = ("_buckets", "_normalizer", "_size")
 
     def __init__(
         self,
@@ -827,11 +825,13 @@ def verify(*, seed: int = 0, trials: int = 200, verbose: bool = True) -> bool:
                 if verbose:
                     print(f"  MISMATCH method={method} words={words}", file=sys.stderr)
         # The prime key only exists for the lowercase alphabet.
-        if set(alphabet) <= set(PRIME_TABLE):
-            if _canonical(group_anagrams(words, method="primes")) != expected:
-                ok = False
-                if verbose:
-                    print(f"  MISMATCH method=primes words={words}", file=sys.stderr)
+        if (
+            set(alphabet) <= set(PRIME_TABLE)
+            and _canonical(group_anagrams(words, method="primes")) != expected
+        ):
+            ok = False
+            if verbose:
+                print(f"  MISMATCH method=primes words={words}", file=sys.stderr)
         if _canonical(group_anagrams_external(words)) != expected:
             ok = False
             if verbose:

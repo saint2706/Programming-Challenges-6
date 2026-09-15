@@ -112,10 +112,12 @@ def bench_keys(lengths: list[int], per_length: int = 20_000) -> None:
             ("hash", multiset_hash),
             ("primes", key_primes),
         ]:
-            secs, _ = timed(lambda: [fn(w) for w in words], repeat=2)
+            secs, _ = timed(lambda fn=fn, words=words: [fn(w) for w in words], repeat=2)
             row.append(f"{secs / len(words) * 1e9:>12.0f}")
         if np is not None:
-            secs, _ = timed(lambda: [key_bincount(w) for w in words], repeat=2)
+            secs, _ = timed(
+                lambda words=words: [key_bincount(w) for w in words], repeat=2
+            )
             row.append(f"{secs / len(words) * 1e9:>12.0f}")
         print(" ".join(row))
 
@@ -247,9 +249,12 @@ def bench_prime_bits() -> None:
     print("is why the 16-byte hash wins outright instead.")
 
 
-def rng_word(freq: dict[str, float], _rng=random.Random(0)) -> str:
+_WORD_RNG = random.Random(0)
+
+
+def rng_word(freq: dict[str, float]) -> str:
     """One letter drawn from the English frequency distribution."""
-    return _rng.choices(list(freq), weights=list(freq.values()))[0]
+    return _WORD_RNG.choices(list(freq), weights=list(freq.values()))[0]
 
 
 # ---------------------------------------------------------------------------

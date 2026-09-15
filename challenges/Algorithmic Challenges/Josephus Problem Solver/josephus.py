@@ -35,18 +35,18 @@ import argparse
 import math
 import sys
 from collections import deque
-from typing import Iterator, Sequence
+from collections.abc import Iterator, Sequence
 
 __all__ = [
+    "Fenwick",
+    "elimination_order",
+    "frames",
     "simulate",
     "survivor",
-    "survivor_recurrence",
     "survivor_fast",
     "survivor_pow2",
-    "elimination_order",
+    "survivor_recurrence",
     "survivors",
-    "Fenwick",
-    "frames",
     "verify",
 ]
 
@@ -251,7 +251,7 @@ class Fenwick:
     does not yet cover j. That is a single O(log n) pass over the same array.
     """
 
-    __slots__ = ("n", "tree", "_top")
+    __slots__ = ("_top", "n", "tree")
 
     def __init__(self, n: int) -> None:
         if n < 1:
@@ -342,11 +342,7 @@ def frames(n: int, k: int, *, start: int = 1, width: int = 72) -> Iterator[str]:
         cells = []
         for p in range(1, n + 1):
             cells.append(
-                (
-                    "--".rjust(label_width, "-")
-                    if p in dead
-                    else str(p).rjust(label_width)
-                )
+                "--".rjust(label_width, "-") if p in dead else str(p).rjust(label_width)
             )
         line = " ".join(cells)
         return line if len(line) <= width else line[: width - 3] + "..."

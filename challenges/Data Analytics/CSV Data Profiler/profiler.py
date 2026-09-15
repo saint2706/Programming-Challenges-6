@@ -129,7 +129,7 @@ def profile_numeric(series: pl.Series) -> tuple[dict[str, Any], str]:
     )
     fig.update_layout(
         title=f"Distribution of {series.name}",
-        margin=dict(l=40, r=20, t=40, b=30),
+        margin={"l": 40, "r": 20, "t": 40, "b": 30},
         height=280,
     )
     return stats, _fig_to_div(fig)
@@ -143,9 +143,9 @@ def profile_categorical(series: pl.Series, top_n: int) -> tuple[dict[str, Any], 
     fig = go.Figure(go.Bar(x=values, y=labels, orientation="h", marker_color="#F58518"))
     fig.update_layout(
         title=f"Top values of {series.name}",
-        margin=dict(l=120, r=20, t=40, b=30),
+        margin={"l": 120, "r": 20, "t": 40, "b": 30},
         height=max(200, 24 * len(labels)),
-        yaxis=dict(autorange="reversed"),
+        yaxis={"autorange": "reversed"},
     )
     return stats, _fig_to_div(fig)
 
@@ -163,7 +163,7 @@ def profile_datetime(series: pl.Series) -> tuple[dict[str, Any], str]:
     )
     fig.update_layout(
         title=f"Row count by month for {series.name}",
-        margin=dict(l=40, r=20, t=40, b=30),
+        margin={"l": 40, "r": 20, "t": 40, "b": 30},
         height=280,
     )
     return stats, _fig_to_div(fig)
@@ -177,7 +177,7 @@ def profile_boolean(series: pl.Series) -> tuple[dict[str, Any], str]:
     fig = go.Figure(go.Bar(x=labels, y=values, marker_color="#54A24B"))
     fig.update_layout(
         title=f"Value counts for {series.name}",
-        margin=dict(l=40, r=20, t=40, b=30),
+        margin={"l": 40, "r": 20, "t": 40, "b": 30},
         height=260,
     )
     return stats, _fig_to_div(fig)
@@ -201,7 +201,7 @@ def build_correlation_heatmap(df: pl.DataFrame, numeric_cols: list[str]) -> str:
     )
     fig.update_layout(
         title="Correlation matrix (numeric columns)",
-        margin=dict(l=80, r=20, t=40, b=60),
+        margin={"l": 80, "r": 20, "t": 40, "b": 60},
         height=400,
     )
     return _fig_to_div(fig)

@@ -66,27 +66,27 @@ from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
 __all__ = [
-    "Fenwick",
     "METHODS",
-    "count_inversions",
+    "Fenwick",
+    "bubble_sort_swaps",
     "count_brute",
-    "count_insort",
-    "count_mergesort",
     "count_fenwick",
+    "count_greater_to_left",
+    "count_insort",
+    "count_inversions",
+    "count_mergesort",
     "count_numpy",
     "count_numpy_radix",
-    "count_smaller_to_right",
-    "count_greater_to_left",
     "count_significant_inversions",
-    "kendall_tau_distance",
-    "kendall_tau_b",
-    "inversion_table",
+    "count_smaller_to_right",
     "from_inversion_table",
     "inversion_polynomial",
-    "bubble_sort_swaps",
+    "inversion_table",
+    "kendall_tau_b",
+    "kendall_tau_distance",
+    "main",
     "max_inversions",
     "verify",
-    "main",
 ]
 
 #: Accepted values for ``method``; ``"auto"`` picks by size and availability.
@@ -114,7 +114,7 @@ def _prepare(
     values = list(seq)
     if key is not None:
         values = [key(v) for v in values]
-    if validate and any(v != v for v in values):
+    if validate and any(v != v for v in values):  # noqa: PLR0124 -- NaN != NaN is the check
         raise ValueError(
             "sequence contains NaN: comparisons against NaN are all false, so "
             "the elements are not totally ordered and the inversion count is "
@@ -140,7 +140,7 @@ class _Item:
         self.k = k
         self.v = v
 
-    def __lt__(self, other: "_Item") -> bool:
+    def __lt__(self, other: _Item) -> bool:
         return self.k < other.k
 
 
@@ -152,10 +152,10 @@ class _Reversed:
     def __init__(self, v: Any) -> None:
         self.v = v
 
-    def __lt__(self, other: "_Reversed") -> bool:
+    def __lt__(self, other: _Reversed) -> bool:
         return other.v < self.v
 
-    def __le__(self, other: "_Reversed") -> bool:
+    def __le__(self, other: _Reversed) -> bool:
         return not (self.v < other.v)
 
     def __eq__(self, other: object) -> bool:
@@ -357,7 +357,7 @@ class Fenwick:
         return self._n
 
     @classmethod
-    def from_counts(cls, counts: Sequence[int]) -> "Fenwick":
+    def from_counts(cls, counts: Sequence[int]) -> Fenwick:
         """Build from initial slot values in O(n) rather than O(n log n)."""
         tree = cls(len(counts))
         t = tree._t

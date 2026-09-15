@@ -55,28 +55,28 @@ from collections.abc import Iterator, Sequence
 from typing import Any
 
 __all__ = [
-    "PalindromeIndex",
     "Eertree",
-    "manacher_odd_even",
-    "palindrome_radii",
+    "PalindromeIndex",
+    "all_maximal_palindromes",
+    "brute_force_longest_palindrome_span",
+    "count_distinct_palindromes",
+    "count_palindromic_substrings",
+    "distinct_palindromes",
+    "dp_longest_palindrome_span",
+    "graphemes",
     "longest_palindrome",
     "longest_palindrome_span",
-    "count_palindromic_substrings",
-    "all_maximal_palindromes",
-    "distinct_palindromes",
-    "count_distinct_palindromes",
     "longest_palindromic_prefix",
     "longest_palindromic_suffix",
-    "shortest_palindrome_by_prepending",
-    "min_palindromic_partition",
-    "palindromic_partition",
-    "naive_longest_palindrome_span",
-    "dp_longest_palindrome_span",
-    "brute_force_longest_palindrome_span",
-    "graphemes",
-    "relaxed_view",
-    "verify",
     "main",
+    "manacher_odd_even",
+    "min_palindromic_partition",
+    "naive_longest_palindrome_span",
+    "palindrome_radii",
+    "palindromic_partition",
+    "relaxed_view",
+    "shortest_palindrome_by_prepending",
+    "verify",
 ]
 
 
@@ -280,7 +280,7 @@ class PalindromeIndex:
     12
     """
 
-    __slots__ = ("_s", "_d1", "_d2", "_rad")
+    __slots__ = ("_d1", "_d2", "_rad", "_s")
 
     def __init__(self, s: Sequence[Any]) -> None:
         self._s = s
@@ -376,15 +376,15 @@ class Eertree:
     """
 
     __slots__ = (
-        "_s",
+        "_diff",
+        "_ends",
         "_len",
         "_link",
-        "_trans",
-        "_suffix",
         "_occ",
-        "_diff",
+        "_s",
         "_series",
-        "_ends",
+        "_suffix",
+        "_trans",
     )
 
     ROOT_IMAGINARY = 0  # length -1
@@ -550,8 +550,7 @@ def min_palindromic_partition(s: Sequence[Any]) -> int:
             g[node] = dp[pos - tree.length[series] - tree.diff[node]]
             if tree.diff[node] == tree.diff[tree.link[node]]:
                 g[node] = min(g[node], g[tree.link[node]])
-            if g[node] + 1 < dp[pos]:
-                dp[pos] = g[node] + 1
+            dp[pos] = min(dp[pos], g[node] + 1)
             node = series
     return dp[n]
 
@@ -564,7 +563,7 @@ class _PartitionEertree:
     track occurrences and spans. Fusing them would slow both.
     """
 
-    __slots__ = ("s", "length", "link", "trans", "diff", "series", "suffix")
+    __slots__ = ("diff", "length", "link", "s", "series", "suffix", "trans")
 
     def __init__(self) -> None:
         self.s: list[Any] = []
@@ -664,7 +663,7 @@ def naive_longest_palindrome_span(s: Sequence[Any]) -> tuple[int, int]:
         while i >= 0 and j < n and s[i] == s[j]:
             i -= 1
             j += 1
-        i, j = i + 1, j
+        i += 1
         if j - i > best_len or (j - i == best_len and i < best_start):
             best_start, best_len = i, j - i
     return best_start, best_start + best_len
@@ -733,10 +732,13 @@ def graphemes(text: str) -> list[str]:
     buf = text[0]
     ri_run = 1 if _is_ri(text[0]) else 0
     for ch in text[1:]:
-        if unicodedata.category(ch) in _MARKS or ch == _ZWJ or buf.endswith(_ZWJ):
-            buf += ch
-            ri_run = 0
-        elif buf == "\r" and ch == "\n":
+        if (
+            unicodedata.category(ch) in _MARKS
+            or ch == _ZWJ
+            or buf.endswith(_ZWJ)
+            or buf == "\r"
+            and ch == "\n"
+        ):
             buf += ch
             ri_run = 0
         elif _is_ri(ch) and ri_run % 2 == 1:
@@ -802,7 +804,7 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
         "racecar",
     ]
     # Every binary string up to length 12: the densest palindrome structure there is.
-    for length in range(0, 11):
+    for length in range(11):
         cases.extend("".join(b) for b in itertools.product("ab", repeat=length))
     for _ in range(trials):
         alphabet = rng.choice(["a", "ab", "abc", "abcdefghij"])

@@ -8,9 +8,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+import polars as pl
 import pytest
-from scipy import stats as scipy_stats
-
 from ab_test_calculator import (
     analyze_csv,
     build_arg_parser,
@@ -22,7 +21,7 @@ from ab_test_calculator import (
     welch_t_test_from_raw,
     welch_t_test_from_stats,
 )
-import polars as pl
+from scipy import stats as scipy_stats
 
 SAMPLE_DIR = Path(__file__).parent / "sample_data"
 

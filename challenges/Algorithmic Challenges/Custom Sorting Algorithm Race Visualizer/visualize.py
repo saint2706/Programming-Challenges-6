@@ -29,7 +29,6 @@ Preview at speed while iterating on layout (0 = drop every hold):
 """
 
 from manim import *
-
 from pacing import (
     CLOSING_HOLD,
     HOLD_SCALE,

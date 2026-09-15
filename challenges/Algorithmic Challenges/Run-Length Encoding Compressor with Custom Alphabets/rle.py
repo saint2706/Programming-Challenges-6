@@ -46,35 +46,35 @@ import json
 import math
 import sys
 import zlib
+from collections.abc import Hashable, Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from itertools import groupby
-from typing import Hashable, Iterable, Iterator, Sequence
 
 __all__ = [
-    "Alphabet",
-    "NAMED_ALPHABETS",
-    "CountCode",
-    "GammaCount",
-    "TerminatedCount",
-    "ContinuationCount",
-    "choose_count_code",
-    "Codec",
-    "DecompressionBomb",
-    "PairCodec",
-    "PackBitsCodec",
-    "EscapeCodec",
-    "AdaptiveCodec",
     "CODECS",
+    "EXPANSION_LIMIT",
+    "NAMED_ALPHABETS",
+    "AdaptiveCodec",
+    "Alphabet",
+    "Analysis",
     "BitPacker",
-    "runs",
+    "Codec",
+    "CodecReport",
+    "ContinuationCount",
+    "CountCode",
+    "DecompressionBomb",
+    "EscapeCodec",
+    "GammaCount",
+    "PackBitsCodec",
+    "PairCodec",
+    "TerminatedCount",
+    "analyze",
+    "choose_count_code",
     "compress",
     "decompress",
-    "analyze",
-    "Analysis",
-    "CodecReport",
     "pack_file",
+    "runs",
     "unpack_file",
-    "EXPANSION_LIMIT",
 ]
 
 
@@ -250,7 +250,7 @@ class Alphabet:
     tuples of note-and-duration. Nothing in this module assumes text.
     """
 
-    __slots__ = ("symbols", "index", "count_code", "_size")
+    __slots__ = ("_size", "count_code", "index", "symbols")
 
     def __init__(
         self, symbols: Iterable[Hashable], count_code: CountCode | None = None
@@ -308,7 +308,7 @@ class Alphabet:
     # -- constructors --------------------------------------------------------
 
     @classmethod
-    def of(cls, data: Iterable[Hashable], **kwargs) -> "Alphabet":
+    def of(cls, data: Iterable[Hashable], **kwargs) -> Alphabet:
         """Infer the alphabet from the data, in order of first appearance."""
         seen: dict[Hashable, None] = {}
         for s in data:
@@ -326,7 +326,7 @@ class Alphabet:
         return cls(seen, **kwargs)
 
     @classmethod
-    def named(cls, name: str) -> "Alphabet":
+    def named(cls, name: str) -> Alphabet:
         try:
             return NAMED_ALPHABETS[name]()
         except KeyError:
@@ -665,7 +665,7 @@ CODECS: dict[str, Codec] = {
 # ---------------------------------------------------------------------------
 
 
-def _resolve_codec(codec: "Codec | str") -> Codec:
+def _resolve_codec(codec: Codec | str) -> Codec:
     if isinstance(codec, Codec):
         return codec
     try:
@@ -678,8 +678,8 @@ def _resolve_codec(codec: "Codec | str") -> Codec:
 
 def compress(
     data: Sequence[Hashable],
-    alphabet: "Alphabet | str | None" = None,
-    codec: "Codec | str" = "adaptive",
+    alphabet: Alphabet | str | None = None,
+    codec: Codec | str = "adaptive",
 ) -> tuple[list[Hashable], Alphabet]:
     """Compress a symbol sequence; the output uses the same alphabet."""
     alpha = _resolve_alphabet(alphabet, data)
@@ -690,7 +690,7 @@ def compress(
 def decompress(
     data: Sequence[Hashable],
     alphabet: Alphabet,
-    codec: "Codec | str" = "adaptive",
+    codec: Codec | str = "adaptive",
     max_symbols: int | None = None,
 ) -> list[Hashable]:
     """Inverse of :func:`compress`.
@@ -705,7 +705,7 @@ def decompress(
 
 
 def _resolve_alphabet(
-    alphabet: "Alphabet | str | None", data: Sequence[Hashable]
+    alphabet: Alphabet | str | None, data: Sequence[Hashable]
 ) -> Alphabet:
     if isinstance(alphabet, Alphabet):
         return alphabet
@@ -849,15 +849,23 @@ class Analysis:
     def render(self) -> str:
         lines = [
             f"symbols          {self.n_symbols:,}",
-            f"alphabet         {self.alphabet_size} symbols, "
-            f"{self.bits_per_symbol:.3f} bits each (ideal)",
+            (
+                f"alphabet         {self.alphabet_size} symbols, "
+                f"{self.bits_per_symbol:.3f} bits each (ideal)"
+            ),
             f"count code       {self.count_code}",
-            f"runs             {self.n_runs:,}  "
-            f"(mean {self.mean_run:.2f}, longest {self.max_run:,})",
-            f"packing          {self.packed_bits_per_symbol:.3f} bits/symbol "
-            f"-> {self.raw_packed_bytes:,} bytes uncompressed",
-            f"run-length entropy {self.run_entropy_bits:,.0f} bits "
-            f"(lower bound for any run-length coder)",
+            (
+                f"runs             {self.n_runs:,}  "
+                f"(mean {self.mean_run:.2f}, longest {self.max_run:,})"
+            ),
+            (
+                f"packing          {self.packed_bits_per_symbol:.3f} bits/symbol "
+                f"-> {self.raw_packed_bytes:,} bytes uncompressed"
+            ),
+            (
+                f"run-length entropy {self.run_entropy_bits:,.0f} bits "
+                f"(lower bound for any run-length coder)"
+            ),
             "",
             f"{'codec':<12}{'symbols out':>13}{'ratio':>9}{'packed bytes':>15}",
             "-" * 49,
@@ -874,7 +882,7 @@ class Analysis:
 
 
 def analyze(
-    data: Sequence[Hashable], alphabet: "Alphabet | str | None" = None
+    data: Sequence[Hashable], alphabet: Alphabet | str | None = None
 ) -> Analysis:
     """Measure every codec on this data, with honest baselines."""
     alpha = _resolve_alphabet(alphabet, data)
@@ -999,7 +1007,7 @@ def _read_symbols(path: str, binary: bool) -> list[Hashable]:
 
 
 def _self_check() -> int:
-    cases: list[tuple[str, Sequence[Hashable], "Alphabet | str"]] = [
+    cases: list[tuple[str, Sequence[Hashable], Alphabet | str]] = [
         ("empty", "", Alphabet("ab")),
         ("single symbol", "a", Alphabet("ab")),
         ("one long run", "A" * 10_000, "dna"),
@@ -1024,8 +1032,8 @@ def _self_check() -> int:
 
         alpha = _resolve_alphabet(alpha_spec, data)
         ok = True
-        for name in CODECS:
-            if not CODECS[name].applicable(alpha):
+        for name, codec in CODECS.items():
+            if not codec.applicable(alpha):
                 continue
             encoded, _ = compress(data, alpha, name)
             if any(s not in alpha for s in encoded):

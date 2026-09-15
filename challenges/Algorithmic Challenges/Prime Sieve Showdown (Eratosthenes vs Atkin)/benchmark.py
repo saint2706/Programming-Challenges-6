@@ -37,7 +37,7 @@ import subprocess
 import sys
 import threading
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import sieves
@@ -183,6 +183,7 @@ def measure(key: str, limit: int, repeat: int) -> Measurement:
         ],
         capture_output=True,
         text=True,
+        check=False,
     )
     if proc.returncode != 0:
         return Measurement(

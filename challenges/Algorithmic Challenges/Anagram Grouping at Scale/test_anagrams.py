@@ -6,6 +6,7 @@ Skip the slow ones with:  -m "not slow"
 
 from __future__ import annotations
 
+import dataclasses
 import itertools
 import random
 import string
@@ -16,7 +17,6 @@ from collections import Counter
 from pathlib import Path
 
 import pytest
-
 from anagrams import (
     PRIME_TABLE,
     AnagramIndex,
@@ -317,7 +317,7 @@ def test_normalizer_rejects_unknown_form():
 def test_normalizer_is_hashable_and_frozen():
     n = Normalizer(ignore=" ")
     assert {n, Normalizer(ignore=" ")} == {n}
-    with pytest.raises(Exception):
+    with pytest.raises(dataclasses.FrozenInstanceError):
         n.form = "NFD"
 
 

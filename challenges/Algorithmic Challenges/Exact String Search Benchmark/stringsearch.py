@@ -42,31 +42,31 @@ import argparse
 import random
 import re
 import sys
-from collections.abc import Iterator, Sequence
-from typing import Any, Callable
+from collections.abc import Callable, Iterator, Sequence
+from typing import Any
 
 __all__ = [
-    "naive_search",
-    "kmp_search",
-    "boyer_moore_search",
-    "boyer_moore_no_galil_search",
-    "horspool_search",
-    "sunday_search",
-    "rabin_karp_search",
-    "rabin_karp_randomized_search",
-    "two_way_search",
-    "shift_or_search",
-    "bitparallel_search",
-    "builtin_search",
     "ALGORITHMS",
     "COUNTABLE",
-    "prefix_function",
-    "count_accesses",
+    "bitparallel_search",
     "boyer_moore_adversary",
-    "rabin_karp_adversary",
-    "naive_adversary",
-    "verify",
+    "boyer_moore_no_galil_search",
+    "boyer_moore_search",
+    "builtin_search",
+    "count_accesses",
+    "horspool_search",
+    "kmp_search",
     "main",
+    "naive_adversary",
+    "naive_search",
+    "prefix_function",
+    "rabin_karp_adversary",
+    "rabin_karp_randomized_search",
+    "rabin_karp_search",
+    "shift_or_search",
+    "sunday_search",
+    "two_way_search",
+    "verify",
 ]
 
 _DEFAULT_MOD = (1 << 61) - 1  # a Mersenne prime; wide enough that the
@@ -872,10 +872,8 @@ def verify(*, seed: int = 0, trials: int = 400, verbose: bool = True) -> bool:
     # Exhaustive: every binary pattern up to length 4 against every binary
     # text up to length 10.
     agree = {name: True for name in names}
-    patterns = [
-        "".join(p) for k in range(0, 5) for p in itertools.product("ab", repeat=k)
-    ]
-    texts = ["".join(t) for k in range(0, 9) for t in itertools.product("ab", repeat=k)]
+    patterns = ["".join(p) for k in range(5) for p in itertools.product("ab", repeat=k)]
+    texts = ["".join(t) for k in range(9) for t in itertools.product("ab", repeat=k)]
     for pat in patterns:
         for txt in texts:
             expected = brute(pat, txt)
@@ -965,14 +963,14 @@ def _demo() -> None:
     print(f"text    {text!r}")
     print(f"pattern {pattern!r}\n")
     print(f"{'algorithm':<14} {'matches':<18} {'text accesses':>14}")
-    for name in ALGORITHMS:
-        matches = list(ALGORITHMS[name](pattern, text))
+    for name, algorithm in ALGORITHMS.items():
+        matches = list(algorithm(pattern, text))
         if name in COUNTABLE:
-            _, accesses = count_accesses(ALGORITHMS[name], pattern, text)
+            _, accesses = count_accesses(algorithm, pattern, text)
             shown = f"{accesses:,}"
         else:
             shown = "n/a (runs in C)"
-        print(f"{name:<14} {str(matches):<18} {shown:>14}")
+        print(f"{name:<14} {matches!s:<18} {shown:>14}")
     print(f"\ntext length {len(text)}; every method agrees on {matches}")
 
     print("\nWorst cases, in text accesses (m = 30, n = 3000):")

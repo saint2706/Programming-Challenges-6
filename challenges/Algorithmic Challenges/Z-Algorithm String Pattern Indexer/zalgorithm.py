@@ -57,32 +57,32 @@ from collections.abc import Iterable, Iterator, Sequence
 from typing import Any
 
 __all__ = [
-    "z_array",
-    "z_array_counted",
-    "naive_z_array",
-    "z_match_lengths",
-    "z_search",
-    "z_search_stream",
-    "z_search_concat",
-    "ZPatternIndex",
-    "MultiZMatcher",
     "AhoCorasick",
-    "prefix_function",
-    "prefix_from_z",
-    "z_from_prefix",
-    "z_from_prefix_direct",
-    "string_from_prefix",
+    "MultiZMatcher",
+    "ZPatternIndex",
     "all_borders",
-    "longest_border",
-    "smallest_period",
-    "string_power",
-    "prefix_occurrence_counts",
     "count_distinct_substrings",
-    "tandem_repeat_runs",
     "count_tandem_repeats",
+    "longest_border",
+    "main",
+    "naive_z_array",
+    "prefix_from_z",
+    "prefix_function",
+    "prefix_occurrence_counts",
+    "smallest_period",
+    "string_from_prefix",
+    "string_power",
+    "tandem_repeat_runs",
     "tandem_repeats",
     "verify",
-    "main",
+    "z_array",
+    "z_array_counted",
+    "z_from_prefix",
+    "z_from_prefix_direct",
+    "z_match_lengths",
+    "z_search",
+    "z_search_concat",
+    "z_search_stream",
 ]
 
 
@@ -369,7 +369,7 @@ class ZPatternIndex:
     behind :attr:`borders` and :attr:`period`.
     """
 
-    __slots__ = ("pattern", "z", "_borders", "_period")
+    __slots__ = ("_borders", "_period", "pattern", "z")
 
     def __init__(self, pattern: Sequence[Any]) -> None:
         self.pattern = pattern
@@ -1015,7 +1015,7 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
     # Exhaustive over short binary strings: the fast and slow paths agree,
     # and the two representations of the same information round-trip.
     ok_z = ok_pi = ok_zpi = ok_border = ok_restore = True
-    for length in range(0, 13):
+    for length in range(13):
         for bits in itertools.product("ab", repeat=length):
             s = "".join(bits)
             z = z_array(s)
@@ -1093,7 +1093,7 @@ def verify(*, seed: int = 0, trials: int = 300, verbose: bool = True) -> bool:
         counts = prefix_occurrence_counts(s)
         ok_counts &= all(
             counts[L] == sum(1 for i in range(n - L + 1) if s[i : i + L] == s[:L])
-            for L in range(0, n + 1)
+            for L in range(n + 1)
         )
         ok_distinct &= count_distinct_substrings(s) == len(
             {s[i:j] for i in range(n) for j in range(i + 1, n + 1)}

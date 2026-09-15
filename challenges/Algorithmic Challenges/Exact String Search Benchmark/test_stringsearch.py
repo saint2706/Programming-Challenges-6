@@ -17,7 +17,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from stringsearch import (
     ALGORITHMS,
     COUNTABLE,

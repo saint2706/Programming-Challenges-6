@@ -69,7 +69,7 @@ def bubble_sort_steps(arr):
     sorted_idx = set()
     for i in range(n):
         swapped = False
-        for j in range(0, n - i - 1):
+        for j in range(n - i - 1):
             yield Step(
                 list(arr),
                 compare=(j, j + 1),

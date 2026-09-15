@@ -29,8 +29,8 @@ Run directly to self-check every implementation against known pi(x) values:
 from __future__ import annotations
 
 from bisect import bisect_right
+from collections.abc import Callable, Iterator
 from math import isqrt
-from typing import Callable, Iterator
 
 try:  # NumPy is optional: the pure-Python tier is the reference implementation.
     import numpy as _np
@@ -38,18 +38,18 @@ except ImportError:  # pragma: no cover - exercised only on a bare interpreter
     _np = None
 
 __all__ = [
-    "eratosthenes_simple",
-    "eratosthenes_wheel30",
-    "eratosthenes_segmented",
-    "atkin",
-    "eratosthenes_numpy",
-    "atkin_numpy",
-    "primes_below",
-    "primes_in_range",
-    "iter_primes",
+    "HAVE_NUMPY",
     "IMPLEMENTATIONS",
     "PI_REFERENCE",
-    "HAVE_NUMPY",
+    "atkin",
+    "atkin_numpy",
+    "eratosthenes_numpy",
+    "eratosthenes_segmented",
+    "eratosthenes_simple",
+    "eratosthenes_wheel30",
+    "iter_primes",
+    "primes_below",
+    "primes_in_range",
 ]
 
 HAVE_NUMPY = _np is not None
@@ -272,7 +272,7 @@ def eratosthenes_segmented(limit: int, segment_size: int | None = None) -> int:
 
     # One segment buffer, refilled in place from a memoryview -- no allocation
     # per segment, and none per strike either.
-    ones = memoryview(bytes(b"\x01") * segment_size)
+    ones = memoryview(b"\x01" * segment_size)
     zeros = memoryview(bytes(segment_size // 56 + 2))
     segment = bytearray(segment_size)
 
@@ -559,7 +559,7 @@ def primes_in_range(lo: int, hi: int) -> list[int]:
 
     width = stop - start
     segment_size = min(1 << 21, max(1 << 12, width))
-    ones = memoryview(bytes(b"\x01") * segment_size)
+    ones = memoryview(b"\x01" * segment_size)
     zeros = memoryview(bytes(segment_size // 56 + 2))
     segment = bytearray(segment_size)
 
@@ -612,7 +612,7 @@ def iter_primes(limit: int) -> Iterator[int]:
             ]
         )
 
-    ones = memoryview(bytes(b"\x01") * segment_size)
+    ones = memoryview(b"\x01" * segment_size)
     zeros = memoryview(bytes(segment_size // 56 + 2))
     segment = bytearray(segment_size)
 

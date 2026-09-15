@@ -12,7 +12,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from brackets import (
     SPECS,
     BracketSpec,
@@ -460,9 +459,8 @@ def naive_plain(text: str) -> bool:
     for ch in text:
         if ch in "([{":
             stack.append(ch)
-        elif ch in pairs:
-            if not stack or stack.pop() != pairs[ch]:
-                return False
+        elif ch in pairs and (not stack or stack.pop() != pairs[ch]):
+            return False
     return not stack
 
 
@@ -562,6 +560,7 @@ def test_module_runs_as_a_script():
         [sys.executable, str(HERE / "brackets.py"), "--self-check"],
         capture_output=True,
         text=True,
+        check=False,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "all self-checks passed" in proc.stdout

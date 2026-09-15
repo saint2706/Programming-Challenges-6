@@ -9,7 +9,6 @@ from pathlib import Path
 
 import polars as pl
 import pytest
-
 from profiler import (
     classify_semantic_type,
     iqr_outlier_count,

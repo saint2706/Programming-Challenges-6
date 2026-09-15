@@ -340,11 +340,14 @@ def build_chart(result: ProportionResult | MeansResult) -> str:
             x=labels,
             y=y,
             marker_color=["#4C78A8", "#F58518"],
-            error_y=dict(type="data", array=errors, visible=True),
+            error_y={"type": "data", "array": errors, "visible": True},
         )
     )
     fig.update_layout(
-        title=title, yaxis_title=ylabel, margin=dict(l=50, r=20, t=40, b=30), height=320
+        title=title,
+        yaxis_title=ylabel,
+        margin={"l": 50, "r": 20, "t": 40, "b": 30},
+        height=320,
     )
     return _fig_to_div(fig)
 

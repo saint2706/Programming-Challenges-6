@@ -161,11 +161,19 @@ def bench_search(quick: bool) -> None:
         text = random_text(n, "acgt", rng)
         for m in (8, 40):
             pat = random_text(m, "acgt", rng)
-            t_direct, hits_a = timed(lambda: list(z_search(pat, text)))
-            t_concat, hits_b = timed(lambda: list(z_search_concat(pat, text)))
+            t_direct, hits_a = timed(
+                lambda pat=pat, text=text: list(z_search(pat, text))
+            )
+            t_concat, hits_b = timed(
+                lambda pat=pat, text=text: list(z_search_concat(pat, text))
+            )
             assert hits_a == hits_b
-            mem_direct, _ = peak_kib(lambda: list(z_search(pat, text)))
-            mem_concat, _ = peak_kib(lambda: list(z_search_concat(pat, text)))
+            mem_direct, _ = peak_kib(
+                lambda pat=pat, text=text: list(z_search(pat, text))
+            )
+            mem_concat, _ = peak_kib(
+                lambda pat=pat, text=text: list(z_search_concat(pat, text))
+            )
             print(
                 f"{n:9,d} {m:5d} {t_direct:10.4f} {t_concat:10.4f} "
                 f"{t_concat / t_direct:7.2f}x {mem_direct:18,.0f} {mem_concat:18,.0f}"
@@ -178,7 +186,9 @@ def bench_search(quick: bool) -> None:
     for n in (20_000, 80_000, 320_000):
         pat = "acgtacgtacgtacgtacgtacgtacgtacgt"
         text = random_text(n, "acgt", rng)
-        mem, hits = peak_kib(lambda: list(z_search_stream(pat, iter(text))))
+        mem, hits = peak_kib(
+            lambda pat=pat, text=text: list(z_search_stream(pat, iter(text)))
+        )
         print(f"  {n:10,d} {mem:10.1f} {len(hits):8d}")
     print("\n  Flat, because the box only moves right and the buffer never holds")
     print("  more than m + 1 characters. An unbounded stream is searchable.")
@@ -236,11 +246,15 @@ def bench_multi(quick: bool) -> None:
         mz = MultiZMatcher(pats)
         ac = AhoCorasick(pats)
         t_mz, got_mz = timed(
-            lambda: sorted((p, i) for i, p in mz.search(text)), repeat=1
+            lambda mz=mz, text=text: sorted((p, i) for i, p in mz.search(text)),
+            repeat=1,
         )
-        t_naive, got_naive = timed(lambda: naive_multi(pats, text), repeat=1)
+        t_naive, got_naive = timed(
+            lambda pats=pats, text=text: naive_multi(pats, text), repeat=1
+        )
         t_ac, got_ac = timed(
-            lambda: sorted((p, i) for i, p in ac.search(text)), repeat=1
+            lambda ac=ac, text=text: sorted((p, i) for i, p in ac.search(text)),
+            repeat=1,
         )
         assert got_mz == got_naive == got_ac, name
         print(

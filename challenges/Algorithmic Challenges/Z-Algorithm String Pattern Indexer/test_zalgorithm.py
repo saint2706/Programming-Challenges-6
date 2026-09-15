@@ -13,7 +13,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from zalgorithm import (
     AhoCorasick,
     MultiZMatcher,

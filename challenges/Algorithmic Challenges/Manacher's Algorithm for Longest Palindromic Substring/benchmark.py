@@ -257,10 +257,10 @@ def bench_structures(n: int = 200_000) -> None:
 
     idx = PalindromeIndex(random_text(n, "ab", seed=5))
     rng = random.Random(6)
-    queries = [
-        (lambda a, b: (min(a, b), max(a, b)))(rng.randrange(n), rng.randrange(n))
-        for _ in range(200_000)
-    ]
+    queries = []
+    for _ in range(200_000):
+        a, b = rng.randrange(n), rng.randrange(n)
+        queries.append((min(a, b), max(a, b)))
     secs, _ = timed(lambda: [idx.is_palindrome(i, j) for i, j in queries], repeat=3)
     print(
         f"\n  is_palindrome: {secs / len(queries) * 1e9:.0f} ns/query over "
@@ -298,7 +298,7 @@ def bench_partition(sizes: list[int]) -> None:
 
 def bench_dp_memory(n: int = 4000) -> None:
     print(f"\n== the O(n^2)-space DP, n = {n} ==")
-    secs, span = timed(dp_longest_palindrome_span, "ab" * (n // 2), repeat=1)
+    secs, _span = timed(dp_longest_palindrome_span, "ab" * (n // 2), repeat=1)
     fast, _ = timed(longest_palindrome_span, "ab" * (n // 2), repeat=3)
     print(
         f"  dp_longest_palindrome_span: {secs:.3f}s, table is {n}^2 = {n * n:,} booleans"

@@ -17,16 +17,15 @@ import sys
 from pathlib import Path
 
 import pytest
-
 import rle
 from rle import (
     CODECS,
-    DecompressionBomb,
     NAMED_ALPHABETS,
     AdaptiveCodec,
     Alphabet,
     BitPacker,
     ContinuationCount,
+    DecompressionBomb,
     EscapeCodec,
     GammaCount,
     TerminatedCount,
@@ -555,6 +554,7 @@ def test_module_runs_as_a_script():
         [sys.executable, str(HERE / "rle.py"), "--self-check"],
         capture_output=True,
         text=True,
+        check=False,
     )
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "all self-checks passed" in proc.stdout
