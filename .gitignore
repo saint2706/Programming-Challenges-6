@@ -7,6 +7,12 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+.pytest_cache/
+
+# Runtime data files created by challenge scripts (e.g. the paste bin's SQLite DB)
+*.db
+*.sqlite
+*.sqlite3
 
 # OS
 .DS_Store
