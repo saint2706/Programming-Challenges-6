@@ -9,10 +9,13 @@ venv/
 *.egg-info/
 .pytest_cache/
 
-# Runtime data files created by challenge scripts (e.g. the paste bin's SQLite DB)
+# Runtime data files created by challenge scripts (e.g. the paste bin's SQLite DB,
+# the encrypted diary's journal file, the LAN file server's access log)
 *.db
 *.sqlite
 *.sqlite3
+*.enc
+access.log.jsonl
 
 # OS
 .DS_Store
