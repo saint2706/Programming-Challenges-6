@@ -269,8 +269,7 @@ uv run python josephus.py 100 7 --order
 uv run python josephus.py --verify
 uv run python josephus.py --benchmark
 
-uv run --with pytest pytest -q                      # 68 tests
-```
+uv run pytest -q # 68 tests```
 
 Standard library only. `--method {auto,simulate,recurrence,fast,pow2}` forces a
 particular ladder rung if you want to compare them by hand.
