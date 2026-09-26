@@ -335,18 +335,17 @@ uv run --with wordfreq python benchmark.py --sizes 5000 20000 --quick # faster, 
 ```bash
 cd "challenges/Algorithmic Challenges/T9 Predictive Text (Phone Keypad) Simulator"
 
-uv run --with wordfreq python t9.py 4663                    # multi-tap candidates
-uv run --with wordfreq python t9.py --type 4663              # live incremental typing
-uv run --with wordfreq python t9.py --demo                   # a handful of real collisions
-uv run --with wordfreq python t9.py --demo-adaptive           # selection re-ranking, before/after
-uv run --with wordfreq python t9.py --verify                 # cross-validate all 3 methods
-uv run --with wordfreq python t9.py --vocab-size 50000 2668  # bigger vocabulary
+uv run python t9.py 4663 # multi-tap candidates
+uv run python t9.py --type 4663 # live incremental typing
+uv run python t9.py --demo # a handful of real collisions
+uv run python t9.py --demo-adaptive # selection re-ranking, before/after
+uv run python t9.py --verify # cross-validate all 3 methods
+uv run python t9.py --vocab-size 50000 2668 # bigger vocabulary
 
-uv run --with wordfreq python benchmark.py                   # timing, both questions
+uv run python benchmark.py # timing, both questions
 
-uv run --with wordfreq --with pytest pytest -q                # 43 tests
-uv run --with wordfreq --with pytest pytest -q -m slow        # +2 full-vocabulary tests
-```
+uv run pytest -q # 43 tests
+uv run pytest -q -m slow # +2 full-vocabulary tests```
 
 `--vocab-size` controls how many words `build_vocabulary` loads (default
 30,000); `--top-k` controls how many suggestions each trie node caches
