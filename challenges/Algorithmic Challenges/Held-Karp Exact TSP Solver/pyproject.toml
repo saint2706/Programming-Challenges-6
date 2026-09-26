@@ -1,0 +1,12 @@
+[project]
+name = "held-karp-exact-tsp-solver"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "networkx>=3.7",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

@@ -158,11 +158,10 @@ quality on instances like these.
 ```bash
 cd "challenges/Algorithmic Challenges/Held-Karp Exact TSP Solver"
 
-uv run --with networkx python tsp.py         # exact + heuristics on one instance
-uv run --with networkx python benchmark.py   # timing and quality tables
+uv run python tsp.py # exact + heuristics on one instance
+uv run python benchmark.py # timing and quality tables
 
-uv run --with pytest --with networkx pytest -q   # 113 tests
-```
+uv run pytest -q # 113 tests```
 
 ## Where this is used
 
