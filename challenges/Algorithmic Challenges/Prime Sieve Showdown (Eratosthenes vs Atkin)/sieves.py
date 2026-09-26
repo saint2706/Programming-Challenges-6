@@ -23,7 +23,7 @@ list is being benchmarked on list construction, not on sieving. Use
 
 Run directly to self-check every implementation against known pi(x) values:
 
-    uv run --with numpy python sieves.py
+    uv run sieves.py
 """
 
 from __future__ import annotations

@@ -235,14 +235,14 @@ generalize well past primes:
 ```bash
 cd "challenges/Algorithmic Challenges/Prime Sieve Showdown (Eratosthenes vs Atkin)"
 
-uv run --with numpy python sieves.py                       # self-check
-uv run --with numpy python benchmark.py                    # the table above, N = 10^8
-uv run --with numpy python benchmark.py --limit 1e9 --only era-segmented
-uv run --with numpy python benchmark.py --markdown         # README-ready output
-uv run --with numpy python benchmark.py --list
+uv run python sieves.py # self-check
+uv run python benchmark.py # the table above, N = 10^8
+uv run python benchmark.py --limit 1e9 --only era-segmented
+uv run python benchmark.py --markdown # README-ready output
+uv run python benchmark.py --list
 
-uv run --with pytest --with numpy pytest -q -m "not slow"   # 141 tests
-uv run --with pytest --with numpy pytest -q                 # + 7 slow ones (to 10^9)
+uv run pytest -q -m "not slow" # 141 tests
+uv run pytest -q # + 7 slow ones (to 10^9)
 ```
 
 NumPy is **optional** — the pure-Python tier is the reference implementation and

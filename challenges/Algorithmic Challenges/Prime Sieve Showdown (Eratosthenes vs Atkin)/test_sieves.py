@@ -1,6 +1,6 @@
 """Tests for the prime sieve showdown.
 
-Run with:  uv run --with pytest --with numpy pytest -q
+Run with:  uv run pytest -q
 """
 
 from __future__ import annotations

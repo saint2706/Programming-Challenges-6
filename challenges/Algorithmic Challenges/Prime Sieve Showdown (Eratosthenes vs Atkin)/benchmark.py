@@ -19,11 +19,15 @@ That child uses two methods and keeps the larger: a background thread sampling
 ``/proc/self/statm`` every millisecond, and the ``ru_maxrss`` delta. Neither
 alone is enough. ``ru_maxrss`` is blind to anything smaller than CPython's own
 startup peak, so a 2.6 MB sieve reads as exactly zero; sampling is blind to a
-spike shorter than its interval.
+spike shorter than its interval. Both are Unix-only (no ``/proc`` and no
+``resource`` module on Windows), so on Windows the peak-RSS half falls back
+to ``psutil``'s ``peak_wset`` -- the actual Windows kernel counter for peak
+working-set size, i.e. the same high-water-mark concept ``ru_maxrss``
+represents on Linux/macOS, not an approximation of it.
 
-    uv run --with numpy python benchmark.py                 # default: 10^8
-    uv run --with numpy python benchmark.py --limit 1e7 --repeat 3
-    uv run --with numpy python benchmark.py --markdown      # table for the README
+    uv run benchmark.py                 # default: 10^8
+    uv run benchmark.py --limit 1e7 --repeat 3
+    uv run benchmark.py --markdown      # table for the README
 """
 
 from __future__ import annotations
@@ -32,13 +36,22 @@ import argparse
 import json
 import os
 import platform
-import resource
 import subprocess
 import sys
 import threading
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
+
+try:
+    import resource
+except ImportError:  # Windows has no resource module
+    resource = None  # type: ignore[assignment]
+
+try:
+    import psutil
+except ImportError:  # only required on Windows, where resource is unavailable
+    psutil = None  # type: ignore[assignment]
 
 import sieves
 
@@ -76,9 +89,15 @@ _PAGE_SIZE = os.sysconf("SC_PAGE_SIZE") if hasattr(os, "sysconf") else 4096
 
 
 def _peak_rss_bytes() -> int:
-    """The process high-water mark. Kilobytes on Linux, bytes on macOS."""
-    raw = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    return raw if sys.platform == "darwin" else raw * 1024
+    """The process high-water mark. Kilobytes on Linux, bytes on macOS, via
+    ``resource.getrusage``; on Windows (no ``resource`` module at all) via
+    psutil's ``peak_wset``, the direct Windows-kernel equivalent counter."""
+    if resource is not None:
+        raw = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        return raw if sys.platform == "darwin" else raw * 1024
+    if psutil is not None:
+        return psutil.Process().memory_info().peak_wset
+    return 0
 
 
 def _current_rss_bytes() -> int | None:
