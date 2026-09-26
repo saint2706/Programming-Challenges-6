@@ -101,20 +101,19 @@ tampers with a *temp copy*, never the real vendored file.
 ```bash
 cd "challenges/Practical ML/Model Serving API with Health Checks & Logging"
 
-uv run --with fastapi --with "uvicorn[standard]" --with onnxruntime \
-    --with pillow --with structlog --with numpy --with python-multipart \
+uv run \
     python app.py
 # -> http://127.0.0.1:8010
 
 # or, with auto-reload during development:
-uv run --with fastapi --with "uvicorn[standard]" --with onnxruntime \
-    --with pillow --with structlog --with numpy --with python-multipart \
+uv run \
     uvicorn app:app --reload
 
-uv run --with fastapi --with "uvicorn[standard]" --with onnxruntime \
-    --with pillow --with structlog --with numpy --with python-multipart \
-    --with httpx2 --with pytest pytest -q   # 15 tests
-```
+uv run \
+ pytest -q # 15 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 Try it with any image file:
 
@@ -122,8 +121,7 @@ Try it with any image file:
 curl -X POST http://127.0.0.1:8010/predict -F "file=@/path/to/some/photo.jpg"
 curl http://127.0.0.1:8010/health/live
 curl http://127.0.0.1:8010/health/ready
-curl http://127.0.0.1:8010/model/info
-```
+curl http://127.0.0.1:8010/model/info```
 
 `/predict` returns the top-5 ImageNet classes with confidences and the
 request's own latency; every request (successful or not) gets one line

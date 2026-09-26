@@ -1,0 +1,19 @@
+[project]
+name = "model-serving-api-with-health-checks-logging"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "numpy>=2.5.3",
+    "onnxruntime>=1.30.0",
+    "pillow>=12.3.0",
+    "python-multipart>=0.0.32",
+    "structlog>=26.1.0",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.13.1",
+    "pytest>=9.1.1",
+]
