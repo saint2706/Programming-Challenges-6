@@ -386,16 +386,15 @@ uv run python skyline.py --verify
 uv run python skyline.py --method dc 0,5,10 5,10,10   # force one implementation
 
 # sweep_line_bst needs sortedcontainers; every other path above works without it
-uv run --with sortedcontainers python skyline.py --method sweep_bst 0,5,10 5,10,10
-uv run --with sortedcontainers python skyline.py --demo     # includes sweep_bst in the comparison
-uv run --with sortedcontainers python skyline.py --verify   # "x 3 methods" instead of "x 2"
+uv run python skyline.py --method sweep_bst 0,5,10 5,10,10
+uv run python skyline.py --demo # includes sweep_bst in the comparison
+uv run python skyline.py --verify # "x 3 methods" instead of "x 2"
 
-uv run --with sortedcontainers python benchmark.py            # full run
-uv run --with sortedcontainers python benchmark.py --quick    # ~10s
+uv run python benchmark.py # full run
+uv run python benchmark.py --quick # ~10s
 
-uv run --with pytest --with sortedcontainers pytest -q                # 43 tests
-uv run --with pytest --with sortedcontainers pytest -q -m "not slow"  # skip the 4000-trial + grid tests
-```
+uv run pytest -q # 43 tests
+uv run pytest -q -m "not slow" # skip the 4000-trial + grid tests```
 
 `brute_force`, `sweep_line`, and `divide_and_conquer` are standard library
 only (`heapq`, `argparse`, `random`). `sweep_line_bst` additionally needs the
