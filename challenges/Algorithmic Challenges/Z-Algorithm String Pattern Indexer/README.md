@@ -312,7 +312,8 @@ uv run python zalgorithm.py --z aabaab
 
 uv run pytest -q # all 21,564
 uv run pytest -q -m "not slow"
-uv run python benchmark.py --quick```
+uv run python benchmark.py --quick
+```
 
 No third-party dependencies at all — the module is pure standard library.
 

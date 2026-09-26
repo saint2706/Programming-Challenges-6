@@ -161,7 +161,8 @@ cd "challenges/Algorithmic Challenges/Held-Karp Exact TSP Solver"
 uv run python tsp.py # exact + heuristics on one instance
 uv run python benchmark.py # timing and quality tables
 
-uv run pytest -q # 113 tests```
+uv run pytest -q # 113 tests
+```
 
 ## Where this is used
 

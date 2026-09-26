@@ -112,7 +112,8 @@ uv run python cli.py recategorize <receipt-id> Transport
 uv run python cli.py delete <receipt-id>
 
 # Run all tests (no PaddleOCR downloads — mocked)
-uv run pytest -q # 84 tests```
+uv run pytest -q # 84 tests
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

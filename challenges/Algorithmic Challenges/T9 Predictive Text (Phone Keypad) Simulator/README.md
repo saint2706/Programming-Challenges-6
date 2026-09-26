@@ -345,7 +345,8 @@ uv run python t9.py --vocab-size 50000 2668 # bigger vocabulary
 uv run python benchmark.py # timing, both questions
 
 uv run pytest -q # 43 tests
-uv run pytest -q -m slow # +2 full-vocabulary tests```
+uv run pytest -q -m slow # +2 full-vocabulary tests
+```
 
 `--vocab-size` controls how many words `build_vocabulary` loads (default
 30,000); `--top-k` controls how many suggestions each trie node caches

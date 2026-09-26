@@ -203,7 +203,8 @@ cd "challenges/Algorithmic Challenges/Multi-Sequence Alignment (Generalized LCS 
 uv run python mlcs.py         # exact + heuristic on one 4-sequence instance
 uv run python benchmark.py    # state-space size, wall-clock time, heuristic quality
 
-uv run pytest -q # 138 tests```
+uv run pytest -q # 138 tests
+```
 
 ## Where this is used
 

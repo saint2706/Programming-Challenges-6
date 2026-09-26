@@ -227,7 +227,8 @@ uv run python anagrams.py words.txt --phrase --external --chunk-size 100000
 
 uv run pytest -q # all 95
 uv run pytest -q -m "not slow"
-uv run python benchmark.py --quick```
+uv run python benchmark.py --quick
+```
 
 numpy is optional — only `key_bincount` needs it, and it is imported lazily.
 

@@ -378,7 +378,8 @@ uv run python reservoir.py --verify     # statistical checks, pass/fail + number
 uv run python benchmark.py              # throughput comparisons
 
 uv run pytest -q # 63 tests
-uv run pytest -q -m "not slow" # skip the multi-thousand-trial checks```
+uv run pytest -q -m "not slow" # skip the multi-thousand-trial checks
+```
 
 Standard library only (`random`, `heapq`, `itertools`, `math`).
 

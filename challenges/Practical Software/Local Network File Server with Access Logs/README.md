@@ -101,7 +101,8 @@ uv run python server.py --root /path/to/folder --token "a-secret-only-you-know"
 FILESERVER_ROOT=. FILESERVER_TOKEN=devsecret \
 uv run uvicorn server:app --reload
 
-uv run pytest -q # 66 tests```
+uv run pytest -q # 66 tests
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

@@ -394,7 +394,8 @@ uv run python benchmark.py # full run
 uv run python benchmark.py --quick # ~10s
 
 uv run pytest -q # 43 tests
-uv run pytest -q -m "not slow" # skip the 4000-trial + grid tests```
+uv run pytest -q -m "not slow" # skip the 4000-trial + grid tests
+```
 
 `brute_force`, `sweep_line`, and `divide_and_conquer` are standard library
 only (`heapq`, `argparse`, `random`). `sweep_line_bst` additionally needs the

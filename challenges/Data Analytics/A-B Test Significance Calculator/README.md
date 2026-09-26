@@ -64,7 +64,8 @@ uv run python ab_test_calculator.py sample_data/page_load_time.csv --outcome-col
 uv run python ab_test_calculator.py \
   --control-conversions 120 --control-total 1000 --variant-conversions 145 --variant-total 1000
 
-uv run pytest -q # 21 tests```
+uv run pytest -q # 21 tests
+```
 
 ## Sample data
 

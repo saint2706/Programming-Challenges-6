@@ -107,7 +107,8 @@ uv run python cli.py synonyms happy
 uv run python cli.py antonyms hot
 uv run python cli.py search happ --limit 5
 
-uv run pytest -q # 42 tests```
+uv run pytest -q # 42 tests
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

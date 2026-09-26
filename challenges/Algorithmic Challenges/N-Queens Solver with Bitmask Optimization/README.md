@@ -207,7 +207,8 @@ uv run python pacing.py                     # animation durations, no rendering
 uv run manim -pql visualize.py NQueensScene
 
 # Fast layout iteration with every reading-hold dropped:
-NQUEENS_HOLD_SCALE=0 uv run manim -pql visualize.py NQueensScene```
+NQUEENS_HOLD_SCALE=0 uv run manim -pql visualize.py NQueensScene
+```
 
 Manim needs **ffmpeg** on the PATH plus the system Cairo/Pango development
 libraries; `uv` handles the Python side only. `nqueens.py`, `benchmark.py`,

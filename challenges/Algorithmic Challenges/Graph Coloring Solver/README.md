@@ -210,7 +210,8 @@ cd "challenges/Algorithmic Challenges/Graph Coloring Solver"
 uv run python coloring.py # crown-graph order demo
 uv run python benchmark.py # chromatic-count + runtime tables
 
-uv run pytest -q # 76 tests```
+uv run pytest -q # 76 tests
+```
 
 ## Where this is used
 

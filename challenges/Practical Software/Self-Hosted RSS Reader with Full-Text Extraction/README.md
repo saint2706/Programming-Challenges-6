@@ -99,7 +99,8 @@ uv run python cli.py search python
 # -> Found 3 articles
 # -> [*] [42] Python Release Candidate
 
-uv run pytest -q # 43 tests```
+uv run pytest -q # 43 tests
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

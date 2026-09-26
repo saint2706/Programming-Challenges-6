@@ -144,7 +144,8 @@ uv run python cli.py path/to/photos/ path/to/output/ --model u2netp
 uv run python cli.py photo.jpg out/
 
 uv run pytest -q                        # 26 tests, no network required
-uv run pytest -q -m network             # +1 real-model end-to-end test```
+uv run pytest -q -m network             # +1 real-model end-to-end test
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

@@ -49,7 +49,8 @@ cd "challenges/Data Analytics/Personal Spending Categorizer & Monthly Trend Repo
 uv run python categorizer.py sample_data/checking_export_a.csv
 uv run python categorizer.py sample_data/checking_export_b.csv -o export_b_report.html
 
-uv run pytest -q # 11 tests```
+uv run pytest -q # 11 tests
+```
 
 Edit `rules.json` to match your own bank's merchant naming, then rerun.
 

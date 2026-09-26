@@ -92,7 +92,8 @@ uv run python app.py
 # or, with auto-reload during development:
 uv run uvicorn app:app --reload
 
-uv run pytest -q # 52 tests```
+uv run pytest -q # 52 tests
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

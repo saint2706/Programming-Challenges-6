@@ -377,7 +377,8 @@ cd "challenges/Algorithmic Challenges/Cuckoo Filter Implementation"
 uv run python cuckoo_filter.py        # demo: all six filters built, deletion, measured FP rate
 uv run python benchmark.py            # all five comparisons above
 
-uv run pytest -q # 77 tests```
+uv run pytest -q # 77 tests
+```
 
 ## Where this is used
 

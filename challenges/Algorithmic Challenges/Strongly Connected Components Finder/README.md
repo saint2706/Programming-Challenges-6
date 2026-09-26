@@ -171,7 +171,8 @@ uv run python scc.py # demo on the CLRS textbook graph
 uv run python scc.py --verify # cross-check + recursion demo
 uv run python benchmark.py
 
-uv run pytest -q # 407 tests```
+uv run pytest -q # 407 tests
+```
 
 ## Where this is used
 

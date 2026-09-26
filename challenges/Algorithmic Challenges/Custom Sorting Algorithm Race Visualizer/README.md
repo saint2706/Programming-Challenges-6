@@ -366,7 +366,8 @@ SORT_RACE_HOLD_SCALE=0 uv run manim -pql visualize.py BubbleSortScene
 uv run manim -qm visualize.py SelectionSortScene BubbleSortScene \
     InsertionSortScene MergeSortScene QuickSortScene HeapSortScene \
     CycleSortScene ThreeWayMergeSortScene CountingSortScene RadixSortScene \
-    BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene```
+    BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene
+```
 
 Manim needs **ffmpeg** on the PATH and the system Cairo and Pango
 development libraries (`manimpango` builds against them) — `uv` handles the

@@ -174,7 +174,8 @@ Custom grammars are data, not code:
 
 ```bash
 uv run python brackets.py --spec-file pascal.json src.pas
-uv run python brackets.py --spec c --dump-spec        # a preset, as editable JSON```
+uv run python brackets.py --spec c --dump-spec        # a preset, as editable JSON
+```
 
 ## Performance
 
@@ -241,7 +242,8 @@ uv run pytest -q # 138 tests
 uv run python brackets.py --spec c src/*.c
 echo '{"a": [1, 2}' | uv run python brackets.py --spec json
 uv run python brackets.py --spec python --stream huge_file.py
-uv run python brackets.py --spec python --auto-close partial.py```
+uv run python brackets.py --spec python --auto-close partial.py
+```
 
 Stdlib only — no third-party dependency at runtime, `pytest` only for the test
 suite. Exit code is 1 when any input fails, so it drops straight into CI.

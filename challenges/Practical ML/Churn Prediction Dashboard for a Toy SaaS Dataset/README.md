@@ -168,7 +168,8 @@ uv run streamlit run app.py
 
 uv run pytest -q
 # 44 tests, ~2.5 minutes (real data fetch + two real model trainings +
-# real SHAP computations -- nothing here is mocked away)```
+# real SHAP computations -- nothing here is mocked away)
+```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).

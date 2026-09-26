@@ -238,7 +238,8 @@ uv run manim -pql visualize.py PrimScene
 uv run manim -pql visualize.py BoruvkaScene
 
 # Fast layout iteration with every reading-hold dropped:
-MST_HOLD_SCALE=0 uv run manim -pql visualize.py KruskalScene```
+MST_HOLD_SCALE=0 uv run manim -pql visualize.py KruskalScene
+```
 
 Manim needs **ffmpeg** on the PATH plus the system Cairo/Pango development
 libraries (`manimpango` builds against them); `uv` handles the Python side

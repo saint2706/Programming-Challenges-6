@@ -328,7 +328,8 @@ uv run python stringsearch.py --pattern ana --text banana --algorithm boyer-moor
 uv run pytest -q # all 69
 uv run pytest -q -m "not slow"
 uv run python benchmark.py --quick
-uv run python benchmark.py --only worstcase```
+uv run python benchmark.py --only worstcase
+```
 
 No third-party dependencies at all — the module is pure standard library.
 

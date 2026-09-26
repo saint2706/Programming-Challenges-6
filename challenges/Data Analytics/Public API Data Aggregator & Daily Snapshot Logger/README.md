@@ -76,7 +76,8 @@ uv run python aggregator.py poll --db snapshots.db
 uv run python aggregator.py seed --db snapshots_demo.db --input sample_data/historical_nyc.json
 uv run python aggregator.py report --db snapshots_demo.db -o demo_report.html
 
-uv run pytest -q # 9 tests```
+uv run pytest -q # 9 tests
+```
 
 ## Sample data
 
