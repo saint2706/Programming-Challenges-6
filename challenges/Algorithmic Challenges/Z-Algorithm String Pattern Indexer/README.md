@@ -310,10 +310,9 @@ uv run python zalgorithm.py needle "a needle in a haystack with a needle"
 uv run python zalgorithm.py --multi he she his hers -- "ushers"
 uv run python zalgorithm.py --z aabaab
 
-uv run --with pytest pytest -q                 # all 21,564
-uv run --with pytest pytest -q -m "not slow"
-uv run python benchmark.py --quick
-```
+uv run pytest -q # all 21,564
+uv run pytest -q -m "not slow"
+uv run python benchmark.py --quick```
 
 No third-party dependencies at all — the module is pure standard library.
 
