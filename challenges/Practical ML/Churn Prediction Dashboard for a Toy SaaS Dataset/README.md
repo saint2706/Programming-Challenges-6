@@ -162,16 +162,16 @@ verbatim during training -- `data.clean_features` drops exact duplicates
 ```bash
 cd "challenges/Practical ML/Churn Prediction Dashboard for a Toy SaaS Dataset"
 
-uv run --with streamlit --with scikit-learn --with lightgbm --with shap \
-    --with pandas --with numpy --with matplotlib streamlit run app.py
+uv run streamlit run app.py
 # -> http://localhost:8501  (first run fetches Telco Customer Churn from
 #    OpenML, ~1MB; cached afterward)
 
-uv run --with streamlit --with scikit-learn --with lightgbm --with shap \
-    --with pandas --with numpy --with matplotlib --with pytest pytest -q
+uv run pytest -q
 # 44 tests, ~2.5 minutes (real data fetch + two real model trainings +
-# real SHAP computations -- nothing here is mocked away)
-```
+# real SHAP computations -- nothing here is mocked away)```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 Open `http://localhost:8501`. Pick a model (Logistic Regression or
 LightGBM) from the sidebar; the threshold slider starts at that model's
