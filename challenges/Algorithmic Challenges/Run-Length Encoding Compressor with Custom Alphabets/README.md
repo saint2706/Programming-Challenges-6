@@ -275,8 +275,7 @@ uv run python rle.py compress genome.txt genome.rle --alphabet dna
 uv run python rle.py decompress genome.rle genome.out
 uv run python rle.py analyze scan.bin --binary --alphabet bytes
 
-uv run --with pytest pytest -q      # 142 tests
-```
+uv run pytest -q # 142 tests```
 
 Standard library only (`zlib` is stdlib). Named alphabets: `binary`, `bits`,
 `dna`, `rna`, `protein`, `digits`, `lower`, `bytes` — or `auto` to infer from
