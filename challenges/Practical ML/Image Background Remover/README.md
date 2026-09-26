@@ -133,24 +133,21 @@ break. It's marked `@pytest.mark.network` and calls `pytest.skip(...)`
 ```bash
 cd "challenges/Practical ML/Image Background Remover"
 
-uv run --with "rembg[cpu]" --with typer --with pillow \
-    python cli.py path/to/photos/ path/to/output/ --recursive
+uv run python cli.py path/to/photos/ path/to/output/ --recursive
 # First run downloads and caches the isnet-general-use model (~179MB) to
 # ~/.rembg/models/ -- subsequent runs (any model) reuse the cache.
 
 # Use a smaller/faster model instead:
-uv run --with "rembg[cpu]" --with typer --with pillow \
-    python cli.py path/to/photos/ path/to/output/ --model u2netp
+uv run python cli.py path/to/photos/ path/to/output/ --model u2netp
 
 # A single file works too, no --recursive needed:
-uv run --with "rembg[cpu]" --with typer --with pillow \
-    python cli.py photo.jpg out/
+uv run python cli.py photo.jpg out/
 
-uv run --with "rembg[cpu]" --with typer --with pillow --with pytest \
-    pytest -q                        # 26 tests, no network required
-uv run --with "rembg[cpu]" --with typer --with pillow --with pytest \
-    pytest -q -m network             # +1 real-model end-to-end test
-```
+uv run pytest -q                        # 26 tests, no network required
+uv run pytest -q -m network             # +1 real-model end-to-end test```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 **Live-verified:** ran the CLI for real (default `isnet-general-use` model,
 `--recursive`) against a two-file sample (a 200×200 synthetic "portrait" —

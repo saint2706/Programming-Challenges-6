@@ -1,0 +1,14 @@
+[project]
+name = "image-background-remover"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "pillow>=12.3.0",
+    "rembg[cpu]>=2.0.85",
+    "typer>=0.27.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
