@@ -70,14 +70,13 @@ a manual, explicit copy step (see the file's own header comment).
 cd "challenges/Data Analytics/Public API Data Aggregator & Daily Snapshot Logger"
 
 # One real poll against the live API
-uv run --with httpx python aggregator.py poll --db snapshots.db
+uv run python aggregator.py poll --db snapshots.db
 
 # See the trend immediately using 14 days of real historical data
-uv run --with httpx --with polars --with plotly python aggregator.py seed --db snapshots_demo.db --input sample_data/historical_nyc.json
-uv run --with httpx --with polars --with plotly python aggregator.py report --db snapshots_demo.db -o demo_report.html
+uv run python aggregator.py seed --db snapshots_demo.db --input sample_data/historical_nyc.json
+uv run python aggregator.py report --db snapshots_demo.db -o demo_report.html
 
-uv run --with pytest --with httpx --with polars --with plotly pytest -q   # 9 tests
-```
+uv run pytest -q # 9 tests```
 
 ## Sample data
 
