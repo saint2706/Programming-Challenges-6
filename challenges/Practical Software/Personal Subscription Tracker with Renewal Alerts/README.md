@@ -86,17 +86,16 @@ notifiable again later. Covered by
 ```bash
 cd "challenges/Practical Software/Personal Subscription Tracker with Renewal Alerts"
 
-uv run --with fastapi --with "uvicorn[standard]" --with sqlmodel --with plyer \
-    --with python-multipart python app.py
+uv run python app.py
 # -> http://127.0.0.1:8002
 
 # or, with auto-reload during development:
-uv run --with fastapi --with "uvicorn[standard]" --with sqlmodel --with plyer \
-    --with python-multipart uvicorn app:app --reload
+uv run uvicorn app:app --reload
 
-uv run --with fastapi --with "uvicorn[standard]" --with sqlmodel --with plyer \
-    --with python-multipart --with httpx2 --with pytest pytest -q   # 52 tests
-```
+uv run pytest -q # 52 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 Open `http://127.0.0.1:8002`, add a subscription (name, cost, currency,
 category, billing cycle, next renewal date, alert lead time). The dashboard
