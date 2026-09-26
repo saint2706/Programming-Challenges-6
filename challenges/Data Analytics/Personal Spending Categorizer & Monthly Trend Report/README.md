@@ -46,11 +46,10 @@ matcher).
 ```bash
 cd "challenges/Data Analytics/Personal Spending Categorizer & Monthly Trend Report"
 
-uv run --with polars --with plotly --with numpy python categorizer.py sample_data/checking_export_a.csv
-uv run --with polars --with plotly --with numpy python categorizer.py sample_data/checking_export_b.csv -o export_b_report.html
+uv run python categorizer.py sample_data/checking_export_a.csv
+uv run python categorizer.py sample_data/checking_export_b.csv -o export_b_report.html
 
-uv run --with pytest --with polars --with plotly --with numpy pytest -q   # 11 tests
-```
+uv run pytest -q # 11 tests```
 
 Edit `rules.json` to match your own bank's merchant naming, then rerun.
 
