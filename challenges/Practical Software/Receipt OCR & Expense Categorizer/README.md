@@ -46,7 +46,8 @@ The parsing strategy is deliberately defensive and heuristic:
 - **Categorization:** Two-stage: keyword rules first (fast, exact match), then
   fuzzy matching against a merchant database (handles typos and OCR errors).
 
-This is why eceipt.py is tested extensively with fixture text (not live OCR)
+This is why 
+eceipt.py is tested extensively with fixture text (not live OCR)
 and why the OCR layer (ocr.py) is deliberately thin and swappable — the hard
 part is making parsing robust to garbage input, not the OCR itself.
 
@@ -56,15 +57,15 @@ part is making parsing robust to garbage input, not the OCR itself.
   on first use and reuses it. Returns a list of extracted text lines. This is
   the only file allowed to import paddleocr, so the rest of the system is
   testable without OCR model downloads during normal test runs.
-- **eceipt.py** — Receipt dataclass (merchant, date, total, category,
-  raw_text, image_path, id) and pure parsing functions (xtract_merchant,
-  xtract_date, xtract_total, and the convenience parse_receipt) that
+- **receipt.py** — Receipt dataclass (merchant, date, total, category,
+  raw_text, image_path, id) and pure parsing functions (extract_merchant,
+  extract_date, extract_total, and the convenience parse_receipt) that
   operate on OCR text via regex and heuristics. Extensively tested with fixture
   OCR output (garbage, typos, format variations) rather than live images.
 - **categorizer.py** — Keyword-rule table mapping merchant keywords to
   categories (Groceries, Dining, Transport, Utilities, Shopping, Entertainment,
-  Health, Other), plus apidfuzz-based fuzzy merchant matching (using the
-  uzz.ratio scorer for whole-string matching, not partial). Two-stage
+  Health, Other), plus rapidfuzz-based fuzzy merchant matching (using the
+  fuzz.ratio scorer for whole-string matching, not partial). Two-stage
   categorization: keyword rules first (fast), then fuzzy match against known
   merchants, then "Other".
 - **storage.py** — SQLite CRUD (insert, retrieve, update, delete, list,
@@ -72,13 +73,15 @@ part is making parsing robust to garbage input, not the OCR itself.
   (one receipts table), and operations are row-oriented, not normalized.
 - **cli.py** — Typer app with commands: scan <image> (OCR one receipt),
   import-folder <dir> (batch OCR all images in a folder), list (show
-  receipts with filters), eport (category breakdown and monthly totals),
-  ecategorize <id> <category> (manual override), delete <id> (remove a
+  receipts with filters), 
+eport (category breakdown and monthly totals),
+  
+ecategorize <id> <category> (manual override), delete <id> (remove a
   receipt). Default SQLite path is ~/.expense_tracker/receipts.db.
 
 ## Usage
 
-`ash
+```bash
 cd "challenges/Practical Software/Receipt OCR & Expense Categorizer"
 
 # Scan a single receipt
@@ -120,7 +123,7 @@ uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
 # Run all tests (no PaddleOCR downloads — mocked)
 uv run --with paddleocr --with paddlepaddle --with typer --with rapidfuzz \
     --with pillow --with pytest pytest -q      # 84 tests
-`
+```
 
 **PaddleOCR Installation Note:** On Windows with Python 3.12, both paddleocr
 and paddlepaddle must be installed. The first scan will download the OCR model
