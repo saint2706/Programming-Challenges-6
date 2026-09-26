@@ -1,0 +1,4 @@
+# Telco Customer Churn cache -- fetched from OpenML on first run
+# (data.py's load_telco_churn), not vendored, per this repo's accepted
+# "first-run network fetch" tradeoff for real-dataset challenges.
+data/
