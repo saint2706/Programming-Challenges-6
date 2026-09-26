@@ -354,20 +354,19 @@ cd "challenges/Algorithmic Challenges/Custom Sorting Algorithm Race Visualizer"
 # No install step and no virtualenv to manage: uv resolves manim per command.
 uv run python sorting_algorithms.py                # self-check: all 14 sort correctly
 uv run python pacing.py                            # per-scene durations, no rendering
-uv run --with pytest pytest -q                     # 46 pacing tests
+uv run pytest -q # 46 pacing tests
 
 # One algorithm, fast iteration:
-uv run --with manim manim -pql visualize.py BubbleSortScene
+uv run manim -pql visualize.py BubbleSortScene
 
 # Same, with the reading holds dropped so layout iterates quickly:
-SORT_RACE_HOLD_SCALE=0 uv run --with manim manim -pql visualize.py BubbleSortScene
+SORT_RACE_HOLD_SCALE=0 uv run manim -pql visualize.py BubbleSortScene
 
 # Every algorithm, final quality:
-uv run --with manim manim -qm visualize.py SelectionSortScene BubbleSortScene \
+uv run manim -qm visualize.py SelectionSortScene BubbleSortScene \
     InsertionSortScene MergeSortScene QuickSortScene HeapSortScene \
     CycleSortScene ThreeWayMergeSortScene CountingSortScene RadixSortScene \
-    BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene
-```
+    BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene```
 
 Manim needs **ffmpeg** on the PATH and the system Cairo and Pango
 development libraries (`manimpango` builds against them) — `uv` handles the

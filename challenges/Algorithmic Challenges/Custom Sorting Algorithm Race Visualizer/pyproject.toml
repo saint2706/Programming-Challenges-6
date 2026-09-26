@@ -1,0 +1,12 @@
+[project]
+name = "custom-sorting-algorithm-race-visualizer"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "manim>=0.21.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
