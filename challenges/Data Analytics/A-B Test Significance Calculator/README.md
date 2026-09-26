@@ -55,17 +55,16 @@ case rather than the tool guessing wrong silently.
 cd "challenges/Data Analytics/A-B Test Significance Calculator"
 
 # Raw CSV, auto-detected as a proportions test
-uv run --with polars --with plotly --with scipy --with numpy python ab_test_calculator.py sample_data/checkout_conversion.csv -o conversion_report.html
+uv run python ab_test_calculator.py sample_data/checkout_conversion.csv -o conversion_report.html
 
 # Raw CSV with an explicit outcome column, auto-detected as a means test
-uv run --with polars --with plotly --with scipy --with numpy python ab_test_calculator.py sample_data/page_load_time.csv --outcome-col load_time_seconds
+uv run python ab_test_calculator.py sample_data/page_load_time.csv --outcome-col load_time_seconds
 
 # Summary stats only, no CSV
-uv run --with polars --with plotly --with scipy --with numpy python ab_test_calculator.py \
+uv run python ab_test_calculator.py \
   --control-conversions 120 --control-total 1000 --variant-conversions 145 --variant-total 1000
 
-uv run --with pytest --with polars --with plotly --with scipy --with numpy pytest -q   # 21 tests
-```
+uv run pytest -q # 21 tests```
 
 ## Sample data
 
