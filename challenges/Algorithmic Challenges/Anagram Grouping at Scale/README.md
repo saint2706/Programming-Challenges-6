@@ -220,15 +220,14 @@ composition, where the multiset genuinely is the feature you want to index on.
 ## Running it
 
 ```bash
-uv run --with numpy python anagrams.py --demo
-uv run --with numpy python anagrams.py --verify
-uv run --with numpy python anagrams.py /usr/share/dict/words --min-size 4 --top 10
-uv run --with numpy python anagrams.py words.txt --phrase --external --chunk-size 100000
+uv run python anagrams.py --demo
+uv run python anagrams.py --verify
+uv run python anagrams.py /usr/share/dict/words --min-size 4 --top 10
+uv run python anagrams.py words.txt --phrase --external --chunk-size 100000
 
-uv run --with pytest --with numpy pytest -q            # all 95
-uv run --with pytest --with numpy pytest -q -m "not slow"
-uv run --with numpy python benchmark.py --quick
-```
+uv run pytest -q # all 95
+uv run pytest -q -m "not slow"
+uv run python benchmark.py --quick```
 
 numpy is optional — only `key_bincount` needs it, and it is imported lazily.
 
