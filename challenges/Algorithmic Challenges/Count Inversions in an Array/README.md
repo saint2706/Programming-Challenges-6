@@ -246,15 +246,14 @@ per-group interpolation, segment-wise rank assignment.
 ## Running it
 
 ```bash
-uv run --with numpy python inversions.py --demo
-uv run --with numpy python inversions.py --verify
-uv run --with numpy python inversions.py 3 1 4 1 5 --detail
+uv run python inversions.py --demo
+uv run python inversions.py --verify
+uv run python inversions.py 3 1 4 1 5 --detail
 
-uv run --with pytest --with numpy pytest -q            # all 252
-uv run --with pytest --with numpy pytest -q -m "not slow"
-uv run --with pytest --with numpy --with scipy pytest -q   # also cross-checks tau-b
-uv run --with numpy python benchmark.py --quick
-```
+uv run pytest -q # all 252
+uv run pytest -q -m "not slow"
+uv run pytest -q # also cross-checks tau-b
+uv run python benchmark.py --quick```
 
 numpy is optional; without it `method="auto"` falls back to `mergesort`.
 
