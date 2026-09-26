@@ -167,12 +167,11 @@ never going to beat.
 ```bash
 cd "challenges/Algorithmic Challenges/Strongly Connected Components Finder"
 
-uv run --with numpy python scc.py                      # demo on the CLRS textbook graph
-uv run --with numpy --with networkx python scc.py --verify   # cross-check + recursion demo
-uv run --with numpy --with networkx --with scipy python benchmark.py
+uv run python scc.py # demo on the CLRS textbook graph
+uv run python scc.py --verify # cross-check + recursion demo
+uv run python benchmark.py
 
-uv run --with pytest --with numpy --with networkx pytest -q   # 407 tests
-```
+uv run pytest -q # 407 tests```
 
 ## Where this is used
 
