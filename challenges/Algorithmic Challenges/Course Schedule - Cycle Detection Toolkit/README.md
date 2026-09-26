@@ -164,8 +164,7 @@ cd "challenges/Algorithmic Challenges/Course Schedule - Cycle Detection Toolkit"
 uv run python course_schedule.py     # Kahn's, DFS, cycle groups, and PearceKellyOrder demos
 uv run python benchmark.py           # Kahn vs DFS, and incremental vs recompute-from-scratch
 
-uv run --with pytest pytest -q          # 222 tests
-```
+uv run pytest -q # 222 tests```
 
 ## Where this is used
 
