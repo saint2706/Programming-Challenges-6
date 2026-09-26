@@ -51,11 +51,10 @@ See `sample_data/messy_transactions.csv` for exactly this case.
 ```bash
 cd "challenges/Data Analytics/CSV Data Profiler"
 
-uv run --with polars --with plotly --with numpy python profiler.py sample_data/clean_employees.csv -o clean_report.html
-uv run --with polars --with plotly --with numpy python profiler.py sample_data/messy_transactions.csv -o messy_report.html
+uv run python profiler.py sample_data/clean_employees.csv -o clean_report.html
+uv run python profiler.py sample_data/messy_transactions.csv -o messy_report.html
 
-uv run --with pytest --with polars --with plotly --with numpy pytest -q   # 15 tests
-```
+uv run pytest -q # 15 tests```
 
 Open the generated `.html` file in any browser — it's fully self-contained.
 
