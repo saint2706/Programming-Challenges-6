@@ -228,18 +228,17 @@ visualize.py KruskalScene` drops every hold for fast layout iteration.
 uv run python mst.py --demo             # kruskal/prim/boruvka on one small graph
 uv run python mst.py --verify           # cross-check 200 random graphs agree
 
-uv run --with pytest pytest -q          # 40 tests
+uv run pytest -q # 40 tests
 uv run python benchmark.py --quick      # fast sanity timings
 uv run python benchmark.py              # the table above (takes a few minutes)
 uv run python pacing.py                 # per-scene animation durations, no rendering
 
-uv run --with manim manim -pql visualize.py KruskalScene
-uv run --with manim manim -pql visualize.py PrimScene
-uv run --with manim manim -pql visualize.py BoruvkaScene
+uv run manim -pql visualize.py KruskalScene
+uv run manim -pql visualize.py PrimScene
+uv run manim -pql visualize.py BoruvkaScene
 
 # Fast layout iteration with every reading-hold dropped:
-MST_HOLD_SCALE=0 uv run --with manim manim -pql visualize.py KruskalScene
-```
+MST_HOLD_SCALE=0 uv run manim -pql visualize.py KruskalScene```
 
 Manim needs **ffmpeg** on the PATH plus the system Cairo/Pango development
 libraries (`manimpango` builds against them); `uv` handles the Python side
