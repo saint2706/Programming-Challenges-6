@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Each challenge folder under challenges/<Category>/<Challenge Name>/ is an
+  # independent, self-contained uv project (its own pyproject.toml + uv.lock,
+  # no shared workspace). The "directories" glob lets Dependabot discover
+  # every challenge that has adopted this pattern without listing 40 entries
+  # by hand; folders that don't have a pyproject.toml yet are skipped.
+  - package-ecosystem: "uv"
+    directories:
+      - "/challenges/*/*"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
