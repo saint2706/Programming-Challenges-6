@@ -85,45 +85,37 @@ ecategorize <id> <category> (manual override), delete <id> (remove a
 cd "challenges/Practical Software/Receipt OCR & Expense Categorizer"
 
 # Scan a single receipt
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py scan /path/to/receipt.jpg
+uv run python cli.py scan /path/to/receipt.jpg
 
 # Batch-import all JPGs from a folder
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py import-folder /path/to/receipt/folder
+uv run python cli.py import-folder /path/to/receipt/folder
 
 # List all receipts
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py list
+uv run python cli.py list
 
 # Filter receipts by category
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py list --category Groceries
+uv run python cli.py list --category Groceries
 
 # Filter by month (YYYY-MM)
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py list --month 2026-01
+uv run python cli.py list --month 2026-01
 
 # Show expense report
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py report
+uv run python cli.py report
 
 # Report for a specific month
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py report --month 2026-01
+uv run python cli.py report --month 2026-01
 
 # Manually recategorize a receipt
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py recategorize <receipt-id> Transport
+uv run python cli.py recategorize <receipt-id> Transport
 
 # Delete a receipt
-uv run --with paddleocr --with paddlepaddle --with typer --with pillow \
-    python cli.py delete <receipt-id>
+uv run python cli.py delete <receipt-id>
 
 # Run all tests (no PaddleOCR downloads — mocked)
-uv run --with paddleocr --with paddlepaddle --with typer --with rapidfuzz \
-    --with pillow --with pytest pytest -q      # 84 tests
-```
+uv run pytest -q # 84 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 **PaddleOCR Installation Note:** On Windows with Python 3.12, both paddleocr
 and paddlepaddle must be installed. The first scan will download the OCR model
