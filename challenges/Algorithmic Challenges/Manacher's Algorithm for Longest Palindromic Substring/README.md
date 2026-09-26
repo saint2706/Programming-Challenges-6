@@ -287,10 +287,9 @@ uv run python palindromes.py --verify
 uv run python palindromes.py "forgeeksskeegfor"
 uv run python palindromes.py --relaxed "A man, a plan, a canal: Panama"
 
-uv run --with pytest pytest -q               # all 76
-uv run --with pytest pytest -q -m "not slow"
-uv run python benchmark.py --quick
-```
+uv run pytest -q # all 76
+uv run pytest -q -m "not slow"
+uv run python benchmark.py --quick```
 
 No third-party dependencies at all — the module is pure standard library.
 
