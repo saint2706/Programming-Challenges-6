@@ -22,8 +22,8 @@ This repo is organized around five categories that reflect where I want to spend
 | Algorithmic Challenges   | 21        | 30      | ![70%](https://geps.dev/progress/70) |
 | Web Development Showcase | 0         | 30      | ![0%](https://geps.dev/progress/0)   |
 | Data Analytics           | 5         | 30      | ![17%](https://geps.dev/progress/17) |
-| Practical ML             | 0         | 30      | ![0%](https://geps.dev/progress/0)   |
-| **Total**                | **36**    | **150** | ![24%](https://geps.dev/progress/24) |
+| Practical ML             | 2         | 30      | ![7%](https://geps.dev/progress/7)   |
+| **Total**                | **38**    | **150** | ![25%](https://geps.dev/progress/25) |
 
 ### Difficulty Legend
 
@@ -192,8 +192,8 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 
 | #  | Challenge                                                                                                                                                       | Difficulty | Notes                                                                                 | Status      |
 | -- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------- | ----------- |
-| 1  | [Model Serving API with Health Checks & Logging](./challenges/Practical%20ML/Model%20Serving%20API%20with%20Health%20Checks%20&%20Logging/)                     | B          | FastAPI + ONNX Runtime, structured request/response logging.                          | Not started |
-| 2  | [House Price Predictor with Feature Importance Explainer](./challenges/Practical%20ML/House%20Price%20Predictor%20with%20Feature%20Importance%20Explainer/)     | B          | Linear/tree model plus a clear feature-contribution breakdown.                        | Not started |
+| 1  | [Model Serving API with Health Checks & Logging](./challenges/Practical%20ML/Model%20Serving%20API%20with%20Health%20Checks%20&%20Logging/)                     | B          | FastAPI + ONNX Runtime, structured request/response logging.                          | Implemented (Python) |
+| 2  | [House Price Predictor with Feature Importance Explainer](./challenges/Practical%20ML/House%20Price%20Predictor%20with%20Feature%20Importance%20Explainer/)     | B          | Linear/tree model plus a clear feature-contribution breakdown.                        | Implemented (Python) |
 | 3  | [Churn Prediction Dashboard for a Toy SaaS Dataset](./challenges/Practical%20ML/Churn%20Prediction%20Dashboard%20for%20a%20Toy%20SaaS%20Dataset/)               | B          | Train, explain, and let the user tune the decision threshold.                         | Not started |
 | 4  | [Image Background Remover](./challenges/Practical%20ML/Image%20Background%20Remover/)                                                                           | B          | Pretrained segmentation model wrapped as a batch CLI tool.                            | Not started |
 | 5  | [Duplicate Product Listing Detector](./challenges/Practical%20ML/Duplicate%20Product%20Listing%20Detector/)                                                     | B          | Text + image embedding similarity for e-commerce catalogs.                            | Not started |
