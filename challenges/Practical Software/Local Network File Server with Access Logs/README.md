@@ -94,18 +94,17 @@ self-hosted tool, not a general-purpose path library.
 ```bash
 cd "challenges/Practical Software/Local Network File Server with Access Logs"
 
-uv run --with fastapi --with "uvicorn[standard]" --with python-multipart \
-    python server.py --root /path/to/folder --token "a-secret-only-you-know"
+uv run python server.py --root /path/to/folder --token "a-secret-only-you-know"
 # -> Serving <root> on http://0.0.0.0:8000
 
 # or, with auto-reload during development:
 FILESERVER_ROOT=. FILESERVER_TOKEN=devsecret \
-    uv run --with fastapi --with "uvicorn[standard]" --with python-multipart \
-    uvicorn server:app --reload
+uv run uvicorn server:app --reload
 
-uv run --with fastapi --with "uvicorn[standard]" --with python-multipart \
-    --with httpx2 --with pytest pytest -q      # 66 tests
-```
+uv run pytest -q # 66 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 **Connecting from another device on your LAN:** find this machine's LAN IP
 (`ipconfig` on Windows, `ip addr`/`ifconfig` on Linux/macOS — look for
