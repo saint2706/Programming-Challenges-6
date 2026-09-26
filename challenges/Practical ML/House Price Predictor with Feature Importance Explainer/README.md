@@ -137,17 +137,17 @@ and `test_category_schema_maps_unseen_category_to_missing_not_a_wrong_code`.
 ```bash
 cd "challenges/Practical ML/House Price Predictor with Feature Importance Explainer"
 
-uv run --with fastapi --with "uvicorn[standard]" --with scikit-learn \
-    --with lightgbm --with shap --with pandas --with numpy \
-    --with matplotlib --with python-multipart python app.py
+uv run \
+ python app.py
 # -> http://127.0.0.1:8010  (first run fetches Ames Housing from OpenML,
 #    a few MB; cached afterward)
 
-uv run --with fastapi --with "uvicorn[standard]" --with scikit-learn \
-    --with lightgbm --with shap --with pandas --with numpy \
-    --with matplotlib --with python-multipart --with httpx2 --with pytest \
-    pytest -q   # 39 tests
-```
+uv run \
+ \
+    pytest -q   # 39 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 Open `http://127.0.0.1:8010`. The dashboard shows a form for the 12
 features SHAP ranked most important (e.g. `OverallQual`, `GrLivArea`,
