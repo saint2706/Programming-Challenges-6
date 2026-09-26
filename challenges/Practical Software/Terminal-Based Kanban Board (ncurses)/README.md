@@ -70,16 +70,17 @@ corrupted — a binary magic-byte preamble would defeat that.
 
 ```bash
 cd "challenges/Practical Software/Terminal-Based Kanban Board (ncurses)"
-uv run --with textual python app.py
-```
+uv run python app.py```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 First run: creates an empty board with three default columns (To Do, In Progress, Done) and saves it to `board.json` in the same directory.
 
 ## Testing
 
 ```bash
-uv run --with textual --with pytest --with pytest-asyncio pytest -q   # 56 tests
-```
+uv run pytest -q # 56 tests```
 
 - **test_board.py** (40 cases): exhaustive unit tests of `board.py` CRUD operations, card movement edge cases (moving off first/last column, moving to same column, nonexistent cards/columns), serialization round-trips, empty boards, column deletion with cards still in them.
 - **test_storage.py** (18 cases): JSON round-trip integrity, atomic write safety (no temp files left behind after success), nested directory creation, malformed/missing/unsupported-version file rejection, persistence across multiple save/load cycles, card ID and timestamp preservation.
