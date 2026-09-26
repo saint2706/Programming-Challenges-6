@@ -199,16 +199,15 @@ example and `test_pacing.py` for the regression test.
 uv run python nqueens.py -n 8               # counts + Burnside check for one n
 uv run python nqueens.py --verify           # n = 0..12 against OEIS
 
-uv run --with pytest pytest -q              # 60 tests
+uv run pytest -q # 60 tests
 uv run python benchmark.py --quick          # n = 8..12, fast
 uv run python benchmark.py                  # the tables above (n up to 15, ~40s)
 uv run python pacing.py                     # animation durations, no rendering
 
-uv run --with manim manim -pql visualize.py NQueensScene
+uv run manim -pql visualize.py NQueensScene
 
 # Fast layout iteration with every reading-hold dropped:
-NQUEENS_HOLD_SCALE=0 uv run --with manim manim -pql visualize.py NQueensScene
-```
+NQUEENS_HOLD_SCALE=0 uv run manim -pql visualize.py NQueensScene```
 
 Manim needs **ffmpeg** on the PATH plus the system Cairo/Pango development
 libraries; `uv` handles the Python side only. `nqueens.py`, `benchmark.py`,
