@@ -377,9 +377,8 @@ uv run python reservoir.py --demo       # sample from a 1M-item synthetic stream
 uv run python reservoir.py --verify     # statistical checks, pass/fail + numbers
 uv run python benchmark.py              # throughput comparisons
 
-uv run --with pytest pytest -q          # 63 tests
-uv run --with pytest pytest -q -m "not slow"   # skip the multi-thousand-trial checks
-```
+uv run pytest -q # 63 tests
+uv run pytest -q -m "not slow" # skip the multi-thousand-trial checks```
 
 Standard library only (`random`, `heapq`, `itertools`, `math`).
 
