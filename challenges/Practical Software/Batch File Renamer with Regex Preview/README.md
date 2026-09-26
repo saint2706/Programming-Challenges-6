@@ -65,21 +65,24 @@ already renamed or deleted it since).
 cd "challenges/Practical Software/Batch File Renamer with Regex Preview"
 
 # Preview only -- never touches the filesystem
-uv run --with typer --with rich python renamer.py preview . '^IMG_(\d+)\.jpg$' 'photo_\1.jpg'
+uv run renamer.py preview . '^IMG_(\d+)\.jpg$' 'photo_\1.jpg'
 
 # Apply (asks for confirmation unless --yes); recursive, case-insensitive
-uv run --with typer --with rich python renamer.py apply ./photos '^img_(\d+)\.jpg$' 'photo_\1.jpg' \
+uv run renamer.py apply ./photos '^img_(\d+)\.jpg$' 'photo_\1.jpg' \
     --recursive --ignore-case --include '*.jpg'
 
 # See past batches for a directory
-uv run --with typer --with rich python renamer.py history ./photos
+uv run renamer.py history ./photos
 
 # Undo the most recent batch, or a specific one by id
-uv run --with typer --with rich python renamer.py undo ./photos
-uv run --with typer --with rich python renamer.py undo ./photos --batch-id a1b2c3d4e5f6
+uv run renamer.py undo ./photos
+uv run renamer.py undo ./photos --batch-id a1b2c3d4e5f6
 
-uv run --with typer --with rich --with pytest pytest -q      # 22 tests
+uv run pytest -q      # 22 tests
 ```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 The replacement string is a normal Python `re.sub` replacement -- it supports
 numbered (`\1`) and named (`\g<name>`) backreferences to groups in the
