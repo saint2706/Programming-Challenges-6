@@ -59,16 +59,17 @@ asserts exactly one of them ever sees the content.
 ```bash
 cd "challenges/Practical Software/Self-Hosted Paste Bin with Expiry & Burn-After-Read"
 
-uv run --with fastapi --with "uvicorn[standard]" --with pygments --with python-multipart python app.py
+uv run app.py
 # -> http://127.0.0.1:8000
 
 # or, with auto-reload during development:
-uv run --with fastapi --with "uvicorn[standard]" --with pygments --with python-multipart \
-    uvicorn app:app --reload
+uv run uvicorn app:app --reload
 
-uv run --with fastapi --with "uvicorn[standard]" --with pygments --with python-multipart \
-    --with httpx2 --with pytest pytest -q      # 21 tests
+uv run pytest -q      # 21 tests
 ```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 Open `http://127.0.0.1:8000`, paste some text, pick a language (or leave it
 on `auto` for Pygments' lexer guesser), pick an expiry, optionally check
