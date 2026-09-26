@@ -84,8 +84,10 @@ this before it became a real "why is today missing" confusion in daily use.
 ```bash
 cd "challenges/Practical Software/Encrypted Diary-Journal App with Mood Tagging"
 
-uv run --with textual --with cryptography python app.py
-```
+uv run python app.py```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 First run: there's no journal file yet, so the passphrase you enter
 **creates** the journal (there is no recovery if you forget it — this is a
@@ -101,8 +103,7 @@ sparkline plus a per-mood frequency summary that update live as you add
 entries.
 
 ```bash
-uv run --with textual --with cryptography --with pytest --with pytest-asyncio pytest -q   # 28 tests
-```
+uv run pytest -q # 28 tests```
 
 ## Threat model / limitations
 
