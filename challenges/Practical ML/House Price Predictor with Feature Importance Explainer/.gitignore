@@ -1,0 +1,4 @@
+# Ames Housing cache -- fetched from OpenML on first run (data.py's
+# load_ames_housing), not vendored, per the accepted "first-run network
+# fetch" tradeoff for this challenge's dataset choice.
+data/
