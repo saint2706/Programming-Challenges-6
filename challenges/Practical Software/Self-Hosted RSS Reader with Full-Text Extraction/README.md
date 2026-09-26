@@ -78,35 +78,31 @@ duplicate-insertion tests.
 ```bash
 cd "challenges/Practical Software/Self-Hosted RSS Reader with Full-Text Extraction"
 
-uv run --with feedparser --with trafilatura --with httpx --with typer \
-    python cli.py add https://xkcd.com/feed.xml
+uv run python cli.py add https://xkcd.com/feed.xml
 # -> Added feed: xkcd (ID: 1)
 # -> Found 50 articles
 
-uv run --with feedparser --with trafilatura --with httpx --with typer \
-    python cli.py refresh
+uv run python cli.py refresh
 # -> Polling all feeds...
 # -> xkcd: +3 articles
 
-uv run --with feedparser --with trafilatura --with httpx --with typer \
-    python cli.py list --unread
+uv run python cli.py list --unread
 # -> [*] [15] xkcd: Sights of 2024
 #       2024-01-20T12:00:00
 
-uv run --with feedparser --with trafilatura --with httpx --with typer \
-    python cli.py read 15
+uv run python cli.py read 15
 # -> Title: xkcd: Sights of 2024
 # -> Link: https://xkcd.com/2856/
 # -> [extracted full article text...]
 
-uv run --with feedparser --with trafilatura --with httpx --with typer \
-    python cli.py search python
+uv run python cli.py search python
 # -> Found 3 articles
 # -> [*] [42] Python Release Candidate
 
-uv run --with feedparser --with trafilatura --with httpx --with typer \
-    --with pytest pytest -q    # 43 tests
-```
+uv run pytest -q # 43 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 Feeds are polled from arbitrary URLs — no centralized directory. `refresh`
 fetches each registered feed, extracts new articles' full text in real-time,
