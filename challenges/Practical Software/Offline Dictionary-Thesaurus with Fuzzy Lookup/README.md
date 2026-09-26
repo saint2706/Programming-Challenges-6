@@ -99,16 +99,18 @@ non-prefix contains-match). See `_search_relevance()` in `lexicon.py`.
 cd "challenges/Practical Software/Offline Dictionary-Thesaurus with Fuzzy Lookup"
 
 # One-time setup (needs internet, ~13MB download):
-uv run --with wn python -c "import wn; wn.download('oewn:2021')"
+uv run python -c "import wn; wn.download('oewn:2021')"
 
 # Then everything below is fully offline:
-uv run --with wn --with rapidfuzz --with typer --with rich python cli.py define run
-uv run --with wn --with rapidfuzz --with typer --with rich python cli.py synonyms happy
-uv run --with wn --with rapidfuzz --with typer --with rich python cli.py antonyms hot
-uv run --with wn --with rapidfuzz --with typer --with rich python cli.py search happ --limit 5
+uv run python cli.py define run
+uv run python cli.py synonyms happy
+uv run python cli.py antonyms hot
+uv run python cli.py search happ --limit 5
 
-uv run --with wn --with rapidfuzz --with typer --with rich --with pytest pytest -q   # 42 tests
-```
+uv run pytest -q # 42 tests```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 ```
 $ python cli.py define happy
