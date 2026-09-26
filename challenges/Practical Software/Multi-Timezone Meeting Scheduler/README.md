@@ -78,29 +78,31 @@ by exactly one.
 cd "challenges/Practical Software/Multi-Timezone Meeting Scheduler"
 
 # CLI
-uv run --with typer --with rich --with tzdata python cli.py find \
+uv run cli.py find \
     --date 2026-09-24 --ref-tz America/New_York --display-tz America/New_York \
     -p "Asha|Asia/Kolkata|09:00-18:00" \
     -p "Ben|Europe/London|09:00-17:00" \
     -p "Cara|America/New_York|09:00-17:00" \
     --min-participants 2
 
-uv run --with typer --with rich --with tzdata python cli.py zones kolkata
+uv run cli.py zones kolkata
 
 # Web UI
-uv run --with fastapi --with "uvicorn[standard]" --with python-multipart --with tzdata python web.py
+uv run web.py
 # -> http://127.0.0.1:8001
 
-uv run --with pytest --with tzdata --with typer --with rich \
-    --with fastapi --with "uvicorn[standard]" --with python-multipart --with httpx2 pytest -q   # 33 tests
+uv run pytest -q   # 33 tests
 ```
+
+Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
+(`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 **Windows note:** the standard library's `zoneinfo` relies on the OS having
 an IANA tz database installed; Windows doesn't ship one, so the `tzdata`
 PyPI package (a pure-data fallback `zoneinfo` finds automatically) is a
-required dependency here, not optional — every command above includes
-`--with tzdata`. On Linux/macOS with a system tz database it's a no-op if
-included and unnecessary if omitted.
+required dependency here, not optional — declared in this folder's
+`pyproject.toml` alongside the others. On Linux/macOS with a system tz
+database it's a no-op if installed and unnecessary if omitted.
 
 A worked example: Asha (Kolkata, 9-6), Ben (London, 9-5), and Cara (New
 York, 9-5) have **no** 3-way overlap on 2026-09-24 under normal business
