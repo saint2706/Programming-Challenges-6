@@ -207,11 +207,10 @@ dynamically as coloring proceeds.
 ```bash
 cd "challenges/Algorithmic Challenges/Graph Coloring Solver"
 
-uv run --with networkx python coloring.py      # crown-graph order demo
-uv run --with networkx python benchmark.py     # chromatic-count + runtime tables
+uv run python coloring.py # crown-graph order demo
+uv run python benchmark.py # chromatic-count + runtime tables
 
-uv run --with pytest --with networkx pytest -q   # 76 tests
-```
+uv run pytest -q # 76 tests```
 
 ## Where this is used
 
