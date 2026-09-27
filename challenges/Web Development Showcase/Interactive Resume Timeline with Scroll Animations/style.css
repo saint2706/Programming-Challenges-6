@@ -1,0 +1,219 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f7f7fb;
+  --fg: #1a1a2e;
+  --muted: #5b5b72;
+  --line: #d8d8e6;
+  --accent-education: #4f6df5;
+  --accent-experience: #14b881;
+  --accent-certification: #e08a2c;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 10px rgba(20, 20, 40, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101018;
+    --fg: #f0f0f8;
+    --muted: #a3a3b8;
+    --line: #33334a;
+    --card-bg: #181824;
+    --card-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  line-height: 1.5;
+}
+
+.profile-header {
+  padding: 3rem 1.5rem 2rem;
+  text-align: center;
+}
+
+.profile-header__name {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.profile-header__title {
+  margin: 0.25rem 0 1rem;
+  color: var(--muted);
+}
+
+.profile-header__links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.profile-header__links a {
+  color: var(--accent-education);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.profile-header__links a:hover,
+.profile-header__links a:focus-visible {
+  text-decoration: underline;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.section-heading {
+  margin-bottom: 0.25rem;
+}
+
+.section-hint {
+  color: var(--muted);
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.timeline {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.75rem;
+  border-left: 2px solid var(--line);
+}
+
+.timeline-item {
+  position: relative;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+
+  /* Fallback (IntersectionObserver-driven) reveal state. */
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.timeline-item.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.05rem;
+  top: 1.4rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--accent-education);
+}
+
+.timeline-item--experience::before {
+  background: var(--accent-experience);
+}
+
+.timeline-item--certification::before {
+  background: var(--accent-certification);
+}
+
+.timeline-item__badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--accent-education);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-item--experience .timeline-item__badge {
+  background: var(--accent-experience);
+}
+
+.timeline-item--certification .timeline-item__badge {
+  background: var(--accent-certification);
+}
+
+.timeline-item__date {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.timeline-item__title {
+  margin: 0.25rem 0 0.15rem;
+  font-size: 1.1rem;
+}
+
+.timeline-item__org {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.timeline-item__description {
+  margin: 0 0 0.5rem;
+}
+
+.timeline-item__highlights {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+}
+
+/*
+ * Primary reveal mechanism: native CSS Scroll-Driven Animations.
+ * When supported, this entirely replaces the IntersectionObserver fallback
+ * above — reveal.js detects support and skips creating any observer.
+ */
+@supports (animation-timeline: view()) {
+  .timeline-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-item {
+    transition: none;
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}

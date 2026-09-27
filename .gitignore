@@ -9,6 +9,9 @@ venv/
 *.egg-info/
 .pytest_cache/
 
+# Node/JS
+node_modules/
+
 # Runtime data files created by challenge scripts (e.g. the paste bin's SQLite DB,
 # the encrypted diary's journal file, the LAN file server's access log)
 *.db

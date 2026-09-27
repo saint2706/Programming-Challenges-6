@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Resume Timeline with Scroll Animations</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="profile-header">
+      <h1 class="profile-header__name">Rishabh Agrawal</h1>
+      <p class="profile-header__title">Data Storyteller &amp; Analytics Strategist</p>
+      <nav class="profile-header__links" aria-label="Profile links">
+        <a href="https://github.com/saint2706" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a
+          href="https://www.linkedin.com/in/rishabh-agrawal-1807321b9"
+          target="_blank"
+          rel="noopener noreferrer"
+          >LinkedIn</a
+        >
+      </nav>
+    </header>
+
+    <main>
+      <h2 class="section-heading">Timeline</h2>
+      <p class="section-hint">Scroll to reveal each milestone.</p>
+      <div id="timeline-mount"></div>
+    </main>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

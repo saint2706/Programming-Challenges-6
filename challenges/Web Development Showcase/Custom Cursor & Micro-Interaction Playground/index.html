@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Cursor &amp; Micro-Interaction Playground</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <header class="intro">
+      <h1>Custom Cursor &amp; Micro-Interaction Playground</h1>
+      <p>
+        A gallery of hover/cursor micro-interactions, each a standalone, copy-pasteable snippet.
+        Every effect below is dependency-free vanilla JS/CSS, except the damped cursor-follower,
+        which uses GSAP&rsquo;s <code>quickTo</code> &mdash; the field-standard tool for that
+        specific kind of inertia-based animation.
+      </p>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <h2>1. Damped cursor-follow dot</h2>
+        <p class="blurb">
+          Move your mouse anywhere on this page. A dot + ring trail it with GSAP-driven inertia.
+          Disabled automatically on touch devices and under reduced motion.
+        </p>
+        <div class="demo-stage">
+          <span>(watch the cursor, not this box)</span>
+        </div>
+        <details class="source">
+          <summary>View source</summary>
+          <pre><code>const dotX = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3' });
+const dotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power3' });
+const ringX = gsap.quickTo(ring, 'x', { duration: 0.5, ease: 'power3' });
+const ringY = gsap.quickTo(ring, 'y', { duration: 0.5, ease: 'power3' });
+
+document.addEventListener('mousemove', (e) => {
+  dotX(e.clientX);
+  dotY(e.clientY);
+  ringX(e.clientX);
+  ringY(e.clientY);
+});</code></pre>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>2. Magnetic button</h2>
+        <p class="blurb">Hover near the button &mdash; it nudges toward your cursor, then springs back.</p>
+        <div class="demo-stage">
+          <button type="button" class="magnetic-button" data-effect="magnetic">Hover me</button>
+        </div>
+        <details class="source">
+          <summary>View source</summary>
+          <pre><code>function magneticOffset(cursorPos, elementCenter, radius, strength) {
+  const dx = cursorPos.x - elementCenter.x;
+  const dy = cursorPos.y - elementCenter.y;
+  const distance = Math.hypot(dx, dy);
+  if (radius &lt;= 0 || distance &gt; radius) return { x: 0, y: 0 };
+  return { x: dx * strength, y: dy * strength };
+}
+
+button.addEventListener('mousemove', (e) => {
+  const rect = button.getBoundingClientRect();
+  const center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  const { x, y } = magneticOffset({ x: e.clientX, y: e.clientY }, center, 60, 0.4);
+  button.style.transform = `translate(${x}px, ${y}px)`;
+});
+button.addEventListener('mouseleave', () => {
+  button.style.transform = 'translate(0, 0)';
+});</code></pre>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>3. Tilt-on-move card</h2>
+        <p class="blurb">Move your mouse across the card &mdash; it tilts toward your pointer in 3D.</p>
+        <div class="demo-stage">
+          <div class="tilt-card" data-effect="tilt">Tilt me</div>
+        </div>
+        <details class="source">
+          <summary>View source</summary>
+          <pre><code>function tiltAngles(pointerPos, rect, maxTiltDegrees) {
+  const px = clamp((pointerPos.x - rect.left) / rect.width, 0, 1);
+  const py = clamp((pointerPos.y - rect.top) / rect.height, 0, 1);
+  const normX = px * 2 - 1;
+  const normY = py * 2 - 1;
+  return { rotateX: -normY * maxTiltDegrees, rotateY: normX * maxTiltDegrees };
+}
+
+card.addEventListener('mousemove', (e) => {
+  const rect = card.getBoundingClientRect();
+  const { rotateX, rotateY } = tiltAngles({ x: e.clientX, y: e.clientY }, rect, 12);
+  card.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+});
+card.addEventListener('mouseleave', () => {
+  card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg)';
+});</code></pre>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>4. Spotlight card</h2>
+        <p class="blurb">A radial-gradient highlight follows your cursor across the card.</p>
+        <div class="demo-stage">
+          <div class="spotlight-card" data-effect="spotlight">Move over me</div>
+        </div>
+        <details class="source">
+          <summary>View source</summary>
+          <pre><code>/* CSS */
+.spotlight-card {
+  --x: 50%;
+  --y: 50%;
+  background: radial-gradient(circle 120px at var(--x) var(--y), rgba(124,159,255,.35), transparent 70%);
+}
+
+/* JS */
+card.addEventListener('mousemove', (e) =&gt; {
+  const rect = card.getBoundingClientRect();
+  card.style.setProperty('--x', `${e.clientX - rect.left}px`);
+  card.style.setProperty('--y', `${e.clientY - rect.top}px`);
+});</code></pre>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>5. Text-scramble on hover</h2>
+        <p class="blurb">Hover (or focus) the text below to decode it from scrambled characters.</p>
+        <div class="demo-stage">
+          <span class="scramble-text" data-effect="scramble" tabindex="0">HOVER TO DECODE</span>
+        </div>
+        <details class="source">
+          <summary>View source</summary>
+          <pre><code>function scrambleStep(target, revealCount, random = Math.random) {
+  let result = target.slice(0, revealCount);
+  for (let i = revealCount; i &lt; target.length; i++) {
+    result += target[i] === ' ' ? ' ' : CHARS[Math.floor(random() * CHARS.length)];
+  }
+  return result;
+}
+
+el.addEventListener('mouseenter', () =&gt; {
+  let revealCount = 0;
+  const id = setInterval(() =&gt; {
+    el.textContent = scrambleStep(target, revealCount++);
+    if (revealCount &gt; target.length) clearInterval(id);
+  }, 30);
+});</code></pre>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>6. Cursor trail</h2>
+        <p class="blurb">Move your mouse inside the box to leave a fading particle trail.</p>
+        <div class="demo-stage trail-stage" data-effect="trail"></div>
+        <details class="source">
+          <summary>View source</summary>
+          <pre><code>let lastSpawn = 0;
+container.addEventListener('mousemove', (e) =&gt; {
+  const now = performance.now();
+  if (now - lastSpawn &lt; 40) return;
+  lastSpawn = now;
+  const rect = container.getBoundingClientRect();
+  const particle = document.createElement('span');
+  particle.className = 'trail-particle';
+  particle.style.left = `${e.clientX - rect.left}px`;
+  particle.style.top = `${e.clientY - rect.top}px`;
+  container.appendChild(particle);
+  setTimeout(() =&gt; particle.remove(), 600);
+});</code></pre>
+        </details>
+      </section>
+    </main>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"
+      integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="scripts/main.js"></script>
+  </body>
+</html>

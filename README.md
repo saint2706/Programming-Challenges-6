@@ -20,10 +20,10 @@ This repo is organized around five categories that reflect where I want to spend
 | ------------------------ | --------- | ------- | ------------------------------------ |
 | Practical Software       | 10        | 30      | ![33%](https://geps.dev/progress/33) |
 | Algorithmic Challenges   | 21        | 30      | ![70%](https://geps.dev/progress/70) |
-| Web Development Showcase | 0         | 30      | ![0%](https://geps.dev/progress/0)   |
+| Web Development Showcase | 3         | 30      | ![10%](https://geps.dev/progress/10) |
 | Data Analytics           | 5         | 30      | ![17%](https://geps.dev/progress/17) |
 | Practical ML             | 4         | 30      | ![13%](https://geps.dev/progress/13) |
-| **Total**                | **40**    | **150** | ![27%](https://geps.dev/progress/27) |
+| **Total**                | **43**    | **150** | ![29%](https://geps.dev/progress/29) |
 
 ### Difficulty Legend
 
@@ -122,9 +122,9 @@ Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert
 
 | #  | Challenge                                                                                                                                                         | Difficulty | Notes                                                                    | Status      |
 | -- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------ | ----------- |
-| 1  | [Interactive Resume Timeline with Scroll Animations](./challenges/Web%20Development%20Showcase/Interactive%20Resume%20Timeline%20with%20Scroll%20Animations/)     | B          | Scroll-triggered reveals via Intersection Observer, no framework needed. | Not started |
-| 2  | [CSS-Only 3D Card Flip Gallery](./challenges/Web%20Development%20Showcase/CSS-Only%203D%20Card%20Flip%20Gallery/)                                                 | B          | Pure CSS `transform`/`perspective`, no JavaScript.                       | Not started |
-| 3  | [Custom Cursor & Micro-Interaction Playground](./challenges/Web%20Development%20Showcase/Custom%20Cursor%20&%20Micro-Interaction%20Playground/)                   | B          | A gallery of hover/cursor effects as reusable snippets.                  | Not started |
+| 1  | [Interactive Resume Timeline with Scroll Animations](./challenges/Web%20Development%20Showcase/Interactive%20Resume%20Timeline%20with%20Scroll%20Animations/)     | B          | Scroll-triggered reveals via Intersection Observer, no framework needed. | Implemented (JavaScript) |
+| 2  | [CSS-Only 3D Card Flip Gallery](./challenges/Web%20Development%20Showcase/CSS-Only%203D%20Card%20Flip%20Gallery/)                                                 | B          | Pure CSS `transform`/`perspective`, no JavaScript.                       | Implemented (JavaScript) |
+| 3  | [Custom Cursor & Micro-Interaction Playground](./challenges/Web%20Development%20Showcase/Custom%20Cursor%20&%20Micro-Interaction%20Playground/)                   | B          | A gallery of hover/cursor effects as reusable snippets.                  | Implemented (JavaScript) |
 | 4  | [Animated SVG Icon Library with Hover States](./challenges/Web%20Development%20Showcase/Animated%20SVG%20Icon%20Library%20with%20Hover%20States/)                 | B          | Hand-drawn or generated icon set with CSS/SMIL animation.                | Not started |
 | 5  | [Single-Page Event Invitation with RSVP](./challenges/Web%20Development%20Showcase/Single-Page%20Event%20Invitation%20with%20RSVP/)                               | B          | Static site + serverless form handler (e.g. email/webhook).              | Not started |
 | 6  | [Typing-Effect Hero Banner Generator](./challenges/Web%20Development%20Showcase/Typing-Effect%20Hero%20Banner%20Generator/)                                       | B          | Configurable, embeddable widget; ship as an npm-style snippet.           | Not started |
