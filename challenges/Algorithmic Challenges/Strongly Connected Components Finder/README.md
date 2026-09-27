@@ -119,7 +119,7 @@ used for the limit demo), plus 30 random-graph trials cross-checked against
 between every algorithm combination:
 
 ```
-$ uv run --with pytest --with numpy --with networkx pytest -q
+$ uv run pytest -q
 407 passed in 1.37s
 ```
 

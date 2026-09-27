@@ -200,7 +200,7 @@ than took on faith.
 ## Correctness
 
 ```
-$ uv run --with pytest pytest -q
+$ uv run pytest -q
 77 passed in ~5s
 ```
 

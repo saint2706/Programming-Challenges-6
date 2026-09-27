@@ -94,7 +94,7 @@ scratch after every edge -- the benchmark below measures this directly.
 ## Correctness
 
 ```
-$ uv run --with pytest pytest -q
+$ uv run pytest -q
 222 passed in 0.2s
 ```
 

@@ -84,7 +84,7 @@ provably at least as bad.
 ## Correctness
 
 ```
-$ uv run --with pytest --with networkx pytest -q
+$ uv run pytest -q
 113 passed in 0.55s
 ```
 
@@ -103,7 +103,7 @@ inequality it's relied on for.
 ## Benchmarks
 
 ```
-$ uv run --with networkx python benchmark.py
+$ uv run python benchmark.py
 Held-Karp vs branch and bound: same exact answer, very different cost
    n    held-karp time   branch&bound time    optimal cost   agree?
 -------------------------------------------------------------------

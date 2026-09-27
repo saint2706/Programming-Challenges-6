@@ -147,7 +147,7 @@ building for the max height that covers the whole gap. No heap, no
 recursion — just the definition, so it's the thing to trust.
 
 ```
-$ uv run --with sortedcontainers python skyline.py --verify
+$ uv run python skyline.py --verify
 verify: 410 building sets x 3 methods vs brute_force -- OK
 ```
 
@@ -300,7 +300,7 @@ above:
 `sweep_line` is faster everywhere here because 40,000 buildings simply isn't
 enough for the heap-size effect above to outweigh `dc`'s recursion/slicing
 overhead — the crossover in the n-sweep is a size effect as much as a density
-one. Run `uv run --with sortedcontainers python benchmark.py` (or with
+one. Run `uv run python benchmark.py` (or with
 `--sizes` for custom points) to reproduce; numbers above are from an unloaded
 machine and will vary run to run, though the *direction* of the flip
 reproduces consistently.
@@ -372,7 +372,7 @@ most implementations, and here that constant dominates over the range of
 sizes and densities this benchmark reaches. `sweep_line` is the better
 default for exactly the reason `skyline()`'s `"auto"` already picks it; the
 BST sweep exists to make that measured, not assumed. Reproduce with
-`uv run --with sortedcontainers python benchmark.py`; numbers above are from
+`uv run python benchmark.py`; numbers above are from
 an unloaded machine and will vary run to run.
 
 ## Run it

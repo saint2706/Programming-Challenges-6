@@ -84,8 +84,7 @@ It's a normal ASGI app, so anything that runs `uvicorn`/`gunicorn` works:
 
 ```bash
 # systemd-style long-running process
-uv run --with fastapi --with "uvicorn[standard]" --with pygments --with python-multipart \
-    uvicorn app:app --host 0.0.0.0 --port 8000 --workers 1
+uv run uvicorn app:app --host 0.0.0.0 --port 8000 --workers 1
 ```
 
 **Use exactly one worker process**, or put a reverse proxy with sticky

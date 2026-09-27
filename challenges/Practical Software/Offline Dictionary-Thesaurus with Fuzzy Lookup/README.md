@@ -150,7 +150,7 @@ $ python cli.py define run
 The Open English WordNet lexicon isn't installed yet.
 Run this once (requires internet access, ~13MB download):
 
-    uv run --with wn python -c "import wn; wn.download('oewn:2021')"
+    uv run python -c "import wn; wn.download('oewn:2021')"
 ```
 
 ## What it deliberately doesn't do

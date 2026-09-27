@@ -90,7 +90,7 @@ tampers with a *temp copy*, never the real vendored file.
 - **No Docker/Kubernetes manifests** — the health-check *semantics* (live vs.
   ready) are implemented and tested; wiring them into an actual orchestrator
   is deployment configuration, not application code, and every other
-  challenge in this repo runs the same way (`uv run --with ...`), not
+  challenge in this repo runs the same way (`uv run ...`), not
   containerized.
 - **Single process only** — no multi-worker/replica coordination; the
   structured log file is append-only from one process, which is enough to

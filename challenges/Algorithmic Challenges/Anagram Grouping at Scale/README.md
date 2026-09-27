@@ -113,7 +113,7 @@ roughly halves; the corpus size does not enter into it.
 
 ## Benchmarks
 
-`uv run --with numpy python benchmark.py`. Key construction, nanoseconds per
+`uv run python benchmark.py`. Key construction, nanoseconds per
 word, 26-letter alphabet:
 
 | L    | sorted   | counter | hash   | primes  | bincount |

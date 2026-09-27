@@ -39,7 +39,7 @@ insertion order (`a_1, b_1, a_2, b_2, ...`) is exactly the pathological
 order that forces greedy far away from that:
 
 ```
-$ uv run --with networkx python coloring.py
+$ uv run python coloring.py
 Crown graph (n=6): 2-colorable, but order matters for plain greedy.
   exact chromatic number:                     2
   greedy_color (all a's, then all b's):        2 colors
@@ -129,7 +129,7 @@ trusting its own clique-bound reasoning alone.
 ## Correctness
 
 ```
-$ uv run --with pytest --with networkx pytest -q
+$ uv run pytest -q
 76 passed in 0.35s
 ```
 
@@ -147,7 +147,7 @@ generator (row/column/diagonal adjacency, symmetry).
 ## Benchmarks
 
 ```
-$ uv run --with networkx python benchmark.py
+$ uv run python benchmark.py
 Chromatic count: heuristics vs the true chromatic number
 graph                         n  greedy  welsh-p  dsatur   rlf  EXACT
 ---------------------------------------------------------------------

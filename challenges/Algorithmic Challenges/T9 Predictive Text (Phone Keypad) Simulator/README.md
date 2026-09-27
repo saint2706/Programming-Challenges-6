@@ -92,13 +92,13 @@ is what a T9 phone does by default when you don't cycle through candidates
 yourself:
 
 ```
-$ uv run --with wordfreq python t9.py 4663 --vocab-size 30000
+$ uv run python t9.py 4663 --vocab-size 30000
 digits 4663: ['good', 'home', 'gone', 'hood', 'hone', 'hoof', 'goof']
 
-$ uv run --with wordfreq python t9.py 43556 --vocab-size 30000
+$ uv run python t9.py 43556 --vocab-size 30000
 digits 43556: ['hello']
 
-$ uv run --with wordfreq python t9.py 228 --vocab-size 30000
+$ uv run python t9.py 228 --vocab-size 30000
 digits 228: ['act', 'cat', 'bat', 'abu', 'abt', 'cbt', 'abv']
 ```
 
@@ -110,7 +110,7 @@ collapse onto one signature because a, b and c are literally the same key.
 Live incremental typing, via `TrieT9.session()`:
 
 ```
-$ uv run --with wordfreq python t9.py --type 4663 --vocab-size 30000
+$ uv run python t9.py --type 4663 --vocab-size 30000
 typing '4663' one digit at a time:
   4          -> ['in', 'i', 'is', 'it', 'have', 'he', 'his', 'if']
   46         -> ['in', 'how', 'good', 'into', 'go', 'going', 'got', 'home']
@@ -151,7 +151,7 @@ Concrete before/after, at the full 30,000-word vocabulary
 (`t9.py --demo-adaptive`):
 
 ```
-$ uv run --with wordfreq python t9.py --demo-adaptive
+$ uv run python t9.py --demo-adaptive
 Adaptive re-ranking: corpus frequency picks the default, but a user
 who keeps choosing something else should see that choice stick.
   digits 4663, before any selection: ['good', 'home', 'gone', 'hood', 'hone', 'hoof', 'goof']
@@ -193,8 +193,8 @@ not implement it, because the data isn't available cleanly:
 
 `wordfreq` (already a dependency here) ships **unigram** frequencies only —
 one score per word, no pair data. Looking for a lightweight substitute turned
-up nothing that fits the `uv run --with X` pattern the rest of this module
-uses: `nltk` ships tools for building n-gram models but not a bundled
+up nothing that fits the plain pip-installable-dependency pattern the rest
+of this module uses: `nltk` ships tools for building n-gram models but not a bundled
 word-bigram corpus — using it means a separate `nltk.download()` of a corpus
 (tens of megabytes, at runtime, over the network) — and the assorted
 pip packages that mention "bigram frequency" (e.g. `corpus-toolkit`,
@@ -239,7 +239,7 @@ else is checked against it, and against a second oracle,
 `naive_prefix_lookup`, for prefix queries:
 
 ```
-$ uv run --with wordfreq python t9.py --verify --vocab-size 30000
+$ uv run python t9.py --verify --vocab-size 30000
 all methods agree over 30,000 words, real and random digit sequences, prefix queries, and incremental typing
 ```
 
@@ -272,8 +272,8 @@ agreement, and full-scale verification (`-m slow`) against the real
 30,000-word vocabulary.
 
 ```
-uv run --with wordfreq --with pytest pytest -q              # 43 tests, ~11s
-uv run --with wordfreq --with pytest pytest -q -m slow       # +2 full-vocab tests
+uv run pytest -q # 43 tests, ~11s
+uv run pytest -q -m slow # +2 full-vocab tests
 ```
 
 ## Benchmark results
@@ -326,8 +326,8 @@ scratch, every keystroke, which is why it's the slowest by another order of
 magnitude.
 
 ```
-uv run --with wordfreq python benchmark.py                            # full run
-uv run --with wordfreq python benchmark.py --sizes 5000 20000 --quick # faster, smaller
+uv run python benchmark.py # full run
+uv run python benchmark.py --sizes 5000 20000 --quick # faster, smaller
 ```
 
 ## Run it
