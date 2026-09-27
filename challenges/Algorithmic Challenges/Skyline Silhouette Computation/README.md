@@ -428,7 +428,7 @@ combined outline:
 ## Sources
 
 - [The Skyline Problem — LeetCode 218](https://leetcode.com/problems/the-skyline-problem/)
-- [Skyline problem — GeeksforGeeks](https://www.geeksforgeeks.org/skyline-problem-using-divide-and-conquer-algorithm/) (the divide-and-conquer merge)
+- [Skyline problem — GeeksforGeeks](https://www.geeksforgeeks.org/dsa/the-skyline-problem-using-divide-and-conquer-algorithm/) (the divide-and-conquer merge)
 - [CLRS, *Introduction to Algorithms*](https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/) — merge-sort-style divide and conquer, and sweep-line techniques generally
 - [sortedcontainers — `SortedList` documentation](https://grantjenks.com/docs/sortedcontainers/sortedlist.html) — the balanced-BST-like sorted sequence backing `sweep_line_bst`
 - [Kirkpatrick–Seidel algorithm](https://en.wikipedia.org/wiki/Kirkpatrick%E2%80%93Seidel_algorithm) and [Chan's algorithm](https://en.wikipedia.org/wiki/Chan%27s_algorithm) — output-sensitive convex hull algorithms, cited for contrast in the lower-bound discussion above (no equivalent output-sensitive bound is established for skyline)

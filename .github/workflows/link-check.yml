@@ -31,9 +31,16 @@ jobs:
         id: lychee
         uses: lycheeverse/lychee-action@v2
         with:
+          # Mail addresses are excluded by default (no `--include-mail` flag
+          # passed) — lychee 0.24.2 removed the old `--exclude-mail` flag
+          # entirely (renamed/inverted to opt-in `--include-mail`), and
+          # passing the stale flag made lychee exit with an argument-parse
+          # error before checking a single link, which this workflow then
+          # misreported as "broken links found" (issue #5).
           args: >-
             --no-progress
-            --exclude-mail
+            --exclude-path node_modules
+            --accept 100..=103,200..=299,403,429
             --max-retries 3
             './**/*.md'
           format: markdown

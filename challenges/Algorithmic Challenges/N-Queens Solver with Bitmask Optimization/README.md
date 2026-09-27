@@ -235,7 +235,7 @@ lands in `media/videos/visualize/` and is git-ignored.
 
 ## Sources
 
-- Somers, ["N Queens Bit Solver"](http://jsomers.com/nqueen_demo/nqueens.html) — the bitmask column/diagonal technique
+- Somers, ["N Queens Bit Solver"](https://web.archive.org/web/20180129222019/http://jsomers.com:80/nqueen_demo/Nqueens.Html) — the bitmask column/diagonal technique (jsomers.com is offline; linked via Wayback Machine archive)
 - OEIS [A000170](https://oeis.org/A000170) — number of n-queens solutions
 - OEIS [A002562](https://oeis.org/A002562) — number of inequivalent (fundamental) solutions
 - Burnside, *Theory of Groups of Finite Order*, 2nd ed., 1911 — the counting lemma (though it predates Burnside, sometimes called the Cauchy-Frobenius lemma)
