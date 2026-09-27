@@ -14,7 +14,12 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: "Optional: test only this one challenge directory (e.g. 'challenges/Algorithmic Challenges/Josephus Problem Solver'), instead of every challenge"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -39,7 +44,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.directory }}" ]; then
+            # Scoped debugging run: just the one directory requested.
+            DIRS="${{ inputs.directory }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # Full regression check: every challenge with a pyproject.toml.
             # -z/-0 (NUL-delimited) because several challenge directory names
             # contain an apostrophe (e.g. "Manacher's Algorithm..."), which
@@ -90,6 +98,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Install system dependencies for Manim challenges
+        working-directory: ${{ matrix.dir }}
+        run: |
+          # manimpango (a manim dependency) builds from source against
+          # pangocairo via pkg-config; ffmpeg is needed at render time.
+          # Neither is preinstalled on ubuntu-latest, and the failure is a
+          # confusing pkg-config/setuptools traceback rather than a clear
+          # "apt-get install this" message, so only pay this cost for the
+          # few challenges that actually declare manim as a dependency.
+          if grep -q '"manim' pyproject.toml 2>/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends \
+              build-essential libcairo2-dev libpango1.0-dev ffmpeg pkg-config
+          fi
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.2.0
