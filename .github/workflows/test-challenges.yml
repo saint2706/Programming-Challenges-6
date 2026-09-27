@@ -1,0 +1,102 @@
+name: Test Challenges
+
+# Runs each changed challenge's own pytest suite via its pyproject.toml/
+# uv.lock (added 2026-09-26/27, replacing the old `uv run --with ...`
+# convention) -- this is what actually validates a Dependabot dependency-bump
+# PR before merge, not just a human re-running tests by hand. On push/PR only
+# the challenge directories that actually changed are tested (via a git diff
+# against the previous commit / PR base), keeping this fast even as the
+# number of implemented challenges grows into the hundreds; a manual
+# workflow_dispatch run instead tests every challenge that has a
+# pyproject.toml, as a full regression check.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-challenges-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      dirs: ${{ steps.changes.outputs.dirs }}
+    steps:
+      - name: Checkout (full history for diffing)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Determine which challenge directories to test
+        id: changes
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Full regression check: every challenge with a pyproject.toml.
+            # -z/-0 (NUL-delimited) because several challenge directory names
+            # contain an apostrophe (e.g. "Manacher's Algorithm..."), which
+            # xargs' default shell-like quoting would otherwise choke on.
+            DIRS=$(git ls-files -z 'challenges/*/*/pyproject.toml' | xargs -0 -r -n1 dirname | sort -u)
+          else
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              BASE="${{ github.event.pull_request.base.sha }}"
+              HEAD="${{ github.event.pull_request.head.sha }}"
+              DIFF_RANGE="$BASE...$HEAD"
+            else
+              BASE="${{ github.event.before }}"
+              HEAD="${{ github.sha }}"
+              DIFF_RANGE="$BASE $HEAD"
+            fi
+
+            if [ -z "${BASE:-}" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE" 2>/dev/null; then
+              # First push to a new branch, or a force-push with no prior sha
+              # in history -- fall back to "everything in this commit".
+              CHANGED=$(git ls-tree -r --name-only "$HEAD" -- challenges/)
+            else
+              CHANGED=$(git diff --name-only $DIFF_RANGE -- challenges/)
+            fi
+
+            CANDIDATE_DIRS=$(printf '%s\n' "$CHANGED" | awk -F/ 'NF>=3 {print $1"/"$2"/"$3}' | sort -u)
+
+            DIRS=""
+            while IFS= read -r d; do
+              if [ -n "$d" ] && [ -f "$d/pyproject.toml" ]; then
+                DIRS="${DIRS}${d}"$'\n'
+              fi
+            done <<< "$CANDIDATE_DIRS"
+          fi
+
+          JSON=$(printf '%s\n' "$DIRS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "dirs=$JSON" >> "$GITHUB_OUTPUT"
+          echo "Testing: $JSON"
+
+  test:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.dirs != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        dir: ${{ fromJson(needs.detect-changes.outputs.dirs) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Run tests
+        working-directory: ${{ matrix.dir }}
+        run: uv run pytest -q

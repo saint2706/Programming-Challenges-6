@@ -1,0 +1,50 @@
+name: CodeQL
+
+# GitHub's semantic code scanner, results appear under the repo's Security
+# tab. build-mode: none is correct for Python and JavaScript/TypeScript --
+# both are analyzed from source without a compile step (autobuild is only
+# needed for compiled languages like C++/Java/Go, none of which are used
+# here).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "30 4 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # python covers all 39 pyproject.toml-managed challenges;
+        # javascript-typescript covers the Web Development Showcase category
+        # (currently one JS challenge, more planned).
+        language: [python, javascript-typescript]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
