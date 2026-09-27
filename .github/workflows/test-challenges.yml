@@ -41,26 +41,39 @@ jobs:
 
       - name: Determine which challenge directories to test
         id: changes
+        # All ${{ }} expressions are passed via env: below, never spliced
+        # directly into the script body -- inputs.directory in particular is
+        # attacker-controllable free text (anyone who can trigger
+        # workflow_dispatch chooses it), and GitHub's template substitution
+        # happens before the shell parses the script, so inline interpolation
+        # is a script-injection vector regardless of trigger type.
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_DIRECTORY: ${{ inputs.directory }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          PUSH_HEAD_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
 
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.directory }}" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -n "$INPUT_DIRECTORY" ]; then
             # Scoped debugging run: just the one directory requested.
-            DIRS="${{ inputs.directory }}"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            DIRS="$INPUT_DIRECTORY"
+          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             # Full regression check: every challenge with a pyproject.toml.
             # -z/-0 (NUL-delimited) because several challenge directory names
             # contain an apostrophe (e.g. "Manacher's Algorithm..."), which
             # xargs' default shell-like quoting would otherwise choke on.
             DIRS=$(git ls-files -z 'challenges/*/*/pyproject.toml' | xargs -0 -r -n1 dirname | sort -u)
           else
-            if [ "${{ github.event_name }}" = "pull_request" ]; then
-              BASE="${{ github.event.pull_request.base.sha }}"
-              HEAD="${{ github.event.pull_request.head.sha }}"
+            if [ "$EVENT_NAME" = "pull_request" ]; then
+              BASE="$PR_BASE_SHA"
+              HEAD="$PR_HEAD_SHA"
               DIFF_RANGE="$BASE...$HEAD"
             else
-              BASE="${{ github.event.before }}"
-              HEAD="${{ github.sha }}"
+              BASE="$PUSH_BEFORE_SHA"
+              HEAD="$PUSH_HEAD_SHA"
               DIFF_RANGE="$BASE $HEAD"
             fi
 
