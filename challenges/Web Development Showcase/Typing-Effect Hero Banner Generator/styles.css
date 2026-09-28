@@ -1,0 +1,47 @@
+.typing-hero {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.typing-hero__visual {
+  white-space: pre;
+}
+
+.typing-hero__cursor {
+  margin-left: 0.05em;
+}
+
+.typing-hero__cursor--blink {
+  animation: typing-hero-blink 1s steps(1, jump-none) infinite;
+}
+
+@keyframes typing-hero-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.typing-hero__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing-hero__cursor--blink {
+    animation: none;
+  }
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animated SVG Icon Library with Hover States</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="intro">
+      <h1>Animated SVG Icon Library</h1>
+      <p>
+        A data/analytics-themed icon set &mdash; 19 hand-coded, license-clean SVGs. Hover (or tab to
+        and focus) any icon to trigger its animation. Most use CSS; a handful use native SMIL
+        (<code>&lt;animate&gt;</code>/<code>&lt;animateTransform&gt;</code>/<code>&lt;animateMotion&gt;</code>)
+        instead &mdash; each panel is labeled with which technique it uses. Expand &ldquo;View
+        source&rdquo; on any card to copy its raw, self-contained markup.
+      </p>
+    </header>
+
+    <div id="filters"></div>
+
+    <main id="gallery" class="grid" aria-busy="true"></main>
+
+    <script type="module" src="scripts/gallery.js"></script>
+  </body>
+</html>

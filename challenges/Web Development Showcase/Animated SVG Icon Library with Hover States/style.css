@@ -1,0 +1,403 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --panel: #171a21;
+  --panel-hover: #1e2230;
+  --border: #2a2f3d;
+  --text: #e7e9ee;
+  --muted: #9aa3b5;
+  --accent: #7c9fff;
+  --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+header.intro {
+  max-width: 46rem;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+header.intro h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+header.intro p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  max-width: 60rem;
+  margin: 0 auto 2rem;
+}
+
+.filter-btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.filter-btn:hover {
+  color: var(--text);
+}
+
+.filter-btn.active {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+main.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.icon-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.icon-panel {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.25rem 0.75rem 0.75rem;
+  cursor: default;
+}
+
+.icon-panel:hover,
+.icon-panel:focus-visible {
+  background: var(--panel-hover);
+}
+
+.icon-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+}
+
+.icon-svg {
+  overflow: visible;
+}
+
+.icon-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.icon-technique {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.source {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.source summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.75rem;
+  outline: none;
+}
+
+.source pre {
+  margin: 0.5rem 0;
+  max-height: 10rem;
+  overflow: auto;
+  font-size: 0.68rem;
+  background: #0b0d11;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+}
+
+.source code {
+  font-family: var(--mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.copy-btn {
+  width: 100%;
+  background: var(--border);
+  color: var(--text);
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.35rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ---------------------------------------------------------------------- */
+/* CSS-driven hover animations, one block per icon.                       */
+/* Every rule is scoped under [data-icon] and only triggers on hover/     */
+/* focus of the panel itself, so it never bleeds into a sibling icon.     */
+/* ---------------------------------------------------------------------- */
+
+/* Database — disks separate apart, staggered */
+.icon-panel[data-icon='database'] .db-disk {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.25s ease;
+}
+.icon-panel[data-icon='database']:hover .db-disk-2,
+.icon-panel[data-icon='database']:focus-visible .db-disk-2 {
+  transform: translateY(-1px);
+}
+.icon-panel[data-icon='database']:hover .db-disk-3,
+.icon-panel[data-icon='database']:focus-visible .db-disk-3 {
+  transform: translateY(0.5px);
+}
+.icon-panel[data-icon='database']:hover .db-disk-4,
+.icon-panel[data-icon='database']:focus-visible .db-disk-4 {
+  transform: translateY(2px);
+}
+
+/* Bar chart — bars grow from the baseline, staggered */
+.icon-panel[data-icon='bar-chart'] .bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(0.55);
+  transition: transform 0.3s ease;
+}
+.icon-panel[data-icon='bar-chart']:hover .bar,
+.icon-panel[data-icon='bar-chart']:focus-visible .bar {
+  transform: scaleY(1);
+}
+.icon-panel[data-icon='bar-chart']:hover .bar-2,
+.icon-panel[data-icon='bar-chart']:focus-visible .bar-2 {
+  transition-delay: 0.06s;
+}
+.icon-panel[data-icon='bar-chart']:hover .bar-3,
+.icon-panel[data-icon='bar-chart']:focus-visible .bar-3 {
+  transition-delay: 0.12s;
+}
+
+/* Line chart — trend line draws itself in */
+.icon-panel[data-icon='line-chart'] .trend-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.icon-panel[data-icon='line-chart']:hover .trend-line,
+.icon-panel[data-icon='line-chart']:focus-visible .trend-line {
+  animation: draw-line 0.6s ease forwards;
+}
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Donut chart — segments spin a quarter turn */
+.icon-panel[data-icon='donut-chart'] .donut-segments {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.4s ease;
+}
+.icon-panel[data-icon='donut-chart']:hover .donut-segments,
+.icon-panel[data-icon='donut-chart']:focus-visible .donut-segments {
+  transform: rotate(90deg);
+}
+
+/* Scatter plot — points pulse in sequence */
+.icon-panel[data-icon='scatter-plot'] .dot {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.icon-panel[data-icon='scatter-plot']:hover .dot,
+.icon-panel[data-icon='scatter-plot']:focus-visible .dot {
+  animation: pulse-dot 0.6s ease;
+}
+.icon-panel[data-icon='scatter-plot']:hover .dot-2,
+.icon-panel[data-icon='scatter-plot']:focus-visible .dot-2 {
+  animation-delay: 0.08s;
+}
+.icon-panel[data-icon='scatter-plot']:hover .dot-3,
+.icon-panel[data-icon='scatter-plot']:focus-visible .dot-3 {
+  animation-delay: 0.16s;
+}
+.icon-panel[data-icon='scatter-plot']:hover .dot-4,
+.icon-panel[data-icon='scatter-plot']:focus-visible .dot-4 {
+  animation-delay: 0.24s;
+}
+@keyframes pulse-dot {
+  50% {
+    transform: scale(1.8);
+  }
+}
+
+/* DataFrame — rows highlight one after another */
+.icon-panel[data-icon='dataframe-table'] .row {
+  transition: opacity 0.25s ease;
+}
+.icon-panel[data-icon='dataframe-table']:hover .row-1,
+.icon-panel[data-icon='dataframe-table']:focus-visible .row-1 {
+  opacity: 0.18;
+}
+.icon-panel[data-icon='dataframe-table']:hover .row-2,
+.icon-panel[data-icon='dataframe-table']:focus-visible .row-2 {
+  opacity: 0.18;
+  transition-delay: 0.1s;
+}
+
+/* Insight search — magnifier handle wiggles */
+.icon-panel[data-icon='magnifier-insight'] .handle {
+  transform-box: fill-box;
+  transform-origin: 15.5px 15.5px;
+}
+.icon-panel[data-icon='magnifier-insight']:hover .handle,
+.icon-panel[data-icon='magnifier-insight']:focus-visible .handle {
+  animation: wiggle 0.5s ease;
+}
+@keyframes wiggle {
+  25% {
+    transform: rotate(8deg);
+  }
+  75% {
+    transform: rotate(-8deg);
+  }
+}
+
+/* ETL funnel — a droplet falls through, looping while hovered */
+.icon-panel[data-icon='funnel'] .drop {
+  opacity: 0;
+}
+.icon-panel[data-icon='funnel']:hover .drop,
+.icon-panel[data-icon='funnel']:focus-visible .drop {
+  animation: drop-fall 1s ease-in infinite;
+}
+@keyframes drop-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(11px);
+    opacity: 0;
+  }
+}
+
+/* API connector — halves slide together */
+.icon-panel[data-icon='api-plug'] .plug {
+  transition: transform 0.25s ease;
+}
+.icon-panel[data-icon='api-plug']:hover .plug-left,
+.icon-panel[data-icon='api-plug']:focus-visible .plug-left {
+  transform: translateX(1.5px);
+}
+.icon-panel[data-icon='api-plug']:hover .plug-right,
+.icon-panel[data-icon='api-plug']:focus-visible .plug-right {
+  transform: translateX(-1.5px);
+}
+
+/* Storyteller notebook — ink line draws itself in */
+.icon-panel[data-icon='notebook-pen'] .ink-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.icon-panel[data-icon='notebook-pen']:hover .ink-line,
+.icon-panel[data-icon='notebook-pen']:focus-visible .ink-line {
+  animation: draw-line 0.5s ease forwards;
+}
+
+/* Terminal — cursor blinks while hovered */
+.icon-panel[data-icon='terminal']:hover .cursor,
+.icon-panel[data-icon='terminal']:focus-visible .cursor {
+  animation: blink 0.9s step-end infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* CPU — core pulses */
+.icon-panel[data-icon='cpu-chip']:hover .core,
+.icon-panel[data-icon='cpu-chip']:focus-visible .core {
+  animation: core-pulse 0.9s ease infinite;
+}
+@keyframes core-pulse {
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Cloud — floats up and down */
+.icon-panel[data-icon='cloud-aws']:hover .cloud,
+.icon-panel[data-icon='cloud-aws']:focus-visible .cloud {
+  animation: float 1.2s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Config — gear spins continuously while hovered */
+.icon-panel[data-icon='settings-gear'] .gear {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.icon-panel[data-icon='settings-gear']:hover .gear,
+.icon-panel[data-icon='settings-gear']:focus-visible .gear {
+  animation: spin 1.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reduced motion: disable every CSS animation/transition above outright. */
+/* SMIL icons are handled separately in gallery.js (markup is stripped    */
+/* before insertion, since SMIL ignores this media query on its own).    */
+/* ---------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .icon-panel * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

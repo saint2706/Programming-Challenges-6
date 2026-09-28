@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>You're Invited — Data & Drinks Meetup</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="invitation">
+      <header class="invitation__header">
+        <p class="invitation__eyebrow">You're invited to</p>
+        <h1 class="invitation__title">Data &amp; Drinks Meetup</h1>
+        <p class="invitation__subtitle">An informal evening of dashboards, demos, and good company</p>
+      </header>
+
+      <section class="invitation__details">
+        <div class="detail">
+          <span class="detail__label">When</span>
+          <span class="detail__value">Saturday, October 17 &middot; 6:00 PM</span>
+        </div>
+        <div class="detail">
+          <span class="detail__label">Where</span>
+          <span class="detail__value">The Terrace, Panaji, Goa</span>
+        </div>
+        <div class="detail">
+          <span class="detail__label">Dress</span>
+          <span class="detail__value">Casual</span>
+        </div>
+      </section>
+
+      <section class="invitation__rsvp" aria-labelledby="rsvp-heading">
+        <h2 id="rsvp-heading">RSVP</h2>
+        <form id="rsvp-form" novalidate>
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" maxlength="100" required autocomplete="name" />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" maxlength="254" required autocomplete="email" />
+
+          <fieldset>
+            <legend>Will you attend?</legend>
+            <label class="radio">
+              <input type="radio" name="attending" value="yes" required /> Yes, count me in
+            </label>
+            <label class="radio">
+              <input type="radio" name="attending" value="maybe" /> Maybe
+            </label>
+            <label class="radio">
+              <input type="radio" name="attending" value="no" /> Can't make it
+            </label>
+          </fieldset>
+
+          <label for="guestCount">Guests you're bringing (besides yourself)</label>
+          <input id="guestCount" name="guestCount" type="number" min="0" max="10" value="0" />
+
+          <label for="message">Message for the host (optional)</label>
+          <textarea id="message" name="message" maxlength="500" rows="3"></textarea>
+
+          <button type="submit">Send RSVP</button>
+          <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="invitation__guests" aria-labelledby="guests-heading">
+        <h2 id="guests-heading">Who's coming</h2>
+        <ul id="guest-list" class="guest-list"></ul>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
