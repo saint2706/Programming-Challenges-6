@@ -1,0 +1,14 @@
+[project]
+name = "web-traffic-funnel-analyzer"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "plotly>=7.1.0",
+    "polars>=1.44.2",
+    "scipy>=1.18.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
