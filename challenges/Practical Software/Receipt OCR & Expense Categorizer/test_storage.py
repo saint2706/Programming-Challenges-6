@@ -1,6 +1,6 @@
 """Tests for SQLite storage operations."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pytest
 from receipt import Receipt
@@ -41,7 +41,7 @@ class TestAddReceipt:
         receipt = Receipt(
             merchant="Test Store",
             category="Groceries",
-            date=datetime(2026, 1, 15),
+            date=datetime(2026, 1, 15, tzinfo=UTC),
             total=42.50,
             raw_text=["Line 1", "Line 2"],
             image_path="/path/to/image.jpg",
@@ -77,7 +77,7 @@ class TestGetReceipt:
         receipt = Receipt(
             merchant="Store A",
             category="Dining",
-            date=datetime(2026, 1, 10),
+            date=datetime(2026, 1, 10, tzinfo=UTC),
             total=25.00,
             id="test-1",
         )
@@ -100,7 +100,7 @@ class TestListReceipts:
             receipt = Receipt(
                 merchant=f"Store {i}",
                 category="Groceries",
-                date=datetime(2026, 1, i + 1),
+                date=datetime(2026, 1, i + 1, tzinfo=UTC),
                 total=float(10 * (i + 1)),
                 id=f"test-{i}",
             )
@@ -114,7 +114,7 @@ class TestListReceipts:
             receipt = Receipt(
                 merchant=f"Store {category}",
                 category=category,
-                date=datetime(2026, 1, 1),
+                date=datetime(2026, 1, 1, tzinfo=UTC),
                 total=10.00,
                 id=f"test-{category}",
             )
@@ -129,7 +129,7 @@ class TestListReceipts:
             receipt = Receipt(
                 merchant="Store",
                 category="Groceries",
-                date=datetime(2026, month, 1),
+                date=datetime(2026, month, 1, tzinfo=UTC),
                 total=10.00,
                 id=f"test-m{month}",
             )
@@ -144,7 +144,7 @@ class TestListReceipts:
                 receipt = Receipt(
                     merchant="Store",
                     category=category,
-                    date=datetime(2026, month, 1),
+                    date=datetime(2026, month, 1, tzinfo=UTC),
                     total=10.00,
                     id=f"test-{month}-{category}",
                 )
@@ -190,9 +190,9 @@ class TestDeleteReceipt:
 class TestGetCategoryTotals:
     def test_sum_by_category(self, tmp_db):
         receipts_data = [
-            ("Groceries", datetime(2026, 1, 1), 20.00),
-            ("Groceries", datetime(2026, 1, 5), 30.00),
-            ("Dining", datetime(2026, 1, 10), 25.00),
+            ("Groceries", datetime(2026, 1, 1, tzinfo=UTC), 20.00),
+            ("Groceries", datetime(2026, 1, 5, tzinfo=UTC), 30.00),
+            ("Dining", datetime(2026, 1, 10, tzinfo=UTC), 25.00),
         ]
 
         for i, (category, date, total) in enumerate(receipts_data):
@@ -211,8 +211,8 @@ class TestGetCategoryTotals:
 
     def test_filter_by_month(self, tmp_db):
         receipts_data = [
-            ("Groceries", datetime(2026, 1, 1), 20.00),
-            ("Groceries", datetime(2026, 2, 1), 30.00),
+            ("Groceries", datetime(2026, 1, 1, tzinfo=UTC), 20.00),
+            ("Groceries", datetime(2026, 2, 1, tzinfo=UTC), 30.00),
         ]
 
         for i, (category, date, total) in enumerate(receipts_data):
@@ -236,7 +236,7 @@ class TestGetMonthlyTotals:
                 receipt = Receipt(
                     merchant="Store",
                     category="Groceries",
-                    date=datetime(2026, month, 1),
+                    date=datetime(2026, month, 1, tzinfo=UTC),
                     total=10.00,
                     id=f"test-monthly-{month}-{i}",
                 )
@@ -252,7 +252,7 @@ class TestGetMonthlyTotals:
             receipt = Receipt(
                 merchant="Store",
                 category="Groceries",
-                date=datetime(2026, month, 1),
+                date=datetime(2026, month, 1, tzinfo=UTC),
                 total=10.00,
                 id=f"test-order-{month}",
             )

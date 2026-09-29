@@ -13,8 +13,3 @@ ignore = ["E741"]
 # resolve names from a star import, so every one of them would otherwise
 # flag as F405; only these three files use Manim.
 "**/visualize.py" = ["F403", "F405"]
-
-# Receipt dates are naive calendar dates printed on a paper receipt (no
-# timezone exists to attach), and `created_at` is a local-time audit stamp;
-# forcing tz-awareness would invent information the data never had.
-"challenges/Practical Software/Receipt OCR & Expense Categorizer/**" = ["DTZ001", "DTZ005"]

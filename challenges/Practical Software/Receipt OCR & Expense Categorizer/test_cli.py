@@ -1,6 +1,6 @@
 """Tests for the CLI interface with mocked OCR."""
 
-from datetime import datetime
+from datetime import UTC, datetime
 from unittest.mock import patch
 
 import pytest
@@ -124,7 +124,7 @@ class TestListCommand:
             receipt = Receipt(
                 merchant=f"Store {i}",
                 category="Groceries",
-                date=datetime(2026, 1, i + 1),
+                date=datetime(2026, 1, i + 1, tzinfo=UTC),
                 total=float(10 * (i + 1)),
                 id=f"test-{i}",
             )
@@ -139,7 +139,7 @@ class TestListCommand:
             receipt = Receipt(
                 merchant="Store",
                 category=category,
-                date=datetime(2026, 1, 1),
+                date=datetime(2026, 1, 1, tzinfo=UTC),
                 total=10.00,
                 id=f"test-{category}",
             )
@@ -156,7 +156,7 @@ class TestListCommand:
             receipt = Receipt(
                 merchant="Store",
                 category="Groceries",
-                date=datetime(2026, month, 1),
+                date=datetime(2026, month, 1, tzinfo=UTC),
                 total=10.00,
                 id=f"test-m{month}",
             )
@@ -176,7 +176,7 @@ class TestReportCommand:
             receipt = Receipt(
                 merchant="Store",
                 category=category,
-                date=datetime(2026, 1, 1),
+                date=datetime(2026, 1, 1, tzinfo=UTC),
                 total=25.00,
                 id=f"test-{category}",
             )
@@ -191,7 +191,7 @@ class TestReportCommand:
         receipt = Receipt(
             merchant="Store",
             category="Groceries",
-            date=datetime(2026, 1, 1),
+            date=datetime(2026, 1, 1, tzinfo=UTC),
             total=50.00,
             id="test-1",
         )

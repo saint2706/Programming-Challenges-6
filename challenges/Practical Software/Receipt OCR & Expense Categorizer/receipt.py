@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import uuid4
 
 
@@ -81,7 +81,7 @@ def extract_date(lines: list[str]) -> datetime | None:
                         if month > 12:
                             month, day = day, month
                         if 1 <= month <= 12 and 1 <= day <= 31:
-                            return datetime(year, month, day)
+                            return datetime(year, month, day, tzinfo=UTC)
                     elif pattern == date_patterns[1]:
                         year, month, day = (
                             int(groups[0]),
@@ -89,7 +89,7 @@ def extract_date(lines: list[str]) -> datetime | None:
                             int(groups[2]),
                         )
                         if 1 <= month <= 12 and 1 <= day <= 31:
-                            return datetime(year, month, day)
+                            return datetime(year, month, day, tzinfo=UTC)
                     elif pattern in [date_patterns[2], date_patterns[3]]:
                         for month_num, month_name in enumerate(
                             [
@@ -119,7 +119,7 @@ def extract_date(lines: list[str]) -> datetime | None:
                                 else:
                                     day, year = int(groups[0]), int(groups[1])
                                 if 1 <= day <= 31:
-                                    return datetime(year, month_num, day)
+                                    return datetime(year, month_num, day, tzinfo=UTC)
                         break
             except (ValueError, IndexError):
                 continue

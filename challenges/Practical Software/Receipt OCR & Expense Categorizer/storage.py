@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from receipt import Receipt
@@ -57,7 +57,7 @@ def add_receipt(db_path: str | Path, receipt: Receipt) -> None:
             receipt.category,
             raw_text_str,
             receipt.image_path,
-            datetime.now().isoformat(),
+            datetime.now(UTC).isoformat(),
         ),
     )
 
@@ -195,6 +195,8 @@ def _row_to_receipt(row: tuple) -> Receipt:
     if date_str:
         try:
             date = datetime.fromisoformat(date_str)
+            if date.tzinfo is None:  # rows stored before dates became UTC-aware
+                date = date.replace(tzinfo=UTC)
         except ValueError:
             pass
 
