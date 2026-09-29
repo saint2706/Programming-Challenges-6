@@ -13,3 +13,21 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "chore(deps)"
+
+  # Rust challenges are standalone Cargo crates (own Cargo.toml + Cargo.lock).
+  - package-ecosystem: "cargo"
+    directories:
+      - "/challenges/*/*"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+
+  # Keep the versions of actions used in .github/workflows/ up to date.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(ci)"

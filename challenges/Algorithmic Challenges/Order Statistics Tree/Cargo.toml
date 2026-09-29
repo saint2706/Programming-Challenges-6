@@ -1,0 +1,33 @@
+[package]
+name = "order-statistics-tree"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+description = "Order-statistic trees: an arena B-tree with subtree counts vs AVL, treap, red-black, Fenwick and sorted-Vec baselines."
+
+[lib]
+name = "ost"
+path = "src/lib.rs"
+
+[dependencies]
+
+[dev-dependencies]
+criterion = "0.8.2"
+proptest = "1.11.0"
+
+[[bench]]
+name = "structures"
+harness = false
+
+[[bench]]
+name = "btree_tuning"
+harness = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false

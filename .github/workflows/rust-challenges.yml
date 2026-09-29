@@ -1,0 +1,37 @@
+name: Rust Challenges
+
+on:
+  push:
+    branches: [main]
+    paths: ["challenges/**/Cargo.toml", "challenges/**/*.rs", ".github/workflows/rust-challenges.yml"]
+  pull_request:
+    paths: ["challenges/**/Cargo.toml", "challenges/**/*.rs", ".github/workflows/rust-challenges.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        crate:
+          - "challenges/Algorithmic Challenges/Order Statistics Tree"
+          - "challenges/Algorithmic Challenges/Merkle Tree Builder & Proof-of-Inclusion Verifier"
+    defaults:
+      run:
+        working-directory: ${{ matrix.crate }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ${{ matrix.crate }}
+      - uses: taiki-e/install-action@nextest
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      - run: cargo nextest run --release --locked
+      - run: cargo test --doc --release --locked
