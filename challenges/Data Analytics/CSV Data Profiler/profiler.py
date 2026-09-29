@@ -16,6 +16,7 @@ from typing import Any
 import plotly.graph_objects as go
 import plotly.io as pio
 import polars as pl
+from plotly.offline import get_plotlyjs
 
 TOP_N_DEFAULT = 10
 SNIFF_SAMPLE_BYTES = 65536
@@ -326,11 +327,9 @@ table.stats td { text-align: right; padding: 2px 0; }
 
 
 def render_report(profile: DatasetProfile) -> str:
-    plotly_js = pio.to_html(go.Figure(), include_plotlyjs="inline", full_html=False)
-    # Extract just the <script>...plotly.min.js...</script> block once, reused for every chart.
-    script_start = plotly_js.index("<script")
-    script_end = plotly_js.index("</script>") + len("</script>")
-    plotly_bundle = plotly_js[script_start:script_end]
+    # `pio.to_html` emits a tiny PlotlyConfig <script> before the bundle, so slicing its
+    # first <script> block yields no bundle; take the bundle directly instead.
+    plotly_bundle = f"<script>{get_plotlyjs()}</script>"
 
     columns_html = "\n".join(render_column_section(c) for c in profile.columns)
     correlation_section = (
