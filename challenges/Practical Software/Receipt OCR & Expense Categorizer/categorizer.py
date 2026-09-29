@@ -7,10 +7,19 @@ expense categories.
 
 from __future__ import annotations
 
-from rapidfuzz import fuzz, process as fuzz_process
+from rapidfuzz import fuzz
+from rapidfuzz import process as fuzz_process
 
-
-CATEGORIES = ["Groceries", "Dining", "Transport", "Utilities", "Shopping", "Entertainment", "Health", "Other"]
+CATEGORIES = [
+    "Groceries",
+    "Dining",
+    "Transport",
+    "Utilities",
+    "Shopping",
+    "Entertainment",
+    "Health",
+    "Other",
+]
 
 KEYWORD_RULES: dict[str, list[str]] = {
     "Groceries": [

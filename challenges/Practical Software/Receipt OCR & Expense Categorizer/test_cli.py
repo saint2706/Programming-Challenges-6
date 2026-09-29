@@ -1,15 +1,13 @@
 """Tests for the CLI interface with mocked OCR."""
 
 from datetime import datetime
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from typer.testing import CliRunner
-
 from cli import app
 from receipt import Receipt
-from storage import add_receipt, get_receipt, init_db, list_receipts
+from storage import add_receipt, init_db
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -42,7 +40,9 @@ class TestScanCommand:
         assert "Receipt stored" in result.stdout
 
     def test_scan_image_not_found(self, tmp_db):
-        result = runner.invoke(app, ["scan", "/nonexistent/image.jpg", "--db", str(tmp_db)])
+        result = runner.invoke(
+            app, ["scan", "/nonexistent/image.jpg", "--db", str(tmp_db)]
+        )
         assert result.exit_code == 1
 
     def test_scan_with_category_override(self, tmp_db, tmp_path):
@@ -54,7 +54,14 @@ class TestScanCommand:
 
             result = runner.invoke(
                 app,
-                ["scan", str(image_path), "--db", str(tmp_db), "--category", "Transport"],
+                [
+                    "scan",
+                    str(image_path),
+                    "--db",
+                    str(tmp_db),
+                    "--category",
+                    "Transport",
+                ],
             )
 
         assert result.exit_code == 0
@@ -84,7 +91,14 @@ class TestImportFolderCommand:
 
             result = runner.invoke(
                 app,
-                ["import-folder", str(tmp_path), "--db", str(tmp_db), "--pattern", "*.jpg"],
+                [
+                    "import-folder",
+                    str(tmp_path),
+                    "--db",
+                    str(tmp_db),
+                    "--pattern",
+                    "*.jpg",
+                ],
             )
 
         assert result.exit_code == 0
@@ -131,7 +145,9 @@ class TestListCommand:
             )
             add_receipt(tmp_db, receipt)
 
-        result = runner.invoke(app, ["list", "--db", str(tmp_db), "--category", "Groceries"])
+        result = runner.invoke(
+            app, ["list", "--db", str(tmp_db), "--category", "Groceries"]
+        )
         assert result.exit_code == 0
         assert "1 receipts" in result.stdout
 
@@ -181,7 +197,9 @@ class TestReportCommand:
         )
         add_receipt(tmp_db, receipt)
 
-        result = runner.invoke(app, ["report", "--db", str(tmp_db), "--month", "2026-01"])
+        result = runner.invoke(
+            app, ["report", "--db", str(tmp_db), "--month", "2026-01"]
+        )
         assert result.exit_code == 0
         assert "2026-01" in result.stdout
 

@@ -10,7 +10,6 @@ from pathlib import Path
 
 import paddleocr
 
-
 _ocr_instance: paddleocr.PaddleOCR | None = None
 
 
@@ -45,7 +44,9 @@ def extract_text(image_path: str | Path) -> list[str]:
             continue
         for line in block:
             if line and len(line) > 0:
-                text = line[1][0] if isinstance(line[1], (tuple, list)) else str(line[1])
+                text = (
+                    line[1][0] if isinstance(line[1], (tuple, list)) else str(line[1])
+                )
                 if text.strip():
                     lines.append(text.strip())
 

@@ -146,9 +146,11 @@ The same single pass supports three features that usually get written
 separately:
 
 ```python
-matching_index("x <!-- y --> z", 3, "html")   # 9  -- jump-to-match, from *inside* "<!--"
-longest_balanced_span("())((()))")            # (3, 9)  -- "longest valid parentheses", any pair type
-auto_close('return g("a", [1, {2:', "python") # '}])'  -- what an editor would insert
+matching_index("x <!-- y --> z", 3, "html")  # 9  -- jump-to-match, from *inside* "<!--"
+longest_balanced_span(
+    "())((()))"
+)  # (3, 9)  -- "longest valid parentheses", any pair type
+auto_close('return g("a", [1, {2:', "python")  # '}])'  -- what an editor would insert
 ```
 
 `auto_close` works on a *partial* buffer precisely because the validator never

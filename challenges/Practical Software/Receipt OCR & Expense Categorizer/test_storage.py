@@ -1,10 +1,8 @@
 """Tests for SQLite storage operations."""
 
 from datetime import datetime
-from pathlib import Path
 
 import pytest
-
 from receipt import Receipt
 from storage import (
     add_receipt,

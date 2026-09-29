@@ -18,7 +18,17 @@ from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen, Screen
-from textual.widgets import Button, Footer, Header, Input, Label, ListItem, ListView, Static, TextArea
+from textual.widgets import (
+    Button,
+    Footer,
+    Header,
+    Input,
+    Label,
+    ListItem,
+    ListView,
+    Static,
+    TextArea,
+)
 
 DEFAULT_BOARD_PATH = Path(__file__).parent / "board.json"
 
@@ -41,7 +51,9 @@ class CardEditorScreen(ModalScreen[tuple[str, str, list[str]] | None]):
     }
     """
 
-    def __init__(self, title: str = "", description: str = "", tags_str: str = "") -> None:
+    def __init__(
+        self, title: str = "", description: str = "", tags_str: str = ""
+    ) -> None:
         super().__init__()
         self.initial_title = title
         self.initial_description = description
@@ -179,14 +191,18 @@ class MainScreen(Screen):
 
     def action_focus_prev_column(self) -> None:
         if self.board.columns:
-            self.current_col_index = (self.current_col_index - 1) % len(self.board.columns)
+            self.current_col_index = (self.current_col_index - 1) % len(
+                self.board.columns
+            )
             col_widget = self.get_current_column_widget()
             if col_widget:
                 col_widget.get_list_view().focus()
 
     def action_focus_next_column(self) -> None:
         if self.board.columns:
-            self.current_col_index = (self.current_col_index + 1) % len(self.board.columns)
+            self.current_col_index = (self.current_col_index + 1) % len(
+                self.board.columns
+            )
             col_widget = self.get_current_column_widget()
             if col_widget:
                 col_widget.get_list_view().focus()
@@ -235,7 +251,9 @@ class MainScreen(Screen):
         )
         if result is not None:
             title, description, tags = result
-            self.board.edit_card(self.current_col_index, card.id, title, description, tags)
+            self.board.edit_card(
+                self.current_col_index, card.id, title, description, tags
+            )
             save_board(self.board, self.board_path)
             self.refresh_current_column()
 
@@ -250,14 +268,18 @@ class MainScreen(Screen):
     def action_move_card_left(self) -> None:
         card = self.get_selected_card()
         if card and self.current_col_index > 0:
-            self.board.move_card(card.id, self.current_col_index, self.current_col_index - 1)
+            self.board.move_card(
+                card.id, self.current_col_index, self.current_col_index - 1
+            )
             save_board(self.board, self.board_path)
             self.refresh_columns()
 
     def action_move_card_right(self) -> None:
         card = self.get_selected_card()
         if card and self.current_col_index < len(self.board.columns) - 1:
-            self.board.move_card(card.id, self.current_col_index, self.current_col_index + 1)
+            self.board.move_card(
+                card.id, self.current_col_index, self.current_col_index + 1
+            )
             save_board(self.board, self.board_path)
             self.refresh_columns()
 
@@ -266,9 +288,7 @@ class MainScreen(Screen):
 
     async def _new_column_flow(self) -> None:
         app = self.app
-        result = await app.push_screen_wait(
-            ColumnNameScreen()
-        )
+        result = await app.push_screen_wait(ColumnNameScreen())
         if result:
             self.board.add_column(result)
             save_board(self.board, self.board_path)
@@ -287,7 +307,9 @@ class MainScreen(Screen):
         container.remove_children()
         for col in self.board.columns:
             container.mount(ColumnWidget(col))
-        self.current_col_index = min(self.current_col_index, len(self.board.columns) - 1)
+        self.current_col_index = min(
+            self.current_col_index, len(self.board.columns) - 1
+        )
         if self.board.columns and self.current_col_index >= 0:
             col_widget = self.query("ColumnWidget")[self.current_col_index]
             col_widget.get_list_view().focus()

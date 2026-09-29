@@ -1,7 +1,7 @@
-import trafilatura
-import httpx
 from typing import NamedTuple
-from lxml import etree
+
+import httpx
+import trafilatura
 
 
 class ExtractedArticle(NamedTuple):
@@ -23,7 +23,7 @@ def extract_from_html(html_content: str) -> ExtractedArticle:
         tree = trafilatura.parse(html_content)
         title = tree.xpath("//title/text()")
         title = title[0] if title else None
-    except Exception:
+    except Exception:  # noqa: BLE001 - title is optional; malformed HTML must not fail extraction
         title = None
 
     return ExtractedArticle(title=title, text=doc)
@@ -38,5 +38,5 @@ def fetch_and_extract(url: str, timeout: int = 10) -> ExtractedArticle:
         response = httpx.get(url, timeout=timeout, follow_redirects=True)
         response.raise_for_status()
         return extract_from_html(response.text)
-    except Exception:
+    except Exception:  # noqa: BLE001 - documented contract: any failure yields an empty article
         return ExtractedArticle(None, None)

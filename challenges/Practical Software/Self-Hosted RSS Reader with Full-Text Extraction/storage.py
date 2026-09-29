@@ -1,7 +1,7 @@
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from contextlib import contextmanager
 
 
 class ArticleStore:
@@ -144,13 +144,17 @@ class ArticleStore:
 
     def mark_as_read(self, article_id: int) -> bool:
         with self._connection() as conn:
-            cursor = conn.execute("UPDATE articles SET read_flag = 1 WHERE id = ?", (article_id,))
+            cursor = conn.execute(
+                "UPDATE articles SET read_flag = 1 WHERE id = ?", (article_id,)
+            )
             conn.commit()
             return cursor.rowcount > 0
 
     def mark_as_unread(self, article_id: int) -> bool:
         with self._connection() as conn:
-            cursor = conn.execute("UPDATE articles SET read_flag = 0 WHERE id = ?", (article_id,))
+            cursor = conn.execute(
+                "UPDATE articles SET read_flag = 0 WHERE id = ?", (article_id,)
+            )
             conn.commit()
             return cursor.rowcount > 0
 
@@ -180,7 +184,9 @@ class ArticleStore:
             ).fetchone()
             return dict(row) if row else None
 
-    def update_article_full_text(self, article_id: int, full_text: str, title: str | None = None) -> bool:
+    def update_article_full_text(
+        self, article_id: int, full_text: str, title: str | None = None
+    ) -> bool:
         with self._connection() as conn:
             old = conn.execute(
                 "SELECT title, full_text FROM articles WHERE id = ?", (article_id,)

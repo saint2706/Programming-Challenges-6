@@ -1,19 +1,19 @@
 {
-  "name": "responsive-email-template-builder",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "svelte": "^5.15.0"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^5.0.0",
-    "vite": "^6.0.0",
-    "vitest": "^5.0.2"
-  }
+    "name": "responsive-email-template-builder",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "svelte": "^5.15.0"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^5.0.0",
+        "vite": "^6.0.0",
+        "vitest": "^5.0.2"
+    }
 }

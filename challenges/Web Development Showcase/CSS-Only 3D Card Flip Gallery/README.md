@@ -92,6 +92,7 @@ cd "challenges/Web Development Showcase/CSS-Only 3D Card Flip Gallery"
 ## Browser support
 
 Tested and works in:
+
 - Chrome/Edge 88+ (transform-style: preserve-3d, backface-visibility)
 - Firefox 70+
 - Safari 12+ (with `-webkit-` prefix for backface-visibility, included)

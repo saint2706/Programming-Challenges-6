@@ -10,6 +10,7 @@ hand-repaired with any text editor if it's ever corrupted.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import tempfile
@@ -61,8 +62,6 @@ def save_board(board: Board, path: Path) -> None:
 
         os.replace(temp_path, path)
     except Exception:
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(temp_path)
-        except Exception:
-            pass
         raise

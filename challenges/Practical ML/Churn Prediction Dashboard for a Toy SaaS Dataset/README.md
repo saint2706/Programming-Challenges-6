@@ -187,12 +187,12 @@ bar chart of which features pushed their probability up (red) or down
 **Measured on this run** (stratified 80/20 split, 1,405 held-out
 customers, 26.5% churned):
 
-| Model               | ROC-AUC | PR-AUC | Threshold | Accuracy | Precision | Recall | F1    |
-| -------------------- | ------- | ------ | --------- | -------- | --------- | ------ | ----- |
-| Logistic Regression   | 0.840   | 0.637  | 0.50 (naive)   | 80.2%    | 66.0%     | 52.2%  | 0.583 |
-| Logistic Regression   | 0.840   | 0.637  | 0.27 (tuned)   | 74.8%    | 51.6%     | 79.0%  | 0.624 |
-| LightGBM              | 0.833   | 0.633  | 0.50 (naive)   | 78.9%    | 63.1%     | 49.2%  | 0.553 |
-| LightGBM              | 0.833   | 0.633  | 0.23 (tuned)   | 74.1%    | 50.7%     | 81.7%  | 0.626 |
+| Model               | ROC-AUC | PR-AUC | Threshold    | Accuracy | Precision | Recall | F1    |
+| ------------------- | ------- | ------ | ------------ | -------- | --------- | ------ | ----- |
+| Logistic Regression | 0.840   | 0.637  | 0.50 (naive) | 80.2%    | 66.0%     | 52.2%  | 0.583 |
+| Logistic Regression | 0.840   | 0.637  | 0.27 (tuned) | 74.8%    | 51.6%     | 79.0%  | 0.624 |
+| LightGBM            | 0.833   | 0.633  | 0.50 (naive) | 78.9%    | 63.1%     | 49.2%  | 0.553 |
+| LightGBM            | 0.833   | 0.633  | 0.23 (tuned) | 74.1%    | 50.7%     | 81.7%  | 0.626 |
 
 Logistic Regression edges out LightGBM here on both AUC metrics -- the
 opposite of the House Price Predictor's result, and itself a useful

@@ -1,8 +1,6 @@
 """Unit tests for JSON round-trip persistence and atomic writes."""
 
 import json
-import os
-from pathlib import Path
 
 from board import Board
 from storage import load_board, save_board
@@ -134,7 +132,9 @@ def test_load_missing_format_version_raises_error(tmp_path):
 
 def test_load_unsupported_format_version_raises_error(tmp_path):
     board_path = tmp_path / "board.json"
-    board_path.write_text(json.dumps({"format_version": 99, "columns": []}), encoding="utf-8")
+    board_path.write_text(
+        json.dumps({"format_version": 99, "columns": []}), encoding="utf-8"
+    )
 
     try:
         load_board(board_path)

@@ -70,7 +70,7 @@ async def test_delete_card_via_action(tmp_path):
     board_path = tmp_path / "board.json"
     board = Board()
     board.add_column("To Do")
-    card = board.add_card(0, "Task to delete")
+    board.add_card(0, "Task to delete")
     save_board(board, board_path)
 
     app = KanbanApp(board_path=board_path)
@@ -118,7 +118,7 @@ async def test_board_persistence_on_card_delete(tmp_path):
     board_path = tmp_path / "board.json"
     board = Board()
     board.add_column("To Do")
-    card = board.add_card(0, "Task 1")
+    board.add_card(0, "Task 1")
     save_board(board, board_path)
 
     app = KanbanApp(board_path=board_path)

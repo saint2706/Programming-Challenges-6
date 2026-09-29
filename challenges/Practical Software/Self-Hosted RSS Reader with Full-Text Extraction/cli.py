@@ -1,10 +1,10 @@
-import typer
-import httpx
 from pathlib import Path
-from storage import ArticleStore
-from feeds import parse_feed
+
+import httpx
+import typer
 from extractor import fetch_and_extract
-from datetime import datetime
+from feeds import parse_feed
+from storage import ArticleStore
 
 app = typer.Typer()
 
@@ -20,7 +20,7 @@ def add(url: str):
         response = httpx.get(url, timeout=10, follow_redirects=True)
         response.raise_for_status()
         feed_content = response.text
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - any fetch failure is reported to the user
         typer.echo(f"Error: Failed to fetch feed: {e}", err=True)
         raise typer.Exit(1)
 
@@ -66,11 +66,11 @@ def refresh():
             response = httpx.get(feed["url"], timeout=10, follow_redirects=True)
             response.raise_for_status()
             feed_content = response.text
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - one bad feed must not abort the refresh
             typer.echo(f"Error fetching {feed['url']}: {e}", err=True)
             continue
 
-        feed_title, articles = parse_feed(feed_content)
+        _feed_title, articles = parse_feed(feed_content)
 
         for article in articles:
             existing = store.get_article_by_link(feed["id"], article.link)
@@ -88,7 +88,9 @@ def refresh():
             if article_id and article.link:
                 extracted = fetch_and_extract(article.link)
                 if extracted.text:
-                    store.update_article_full_text(article_id, extracted.text, extracted.title)
+                    store.update_article_full_text(
+                        article_id, extracted.text, extracted.title
+                    )
 
             new_count += 1
 

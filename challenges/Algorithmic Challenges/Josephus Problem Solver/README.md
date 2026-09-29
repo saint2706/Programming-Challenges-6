@@ -50,7 +50,7 @@ It costs O(1) at any size, which means it works on integers no simulation could
 touch:
 
 ```python
-survivor_pow2(10**1000 + 12345)   # instant
+survivor_pow2(10**1000 + 12345)  # instant
 ```
 
 ## The general-k recurrence, and why it's true

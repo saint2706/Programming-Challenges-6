@@ -52,19 +52,19 @@ corrupted — a binary magic-byte preamble would defeat that.
 
 ## Keybindings
 
-| Key | Action |
-|-----|--------|
-| `h` / `left` | Focus previous column |
-| `l` / `right` | Focus next column |
-| `j` / `down` | Focus next card in column |
-| `k` / `up` | Focus previous card in column |
-| `a` | Add a new card to the focused column |
-| `e` | Edit the focused card (title, description, tags) |
-| `d` | Delete the focused card |
-| `shift+h` / `shift+left` | Move the focused card to the previous column |
-| `shift+l` / `shift+right` | Move the focused card to the next column |
-| `n` | Create a new column |
-| `q` | Quit (board persists automatically) |
+| Key                       | Action                                           |
+| ------------------------- | ------------------------------------------------ |
+| `h` / `left`              | Focus previous column                            |
+| `l` / `right`             | Focus next column                                |
+| `j` / `down`              | Focus next card in column                        |
+| `k` / `up`                | Focus previous card in column                    |
+| `a`                       | Add a new card to the focused column             |
+| `e`                       | Edit the focused card (title, description, tags) |
+| `d`                       | Delete the focused card                          |
+| `shift+h` / `shift+left`  | Move the focused card to the previous column     |
+| `shift+l` / `shift+right` | Move the focused card to the next column         |
+| `n`                       | Create a new column                              |
+| `q`                       | Quit (board persists automatically)              |
 
 ## Usage
 

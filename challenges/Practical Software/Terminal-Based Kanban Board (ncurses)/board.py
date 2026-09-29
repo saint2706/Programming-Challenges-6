@@ -105,7 +105,13 @@ class Board:
             return self.columns[col_index]
         return None
 
-    def add_card(self, col_index: int, title: str, description: str = "", tags: list[str] | None = None) -> Card | None:
+    def add_card(
+        self,
+        col_index: int,
+        title: str,
+        description: str = "",
+        tags: list[str] | None = None,
+    ) -> Card | None:
         if 0 <= col_index < len(self.columns):
             card = Card(
                 id=str(uuid4()),
@@ -117,7 +123,14 @@ class Board:
             return card
         return None
 
-    def edit_card(self, col_index: int, card_id: str, title: str | None = None, description: str | None = None, tags: list[str] | None = None) -> bool:
+    def edit_card(
+        self,
+        col_index: int,
+        card_id: str,
+        title: str | None = None,
+        description: str | None = None,
+        tags: list[str] | None = None,
+    ) -> bool:
         if 0 <= col_index < len(self.columns):
             card = self.columns[col_index].get_card(card_id)
             if card:
@@ -145,7 +158,10 @@ class Board:
 
     def move_card(self, card_id: str, from_col_idx: int, to_col_idx: int) -> bool:
         """Move a card from one column to another."""
-        if not (0 <= from_col_idx < len(self.columns) and 0 <= to_col_idx < len(self.columns)):
+        if not (
+            0 <= from_col_idx < len(self.columns)
+            and 0 <= to_col_idx < len(self.columns)
+        ):
             return False
         if from_col_idx == to_col_idx:
             return False
@@ -169,5 +185,7 @@ class Board:
     @staticmethod
     def from_dict(data: dict) -> Board:
         board = Board()
-        board.columns = [Column.from_dict(col_data) for col_data in data.get("columns", [])]
+        board.columns = [
+            Column.from_dict(col_data) for col_data in data.get("columns", [])
+        ]
         return board

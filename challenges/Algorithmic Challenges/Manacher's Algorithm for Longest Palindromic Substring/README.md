@@ -196,7 +196,7 @@ combine with. Palindrome checks on accented text have to run over grapheme
 clusters, not codepoints — which the sequence-generic core makes free:
 
 ```python
-longest_palindrome(graphemes(text))       # clusters, not codepoints
+longest_palindrome(graphemes(text))  # clusters, not codepoints
 ```
 
 `relaxed_view` gives the "A man, a plan, a canal: Panama" reading — NFC,

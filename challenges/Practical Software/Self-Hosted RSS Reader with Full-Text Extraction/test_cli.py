@@ -1,9 +1,10 @@
 import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
-from typer.testing import CliRunner
+from unittest.mock import MagicMock, patch
+
 import cli
 from storage import ArticleStore
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -167,7 +168,7 @@ def test_list_articles_unread_only():
             cli.store = ArticleStore(db_path)
 
             feed_id = cli.store.add_feed("https://example.com/feed", "Feed")
-            id1 = cli.store.add_article(feed_id, "Unread", "https://example.com/1")
+            cli.store.add_article(feed_id, "Unread", "https://example.com/1")
             id2 = cli.store.add_article(feed_id, "Read", "https://example.com/2")
             cli.store.mark_as_read(id2)
 

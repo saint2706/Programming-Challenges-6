@@ -1,6 +1,7 @@
 import sqlite3
 import tempfile
 from pathlib import Path
+
 from storage import ArticleStore
 
 
@@ -153,12 +154,23 @@ def test_search_articles():
         store = ArticleStore(Path(tmpdir) / "test.db")
         feed_id = store.add_feed("https://example.com/feed", "Feed")
         store.add_article(
-            feed_id, "Python Tutorial", "https://example.com/1", full_text="Learn Python programming"
+            feed_id,
+            "Python Tutorial",
+            "https://example.com/1",
+            full_text="Learn Python programming",
         )
         store.add_article(
-            feed_id, "JavaScript Guide", "https://example.com/2", full_text="Learn JavaScript"
+            feed_id,
+            "JavaScript Guide",
+            "https://example.com/2",
+            full_text="Learn JavaScript",
         )
-        store.add_article(feed_id, "Other Article", "https://example.com/3", full_text="Something else")
+        store.add_article(
+            feed_id,
+            "Other Article",
+            "https://example.com/3",
+            full_text="Something else",
+        )
         results = store.search_articles("python")
         assert len(results) == 1
         assert results[0]["title"] == "Python Tutorial"
@@ -169,9 +181,17 @@ def test_search_articles_multiple_matches():
         store = ArticleStore(Path(tmpdir) / "test.db")
         feed_id = store.add_feed("https://example.com/feed", "Feed")
         store.add_article(
-            feed_id, "Python Basics", "https://example.com/1", full_text="Python is great"
+            feed_id,
+            "Python Basics",
+            "https://example.com/1",
+            full_text="Python is great",
         )
-        store.add_article(feed_id, "Python Advanced", "https://example.com/2", full_text="Advanced Python")
+        store.add_article(
+            feed_id,
+            "Python Advanced",
+            "https://example.com/2",
+            full_text="Advanced Python",
+        )
         results = store.search_articles("python")
         assert len(results) == 2
 
@@ -199,7 +219,10 @@ def test_update_article_full_text_removes_stale_fts_entries():
         store = ArticleStore(Path(tmpdir) / "test.db")
         feed_id = store.add_feed("https://example.com/feed", "Feed")
         article_id = store.add_article(
-            feed_id, "Original Title", "https://example.com/article", full_text="Foxtrot content"
+            feed_id,
+            "Original Title",
+            "https://example.com/article",
+            full_text="Foxtrot content",
         )
         store.update_article_full_text(article_id, "Zulu content", "Replacement Title")
 

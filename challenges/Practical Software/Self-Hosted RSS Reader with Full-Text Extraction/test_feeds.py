@@ -103,13 +103,13 @@ def test_parse_empty_feed():
 
 
 def test_published_date_extraction_rss():
-    title, articles = parse_feed(SIMPLE_RSS)
+    _title, articles = parse_feed(SIMPLE_RSS)
     assert articles[0].published_at is not None
     assert "2024-01-15" in articles[0].published_at
 
 
 def test_published_date_extraction_atom():
-    title, articles = parse_feed(ATOM_FEED)
+    _title, articles = parse_feed(ATOM_FEED)
     assert articles[0].published_at is not None
     assert "2024-01-15" in articles[0].published_at
 
@@ -131,7 +131,7 @@ def test_parse_feed_skips_items_without_link():
       </channel>
     </rss>
     """
-    title, articles = parse_feed(feed_no_link)
+    _title, articles = parse_feed(feed_no_link)
     assert len(articles) == 1
     assert articles[0].link == "https://example.com/article"
 
@@ -148,6 +148,6 @@ def test_parse_feed_handles_missing_summary():
       </channel>
     </rss>
     """
-    title, articles = parse_feed(feed_no_summary)
+    _title, articles = parse_feed(feed_no_summary)
     assert len(articles) == 1
     assert articles[0].summary is None

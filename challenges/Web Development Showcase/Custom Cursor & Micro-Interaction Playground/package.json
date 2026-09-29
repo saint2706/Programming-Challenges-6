@@ -1,12 +1,12 @@
 {
-  "name": "custom-cursor-micro-interaction-playground",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "test": "vitest run"
-  },
-  "devDependencies": {
-    "jsdom": "^30.1.1",
-    "vitest": "^5.0.2"
-  }
+    "name": "custom-cursor-micro-interaction-playground",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "vitest run"
+    },
+    "devDependencies": {
+        "jsdom": "^30.1.1",
+        "vitest": "^5.0.2"
+    }
 }

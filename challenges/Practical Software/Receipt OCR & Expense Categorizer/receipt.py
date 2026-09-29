@@ -12,7 +12,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
-from pathlib import Path
 from uuid import uuid4
 
 
@@ -74,13 +73,21 @@ def extract_date(lines: list[str]) -> datetime | None:
                 groups = match.groups()
                 if len(groups) >= 2:
                     if pattern == date_patterns[0]:
-                        month, day, year = int(groups[0]), int(groups[1]), int(groups[2])
+                        month, day, year = (
+                            int(groups[0]),
+                            int(groups[1]),
+                            int(groups[2]),
+                        )
                         if month > 12:
                             month, day = day, month
                         if 1 <= month <= 12 and 1 <= day <= 31:
                             return datetime(year, month, day)
                     elif pattern == date_patterns[1]:
-                        year, month, day = int(groups[0]), int(groups[1]), int(groups[2])
+                        year, month, day = (
+                            int(groups[0]),
+                            int(groups[1]),
+                            int(groups[2]),
+                        )
                         if 1 <= month <= 12 and 1 <= day <= 31:
                             return datetime(year, month, day)
                     elif pattern in [date_patterns[2], date_patterns[3]]:
@@ -101,7 +108,12 @@ def extract_date(lines: list[str]) -> datetime | None:
                             ],
                             1,
                         ):
-                            if month_name in full_text[max(0, match.start() - 10) : match.end() + 10]:
+                            if (
+                                month_name
+                                in full_text[
+                                    max(0, match.start() - 10) : match.end() + 10
+                                ]
+                            ):
                                 if pattern == date_patterns[2]:
                                     day, year = int(groups[0]), int(groups[1])
                                 else:

@@ -60,7 +60,7 @@ effect is a known accessibility trap: naively updating live text on every
 keystroke makes a screen reader announce every single character as it
 appears. Here, the visual `<span>` doing the character-by-character reveal is
 `aria-hidden="true"`, and a separate visually-hidden (`.typing-hero__sr-only`,
-a real sr-only clip pattern — not `display: none`, which _would_ be pulled
+a real sr-only clip pattern — not `display: none`, which *would* be pulled
 from the accessibility tree) element holds the **full current phrase**,
 updated exactly once per phrase-change (`announcePhraseIfChanged` in
 `src/index.js` only writes to it when `phraseIndex` actually changes), inside

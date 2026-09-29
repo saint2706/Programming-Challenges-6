@@ -1,33 +1,33 @@
 {
-  "name": "@programming-challenges-6/typing-hero",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "description": "Configurable, dependency-free typing/deleting hero-banner text effect, built and bundled as a genuinely publishable ESM/CJS/UMD package.",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+    "name": "@programming-challenges-6/typing-hero",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Configurable, dependency-free typing/deleting hero-banner text effect, built and bundled as a genuinely publishable ESM/CJS/UMD package.",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        },
+        "./style.css": "./styles.css"
     },
-    "./style.css": "./styles.css"
-  },
-  "files": [
-    "dist",
-    "styles.css"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "test": "vitest run",
-    "dev": "npm run build"
-  },
-  "devDependencies": {
-    "jsdom": "^30.1.1",
-    "tsup": "^8.3.0",
-    "typescript": "^5.9.3",
-    "vitest": "^5.0.2"
-  }
+    "files": [
+        "dist",
+        "styles.css"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest run",
+        "dev": "npm run build"
+    },
+    "devDependencies": {
+        "jsdom": "^30.1.1",
+        "tsup": "^8.3.0",
+        "typescript": "^5.9.3",
+        "vitest": "^5.0.2"
+    }
 }

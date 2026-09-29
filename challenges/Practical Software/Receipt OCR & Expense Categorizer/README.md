@@ -46,7 +46,7 @@ The parsing strategy is deliberately defensive and heuristic:
 - **Categorization:** Two-stage: keyword rules first (fast, exact match), then
   fuzzy matching against a merchant database (handles typos and OCR errors).
 
-This is why 
+This is why
 eceipt.py is tested extensively with fixture text (not live OCR)
 and why the OCR layer (ocr.py) is deliberately thin and swappable — the hard
 part is making parsing robust to garbage input, not the OCR itself.
@@ -73,11 +73,11 @@ part is making parsing robust to garbage input, not the OCR itself.
   (one receipts table), and operations are row-oriented, not normalized.
 - **cli.py** — Typer app with commands: scan <image> (OCR one receipt),
   import-folder <dir> (batch OCR all images in a folder), list (show
-  receipts with filters), 
-eport (category breakdown and monthly totals),
-  
+  receipts with filters),
+  eport (category breakdown and monthly totals),
+
 ecategorize <id> <category> (manual override), delete <id> (remove a
-  receipt). Default SQLite path is ~/.expense_tracker/receipts.db.
+receipt). Default SQLite path is ~/.expense_tracker/receipts.db.
 
 ## Usage
 
@@ -140,21 +140,25 @@ be clear at import time, and you can then swap ocr.py's implementation
 
 84 pytest cases across four files.
 
-	est_receipt.py (13 cases) covers extraction functions directly with fixture
+    est_receipt.py (13 cases) covers extraction functions directly with fixture
+
 OCR text: multiple date formats (MM/DD/YYYY, month names, different separators,
 swapped month/day detection), total extraction with keywords ("TOTAL", "Amount
 Due"), currency formats (dollar sign, commas, decimal), and graceful failures
 (missing fields → None, not crashes).
 
-	est_categorizer.py (22 cases) tests keyword rules for each category, case
+    est_categorizer.py (22 cases) tests keyword rules for each category, case
+
 insensitivity, partial merchant matching, fuzzy matching with typo tolerance,
 and the "Other" fallback.
 
-	est_storage.py (21 cases) covers CRUD round-trips against a temporary SQLite
+    est_storage.py (21 cases) covers CRUD round-trips against a temporary SQLite
+
 database, filtering by category and month, updating categories, category/monthly
 totals, and JSON serialization of receipt raw_text.
 
-	est_cli.py (28 cases) drives the Typer CLI via CliRunner with mocked OCR
+    est_cli.py (28 cases) drives the Typer CLI via CliRunner with mocked OCR
+
 calls (no real PaddleOCR model downloads): scan success/failure, import-folder
 batch processing, list with filters, report generation, recategorization,
 deletion, and error cases.

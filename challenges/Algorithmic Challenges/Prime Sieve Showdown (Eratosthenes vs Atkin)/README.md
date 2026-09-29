@@ -148,8 +148,8 @@ it matters.
 The striking loop needs a run of zero bytes to assign into a strided slice:
 
 ```python
-sieve[start::step] = bytes(count)          # allocates `count` bytes, every strike
-sieve[start::step] = zeros[:count]         # zeros is a memoryview -- O(1) slice
+sieve[start::step] = bytes(count)  # allocates `count` bytes, every strike
+sieve[start::step] = zeros[:count]  # zeros is a memoryview -- O(1) slice
 ```
 
 Slicing a `memoryview` is a view, not a copy: measured **17× cheaper** than
@@ -256,8 +256,8 @@ For actually using primes rather than counting them:
 ```python
 from sieves import primes_below, primes_in_range, iter_primes
 
-primes_below(100)                 # [2, 3, 5, ..., 97]
-next(iter_primes(10**9))          # lazy, segmented, O(√N) memory
+primes_below(100)  # [2, 3, 5, ..., 97]
+next(iter_primes(10**9))  # lazy, segmented, O(√N) memory
 primes_in_range(10**12, 10**12 + 100)
 # [1000000000039, 1000000000061, 1000000000063, 1000000000091]  -- in 0.5 s
 ```

@@ -6,11 +6,9 @@ generate reports, and recategorize entries.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import typer
-
 from categorizer import categorize
 from ocr import extract_text
 from receipt import parse_receipt
@@ -34,7 +32,9 @@ DEFAULT_DB = Path.home() / ".expense_tracker" / "receipts.db"
 def scan(
     image_path: str = typer.Argument(..., help="Path to receipt image file"),
     db: str = typer.Option(str(DEFAULT_DB), help="Path to SQLite database"),
-    category_override: str | None = typer.Option(None, "--category", "-c", help="Override auto-detected category"),
+    category_override: str | None = typer.Option(
+        None, "--category", "-c", help="Override auto-detected category"
+    ),
 ) -> None:
     """Scan a receipt image, extract text, categorize, and store."""
     db_path = Path(db)
@@ -68,7 +68,9 @@ def scan(
     typer.echo(f"Receipt stored: ID={receipt.id}")
     typer.echo(f"  Merchant: {receipt.merchant}")
     typer.echo(f"  Date: {receipt.date}")
-    typer.echo(f"  Total: ${receipt.total:.2f}" if receipt.total else "  Total: Unknown")
+    typer.echo(
+        f"  Total: ${receipt.total:.2f}" if receipt.total else "  Total: Unknown"
+    )
     typer.echo(f"  Category: {receipt.category}")
 
 
@@ -116,8 +118,10 @@ def import_folder(
                     success_count += 1
                 else:
                     fail_count += 1
-                    typer.echo(f"  Failed: {image_path.name} (no text extracted)", err=True)
-            except Exception as e:
+                    typer.echo(
+                        f"  Failed: {image_path.name} (no text extracted)", err=True
+                    )
+            except Exception as e:  # noqa: BLE001 - one bad image must not abort the batch
                 fail_count += 1
                 typer.echo(f"  Failed: {image_path.name} ({e})", err=True)
 
@@ -127,14 +131,23 @@ def import_folder(
 @app.command()
 def list(
     db: str = typer.Option(str(DEFAULT_DB), help="Path to SQLite database"),
-    category: str | None = typer.Option(None, "--category", "-c", help="Filter by category"),
-    month: str | None = typer.Option(None, "--month", "-m", help="Filter by month (YYYY-MM)"),
-    limit: int = typer.Option(50, "--limit", "-l", help="Maximum number of receipts to show"),
+    category: str | None = typer.Option(
+        None, "--category", "-c", help="Filter by category"
+    ),
+    month: str | None = typer.Option(
+        None, "--month", "-m", help="Filter by month (YYYY-MM)"
+    ),
+    limit: int = typer.Option(
+        50, "--limit", "-l", help="Maximum number of receipts to show"
+    ),
 ) -> None:
     """List stored receipts."""
     db_path = Path(db)
     if not db_path.exists():
-        typer.echo("No receipts found. Use 'scan' or 'import-folder' to add receipts.", err=True)
+        typer.echo(
+            "No receipts found. Use 'scan' or 'import-folder' to add receipts.",
+            err=True,
+        )
         raise typer.Exit(1)
 
     receipts = list_receipts(db_path, category=category, month=month)[:limit]
@@ -148,13 +161,17 @@ def list(
     for r in receipts:
         date_str = r.date.strftime("%Y-%m-%d") if r.date else "Unknown"
         total_str = f"${r.total:.2f}" if r.total else "Unknown"
-        typer.echo(f"[{r.id[:8]}...] {date_str} | {r.merchant:30} | {total_str:>10} | {r.category}")
+        typer.echo(
+            f"[{r.id[:8]}...] {date_str} | {r.merchant:30} | {total_str:>10} | {r.category}"
+        )
 
 
 @app.command()
 def report(
     db: str = typer.Option(str(DEFAULT_DB), help="Path to SQLite database"),
-    month: str | None = typer.Option(None, "--month", "-m", help="Show report for specific month (YYYY-MM)"),
+    month: str | None = typer.Option(
+        None, "--month", "-m", help="Show report for specific month (YYYY-MM)"
+    ),
 ) -> None:
     """Show expense report by category and/or month."""
     db_path = Path(db)

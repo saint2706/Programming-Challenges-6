@@ -117,7 +117,9 @@ def update_category(db_path: str | Path, receipt_id: str, new_category: str) -> 
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute("UPDATE receipts SET category = ? WHERE id = ?", (new_category, receipt_id))
+    cursor.execute(
+        "UPDATE receipts SET category = ? WHERE id = ?", (new_category, receipt_id)
+    )
 
     conn.commit()
     conn.close()
@@ -134,7 +136,9 @@ def delete_receipt(db_path: str | Path, receipt_id: str) -> None:
     conn.close()
 
 
-def get_category_totals(db_path: str | Path, month: str | None = None) -> dict[str, float]:
+def get_category_totals(
+    db_path: str | Path, month: str | None = None
+) -> dict[str, float]:
     """Get total spending by category, optionally filtered by month.
 
     Returns a dict mapping category names to total amounts.
@@ -183,7 +187,9 @@ def get_monthly_totals(db_path: str | Path) -> dict[str, float]:
 
 def _row_to_receipt(row: tuple) -> Receipt:
     """Convert a database row to a Receipt object."""
-    id_, merchant, date_str, total, category, raw_text_str, image_path, created_at = row
+    id_, merchant, date_str, total, category, raw_text_str, image_path, _created_at = (
+        row
+    )
 
     date = None
     if date_str:

@@ -1,6 +1,5 @@
 """Unit tests for the Kanban board data model."""
 
-import pytest
 from board import Board, Card, Column
 
 
@@ -127,7 +126,13 @@ def test_edit_card():
     board = Board()
     board.add_column("To Do")
     card = board.add_card(0, "Task 1", "Old description")
-    assert board.edit_card(0, card.id, title="Task 1 Updated", description="New description", tags=["updated"])
+    assert board.edit_card(
+        0,
+        card.id,
+        title="Task 1 Updated",
+        description="New description",
+        tags=["updated"],
+    )
     assert card.title == "Task 1 Updated"
     assert card.description == "New description"
     assert card.tags == ["updated"]

@@ -1,6 +1,7 @@
-import feedparser
+from datetime import UTC, datetime
 from typing import NamedTuple
-from datetime import datetime
+
+import feedparser
 
 
 class FeedArticle(NamedTuple):
@@ -51,7 +52,7 @@ def _extract_published_date(entry: dict) -> str | None:
         if key in entry:
             try:
                 time_tuple = entry[f"{key}_parsed"]
-                dt = datetime(*time_tuple[:6])
+                dt = datetime(*time_tuple[:6], tzinfo=UTC)  # feedparser *_parsed is UTC
                 return dt.isoformat()
             except (KeyError, TypeError, ValueError):
                 pass
