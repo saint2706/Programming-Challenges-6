@@ -10,9 +10,7 @@ handlers.
 
 from __future__ import annotations
 
-import hashlib
 import hmac
-import secrets
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from urllib.parse import unquote
 
@@ -71,20 +69,15 @@ def resolve_safe_path(root: Path, rel_path: str) -> Path:
     return resolved
 
 
-# Keyed with a random per-process secret. The shared token is compared, never
-# stored: `_TOKEN_HASH` lives in this process's memory only and is not written to
-# disk or a log, so there is no hash database for anyone to crack offline. An
-# HMAC under a key that never leaves the process gives a fixed-length value for
-# constant-time comparison without pretending to be a password-storage scheme
-# (a bare SHA-256 would look like one, and is the wrong tool for that job).
-_DIGEST_KEY = secrets.token_bytes(32)
+def verify_token(candidate: str, expected: str) -> bool:
+    """Constant-time check that `candidate` equals the shared secret `expected`.
 
-
-def hash_token(token: str) -> bytes:
-    """Digest a shared secret so it's never held or compared in plaintext."""
-    return hmac.new(_DIGEST_KEY, token.encode("utf-8"), hashlib.sha256).digest()
-
-
-def verify_token(candidate: str, token_hash: bytes) -> bool:
-    """Constant-time check that `candidate` hashes to `token_hash`."""
-    return hmac.compare_digest(hash_token(candidate), token_hash)
+    The secret is compared directly rather than via a stored digest. Nothing is
+    ever persisted -- it lives in this process's memory (next to the environment
+    variable or CLI argument it came from), so there is no hash database to crack
+    offline and a digest would add nothing; it would only look like password
+    storage, which this is not. ``hmac.compare_digest`` keeps the comparison time
+    independent of how many leading characters match (it can reveal only the
+    length, which is fixed and public for the generated tokens).
+    """
+    return hmac.compare_digest(candidate.encode("utf-8"), expected.encode("utf-8"))

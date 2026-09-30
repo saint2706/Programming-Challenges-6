@@ -26,13 +26,13 @@ import secrets
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote, urlparse
 
 import uvicorn
 from access_log import AccessLogger
 from fastapi import Depends, FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from security import PathTraversalError, hash_token, resolve_safe_path, verify_token
+from security import PathTraversalError, resolve_safe_path, verify_token
 from starlette.responses import Response
 
 BASE_DIR = Path(__file__).parent
@@ -54,7 +54,7 @@ app = FastAPI(title="Local Network File Server")
 # vars) and can be re-set at any time -- by the __main__ CLI block, or by a
 # test fixture pointing the server at a fresh tmp_path root/token/log.
 SERVE_ROOT: Path
-_TOKEN_HASH: bytes
+_TOKEN: str
 _access_logger: AccessLogger
 _SESSIONS: dict[str, Session]
 
@@ -65,14 +65,14 @@ def configure(*, root: Path, token: str, log_path: Path) -> None:
     Also resets in-memory sessions, so a reconfigure (as tests do, once per
     test, against a fresh tmp_path) never leaks a session across tests.
     """
-    global SERVE_ROOT, _TOKEN_HASH, _access_logger, _SESSIONS
+    global SERVE_ROOT, _TOKEN, _access_logger, _SESSIONS
     root = Path(root)
     if not root.is_dir():
         raise NotADirectoryError(
             f"served root does not exist or is not a directory: {root}"
         )
     SERVE_ROOT = root.resolve()
-    _TOKEN_HASH = hash_token(token)
+    _TOKEN = token
     _access_logger = AccessLogger(Path(log_path))
     _SESSIONS = {}
 
@@ -130,7 +130,7 @@ def _identify(request: Request) -> tuple[str, bool]:
     auth = request.headers.get("authorization", "")
     if auth.lower().startswith("bearer "):
         candidate = auth[7:].strip()
-        if verify_token(candidate, _TOKEN_HASH):
+        if verify_token(candidate, _TOKEN):
             return "token", True
         return "invalid-token", False
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
@@ -332,16 +332,16 @@ def _safe_next(next_path: str) -> str:
     Rejecting `//` alone is not enough: browsers treat a backslash as a
     forward slash and silently strip tab/CR/LF from a URL, so a slash followed
     by a backslash and a host, or by a tab and a host, both become
-    `//evil.com` by the time they are followed. Backslashes and all control characters are therefore refused
-    outright, and the result must parse as a bare path with no scheme or host.
+    `//evil.com` by the time they are followed. Backslashes and all control
+    characters are therefore refused outright, and the result must parse as a
+    bare path with no scheme or host.
     """
     default = "/browse/"
     if not next_path.startswith("/") or next_path.startswith("//"):
         return default
     if "\\" in next_path or any(ord(c) < 0x20 or ord(c) == 0x7F for c in next_path):
         return default
-    parts = urlsplit(next_path)
-    if parts.scheme or parts.netloc:
+    if urlparse(next_path).netloc or urlparse(next_path).scheme:
         return default
     return next_path
 
@@ -357,7 +357,7 @@ def login_submit(
 ) -> Response:
     ip = _client_ip(request)
     safe_next = _safe_next(next)
-    if not verify_token(password, _TOKEN_HASH):
+    if not verify_token(password, _TOKEN):
         _access_logger.log(
             identity="anonymous",
             ip=ip,

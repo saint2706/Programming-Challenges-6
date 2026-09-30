@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 import pytest
-from security import PathTraversalError, hash_token, resolve_safe_path, verify_token
+from security import PathTraversalError, resolve_safe_path, verify_token
 
 
 @pytest.fixture()
@@ -121,47 +121,50 @@ def test_traversal_that_stays_under_root_is_allowed(root: Path) -> None:
 
 
 # --------------------------------------------------------------------------
-# Token hashing
+# Token verification (constant-time comparison of the shared secret)
 # --------------------------------------------------------------------------
+
+SECRET = "correct-horse-battery-staple"
 
 
 def test_verify_token_accepts_correct_token() -> None:
-    token_hash = hash_token("correct-horse-battery-staple")
-    assert verify_token("correct-horse-battery-staple", token_hash) is True
+    assert verify_token(SECRET, SECRET) is True
 
 
 def test_verify_token_rejects_wrong_token() -> None:
-    token_hash = hash_token("correct-horse-battery-staple")
-    assert verify_token("wrong-guess", token_hash) is False
+    assert verify_token("wrong-guess", SECRET) is False
 
 
 def test_verify_token_rejects_empty_string() -> None:
-    token_hash = hash_token("correct-horse-battery-staple")
-    assert verify_token("", token_hash) is False
+    assert verify_token("", SECRET) is False
 
 
-def test_hash_token_is_not_reversible_plaintext() -> None:
-    token_hash = hash_token("my-secret")
-    assert b"my-secret" not in token_hash
-    assert len(token_hash) == 32  # sha256 digest size
+def test_verify_token_rejects_prefix_and_extension_of_the_secret() -> None:
+    assert verify_token(SECRET[:-1], SECRET) is False
+    assert verify_token(SECRET + "x", SECRET) is False
 
 
-def test_hash_token_is_deterministic() -> None:
-    assert hash_token("same-input") == hash_token("same-input")
+def test_verify_token_is_case_sensitive() -> None:
+    assert verify_token(SECRET.upper(), SECRET) is False
 
 
-def test_hash_token_differs_for_different_input() -> None:
-    assert hash_token("aaa") != hash_token("bbb")
+def test_verify_token_handles_non_ascii_secrets() -> None:
+    assert verify_token("pässwörd-密码", "pässwörd-密码") is True
+    assert verify_token("passwörd-密码", "pässwörd-密码") is False
 
 
-def test_token_digest_is_keyed_not_a_bare_sha256() -> None:
-    import hashlib
+def test_verify_token_uses_constant_time_comparison(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import security
 
-    digest = hash_token("correct-horse-battery-staple")
-    assert len(digest) == 32
-    assert digest != hashlib.sha256(b"correct-horse-battery-staple").digest()
+    calls: list[tuple[bytes, bytes]] = []
+    real = security.hmac.compare_digest
 
+    def spy(a: bytes, b: bytes) -> bool:
+        calls.append((a, b))
+        return real(a, b)
 
-def test_token_digest_is_stable_within_a_process() -> None:
-    assert hash_token("same") == hash_token("same")
-    assert hash_token("same") != hash_token("different")
+    monkeypatch.setattr(security.hmac, "compare_digest", spy)
+    assert verify_token(SECRET, SECRET) is True
+    assert calls == [(SECRET.encode(), SECRET.encode())]

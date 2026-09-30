@@ -120,9 +120,9 @@ def test_json_and_html_outputs(workspace, tmp_path):
         and "plotly" in page.lower()
     )
     # Case-insensitive and attribute-tolerant: `<SCRIPT>`, `<script type=...>` and
-    # `</script >` are all script blocks to a browser, so all must be stripped.
+    # `</script foo>` are all script blocks to a browser, so all must be stripped.
     assert "https://" not in re.sub(
-        r"<script\b.*?</script\s*>", "", page, flags=re.DOTALL | re.IGNORECASE
+        r"<script\b.*?</script[^>]*>", "", page, flags=re.DOTALL | re.IGNORECASE
     ).replace("http://www.w3.org", "")
 
 
