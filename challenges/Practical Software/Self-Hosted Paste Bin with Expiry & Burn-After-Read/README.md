@@ -65,7 +65,7 @@ uv run app.py
 # or, with auto-reload during development:
 uv run uvicorn app:app --reload
 
-uv run pytest -q      # 21 tests
+uv run pytest -q      # 26 tests
 ```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
@@ -106,12 +106,12 @@ your LAN, since it currently serves plain HTTP.
 
 ## Tests
 
-21 pytest cases across two files. `test_storage.py` (11 cases) covers create
+26 pytest cases across two files. `test_storage.py` (11 cases) covers create
 → consume round trips, burn-after-read allowing exactly one read, non-burn
 pastes surviving repeated reads, TTL expiry enforced at read time (via a
 paste created already-expired), the background sweep removing only expired
 rows, `peek` never consuming a burn-after-read paste, unique URL-safe ids,
-and the concurrency test described above. `test_app.py` (10 cases) drives
+and the concurrency test described above. `test_app.py` (15 cases) drives
 the real FastAPI app through `TestClient`: the create → link → view flow,
 burn-after-read over real HTTP returning 404 on the second GET, empty
 content rejected with 400, the raw endpoint also respecting burn semantics,

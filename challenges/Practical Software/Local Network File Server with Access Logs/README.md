@@ -49,9 +49,11 @@ self-hosted tool, not a general-purpose path library.
 ## Design
 
 - **`security.py`** — `resolve_safe_path` (the traversal defense above) and
-  constant-time shared-secret hashing/verification (`hash_token`/
-  `verify_token`, SHA-256 + `hmac.compare_digest`). Zero web-framework
-  dependency, so it's the most heavily unit-tested file in the challenge.
+  constant-time shared-secret verification (`verify_token`, a direct
+  `hmac.compare_digest` of the secret — no stored digest, since the token is
+  never persisted and lives in process memory next to its env var/CLI source).
+  Zero web-framework dependency, so it's the most heavily unit-tested file in
+  the challenge.
 - **`access_log.py`** — `AccessLogger`: append-only JSON-lines writer behind
   a `threading.Lock` (FastAPI runs sync handlers in a thread pool, so
   concurrent requests can genuinely race to append at once — unsynchronized
@@ -71,7 +73,7 @@ self-hosted tool, not a general-purpose path library.
   escaped on the way back out.** `path` is the most obvious case — it's a
   raw URL an attacker chose — but `identity` can also carry arbitrary text
   (an invalid bearer token isn't validated as "safe" before being logged;
-  only `hash_token`'d comparison happens, the raw candidate itself never
+  only a constant-time comparison happens, the raw candidate itself never
   reaches the log, but a crafted `Authorization` header could still smuggle
   markup into other fields in principle). The admin log page renders these
   server-side with `html.escape()` on every interpolated value — otherwise
@@ -80,8 +82,14 @@ self-hosted tool, not a general-purpose path library.
   Directory listings (filenames are attacker-influenceable if anyone else
   can write into the served folder) and the login page's `next` redirect
   parameter get the same treatment, and `next` is additionally validated to
-  be a same-site path (rejecting `//evil.example.com`-style open redirects)
-  on both the page that displays it and the page that redirects to it.
+  be a same-site path on both the page that displays it and the page that
+  redirects to it. Rejecting `//evil.example.com` alone is not enough:
+  browsers read a backslash as a slash and silently strip tab/CR/LF, so
+  `/\evil.example.com` and `/<tab>/evil.example.com` both land on
+  `//evil.example.com`. Backslashes and all control characters are refused
+  outright, the result must parse with no scheme or host, and the check is
+  repeated on the exact value at the redirect (12 bypass forms are covered by
+  regression tests at both the function and HTTP level).
 - **`FILESERVER_ROOT` / `FILESERVER_TOKEN` / `FILESERVER_LOG` env vars**
   configure the server at import time (so `uvicorn server:app --reload`
   works for development), with `--root`/`--token`/`--log`/`--host`/`--port`
@@ -101,7 +109,7 @@ uv run python server.py --root /path/to/folder --token "a-secret-only-you-know"
 FILESERVER_ROOT=. FILESERVER_TOKEN=devsecret \
 uv run uvicorn server:app --reload
 
-uv run pytest -q # 66 tests
+uv run pytest -q # 97 tests
 ```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
@@ -137,11 +145,11 @@ growing every time someone reads it.
 
 66 pytest cases across three files.
 
-`test_security.py` (27 cases) unit-tests `resolve_safe_path` directly: valid
+`test_security.py` (28 cases) unit-tests `resolve_safe_path` directly: valid
 nested lookups, `.`-segment normalization, a 12-payload traversal battery
 (literal `..`, percent-encoded, **double**-percent-encoded, mixed with
 legitimate segments, backslash variants, null bytes, a Windows drive-letter
-segment), plus the shared-secret hashing/verification behavior. Also
+segment), plus the shared-secret verification behavior. Also
 `test_double_slash_collapses_harmlessly`, which documents — with a passing
 test, not just a comment — the empirical finding that `Path.joinpath`'s
 "absolute argument discards everything before it" pitfall can't actually
@@ -155,7 +163,7 @@ whole read, and — the one that actually matters — 20 threads racing to
 still exactly 20 valid, distinct JSON lines (proving the lock genuinely
 prevents interleaved writes, not just "usually works").
 
-`test_server.py` (33 cases) drives the real FastAPI app through
+`test_server.py` (63 cases) drives the real FastAPI app through
 `TestClient`: public vs. authenticated routes, both auth mechanisms
 (bearer token and session-cookie login, including wrong-password and
 open-redirect-`next` rejection), directory listing and byte-identical
