@@ -682,7 +682,8 @@ def _plotly_bundle() -> str:
     """Plotly's JS as inline <script> tags, emitted once and shared by every chart."""
     page = pio.to_html(go.Figure(), include_plotlyjs="inline", full_html=False)
     # Scripts 1-2 are the PlotlyConfig stub and the bundle; the 3rd draws the empty figure.
-    return "".join(re.findall(r"<script.*?</script>", page, re.DOTALL)[:2])
+    scripts = re.findall(r"<script\b.*?</script\s*>", page, re.DOTALL | re.IGNORECASE)
+    return "".join(scripts[:2])
 
 
 def _summary_table(items: list[LikertItem]) -> str:

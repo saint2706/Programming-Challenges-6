@@ -333,3 +333,67 @@ def test_malicious_next_param_is_escaped_on_login_page(client: TestClient) -> No
     resp = client.get("/login", params={"next": '"><script>alert(1)</script>'})
     assert resp.status_code == 200
     assert "<script>alert(1)</script>" not in resp.text
+
+
+# --- open-redirect hardening: browsers treat "\" as "/" and strip tabs/newlines in Location ---
+
+BYPASS_NEXT_VALUES = [
+    "//evil.example.com",
+    "///evil.example.com",
+    "/\\evil.example.com",  # browsers read a backslash as a slash -> "//evil.example.com"
+    "/\\/evil.example.com",
+    "/\t/evil.example.com",  # browsers strip the tab -> "//evil.example.com"
+    "/\n/evil.example.com",
+    "/\r/evil.example.com",
+    "/\x00/evil.example.com",
+    "https://evil.example.com",
+    "javascript:alert(1)",
+    "evil.example.com",
+    "",
+]
+
+
+@pytest.mark.parametrize("value", BYPASS_NEXT_VALUES)
+def test_safe_next_rejects_every_known_bypass(value: str) -> None:
+    assert server_module._safe_next(value) == "/browse/"
+
+
+@pytest.mark.parametrize(
+    "value", ["/browse/", "/browse/notes/todo.txt", "/logs", "/browse/a%20b"]
+)
+def test_safe_next_keeps_ordinary_same_site_paths(value: str) -> None:
+    assert server_module._safe_next(value) == value
+
+
+@pytest.mark.parametrize("value", BYPASS_NEXT_VALUES)
+def test_login_never_redirects_off_site_for_bypass_values(
+    client: TestClient, value: str
+) -> None:
+    resp = client.post(
+        "/login", data={"password": TOKEN, "next": value}, follow_redirects=False
+    )
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/browse/"
+
+
+# --- values echoed into HTML are escaped even when the source is server-controlled ---
+
+
+def test_nav_escapes_identity_label(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        server_module,
+        "_identify",
+        lambda _req: ('"><img src=x onerror=alert(1)>', True),
+    )
+    html_out = server_module._nav_html(object())  # type: ignore[arg-type]
+    assert "<img" not in html_out
+
+
+def test_listing_escapes_hostile_file_names() -> None:
+    hostile = '"><img src=x onerror=alert(1)>.txt'
+    out = server_module.render_listing("", [(hostile, False, 3, 0.0)])
+    assert "<img" not in out
+    out_dir = server_module.render_listing(hostile, [])
+    assert "<img" not in out_dir

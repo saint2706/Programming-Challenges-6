@@ -26,7 +26,7 @@ import secrets
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 import uvicorn
 from access_log import AccessLogger
@@ -214,7 +214,7 @@ def _nav_html(request: Request) -> str:
     if not ok:
         return '<a href="/login">Log in</a>'
     return (
-        f'<span class="muted">{identity}</span> '
+        f'<span class="muted">{html.escape(identity)}</span> '
         '<form method="post" action="/logout" style="display:inline">'
         '<button type="submit">Log out</button></form>'
     )
@@ -249,14 +249,16 @@ def render_listing(rel_path: str, entries: list[tuple[str, bool, int, float]]) -
     for part in crumb_parts:
         built = f"{built}/{part}" if built else part
         crumbs.append(
-            f'<a href="/browse/{quote(built, safe="/")}">{html.escape(part)}</a>'
+            f'<a href="{html.escape("/browse/" + quote(built, safe="/"))}">{html.escape(part)}</a>'
         )
     crumbs_html = f'<p class="crumbs">{" / ".join(crumbs)}</p>'
 
     rows = []
     for name, is_dir, size, mtime in entries:
         entry_rel = f"{rel_path}/{name}" if rel_path else name
-        href = f"/browse/{quote(entry_rel, safe='/')}" + ("/" if is_dir else "")
+        href = html.escape(
+            f"/browse/{quote(entry_rel, safe='/')}" + ("/" if is_dir else "")
+        )
         css_class = "dir" if is_dir else "file"
         size_html = "-" if is_dir else _human_size(size)
         mtime_html = time.strftime("%Y-%m-%d %H:%M", time.localtime(mtime))
@@ -289,7 +291,7 @@ def render_logs(entries: list[dict]) -> str:
             f"<tr><td>{html.escape(str(e['ts']))}</td><td>{html.escape(str(e['identity']))}</td>"
             f"<td>{html.escape(str(e['ip']))}</td><td>{html.escape(str(e['method']))}</td>"
             f"<td><code>{html.escape(str(e['path']))}</code></td>"
-            f"<td>{html.escape(str(e['action']))} ({e['status']})</td></tr>"
+            f"<td>{html.escape(str(e['action']))} ({html.escape(str(e['status']))})</td></tr>"
             for e in entries
         )
     return f"""
@@ -326,10 +328,22 @@ def _safe_next(next_path: str) -> str:
     redirect. Applied on both the GET (where it's just displayed) and POST
     (where it's actually redirected to) paths, so a crafted `next` is never
     trusted regardless of which one a client hits.
+
+    Rejecting `//` alone is not enough: browsers treat a backslash as a
+    forward slash and silently strip tab/CR/LF from a URL, so a slash followed
+    by a backslash and a host, or by a tab and a host, both become
+    `//evil.com` by the time they are followed. Backslashes and all control characters are therefore refused
+    outright, and the result must parse as a bare path with no scheme or host.
     """
-    if next_path.startswith("/") and not next_path.startswith("//"):
-        return next_path
-    return "/browse/"
+    default = "/browse/"
+    if not next_path.startswith("/") or next_path.startswith("//"):
+        return default
+    if "\\" in next_path or any(ord(c) < 0x20 or ord(c) == 0x7F for c in next_path):
+        return default
+    parts = urlsplit(next_path)
+    if parts.scheme or parts.netloc:
+        return default
+    return next_path
 
 
 @app.get("/login", response_class=HTMLResponse)

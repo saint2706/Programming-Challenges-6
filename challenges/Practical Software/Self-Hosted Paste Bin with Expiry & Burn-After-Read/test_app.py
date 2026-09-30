@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
+from urllib.parse import quote
 
 import app as app_module
 import pytest
 from fastapi.testclient import TestClient
+from storage import Paste
 
 
 @pytest.fixture()
@@ -129,3 +132,53 @@ def test_syntax_highlighting_applied_for_python(client: TestClient) -> None:
     view = client.get(path)
     assert view.status_code == 200
     assert "highlight" in view.text  # pygments wraps output in a .highlight block
+
+
+# --- paste_id is a URL path segment: it must be escaped wherever it is echoed into HTML ---
+
+HOSTILE_ID = '"><img src=x onerror=alert(1)>'
+
+
+def _paste_with_hostile_id(expires_at: float | None) -> Paste:
+    return Paste(
+        id=HOSTILE_ID,
+        content="x",
+        language="text",
+        created_at=time.time(),
+        expires_at=expires_at,
+        burn_after_read=False,
+    )
+
+
+@pytest.mark.parametrize("expires_at", [None, time.time() + 600])
+def test_render_view_escapes_paste_id_in_every_attribute(
+    expires_at: float | None,
+) -> None:
+    body = app_module.render_view(
+        _paste_with_hostile_id(expires_at), HOSTILE_ID
+    ).body.decode()
+    assert "<img" not in body
+    assert "onerror=alert(1)>" not in body  # attribute breakout must not survive
+
+
+@pytest.mark.parametrize("expires_at", [None, time.time() + 600])
+def test_countdown_escapes_paste_id(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, expires_at: float | None
+) -> None:
+    monkeypatch.setattr(
+        app_module.store, "peek", lambda _pid: _paste_with_hostile_id(expires_at)
+    )
+    resp = client.get("/p/" + quote(HOSTILE_ID, safe="") + "/countdown")
+    assert resp.status_code == 200
+    assert "<img" not in resp.text
+
+
+def test_escaped_paste_id_still_routes_to_the_same_paste(client: TestClient) -> None:
+    resp = client.post(
+        "/pastes", data={"content": "hello", "language": "text", "expiry": "never"}
+    )
+    paste_id = resp.text.split("/p/")[1].split('"')[0]
+    view = client.get(f"/p/{paste_id}")
+    assert (
+        f'hx-get="/p/{paste_id}/countdown"' in view.text
+    )  # ordinary ids are unchanged

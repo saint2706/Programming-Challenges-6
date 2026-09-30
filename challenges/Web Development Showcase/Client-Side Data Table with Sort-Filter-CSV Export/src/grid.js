@@ -11,6 +11,10 @@ import { createTableModel } from './tableModel.js';
 
 const SORT_GLYPH = { asc: '▲', desc: '▼' };
 
+// Namespaces DOM ids per mounted table so several tables can share a page. A
+// counter, not Math.random(): it is deterministic and cannot collide.
+let mountCount = 0;
+
 function el(tag, props = {}, children = []) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(props)) {
@@ -33,7 +37,7 @@ function el(tag, props = {}, children = []) {
  * Focus stays on the grid; the active cell is exposed with aria-activedescendant.
  */
 export function mountDataTable(root, { rows, columns = COLUMNS, rowHeight = 36, overscan = 6, debounceMs = 150 }) {
-  const uid = `dt${Math.random().toString(36).slice(2, 7)}`;
+  const uid = `dt${++mountCount}`;
   const totalWidth = columns.reduce((s, c) => s + c.width, 0);
   const template = columns.map((c) => `${c.width}px`).join(' ');
 

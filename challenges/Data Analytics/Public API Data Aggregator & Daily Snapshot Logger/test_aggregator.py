@@ -9,6 +9,7 @@ Run with:  uv run --with pytest --with httpx --with polars --with plotly pytest 
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import urlparse
 
 import httpx
 import pytest
@@ -74,7 +75,9 @@ def test_fetch_current_weather_calls_httpx_get(monkeypatch: pytest.MonkeyPatch) 
     payload = fetch_current_weather(40.7128, -74.0060)
     assert payload == FAKE_FORECAST_RESPONSE
     assert captured["params"]["latitude"] == 40.7128
-    assert "open-meteo.com" in captured["url"]
+    # Compare the parsed host, not a substring of the URL: "open-meteo.com" is a
+    # substring of e.g. "https://evil.example/?open-meteo.com" too.
+    assert urlparse(captured["url"]).hostname == "api.open-meteo.com"
 
 
 def test_store_snapshot_upserts_without_duplicating(tmp_path: Path) -> None:

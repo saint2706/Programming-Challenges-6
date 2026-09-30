@@ -152,3 +152,16 @@ def test_hash_token_is_deterministic() -> None:
 
 def test_hash_token_differs_for_different_input() -> None:
     assert hash_token("aaa") != hash_token("bbb")
+
+
+def test_token_digest_is_keyed_not_a_bare_sha256() -> None:
+    import hashlib
+
+    digest = hash_token("correct-horse-battery-staple")
+    assert len(digest) == 32
+    assert digest != hashlib.sha256(b"correct-horse-battery-staple").digest()
+
+
+def test_token_digest_is_stable_within_a_process() -> None:
+    assert hash_token("same") == hash_token("same")
+    assert hash_token("same") != hash_token("different")

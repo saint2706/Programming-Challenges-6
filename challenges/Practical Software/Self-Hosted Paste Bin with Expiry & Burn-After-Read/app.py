@@ -22,6 +22,7 @@ import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
+from urllib.parse import quote
 
 import uvicorn
 from fastapi import FastAPI, Form, HTTPException, Request
@@ -136,6 +137,17 @@ def page(title: str, body: str, extra_head: str = "") -> HTMLResponse:
 </html>""")
 
 
+def _id_attr(paste_id: str) -> str:
+    """A paste id made safe to drop into an HTML attribute that holds a URL path segment.
+
+    The id arrives as a URL path parameter, so it is attacker-chosen text until
+    proven otherwise. Percent-encode it for the URL context, then HTML-escape the
+    result for the attribute context; ids the store generates (URL-safe base64)
+    pass through both steps unchanged.
+    """
+    return html.escape(quote(paste_id, safe=""))
+
+
 def _options(values: list[str], selected: str) -> str:
     return "".join(
         f'<option value="{html.escape(v)}"{" selected" if v == selected else ""}>{html.escape(v)}</option>'
@@ -197,18 +209,18 @@ def render_view(paste: Paste, paste_id: str) -> HTMLResponse:
     if paste.burn_after_read:
         ttl_html = '<p class="warning">This paste has now been burned: the link is dead and cannot be viewed again.</p>'
     elif paste.expires_at is None:
-        ttl_html = f'<p><span id="ttl" hx-get="/p/{paste_id}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">never expires</span></p>'
+        ttl_html = f'<p><span id="ttl" hx-get="/p/{_id_attr(paste_id)}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">never expires</span></p>'
     else:
         remaining = max(0, int(paste.expires_at - time.time()))
         ttl_html = (
-            f'<p><span id="ttl" hx-get="/p/{paste_id}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">'
+            f'<p><span id="ttl" hx-get="/p/{_id_attr(paste_id)}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">'
             f"expires in {remaining}s</span></p>"
         )
 
     body = f"""
 <h1>Paste</h1>
 <p class="meta">language: {html.escape(detected_language)} &middot; created: {created} &middot;
-<a href="/raw/{paste_id}">raw</a></p>
+<a href="/raw/{_id_attr(paste_id)}">raw</a></p>
 {ttl_html}
 {highlighted}
 """
@@ -281,14 +293,14 @@ def countdown(paste_id: str) -> HTMLResponse:
         return HTMLResponse('<span id="ttl">expired</span>')
     if paste.expires_at is None:
         return HTMLResponse(
-            f'<span id="ttl" hx-get="/p/{paste_id}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">'
+            f'<span id="ttl" hx-get="/p/{_id_attr(paste_id)}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">'
             "never expires</span>"
         )
     remaining = max(0, int(paste.expires_at - time.time()))
     if remaining == 0:
         return HTMLResponse('<span id="ttl">expired</span>')
     return HTMLResponse(
-        f'<span id="ttl" hx-get="/p/{paste_id}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">'
+        f'<span id="ttl" hx-get="/p/{_id_attr(paste_id)}/countdown" hx-trigger="every 5s" hx-swap="outerHTML">'
         f"expires in {remaining}s</span>"
     )
 
