@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client-Side Data Table</title>
+  </head>
+  <body>
+    <main>
+      <header class="page-head">
+        <div>
+          <h1>Client-side data table</h1>
+          <p class="lede">
+            Sort, filter and export a large dataset entirely in the browser. Only the rows on screen exist in the DOM.
+          </p>
+        </div>
+        <label class="size">
+          Rows
+          <select id="row-count" aria-label="Number of generated rows">
+            <option value="1000">1,000</option>
+            <option value="10000">10,000</option>
+            <option value="100000" selected>100,000</option>
+            <option value="250000">250,000</option>
+          </select>
+        </label>
+      </header>
+      <div id="app"></div>
+      <p class="help">
+        Click a header to sort (asc, desc, off); <kbd>Shift</kbd>+click adds a secondary sort. Numeric and date filters
+        take <code>&gt;50000</code>, <code>&lt;=100</code>, <code>=42</code> or <code>40000..60000</code>. With the grid
+        focused: arrow keys, <kbd>PgUp</kbd>/<kbd>PgDn</kbd>, <kbd>Home</kbd>/<kbd>End</kbd> (with <kbd>Ctrl</kbd> for
+        the first/last cell).
+      </p>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
