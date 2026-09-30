@@ -1,0 +1,71 @@
+# Every key below is optional; the values shown are the defaults.
+# Unknown sections, keys and check names are errors, so a typo cannot silently do nothing.
+
+[profile]                       # read by `profile`; the decisions are frozen into the baseline
+categorical_max_unique = 50     # <= this many distinct strings -> categorical
+categorical_max_ratio = 0.05    # ... or up to categorical_hard_cap distinct if they are <= 5% of rows
+categorical_hard_cap = 500
+quantile_points = 501           # size of the stored reference distribution
+psi_bins = 10                   # quantile bins for PSI
+range_pad_frac = 0.25           # learned range = observed min/max +/- 25% of the span
+max_shapes = 20                 # string formats remembered per text column
+min_shape_share = 0.005
+
+[schema]
+rename_similarity = 0.6         # name similarity for a "possible rename" pairing
+
+[volume]
+warn_z = 3.0
+critical_z = 6.0
+min_rel_change = 0.3            # ...and the row count must also move by at least 30%
+
+[nulls]
+alpha = 0.001
+min_abs_change = 0.02           # a significant change must also be >= 2 percentage points
+critical_abs_change = 0.1
+
+[cast]                          # values that cannot be read as the baseline's type
+warn_share = 0.005
+critical_share = 0.05
+
+[ranges]
+warn_share = 0.005
+critical_share = 0.05
+
+[numeric]
+alpha = 0.001                   # KS significance
+min_rows = 30
+psi_warn = 0.1
+psi_critical = 0.25
+ks_min_effect = 0.1             # KS D must also be this large (effect size, not just p)
+
+[categorical]
+alpha = 0.001
+min_rows = 30
+js_warn = 0.02                  # Jensen-Shannon divergence in bits
+js_critical = 0.1
+unseen_warn_share = 0.01        # share of rows in never-seen categories, above the long-tail baseline
+unseen_critical_share = 0.1
+missing_min_share = 0.05
+missing_critical_share = 0.25
+missing_alpha = 0.0001
+
+[format]
+warn_share = 0.01
+critical_share = 0.1
+
+[freshness]
+max_lag_seconds = 0.0           # 0 = 3x the typical baseline batch span
+span_ratio = 3.0
+implausible_slack_days = 365.0
+implausible_warn_share = 0.005
+implausible_critical_share = 0.05
+
+# Pin a check to one severity, or turn it off ("off" | "info" | "warn" | "critical").
+# [severity_overrides]
+# "schema.new_column" = "info"
+# "freshness.span" = "off"
+
+# Columns to skip entirely.
+# [ignore]
+# columns = ["tolls"]
