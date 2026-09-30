@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Photo Album</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div>
+        <h1>Photo Album</h1>
+        <p id="album-help" class="hint">
+          Drag a photo to reorder it. With a keyboard: focus a photo, press <kbd>Space</kbd>, move it with the
+          arrow keys, then <kbd>Space</kbd> to drop or <kbd>Esc</kbd> to cancel.
+        </p>
+      </div>
+      <button id="reset" type="button">Reset order</button>
+    </header>
+    <main>
+      <ul id="album" class="album" aria-label="Photo album"></ul>
+    </main>
+    <footer class="colophon">
+      Photos from <a href="https://unsplash.com">Unsplash</a> under the Unsplash License.
+      Photographer credit is shown on each photo.
+    </footer>
+    <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

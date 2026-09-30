@@ -1,0 +1,22 @@
+{
+    "name": "drag-to-reorder-photo-album",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vitest run",
+        "photos": "node scripts/prepare-photos.mjs"
+    },
+    "dependencies": {
+        "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
+        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3"
+    },
+    "devDependencies": {
+        "jsdom": "^26.0.0",
+        "sharp": "^0.34.0",
+        "vite": "^6.0.0",
+        "vitest": "^5.0.2"
+    }
+}
