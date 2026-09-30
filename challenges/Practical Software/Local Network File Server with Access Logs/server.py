@@ -379,7 +379,14 @@ def login_submit(
         action="login_success",
         status=303,
     )
-    resp = RedirectResponse(safe_next, status_code=303)
+    # `_safe_next` already vetted this; the same-site check is repeated here, on the
+    # exact value being redirected to, so the redirect is safe on its own and does
+    # not depend on every caller remembering to sanitize first.
+    target = safe_next.replace("\\", "")
+    if not urlparse(target).netloc and not urlparse(target).scheme:
+        resp = RedirectResponse(target, status_code=303)
+    else:
+        resp = RedirectResponse("/browse/", status_code=303)
     resp.set_cookie(
         SESSION_COOKIE_NAME,
         session_id,
