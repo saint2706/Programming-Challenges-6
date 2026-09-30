@@ -1,0 +1,26 @@
+{
+  "economic_census": {
+    "url": "https://www2.census.gov/programs-surveys/economic-census/data/2017/sector44/EC1744BASIC.zip",
+    "sha256": "c299f9ff7f7589efbf93b1ea94108e0c37fb5607608b02e112ba929cf688d1fb"
+  },
+  "population": {
+    "url": "https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv",
+    "sha256": "654032fbb805bc9a7c124ba04ad47e170f5d9dc9d4974a73edfc20598fde77d8"
+  },
+  "counties_shp": {
+    "url": "https://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_county_20m.zip",
+    "sha256": "4ccfd01a5d2bbb90408b790b5061167408566aae63d36c326aad0d2e59dd777d"
+  },
+  "states_shp": {
+    "url": "https://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_state_20m.zip",
+    "sha256": "fbf6118c0790dc2ddb83b55ad30ec3ae102c58e37150eb2b2c4b381d40c3dc80"
+  },
+  "leaflet_js": {
+    "url": "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js",
+    "sha256": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a"
+  },
+  "leaflet_css": {
+    "url": "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css",
+    "sha256": "a7837102824184820dfa198d1ebcd109ff6d0ff9a2672a074b9a1b4d147d04c6"
+  }
+}
