@@ -6,6 +6,7 @@ import math
 from collections.abc import Sequence
 
 import numpy as np
+from scorers import zscore
 
 
 def ndcg_at_k(rels: Sequence[int], k: int) -> float:
@@ -75,3 +76,41 @@ def bootstrap_ci(
     means = rng.choice(values, size=(n, len(values)), replace=True).mean(axis=1)
     lo, hi = np.percentile(means, [2.5, 97.5])
     return float(lo), float(hi)
+
+
+def random_scores(shape: tuple[int, int], seed: int) -> np.ndarray:
+    """The chance baseline every real scorer has to beat."""
+    return np.random.default_rng(seed).random(shape)
+
+
+def summarise(
+    scores: np.ndarray, relevant: np.ndarray, query_categories: Sequence[str], seed: int
+) -> dict:
+    """Mean and 95% bootstrap interval for each metric, plus nDCG@10 per query category."""
+    per_query = rank_metrics_matrix(scores, relevant)
+    out: dict = {}
+    for key, values in per_query.items():
+        lo, hi = bootstrap_ci(values, seed=seed)
+        out[key] = {"mean": float(values.mean()), "lo": lo, "hi": hi}
+    cats = np.array(query_categories)
+    out["per_category_ndcg@10"] = {
+        c: float(per_query["ndcg@10"][cats == c].mean())
+        for c in sorted(set(query_categories))
+    }
+    return out
+
+
+def tune_fusion_weight(
+    dense: np.ndarray, sparse: np.ndarray, relevant: np.ndarray, grid: Sequence[float]
+) -> float:
+    """Weight on the dense part that maximises mean nDCG@10 (smallest on ties).
+
+    Run on *validation* matrices only; the chosen weight is then frozen for test.
+    """
+    zd, zs = zscore(dense), zscore(sparse)
+    best_w, best = float(grid[0]), -1.0
+    for w in grid:
+        ndcg = rank_metrics_matrix(w * zd + (1 - w) * zs, relevant)["ndcg@10"].mean()
+        if ndcg > best + 1e-12:
+            best_w, best = float(w), float(ndcg)
+    return best_w
