@@ -1,0 +1,24 @@
+[project]
+name = "resume-to-job-matching-scorer"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "bm25s>=0.3.11",
+    "kaggle>=2.2.4",
+    "lancedb>=0.39.0",
+    "numpy>=2.5.3",
+    "openvino>=2026.4.1",
+    "pillow>=12.3.0",
+    "polars>=1.44.2",
+    "pyarrow>=25.0.1",
+    "scikit-learn>=1.9.1",
+    "streamlit>=1.64.0",
+    "torch>=2.14.1",
+    "transformers>=5.18.0",
+    "typer>=0.27.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
