@@ -1,6 +1,5 @@
 import polars as pl
 import pytest
-
 from data import (
     check_split_disjoint,
     clean_text,
