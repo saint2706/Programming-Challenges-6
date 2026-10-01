@@ -1669,7 +1669,6 @@ name = "resume-to-job-matching-scorer"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "bm25s" },
     { name = "kaggle" },
     { name = "lancedb" },
     { name = "numpy" },
@@ -1678,6 +1677,7 @@ dependencies = [
     { name = "polars" },
     { name = "pyarrow" },
     { name = "scikit-learn" },
+    { name = "scipy" },
     { name = "streamlit" },
     { name = "torch" },
     { name = "transformers" },
@@ -1686,12 +1686,12 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "bm25s" },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "bm25s", specifier = ">=0.3.11" },
     { name = "kaggle", specifier = ">=2.2.4" },
     { name = "lancedb", specifier = ">=0.39.0" },
     { name = "numpy", specifier = ">=2.5.3" },
@@ -1700,6 +1700,7 @@ requires-dist = [
     { name = "polars", specifier = ">=1.44.2" },
     { name = "pyarrow", specifier = ">=25.0.1" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
+    { name = "scipy", specifier = ">=1.18.1" },
     { name = "streamlit", specifier = ">=1.64.0" },
     { name = "torch", specifier = ">=2.14.1" },
     { name = "transformers", specifier = ">=5.18.0" },
@@ -1707,7 +1708,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.1.1" }]
+dev = [
+    { name = "bm25s", specifier = ">=0.3.11" },
+    { name = "pytest", specifier = ">=9.1.1" },
+]
 
 [[package]]
 name = "rich"
