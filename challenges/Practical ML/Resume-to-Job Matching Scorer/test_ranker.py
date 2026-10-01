@@ -1,0 +1,104 @@
+import zlib
+
+import numpy as np
+import polars as pl
+import pytest
+from ranker import Ranker
+
+COMMON = ["team", "worked", "years", "managed", "responsible", "experience"]
+VOCAB = {
+    "HEALTHCARE": ["nurse", "patient", "ward", "clinic", "dosage", "triage"],
+    "CHEF": ["kitchen", "menu", "sauce", "saute", "pastry", "plating"],
+    "TEACHER": ["classroom", "lesson", "pupils", "grading", "curriculum", "phonics"],
+}
+
+
+class HashEncoder:
+    def encode(self, texts):
+        out = np.zeros((len(texts), 64))
+        for i, t in enumerate(texts):
+            for w in t.lower().split():
+                out[i, zlib.crc32(w.encode()) % 64] += 1
+        norm = np.linalg.norm(out, axis=1, keepdims=True)
+        return out / np.where(norm == 0, 1, norm)
+
+
+def _frames():
+    rows_j, rows_r = [], []
+    for cat, words in VOCAB.items():
+        for i in range(6):
+            body = " ".join((words * 8)[: 30 + i] + COMMON * 2)
+            rows_j.append((f"{cat}-{i}", f"{cat.title()} role {i}", body, cat))
+            rows_r.append(
+                (f"r-{cat}-{i}", cat, " ".join((words * 6)[: 25 + i] + COMMON))
+            )
+    jobs = pl.DataFrame(
+        rows_j, schema=["job_id", "title", "text", "category"], orient="row"
+    )
+    resumes = pl.DataFrame(rows_r, schema=["id", "category", "text"], orient="row")
+    return jobs, resumes
+
+
+@pytest.fixture
+def ranker(tmp_path):
+    jobs, resumes = _frames()
+    return Ranker.build(
+        jobs, resumes, HashEncoder(), index_dir=tmp_path / "idx", fusion_weight=0.5
+    )
+
+
+@pytest.mark.parametrize("scorer", ["tfidf", "bm25", "embedding", "fusion"])
+def test_every_scorer_puts_same_category_jobs_on_top(ranker, scorer):
+    resume = "nurse patient ward triage dosage clinic nurse patient team worked"
+    top = ranker.rank_jobs(resume, top=5, scorer=scorer)
+    assert len(top) == 5
+    assert {m.category for m in top} == {"HEALTHCARE"}
+    assert [m.score for m in top] == sorted((m.score for m in top), reverse=True)
+
+
+def test_sparse_matches_carry_exact_evidence_terms_that_overlap_the_resume(ranker):
+    resume = "kitchen menu sauce pastry plating team"
+    m = ranker.rank_jobs(resume, top=1, scorer="tfidf")[0]
+    assert m.explanation == "exact"
+    assert m.terms and all(t in resume.split() or " " in t for t, _ in m.terms)
+
+
+def test_dense_matches_are_labelled_as_lexical_overlap_not_exact(ranker):
+    m = ranker.rank_jobs("classroom lesson pupils grading", top=1, scorer="embedding")[
+        0
+    ]
+    assert m.explanation == "lexical-overlap"
+
+
+def test_gaps_name_category_terms_the_resume_lacks(ranker):
+    m = ranker.rank_jobs("nurse patient", top=1, scorer="tfidf")[0]
+    assert m.category == "HEALTHCARE"
+    assert set(m.gaps) & {"ward", "clinic", "dosage", "triage"}
+    assert "nurse" not in m.gaps
+
+
+def test_rank_resumes_is_the_reverse_direction(ranker):
+    job = "kitchen menu sauce saute pastry plating kitchen menu"
+    top = ranker.rank_resumes(job, top=4, scorer="bm25")
+    assert {m.category for m in top} == {"CHEF"}
+
+
+@pytest.mark.parametrize("text", ["", "   \n "])
+def test_empty_query_is_a_clear_error_not_a_crash(ranker, text):
+    with pytest.raises(ValueError, match="empty"):
+        ranker.rank_jobs(text, top=3)
+
+
+def test_unknown_scorer_is_rejected(ranker):
+    with pytest.raises(ValueError, match="unknown scorer"):
+        ranker.rank_jobs("nurse", top=3, scorer="magic")
+
+
+def test_top_larger_than_the_pool_returns_the_whole_pool(ranker):
+    assert len(ranker.rank_jobs("nurse patient", top=1000, scorer="tfidf")) == 18
+
+
+def test_explain_dense_names_the_resume_sentence_that_drives_the_match(ranker):
+    resume = "Led nurse patient ward triage work. Collects stamps on weekends. Enjoys long walks."
+    out = ranker.explain_dense(resume, "HEALTHCARE-0", k=2)
+    assert out[0][0].startswith("Led nurse patient")

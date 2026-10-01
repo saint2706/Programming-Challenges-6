@@ -1,6 +1,7 @@
 import random
 
 import explain
+import numpy as np
 import pytest
 from scorers import Bm25Scorer, TfidfScorer
 
@@ -72,3 +73,42 @@ def test_category_common_terms_keeps_terms_shared_by_enough_postings():
     ]
     s = TfidfScorer(ngram_range=(1, 1), min_df=1).fit([*CORPUS, *docs])
     assert explain.category_common_terms(s, docs, min_share=0.5) == {"kubernetes"}
+
+
+# --- dense (embedding) explanations: occlusion ---------------------------------
+
+
+class _BagEncoder:
+    def encode(self, texts):
+        import zlib
+
+        out = np.zeros((len(texts), 64))
+        for i, t in enumerate(texts):
+            for w in t.lower().replace(".", " ").split():
+                out[i, zlib.crc32(w.encode()) % 64] += 1
+        norm = np.linalg.norm(out, axis=1, keepdims=True)
+        return out / np.where(norm == 0, 1, norm)
+
+
+def test_split_units_splits_sentences_and_lines_and_drops_fragments():
+    units = explain.split_units(
+        "Built dashboards in Tableau. Led a team of five\n- SQL reporting\nok"
+    )
+    assert units == [
+        "Built dashboards in Tableau.",
+        "Led a team of five",
+        "- SQL reporting",
+    ]
+
+
+def test_occlusion_ranks_the_unit_that_carries_the_match_first():
+    resume = "Led python and sql dashboard work. Enjoys hiking and pottery on weekends. Likes baking bread at home."
+    job = "python sql dashboard analytics role"
+    out = explain.occlusion(_BagEncoder(), resume, job, k=3)
+    assert out[0][0].startswith("Led python and sql")
+    assert out[0][1] > 0
+    assert [d for _, d in out] == sorted((d for _, d in out), reverse=True)
+
+
+def test_occlusion_of_text_with_no_units_is_empty():
+    assert explain.occlusion(_BagEncoder(), "", "python", k=3) == []

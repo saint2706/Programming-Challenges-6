@@ -7,9 +7,11 @@ ones are the terms that earned it. Nothing here is a separate model.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Collection
 
 import numpy as np
+from embed import Encoder
 from scorers import _SparseScorer
 
 
@@ -72,3 +74,45 @@ def category_common_terms(
     share = np.asarray(present.mean(axis=0)).ravel()
     names = scorer.feature_names
     return {str(names[i]) for i in np.flatnonzero(share >= min_share)}
+
+
+_SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+MIN_UNIT_CHARS = 8
+MAX_UNIT_CHARS = 300
+MAX_UNITS = 40
+
+
+def split_units(text: str) -> list[str]:
+    """Sentences and lines of ``text``; over-long runs (skill lists) are cut every ~30 words."""
+    units: list[str] = []
+    for line in text.split("\n"):
+        for sentence in _SENTENCE_END.split(line.strip()):
+            sentence = sentence.strip()
+            if len(sentence) <= MAX_UNIT_CHARS:
+                units.append(sentence)
+                continue
+            words = sentence.split()
+            units += [" ".join(words[i : i + 30]) for i in range(0, len(words), 30)]
+    return [u for u in units if len(u) >= MIN_UNIT_CHARS]
+
+
+def occlusion(
+    encoder: Encoder, query: str, doc: str, k: int = 5
+) -> list[tuple[str, float]]:
+    """Which parts of ``query`` the embedding match depends on.
+
+    Re-scores the pair with each sentence removed in turn; the biggest drops
+    are the sentences carrying the match. This is **post-hoc**: unlike the
+    sparse scorers it does not decompose the score, it probes the model.
+    """
+    units = split_units(query)[:MAX_UNITS]
+    if not units:
+        return []
+    d = encoder.encode([doc])[0]
+    base = float(encoder.encode([query])[0] @ d)
+    variants = [" ".join(units[:i] + units[i + 1 :]) for i in range(len(units))]
+    drops = base - encoder.encode(variants) @ d
+    ranked = sorted(
+        zip(units, (float(x) for x in drops), strict=True), key=lambda p: -p[1]
+    )
+    return ranked[:k]
