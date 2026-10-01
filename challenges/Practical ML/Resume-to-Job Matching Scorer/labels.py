@@ -131,7 +131,8 @@ CATEGORY_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "HR",
         _rx(
-            r"hr",
+            # not the "/hr" or " hr" of an hourly pay rate ("$40/hr", "$18 hr")
+            r"(?<![\d+]/)(?<!\d )hr",
             r"human resources",
             r"recruiter",
             r"talent acquisition",
@@ -258,7 +259,8 @@ CATEGORY_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
             r"apparel",
             r"fashion",
             r"garment",
-            r"merchandis(?:er|ing)",
+            # "retail merchandiser" restocks shelves; only the fashion/visual kind is apparel
+            r"(?:visual|fashion) merchandis\w+",
             r"stylist",
             r"textile",
             r"seamstress",
@@ -269,7 +271,7 @@ CATEGORY_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         "AGRICULTURE",
         _rx(
             r"agricultur\w*",
-            r"farm\w*",
+            r"farm(?:ers?|hand|workers?|ing|s)?",
             r"crop",
             r"agronom\w*",
             r"livestock",
@@ -290,7 +292,7 @@ CATEGORY_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
             r"vehicle",
             r"dealership",
             r"diesel",
-            r"mechanic",
+            # bare "mechanic" is mostly building/plant maintenance
         ),
     ),
     (

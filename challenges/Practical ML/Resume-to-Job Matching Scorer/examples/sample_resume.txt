@@ -1,0 +1,18 @@
+Data Storyteller and Analytics Strategist
+
+Summary
+Data and AI generalist who turns data into decisions and narrative, not just models. Hands-on with Python, SQL, R, Tableau and Power BI for dashboards, reporting and exploratory analysis, and with machine learning in scikit-learn, TensorFlow and PyTorch. Comfortable on AWS.
+
+Education
+PGDM in Big Data Analytics, Goa Institute of Management, 2025 to 2027.
+B.Tech in Computer Science, Vellore Institute of Technology, 2020 to 2024.
+
+Experience
+Data Intern, TheSmartBridge, May to July 2023. Market research for SaaS products and go-to-market analysis; built dashboards and summarised findings for stakeholders.
+Squad Member, Mood Indigo IIT Bombay, 2022. Experiential marketing and sponsorship outreach for a large college festival.
+
+Skills
+Python, SQL, R, Pandas, NumPy, Tableau, Power BI, scikit-learn, TensorFlow, PyTorch, AWS, data visualisation, communication, problem solving.
+
+Certifications
+AWS Certified Cloud Practitioner. IBM Data Analytics.

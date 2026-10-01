@@ -114,3 +114,36 @@ def test_committed_audit_file_still_matches_the_label_table():
     assert set(audit["ok"].to_list()) <= {0, 1}
     for title, category in zip(audit["title"], audit["category"], strict=True):
         assert title_category(title) == category
+
+
+@pytest.mark.parametrize(
+    ("title", "category"),
+    [
+        ("AWS Reporting Engineer | Remote in US |Upto $40/hr | No C2C", None),
+        ("Delivery Driver $18 hr", None),
+        ("Warehouse Associate 20hr", None),
+        ("HR Generalist", "HR"),
+        ("Payroll/HR Specialist", "HR"),
+        ("Senior HR Business Partner", "HR"),
+    ],
+)
+def test_hourly_rate_suffix_is_not_the_hr_department(title, category):
+    assert title_category(title) == category
+
+
+@pytest.mark.parametrize(
+    ("title", "category"),
+    [
+        ("Maintenance Mechanic II, Los Angeles - Full Time (3820)", None),
+        ("Mechanic-Maintenance of Building", None),
+        ("Diesel Mechanic- Up To $5K Sign On Bonus", "AUTOMOBILE"),
+        ("Auto Mechanic", "AUTOMOBILE"),
+        ("Part Time Retail Merchandiser - Athens GA 30606", None),
+        ("Visual Merchandiser", "APPAREL"),
+        ("Forklift Operator (Farmbrook Plant) - D Shift", None),
+        ("Farm Manager", "AGRICULTURE"),
+        ("Hotel Maintenance Tech - Starting at $19.25+/hr", None),
+    ],
+)
+def test_title_noise_regressions_found_by_scanning_real_postings(title, category):
+    assert title_category(title) == category
