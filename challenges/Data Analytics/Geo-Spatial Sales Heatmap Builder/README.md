@@ -175,16 +175,16 @@ BH-FDR over all regions. Uncorrected counts are still reported.
 
 ## Files
 
-| File               | Purpose                                                              |
-| ------------------ | -------------------------------------------------------------------- |
-| `geo_heatmap.py`   | CLI, joining, aggregation, per-capita, model building                |
-| `regions.py`       | key normalisation, alias index, `JoinReport`                         |
-| `classify.py`      | quantile / equal interval / std-dev / exact Fisher-Jenks, GVF        |
-| `spatial.py`       | contiguity, global + local Moran's *I*, Benjamini-Hochberg           |
-| `projection.py`    | Albers equal-area conic and inset layout                             |
-| `report.py`        | Folium/Leaflet assembly, palettes, controls, escaped report          |
-| `fetch_data.py`    | rebuilds `data/` and `vendor/` from the public sources               |
-| `data/`, `vendor/` | committed Census data (~2.5 MB) and Leaflet 1.9.4 (BSD-2)            |
-| `test_*.py`        | 253 tests, all offline (`uv run pytest -q`)                          |
+| File               | Purpose                                                       |
+| ------------------ | ------------------------------------------------------------- |
+| `geo_heatmap.py`   | CLI, joining, aggregation, per-capita, model building         |
+| `regions.py`       | key normalisation, alias index, `JoinReport`                  |
+| `classify.py`      | quantile / equal interval / std-dev / exact Fisher-Jenks, GVF |
+| `spatial.py`       | contiguity, global + local Moran's *I*, Benjamini-Hochberg    |
+| `projection.py`    | Albers equal-area conic and inset layout                      |
+| `report.py`        | Folium/Leaflet assembly, palettes, controls, escaped report   |
+| `fetch_data.py`    | rebuilds `data/` and `vendor/` from the public sources        |
+| `data/`, `vendor/` | committed Census data (~2.5 MB) and Leaflet 1.9.4 (BSD-2)     |
+| `test_*.py`        | 253 tests, all offline (`uv run pytest -q`)                   |
 
 Refresh the data with `uv run --group fetch python fetch_data.py` (needs network and `pyshp`).

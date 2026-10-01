@@ -10,11 +10,11 @@ benchmarked against each other on real labelled data and on synthetic series wit
 planted anomalies. The point of the challenge is less "flag the big values" than
 *knowing when each method lies to you*, so the README is mostly about that.
 
-| Family | Methods |
-| --- | --- |
+| Family                     | Methods                                                                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Point (ignores time order) | `zscore` (\|z\| > 3), `iqr` (Tukey fences, k = 1.5), `mad` (Iglewicz-Hoaglin modified z > 3.5), `gesd` (Rosner's Generalized ESD, implemented from the definition) |
-| Windowed (looks back only) | `rolling-z`, `rolling-mad` (each point against the 100 before it) |
-| Decomposition | `stl-mad`, `stl-z`, `stl-iqr`, `stl-gesd`: robust STL (or MSTL for several periods) removes trend and seasonality, then a point detector runs on the residual |
+| Windowed (looks back only) | `rolling-z`, `rolling-mad` (each point against the 100 before it)                                                                                                  |
+| Decomposition              | `stl-mad`, `stl-z`, `stl-iqr`, `stl-gesd`: robust STL (or MSTL for several periods) removes trend and seasonality, then a point detector runs on the residual      |
 
 Plus automatic seasonal-period detection (periodogram candidates, refined and
 ranked by the autocorrelation function), precision/recall/F1 at the point and
@@ -65,12 +65,12 @@ Real series come from the [Numenta Anomaly Benchmark](https://github.com/numenta
 is a copy). Four series and their labelled windows are vendored (about 750 KB) so
 the demo and tests run offline; `fetch_nab.py` fetches others on demand.
 
-| File | Rows | Step | Labelled windows | Why it's here |
-| --- | --- | --- | --- | --- |
-| `nyc_taxi.csv` | 10,320 | 30 min | 5 (marathon, Thanksgiving, Christmas, New Year, blizzard) | Daily *and* weekly seasonality |
-| `ambient_temperature_system_failure.csv` | 7,267 | 1 h | 2 (system failures) | Real gaps in the timestamps |
-| `ec2_cpu_utilization_24ae8d.csv` | 4,032 | 5 min | 2 | Not seasonal; heavily discretised values |
-| `art_daily_jumpsdown.csv` | 4,032 | 5 min | 1 | Clean daily square-ish wave with a level drop |
+| File                                     | Rows   | Step   | Labelled windows                                          | Why it's here                                 |
+| ---------------------------------------- | ------ | ------ | --------------------------------------------------------- | --------------------------------------------- |
+| `nyc_taxi.csv`                           | 10,320 | 30 min | 5 (marathon, Thanksgiving, Christmas, New Year, blizzard) | Daily *and* weekly seasonality                |
+| `ambient_temperature_system_failure.csv` | 7,267  | 1 h    | 2 (system failures)                                       | Real gaps in the timestamps                   |
+| `ec2_cpu_utilization_24ae8d.csv`         | 4,032  | 5 min  | 2                                                         | Not seasonal; heavily discretised values      |
+| `art_daily_jumpsdown.csv`                | 4,032  | 5 min  | 1                                                         | Clean daily square-ish wave with a level drop |
 
 `sample_data/labels.json` is the subset of NAB's `combined_windows.json` for
 those four. Synthetic data (`synth.py`) is generated, seeded and deterministic.
@@ -145,25 +145,25 @@ count every sample.
 Samuelson's inequality: with the sample standard deviation, |z| ≤ (n−1)/√n
 *whatever the data*. That is 2.85 at n = 10, below the textbook cutoff of 3.
 
-| n | max possible \|z\| | \|z\| of a 1e9 outlier | Z-score (3) flags it | MAD (3.5) flags it |
-| --- | --- | --- | --- | --- |
-| 5 | 1.79 | 1.79 | **no** | yes |
-| 10 | 2.85 | 2.85 | **no** | yes |
-| 11 | 3.02 | 3.02 | yes | yes |
-| 30 | 5.29 | 5.29 | yes | yes |
+| n  | max possible \|z\| | \|z\| of a 1e9 outlier | Z-score (3) flags it | MAD (3.5) flags it |
+| -- | ------------------ | ---------------------- | -------------------- | ------------------ |
+| 5  | 1.79               | 1.79                   | **no**               | yes                |
+| 10 | 2.85               | 2.85                   | **no**               | yes                |
+| 11 | 3.02               | 3.02                   | yes                  | yes                |
+| 30 | 5.29               | 5.29                   | yes                  | yes                |
 
 ### 2. Outliers mask themselves
 
 100 points of N(0,1) with 10 outliers near +8 (mean of 20 seeds). The cluster
 inflates the sample sd 2.66×, so each outlier sits at z ≈ 2.8.
 
-| method | precision | recall | F1 |
-| --- | --- | --- | --- |
-| zscore | 0.25 | **0.03** | 0.05 |
-| iqr | 0.97 | 1.00 | 0.98 |
-| mad | 0.99 | 1.00 | 1.00 |
-| gesd, `max_outliers=5` | 1.00 | **0.50** | 0.67 |
-| gesd, `max_outliers=20` | 0.99 | 1.00 | 1.00 |
+| method                  | precision | recall   | F1   |
+| ----------------------- | --------- | -------- | ---- |
+| zscore                  | 0.25      | **0.03** | 0.05 |
+| iqr                     | 0.97      | 1.00     | 0.98 |
+| mad                     | 0.99      | 1.00     | 1.00 |
+| gesd, `max_outliers=5`  | 1.00      | **0.50** | 0.67 |
+| gesd, `max_outliers=20` | 0.99      | 1.00     | 1.00 |
 
 The GESD row is the trap in the "robust" method: `max_outliers` is an *upper
 bound* on the count and must exceed the truth. With 5 for 10 outliers it can
@@ -173,14 +173,14 @@ report at most 5. The default is 5% of n.
 
 Ten spikes of 6σ on a seasonal swing of ±10 (event F1, 10 seeds):
 
-| method | seasonal spikes | + a +40 trend | flatline (stuck sensor) | level shift |
-| --- | --- | --- | --- | --- |
-| zscore / iqr / mad / gesd | 0.00 | 0.00 | 0.00 | 0.00 |
-| rolling-z / rolling-mad | 0.00 | 0.00 | 0.78 / 1.00 | 0.00 |
-| stl-mad | 0.84 | 0.91 | 0.64 | 0.57 |
-| stl-z | 0.90 | 0.92 | 1.00 | 0.53 |
-| stl-iqr | 0.53 | 0.57 | 0.17 | 0.16 |
-| **stl-gesd** | **0.98** | **0.99** | **0.95** | **0.85** |
+| method                    | seasonal spikes | + a +40 trend | flatline (stuck sensor) | level shift |
+| ------------------------- | --------------- | ------------- | ----------------------- | ----------- |
+| zscore / iqr / mad / gesd | 0.00            | 0.00          | 0.00                    | 0.00        |
+| rolling-z / rolling-mad   | 0.00            | 0.00          | 0.78 / 1.00             | 0.00        |
+| stl-mad                   | 0.84            | 0.91          | 0.64                    | 0.57        |
+| stl-z                     | 0.90            | 0.92          | 1.00                    | 0.53        |
+| stl-iqr                   | 0.53            | 0.57          | 0.17                    | 0.16        |
+| **stl-gesd**              | **0.98**        | **0.99**      | **0.95**                | **0.85**    |
 
 A spike at the seasonal midpoint is well inside the series' overall range, so no
 global threshold can see it. A stuck sensor also stays inside the range, which
@@ -193,13 +193,13 @@ almost entirely *precision*, which is finding 6.
 
 Seasonal spikes, true period 24, `stl-z`:
 
-| period given | event F1 | event recall | flagged (10 true spikes) |
-| --- | --- | --- | --- |
-| **24** (true) | 0.90 | 1.00 | 12.5 |
-| 48 (a multiple) | 0.88 | 1.00 | 12.9 |
-| 12 | 0.23 | 0.14 | 1.4 |
-| 18, 30, 36 | 0.00 | 0.00 | 0.0 |
-| 23, 25 (off by one) | 0.04, 0.02 | 0.03, 0.01 | 0.9, 0.3 |
+| period given        | event F1   | event recall | flagged (10 true spikes) |
+| ------------------- | ---------- | ------------ | ------------------------ |
+| **24** (true)       | 0.90       | 1.00         | 12.5                     |
+| 48 (a multiple)     | 0.88       | 1.00         | 12.9                     |
+| 12                  | 0.23       | 0.14         | 1.4                      |
+| 18, 30, 36          | 0.00       | 0.00         | 0.0                      |
+| 23, 25 (off by one) | 0.04, 0.02 | 0.03, 0.01   | 0.9, 0.3                 |
 
 The failure is *silent*: the un-removed seasonality stays in the residual, inflates
 its spread, and masks the spikes exactly as in finding 2, so the detector returns
@@ -211,10 +211,10 @@ tested for exactness.
 
 Window 50, +8 anomaly on N(0,1) noise (share of anomalous samples flagged):
 
-| scenario | rolling-z | rolling-mad | global mad |
-| --- | --- | --- | --- |
-| burst of 10 outliers | 0.50 | 1.00 | 1.00 |
-| level shift of 60 samples | 0.08 | 0.28 | 1.00 |
+| scenario                  | rolling-z | rolling-mad | global mad |
+| ------------------------- | --------- | ----------- | ---------- |
+| burst of 10 outliers      | 0.50      | 1.00        | 1.00       |
+| level shift of 60 samples | 0.08      | 0.28        | 1.00       |
 
 Window contamination: the burst's own points enter the window and inflate the
 sd that judges the rest of the burst, so rolling-z misses half of it while the
@@ -228,14 +228,14 @@ bug if you wanted to be told the whole time.
 The surprising one. On a **clean** seasonal series (no anomalies at all, 1,200
 samples, mean of 6 seeds), false flags per series:
 
-| STL fits | seasonal window | residual excess kurtosis | stl-mad | stl-z | stl-iqr | stl-gesd |
-| --- | --- | --- | --- | --- | --- | --- |
-| robust | 7 (statsmodels default) | **2.95** | **38.2** | 25.2 | 65.0 | 4.0 |
-| robust | 13 | 1.06 | 8.3 | 11.5 | 27.8 | 0.8 |
-| robust | 25 (this tool's default) | 0.58 | 4.2 | 8.2 | 18.7 | 0.7 |
-| plain | 7 | 0.03 | 0.5 | 3.7 | 7.8 | 0.2 |
-| plain | 25 | 0.05 | 0.7 | 4.8 | 8.8 | 0.0 |
-| theory, Gaussian | | 0 | 0.6 | 3.2 | 8.4 | < 0.05 |
+| STL fits         | seasonal window          | residual excess kurtosis | stl-mad  | stl-z | stl-iqr | stl-gesd |
+| ---------------- | ------------------------ | ------------------------ | -------- | ----- | ------- | -------- |
+| robust           | 7 (statsmodels default)  | **2.95**                 | **38.2** | 25.2  | 65.0    | 4.0      |
+| robust           | 13                       | 1.06                     | 8.3      | 11.5  | 27.8    | 0.8      |
+| robust           | 25 (this tool's default) | 0.58                     | 4.2      | 8.2   | 18.7    | 0.7      |
+| plain            | 7                        | 0.03                     | 0.5      | 3.7   | 7.8     | 0.2      |
+| plain            | 25                       | 0.05                     | 0.7      | 4.8   | 8.8     | 0.0      |
+| theory, Gaussian |                          | 0                        | 0.6      | 3.2   | 8.4     | < 0.05   |
 
 `robust=True` reweights points by their residual: points with a large residual
 are fitted less, which (my reading; I did not isolate it) leaves small residuals
@@ -259,13 +259,13 @@ distribution, then under-states the spread (MAD-σ is only 0.77 of the sd), and 
 
 400 series of 1,000 i.i.d. N(0,1) points; no anomaly exists, so every flag is false.
 
-| method | measured | theoretical |
-| --- | --- | --- |
-| zscore (3) | 0.00255 | 0.00270 |
-| iqr (1.5) | 0.00724 | 0.00698 |
-| mad (3.5) | 0.00049 | 0.00047 |
-| rolling-z (window 50) | 0.00453 | 0.00460 |
-| gesd (α = 0.05, n = 200), share of series with ≥ 1 flag | 0.0445 | ≤ 0.05 |
+| method                                                  | measured | theoretical |
+| ------------------------------------------------------- | -------- | ----------- |
+| zscore (3)                                              | 0.00255  | 0.00270     |
+| iqr (1.5)                                               | 0.00724  | 0.00698     |
+| mad (3.5)                                               | 0.00049  | 0.00047     |
+| rolling-z (window 50)                                   | 0.00453  | 0.00460     |
+| gesd (α = 0.05, n = 200), share of series with ≥ 1 flag | 0.0445   | ≤ 0.05      |
 
 Worth noticing: rolling-z's theoretical rate is a *t*-distribution
 tail, not the normal one, because the window's own mean and sd are estimated.
@@ -282,26 +282,26 @@ is how many labelled windows contain at least one detection; NAB score is 100 fo
 a perfect early detection of every window, 0 for flagging nothing, negative for
 false alarms outweighing hits (each false alarm event costs up to 0.11 of a hit).
 
-| Series | Method | Windows hit | Flagged | False-alarm events | Point F1 | NAB |
-| --- | --- | --- | --- | --- | --- | --- |
-| nyc_taxi | zscore / mad | 1/5 | 1 | 0 | 0.00 | 18.0 |
-| nyc_taxi | gesd, rolling-z, rolling-mad | 0/5 | 0 | 0 | 0.00 | 0.0 |
-| nyc_taxi | stl-mad (period 48) | 5/5 | 1650 | 224 | 0.17 | −138.5 |
-| nyc_taxi | stl-z (period 48) | 4/5 | 366 | 80 | 0.07 | −16.3 |
-| nyc_taxi | stl-gesd (period 48) | 2/5 | 9 | 0 | 0.02 | 36.5 |
-| nyc_taxi | **stl-z, MSTL 48+336** | **5/5** | 264 | 22 | 0.29 | **75.1** |
-| nyc_taxi | stl-gesd, MSTL 48+336 | 5/5 | 399 | 37 | 0.37 | 63.7 |
-| ambient_temperature | zscore | 2/2 | 24 | 2 | 0.04 | **84.0** |
-| ambient_temperature | iqr | 2/2 | 52 | 4 | 0.08 | 81.6 |
-| ambient_temperature | mad, gesd | 0/2 | 0 | 0 | 0.00 | 0.0 |
-| ambient_temperature | stl-gesd (period 168) | 1/2 | 32 | 4 | 0.06 | 36.9 |
-| ec2_cpu | zscore | 2/2 | 16 | 13 | 0.01 | 58.6 |
-| ec2_cpu | gesd | 2/2 | 22 | 15 | 0.03 | 54.1 |
-| ec2_cpu | iqr, mad, rolling-mad | 2/2 | 1,000+ | 841+ | 0.15 | −2,162 |
-| art_daily_jumpsdown | **stl-z** | 1/1 | 108 | 0 | **0.42** | **92.4** |
-| art_daily_jumpsdown | stl-gesd | 1/1 | 114 | 6 | 0.42 | 59.5 |
-| art_daily_jumpsdown | mad | 1/1 | 1500 | 13 | 0.12 | 23.8 |
-| art_daily_jumpsdown | zscore, iqr, gesd | 0/1 | 0 | 0 | 0.00 | 0.0 |
+| Series              | Method                       | Windows hit | Flagged | False-alarm events | Point F1 | NAB      |
+| ------------------- | ---------------------------- | ----------- | ------- | ------------------ | -------- | -------- |
+| nyc_taxi            | zscore / mad                 | 1/5         | 1       | 0                  | 0.00     | 18.0     |
+| nyc_taxi            | gesd, rolling-z, rolling-mad | 0/5         | 0       | 0                  | 0.00     | 0.0      |
+| nyc_taxi            | stl-mad (period 48)          | 5/5         | 1650    | 224                | 0.17     | −138.5   |
+| nyc_taxi            | stl-z (period 48)            | 4/5         | 366     | 80                 | 0.07     | −16.3    |
+| nyc_taxi            | stl-gesd (period 48)         | 2/5         | 9       | 0                  | 0.02     | 36.5     |
+| nyc_taxi            | **stl-z, MSTL 48+336**       | **5/5**     | 264     | 22                 | 0.29     | **75.1** |
+| nyc_taxi            | stl-gesd, MSTL 48+336        | 5/5         | 399     | 37                 | 0.37     | 63.7     |
+| ambient_temperature | zscore                       | 2/2         | 24      | 2                  | 0.04     | **84.0** |
+| ambient_temperature | iqr                          | 2/2         | 52      | 4                  | 0.08     | 81.6     |
+| ambient_temperature | mad, gesd                    | 0/2         | 0       | 0                  | 0.00     | 0.0      |
+| ambient_temperature | stl-gesd (period 168)        | 1/2         | 32      | 4                  | 0.06     | 36.9     |
+| ec2_cpu             | zscore                       | 2/2         | 16      | 13                 | 0.01     | 58.6     |
+| ec2_cpu             | gesd                         | 2/2         | 22      | 15                 | 0.03     | 54.1     |
+| ec2_cpu             | iqr, mad, rolling-mad        | 2/2         | 1,000+  | 841+               | 0.15     | −2,162   |
+| art_daily_jumpsdown | **stl-z**                    | 1/1         | 108     | 0                  | **0.42** | **92.4** |
+| art_daily_jumpsdown | stl-gesd                     | 1/1         | 114     | 6                  | 0.42     | 59.5     |
+| art_daily_jumpsdown | mad                          | 1/1         | 1500    | 13                 | 0.12     | 23.8     |
+| art_daily_jumpsdown | zscore, iqr, gesd            | 0/1         | 0       | 0                  | 0.00     | 0.0      |
 
 (Full table, every method on every series: `out/benchmark_results.md` after running
 the benchmark.)
@@ -373,13 +373,13 @@ sensor and transaction streams.
 
 ## Files
 
-| File | What it is |
-| --- | --- |
-| `detectors.py` | The ten detectors, Generalized ESD, STL/MSTL wrapper, period detection |
-| `evaluate.py` | Point / event metrics and the NAB-style window score |
-| `anomaly_detector.py` | CSV loading and cleaning, gap filling, analysis, HTML report, CLI |
-| `synth.py` | Seeded synthetic series with planted anomalies |
-| `benchmark.py` | Failure-mode demonstrations and the real-data table (markdown output) |
-| `fetch_nab.py` | Download more NAB series + labels into `.cache/nab/` |
-| `test_*.py` | 95 tests (NIST GESD example, Samuelson bound, Gaussian false-positive rates, calibration, gap filling, escaping, CLI) |
-| `sample_data/` | 4 vendored NAB series, `labels.json`, `NAB_LICENSE.txt` |
+| File                  | What it is                                                                                                            |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `detectors.py`        | The ten detectors, Generalized ESD, STL/MSTL wrapper, period detection                                                |
+| `evaluate.py`         | Point / event metrics and the NAB-style window score                                                                  |
+| `anomaly_detector.py` | CSV loading and cleaning, gap filling, analysis, HTML report, CLI                                                     |
+| `synth.py`            | Seeded synthetic series with planted anomalies                                                                        |
+| `benchmark.py`        | Failure-mode demonstrations and the real-data table (markdown output)                                                 |
+| `fetch_nab.py`        | Download more NAB series + labels into `.cache/nab/`                                                                  |
+| `test_*.py`           | 95 tests (NIST GESD example, Samuelson bound, Gaussian false-positive rates, calibration, gap filling, escaping, CLI) |
+| `sample_data/`        | 4 vendored NAB series, `labels.json`, `NAB_LICENSE.txt`                                                               |

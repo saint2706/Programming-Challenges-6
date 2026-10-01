@@ -23,14 +23,14 @@ npm run build    # static site in dist/ (base './', so it can be hosted from any
 
 ## How it works
 
-| Module | Job |
-| --- | --- |
-| `src/order.js` | Pure, DOM-free order logic: `moveItem`, `nudge`, `placeRelativeTo`, `reconcile`, `serialize`/`deserialize`. Every function returns a new array. |
-| `src/storage.js` | `localStorage` load/save/clear, every call guarded so a missing, full or throwing store degrades to "no persistence". |
-| `src/masonry.js` | Turns each photo's aspect ratio into a CSS grid row span. |
-| `src/album.js` | Builds the DOM, owns the order, keyboard reordering, FLIP animation, persistence and announcements. |
-| `src/dnd.js` | Wires Pragmatic drag and drop onto the tiles; only ever calls `album.commitDrop`. |
-| `src/photos.js` | The photo data: id, file, size, alt text, photographer, source URL. |
+| Module           | Job                                                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/order.js`   | Pure, DOM-free order logic: `moveItem`, `nudge`, `placeRelativeTo`, `reconcile`, `serialize`/`deserialize`. Every function returns a new array. |
+| `src/storage.js` | `localStorage` load/save/clear, every call guarded so a missing, full or throwing store degrades to "no persistence".                           |
+| `src/masonry.js` | Turns each photo's aspect ratio into a CSS grid row span.                                                                                       |
+| `src/album.js`   | Builds the DOM, owns the order, keyboard reordering, FLIP animation, persistence and announcements.                                             |
+| `src/dnd.js`     | Wires Pragmatic drag and drop onto the tiles; only ever calls `album.commitDrop`.                                                               |
+| `src/photos.js`  | The photo data: id, file, size, alt text, photographer, source URL.                                                                             |
 
 ### Design notes
 
@@ -108,23 +108,23 @@ originals live in `raw/`, which is git-ignored, so `npm run photos` only works
 if you re-download them there (the converted `public/photos/*.webp` files are
 committed and are all the app needs).
 
-| Photo | Photographer | Source |
-| --- | --- | --- |
-| Whangarei Falls footbridge | Tim Swaan | [eOpewngf68w](https://unsplash.com/photos/eOpewngf68w) |
-| Golden petals | Volodymyr Lymariev | [wR9VG-W8nU4](https://unsplash.com/photos/wR9VG-W8nU4) |
-| Reeds at dusk | Mark Dixon | [hLYbJB-D5Gg](https://unsplash.com/photos/hLYbJB-D5Gg) |
-| Dragonfly | CR | [IG1yO9YDkqU](https://unsplash.com/photos/IG1yO9YDkqU) |
-| Lightning storm | Marek Piwnicki | [d-p06WttJJE](https://unsplash.com/photos/d-p06WttJJE) |
-| Bumblebee | Dmytro Koplyk | [a3HmolpGW3s](https://unsplash.com/photos/a3HmolpGW3s) |
-| Shark Fin Cove | Karla Hernandez | [shn9z-172sM](https://unsplash.com/photos/shn9z-172sM) |
-| Cat nap | Bastian Alexander-Coleman | [8CsDIpCytF0](https://unsplash.com/photos/8CsDIpCytF0) |
-| Hibiscus | Iván Díaz | [hBfY_uyLwAE](https://unsplash.com/photos/hBfY_uyLwAE) |
-| North America Nebula | Wallace Henry | [3lSdgBnv9ag](https://unsplash.com/photos/3lSdgBnv9ag) |
-| Tortoise | Adrian Botica | [tI7TOjJOFqI](https://unsplash.com/photos/tI7TOjJOFqI) |
-| Painted lady | Dmytro Koplyk | [R0PjjzRWWf8](https://unsplash.com/photos/R0PjjzRWWf8) |
-| Bald eagle | Venti Views | [DTY3cKv0pvc](https://unsplash.com/photos/DTY3cKv0pvc) |
-| Crescent moon | Xx M | [1o5hFRQ77l0](https://unsplash.com/photos/1o5hFRQ77l0) |
-| Northern cardinal | Dmytro Koplyk | [TXmLf1NSTVs](https://unsplash.com/photos/TXmLf1NSTVs) |
+| Photo                      | Photographer              | Source                                                 |
+| -------------------------- | ------------------------- | ------------------------------------------------------ |
+| Whangarei Falls footbridge | Tim Swaan                 | [eOpewngf68w](https://unsplash.com/photos/eOpewngf68w) |
+| Golden petals              | Volodymyr Lymariev        | [wR9VG-W8nU4](https://unsplash.com/photos/wR9VG-W8nU4) |
+| Reeds at dusk              | Mark Dixon                | [hLYbJB-D5Gg](https://unsplash.com/photos/hLYbJB-D5Gg) |
+| Dragonfly                  | CR                        | [IG1yO9YDkqU](https://unsplash.com/photos/IG1yO9YDkqU) |
+| Lightning storm            | Marek Piwnicki            | [d-p06WttJJE](https://unsplash.com/photos/d-p06WttJJE) |
+| Bumblebee                  | Dmytro Koplyk             | [a3HmolpGW3s](https://unsplash.com/photos/a3HmolpGW3s) |
+| Shark Fin Cove             | Karla Hernandez           | [shn9z-172sM](https://unsplash.com/photos/shn9z-172sM) |
+| Cat nap                    | Bastian Alexander-Coleman | [8CsDIpCytF0](https://unsplash.com/photos/8CsDIpCytF0) |
+| Hibiscus                   | Iván Díaz                 | [hBfY_uyLwAE](https://unsplash.com/photos/hBfY_uyLwAE) |
+| North America Nebula       | Wallace Henry             | [3lSdgBnv9ag](https://unsplash.com/photos/3lSdgBnv9ag) |
+| Tortoise                   | Adrian Botica             | [tI7TOjJOFqI](https://unsplash.com/photos/tI7TOjJOFqI) |
+| Painted lady               | Dmytro Koplyk             | [R0PjjzRWWf8](https://unsplash.com/photos/R0PjjzRWWf8) |
+| Bald eagle                 | Venti Views               | [DTY3cKv0pvc](https://unsplash.com/photos/DTY3cKv0pvc) |
+| Crescent moon              | Xx M                      | [1o5hFRQ77l0](https://unsplash.com/photos/1o5hFRQ77l0) |
+| Northern cardinal          | Dmytro Koplyk             | [TXmLf1NSTVs](https://unsplash.com/photos/TXmLf1NSTVs) |
 
 ## Limitations
 

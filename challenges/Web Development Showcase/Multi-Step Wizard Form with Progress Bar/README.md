@@ -115,13 +115,13 @@ Try card `4242 4242 4242 4242` with any future expiry and a 3-digit CVC.
 
 64 tests across five files, all offline (jsdom):
 
-| File                   | Covers                                                                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `schemas.test.js`      | Every rule per step, Luhn, real-date and age checks, expiry boundary, conditional Team/paid-plan fields                                                 |
-| `navigation.test.js`   | `furthestReachable`, `clampStep`, hash parse/format, progress percentage                                                                                |
-| `storage.test.js`      | Secrets never written or read back, versioning, corrupted JSON, hostile shapes, blocked storage                                                         |
-| `wizard.test.js`       | The state machine: blocked Next, verification, edit-voids-verification, clamping, submit-after-resume, skipping ahead over still-verified steps          |
-| `app.test.js`          | Real components with `@testing-library/svelte`: progressbar ARIA, error summary focus, disabled future steps, Back keeps data, full flow, resume/discard |
+| File                 | Covers                                                                                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `schemas.test.js`    | Every rule per step, Luhn, real-date and age checks, expiry boundary, conditional Team/paid-plan fields                                                  |
+| `navigation.test.js` | `furthestReachable`, `clampStep`, hash parse/format, progress percentage                                                                                 |
+| `storage.test.js`    | Secrets never written or read back, versioning, corrupted JSON, hostile shapes, blocked storage                                                          |
+| `wizard.test.js`     | The state machine: blocked Next, verification, edit-voids-verification, clamping, submit-after-resume, skipping ahead over still-verified steps          |
+| `app.test.js`        | Real components with `@testing-library/svelte`: progressbar ARIA, error summary focus, disabled future steps, Back keeps data, full flow, resume/discard |
 
 ## Limitations
 

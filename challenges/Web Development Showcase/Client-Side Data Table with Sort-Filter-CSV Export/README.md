@@ -21,12 +21,12 @@ Keyboard, with the grid focused: arrows move the active cell; <kbd>PgUp</kbd>/<k
 
 **table-core owns the state, a flat engine owns the rows.** `@tanstack/table-core` is headless and gives exactly the right *state machine*: the asc → desc → off cycle, shift multi-sort, and column/global filter state. But its row models wrap every row in `Row`/`Cell` closures, which is the wrong shape for 100k rows. Measured on this machine at 100k rows (`npm run bench:baseline`):
 
-| table-core row model | time | heap |
-| --- | ---: | ---: |
-| `getCoreRowModel` (wrap every row) | 512 ms | +559 MB |
-| `getSortedRowModel`, salary | 546 ms | +54 MB |
-| `getSortedRowModel`, name | 1,309 ms | +53 MB |
-| `getFilteredRowModel`, city contains "ber" | 115 ms | +3 MB |
+| table-core row model                       |     time |    heap |
+| ------------------------------------------ | -------: | ------: |
+| `getCoreRowModel` (wrap every row)         |   512 ms | +559 MB |
+| `getSortedRowModel`, salary                |   546 ms |  +54 MB |
+| `getSortedRowModel`, name                  | 1,309 ms |  +53 MB |
+| `getFilteredRowModel`, city contains "ber" |   115 ms |   +3 MB |
 
 So the table model runs table-core with `manualSorting`/`manualFiltering` and `data: []`, and `src/engine.js` computes the view as an **`Int32Array` of indices into the raw row array**. Rows are never copied or wrapped, and the view of 100k rows is 400 KB.
 
@@ -44,20 +44,20 @@ So the table model runs table-core with `manualSorting`/`manualFiltering` and `d
 
 Measured on this machine (Node, Windows, 100,000 rows, `npm run bench`; "cold" is the first use of a column or filter, which builds its lazy sort keys or lowercase cache, "warm" is the same interaction again):
 
-| operation | time |
-| --- | ---: |
-| generate 100k rows | ~110 ms |
-| cold sort, salary (number) | ~50 ms |
-| cold sort, name (text, 288 distinct) | 30-70 ms |
-| cold sort, email (text, 100k distinct) | 210-290 ms |
-| cold sort, joined (date) | ~80 ms |
-| multi-sort, department then salary | ~60 ms |
-| warm re-sort / toggle direction | ~45 ms / 0.3 ms to clear |
-| cold global search "smith" | 125-185 ms |
-| warm global search (1-2 tokens) | 9-12 ms |
-| column filter salary `>=100000` | ~5 ms |
-| + department filter, then sort the result | 6 ms, 3 ms |
-| CSV of all 100k rows (10.5 MB) | ~170 ms |
+| operation                                 |                     time |
+| ----------------------------------------- | -----------------------: |
+| generate 100k rows                        |                  ~110 ms |
+| cold sort, salary (number)                |                   ~50 ms |
+| cold sort, name (text, 288 distinct)      |                 30-70 ms |
+| cold sort, email (text, 100k distinct)    |               210-290 ms |
+| cold sort, joined (date)                  |                   ~80 ms |
+| multi-sort, department then salary        |                   ~60 ms |
+| warm re-sort / toggle direction           | ~45 ms / 0.3 ms to clear |
+| cold global search "smith"                |               125-185 ms |
+| warm global search (1-2 tokens)           |                  9-12 ms |
+| column filter salary `>=100000`           |                    ~5 ms |
+| + department filter, then sort the result |               6 ms, 3 ms |
+| CSV of all 100k rows (10.5 MB)            |                  ~170 ms |
 
 Against table-core's own row models above, the engine is ~10x faster on the sorts, and it removes the 559 MB row-wrapping cost entirely.
 

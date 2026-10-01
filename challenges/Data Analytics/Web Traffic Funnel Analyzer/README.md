@@ -14,13 +14,13 @@ inlined, no internet needed) plus optional JSON.
 
 - **Three funnel semantics (`--mode`).**
   - `ordered` (default): the steps happen in order; other events may happen in between.
-  - `strict`: the steps are _consecutive_ events, nothing in between.
+  - `strict`: the steps are *consecutive* events, nothing in between.
   - `any-order`: the first N steps all happen, in any order, within the time limit.
     Strict is contained in ordered, which is contained in any-order, and a test checks that on real data.
 - **Sessions or users (`--unit`).** With a session id column (`--session-col`) it uses it. Without one it
   sessionizes: a user's events are cut into sessions wherever two neighbours are more than 30 minutes apart
   (`--session-gap`); a gap of exactly 30 minutes stays inside the session.
-- **A conversion window (`--window 30m|24h|7d`).** Every step must happen within the window _of the entry_.
+- **A conversion window (`--window 30m|24h|7d`).** Every step must happen within the window *of the entry*.
 - **Per-step statistics.** Entities reaching each step, % of entry and % of the previous step (both with 95%
   Wilson intervals), entities dropped, median and quartile time since the previous step, and the single biggest
   leak with its share of everything lost end to end.
@@ -100,7 +100,7 @@ electronics/appliances/apparel shop, October-November 2019), not synthetic.
   eight 8 MB slices spread across the file (different days and hours), trimmed to whole lines, into
   `data_cache/events_raw.csv` (~500k events, git-ignored). `uv run python fetch_data.py` reproduces it.
 - **The committed sample** (`sample_data/rees46_sample.csv.gz`, 3.7 MB, 123,141 events, ~30k sessions) keeps 1 in 4
-  _sessions_ by a stable hash of `user_session`, so every kept session is complete.
+  *sessions* by a stable hash of `user_session`, so every kept session is complete.
   `uv run python fetch_data.py --skip-download --make-sample` rebuilds it byte for byte.
 - **Caveats.** Each slice cuts sessions at its edges (a session straddling a boundary loses its tail, which
   slightly undercounts purchases), and `first_event`/`last_event` and the "out-of-order rows" count in the report
@@ -130,7 +130,7 @@ On the committed sample (`view -> cart -> purchase`, native session ids):
   `cart` event first. A funnel with a mandatory cart step would report a conversion about a third too low.
 - **The three modes genuinely differ.** Purchases reached: strict 780, ordered 864, any-order 873. Strict loses 84
   sessions that browsed something else between the cart and the purchase; any-order gains 9 that added to the cart
-  _before_ their first view event.
+  *before* their first view event.
 - **Session definition moves the denominator.** The dataset's own session ids give 30,142 sessions; cutting by a
   30-minute gap gives 28,606, and the conversion rates move with them (2.87% versus 3.00% to purchase). "Conversion"
   is only comparable between two reports when both used the same session definition.

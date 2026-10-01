@@ -12,15 +12,15 @@ an optional HTML + JSON report, and exits non-zero so a pipeline can stop.
 
 ## What it checks
 
-| Family    | Alert ids                                                                                                                            | What fires it                                                                                                                                                       |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Schema    | `schema.missing_column`, `new_column`, `possible_rename`, `type_change`, `column_order`                                              | Columns added/removed; a missing column paired with a same-typed new one of a similar name or position (reported once, as a rename); dtype changes; reordering.     |
-| Volume    | `volume.empty`, `volume.row_count`                                                                                                   | Row count far outside the baseline batches' own spread, **and** at least 30% away from their mean.                                                                  |
-| Nulls     | `nulls.all_null`, `nulls.rate_shift`                                                                                                 | Exact binomial test against the baseline null rate, **and** at least 2 percentage points. A fall in null rate is only `info`.                                       |
-| Values    | `values.cast_failures`, `values.out_of_range`, `values.unseen_categories`, `values.missing_categories`                               | Values that can't be read as the baseline's type; numbers outside the learned range; categories never seen (net of the column's normal long tail) or suddenly gone. |
-| Drift     | `drift.numeric`, `drift.categorical`                                                                                                 | Numeric: KS test **and** PSI **and** KS effect size. Categorical: chi-square **and** Jensen-Shannon divergence.                                                     |
-| Keys, format | `keys.duplicates`, `format.unexpected_shape`                                                                                      | A column that was a unique key now repeats; text values whose character-class shape (`TX-004217` -> `A{2}-9{6}`) was never seen.                                    |
-| Freshness | `freshness.implausible`, `freshness.span`, `freshness.stale`, `freshness.future`                                                     | Timestamps years outside the baseline; a batch covering a different length of time; with `--as-of`, a newest value too old or after the as-of time.                 |
+| Family       | Alert ids                                                                                              | What fires it                                                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Schema       | `schema.missing_column`, `new_column`, `possible_rename`, `type_change`, `column_order`                | Columns added/removed; a missing column paired with a same-typed new one of a similar name or position (reported once, as a rename); dtype changes; reordering.     |
+| Volume       | `volume.empty`, `volume.row_count`                                                                     | Row count far outside the baseline batches' own spread, **and** at least 30% away from their mean.                                                                  |
+| Nulls        | `nulls.all_null`, `nulls.rate_shift`                                                                   | Exact binomial test against the baseline null rate, **and** at least 2 percentage points. A fall in null rate is only `info`.                                       |
+| Values       | `values.cast_failures`, `values.out_of_range`, `values.unseen_categories`, `values.missing_categories` | Values that can't be read as the baseline's type; numbers outside the learned range; categories never seen (net of the column's normal long tail) or suddenly gone. |
+| Drift        | `drift.numeric`, `drift.categorical`                                                                   | Numeric: KS test **and** PSI **and** KS effect size. Categorical: chi-square **and** Jensen-Shannon divergence.                                                     |
+| Keys, format | `keys.duplicates`, `format.unexpected_shape`                                                           | A column that was a unique key now repeats; text values whose character-class shape (`TX-004217` -> `A{2}-9{6}`) was never seen.                                    |
+| Freshness    | `freshness.implausible`, `freshness.span`, `freshness.stale`, `freshness.future`                       | Timestamps years outside the baseline; a batch covering a different length of time; with `--as-of`, a newest value too old or after the as-of time.                 |
 
 Each alert is `info`, `warn` or `critical`. All thresholds live in one TOML
 file ([`dq_config.example.toml`](dq_config.example.toml) lists every key with
@@ -147,11 +147,11 @@ relabelled, an unseen payment type, a vanished payment type, duplicated keys,
 lowercased keys, epoch-zero dates, timestamps 30 days ahead, a 10-day-old batch,
 a 5-day spread). The interesting part is the floor:
 
-| Planted change             | 1st step  | 2nd | 3rd  | 4th  | 5th  |
-| -------------------------- | --------- | --- | ---- | ---- | ---- |
-| `fare` scaled by           | x1.05: 0% | x1.1: 13% | x1.25: 100% | x1.5: 100% | x2: 100% |
-| `fare` nulls               | 0.5%: 0%  | 1%: 0% | 2%: 47% | 5%: 100% | 15%: 100% |
-| cash trips -> credit card  | 10%: 0%   | 25%: 0% | 50%: 50% | 75%: 100% | 100%: 100% |
+| Planted change            | 1st step  | 2nd       | 3rd         | 4th        | 5th        |
+| ------------------------- | --------- | --------- | ----------- | ---------- | ---------- |
+| `fare` scaled by          | x1.05: 0% | x1.1: 13% | x1.25: 100% | x1.5: 100% | x2: 100%   |
+| `fare` nulls              | 0.5%: 0%  | 1%: 0%    | 2%: 47%     | 5%: 100%   | 15%: 100%  |
+| cash trips -> credit card | 10%: 0%   | 25%: 0%   | 50%: 50%    | 75%: 100%  | 100%: 100% |
 
 A 5-10% drift or a 1% null rate on ~200-row batches is inside normal
 batch-to-batch noise, and the monitor stays silent on purpose. Getting those
