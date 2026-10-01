@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from scorers import Bm25Scorer, TfidfScorer
+from scorers import Bm25Scorer, FusionScorer, TfidfScorer, rrf, zscore
 
 CORPUS = [
     "python sql tableau dashboards analyst reporting",
@@ -72,3 +72,61 @@ def _to_ids(tokenized):
     vocab: dict[str, int] = {}
     ids = [[vocab.setdefault(t, len(vocab)) for t in doc] for doc in tokenized]
     return ids, vocab
+
+
+# --- fusion -----------------------------------------------------------------
+
+
+def test_zscore_normalises_each_row_and_constant_rows_become_zeros():
+    out = zscore(np.array([[1.0, 2.0, 3.0], [5.0, 5.0, 5.0]]))
+    assert out[0].mean() == pytest.approx(0.0)
+    assert out[0].std() == pytest.approx(1.0)
+    assert out[1].tolist() == [0.0, 0.0, 0.0]
+
+
+def test_fusion_with_full_weight_on_one_part_ranks_like_that_part():
+    tfidf = TfidfScorer(ngram_range=(1, 1), min_df=1)
+    bm25 = Bm25Scorer()
+    q = ["python sql analyst", "nurse hospital"]
+    only_tfidf = FusionScorer([tfidf, bm25], [1.0, 0.0]).fit(CORPUS)
+    ref = tfidf.score_matrix(q, CORPUS)
+    got = only_tfidf.score_matrix(q, CORPUS)
+    assert (
+        np.argsort(-got, axis=1, kind="stable")
+        == np.argsort(-ref, axis=1, kind="stable")
+    ).all()
+
+
+def test_fusion_combines_parts_so_a_doc_both_like_beats_one_only_one_likes():
+    class Fixed:
+        def __init__(self, m):
+            self.m, self.name = np.array(m, dtype=float), "fixed"
+
+        def fit(self, corpus):
+            return self
+
+        def score_matrix(self, queries, docs):
+            return self.m
+
+    a = Fixed([[3.0, 2.0, 0.0]])
+    b = Fixed([[0.0, 2.0, 3.0]])
+    out = FusionScorer([a, b], [0.5, 0.5]).score_matrix(["q"], ["d0", "d1", "d2"])
+    assert out.argmax() == 1
+
+
+def test_fusion_rejects_mismatched_weights():
+    with pytest.raises(ValueError, match="weights"):
+        FusionScorer([TfidfScorer()], [0.5, 0.5])
+
+
+def test_rrf_of_identical_rankings_keeps_the_order_and_is_scale_free():
+    a = np.array([[0.9, 0.5, 0.1]])
+    fused = rrf([a, a * 1000])
+    assert np.argsort(-fused, axis=1).tolist() == [[0, 1, 2]]
+
+
+def test_rrf_rewards_documents_ranked_well_by_both_over_one_list_only():
+    # doc1 is 2nd and 1st; doc0 is 1st and 4th; doc2 is 3rd and 2nd
+    a = np.array([[4.0, 3.0, 2.0, 1.0]])
+    b = np.array([[1.0, 4.0, 3.0, 2.0]])
+    assert rrf([a, b]).argmax() == 1

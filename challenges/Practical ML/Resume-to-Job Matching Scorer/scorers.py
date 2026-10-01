@@ -129,3 +129,62 @@ class Bm25Scorer(_SparseScorer):
     def feature_names(self) -> np.ndarray:
         self._require_fit()
         return self._vec.get_feature_names_out()
+
+
+def zscore(matrix: np.ndarray) -> np.ndarray:
+    """Per-row z-score; a constant row (no signal) becomes zeros, never NaN."""
+    mean = matrix.mean(axis=1, keepdims=True)
+    std = matrix.std(axis=1, keepdims=True)
+    return np.where(std > 0, (matrix - mean) / np.where(std == 0, 1.0, std), 0.0)
+
+
+def rrf(score_matrices: Sequence[np.ndarray], k: int = 60) -> np.ndarray:
+    """Reciprocal rank fusion: ``sum 1 / (k + rank)`` per document.
+
+    Uses ranks only, so it needs no weight and is blind to the score scales,
+    which is why it is reported next to the tuned weighted fusion.
+    """
+    fused = np.zeros_like(score_matrices[0], dtype=np.float64)
+    for m in score_matrices:
+        order = np.argsort(-m, axis=1, kind="stable")
+        ranks = np.empty_like(order)
+        np.put_along_axis(
+            ranks,
+            order,
+            np.arange(m.shape[1])[None, :].repeat(m.shape[0], axis=0),
+            axis=1,
+        )
+        fused += 1.0 / (k + ranks + 1)
+    return fused
+
+
+class FusionScorer:
+    """Weighted sum of per-query z-scored parts.
+
+    Raw cosine (0..1) and BM25 (0..tens) are not on one scale, so each part is
+    standardised per query before weighting.
+    """
+
+    name = "fusion"
+
+    def __init__(self, parts: Sequence[Scorer], weights: Sequence[float]):
+        if len(parts) != len(weights):
+            raise ValueError(
+                f"{len(parts)} parts need {len(parts)} weights, got {len(weights)}"
+            )
+        self.parts = list(parts)
+        self.weights = list(weights)
+
+    def fit(self, corpus: Sequence[str]) -> Self:
+        for p in self.parts:
+            p.fit(corpus)
+        return self
+
+    def score_matrix(self, queries: Sequence[str], docs: Sequence[str]) -> np.ndarray:
+        return sum(
+            w * zscore(p.score_matrix(queries, docs))
+            for p, w in zip(self.parts, self.weights, strict=True)
+        )
+
+    def score(self, query: str, docs: Sequence[str]) -> np.ndarray:
+        return self.score_matrix([query], docs)[0]
