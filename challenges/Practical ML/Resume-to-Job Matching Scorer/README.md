@@ -139,7 +139,7 @@ is 1/24, as it should be.
 
 **What the numbers support:**
 
-- Every real scorer is about ten times better than chance.
+- On full text every real scorer is about ten times better than chance; on headline-stripped text, about 4.5 times.
 - On full text TF-IDF is nominally best, but its interval overlaps embedding's and
   fusion's, and I did not run a paired test, so I am not claiming it beats them.
   BM25 is clearly below TF-IDF (intervals do not overlap).
@@ -161,11 +161,11 @@ across 24 categories; compare scorers with each other, not with other benchmarks
 
 ## Explanations
 
-| Scorer              | What you get                                                                                                                |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| tfidf, bm25         | **Exact**: score = sum over terms of query weight x document weight, so the listed terms add up to the score (tested).      |
-| embedding, fusion   | The terms shown are only words both texts share, labelled **lexical overlap**. `--explain-dense` adds a **post-hoc** probe. |
-| all, resume to jobs | **Gaps**: heavily weighted job terms the resume lacks, restricted to terms common in that category's postings.              |
+| Scorer              | What you get                                                                                                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tfidf, bm25         | **Exact**: score = sum over terms of query weight x document weight. The CLI/app list the top 8 terms *and* what the rest add, so listed + remainder = score (tested). |
+| embedding, fusion   | The terms shown are only words both texts share, labelled **lexical overlap**. `--explain-dense` adds a **post-hoc** probe.                                            |
+| all, resume to jobs | **Gaps**: heavily weighted job terms the resume lacks, restricted to terms common in that category's postings.                                                         |
 
 The post-hoc probe re-scores the pair with each resume sentence removed and lists
 the biggest drops; it probes the model, it does not decompose the score. A test
@@ -176,16 +176,16 @@ imperfect (it shows words like "modern" and "degree computer").
 ```
 $ uv run python cli.py rank-jobs examples/sample_resume.txt --top 3 --scorer tfidf
  1.   0.142  Sr Data engineer with AWS, PYTHON (W2) [INFORMATION-TECHNOLOGY]
-      evidence: aws 0.031, big data 0.018, python 0.017, certifications aws 0.017, ...   (these terms sum to the score)
+      evidence: aws 0.031, big data 0.018, python 0.017, certifications aws 0.017, ...   (top 8 of 19 terms; the other 11 add 0.021, so all of them sum to the score)
       missing:  frameworks, degree computer, pipelines, engineering, java, modern
  2.   0.138  Sr Data scientist [INFORMATION-TECHNOLOGY]
       evidence: tensorflow pytorch 0.019, pytorch 0.018, aws 0.015, tensorflow 0.015, ...
 
 $ uv run python cli.py rank-jobs examples/sample_resume.txt --top 1 --scorer embedding --explain-dense
 post-hoc: resume sentences the embedding match to the top job depends on
-  +0.0284  Hands-on with Python, SQL, R, Tableau and Power BI for dashboards, reporting ...
-  +0.0176  Python, SQL, R, Pandas, NumPy, Tableau, Power BI, scikit-learn, TensorFlow, ...
-  -0.0014  Education
+  +0.0309  Hands-on with Python, SQL, R, Tableau and Power BI for dashboards, reporting ...
+  +0.0201  Python, SQL, R, Pandas, NumPy, Tableau, Power BI, scikit-learn, TensorFlow, ...
+  +0.0011  Education
 ```
 
 `examples/sample_resume.txt` is a short resume written from the author's public
@@ -228,12 +228,12 @@ uv run python cli.py report                            # print the saved benchma
 uv run python cli.py rank-jobs examples/sample_resume.txt --top 5 --scorer fusion --explain-dense
 uv run python cli.py rank-resumes some_job.txt --top 5 --scorer bm25
 uv run streamlit run app.py
-uv run pytest -q                                       # 148 tests, no network except two model smoke tests
+uv run pytest -q                                       # 153 tests, no network except two model smoke tests
 ```
 
 ## Tests
 
-148 tests. Everything except two model smoke tests runs with no network or
+153 tests. Everything except two model smoke tests runs with no network or
 accelerator, using small fixtures and a hashing encoder that stands in for the
 model. They pin: the label table (including regressions found on real data and
 sync with the committed audit), the splits being disjoint, metrics against
@@ -245,6 +245,9 @@ page (`AppTest`).
 
 ## Limitations
 
+- A query that shares no vocabulary with any posting scores 0 everywhere under tfidf/bm25, and the
+  CLI then lists the first postings in pool order with "evidence: none" -- they are not matches.
+- The post-hoc probe looks at a resume's first 40 sentence units only.
 - Relevance is a category proxy, and 4+ of 24 resume categories are keyword
   buckets; absolute numbers are not comparable to real hiring outcomes.
 - The 98% label audit is my own judgment on 100 titles, not an independent

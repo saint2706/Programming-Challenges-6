@@ -36,6 +36,7 @@ def test_ranking_a_resume_shows_same_category_jobs_with_evidence(at):
     assert len(titles) == 10
     assert all("HEALTHCARE" in t for t in titles[:3])
     assert any("nurse" in m.value for m in at.markdown)
+    assert any("the other" in m.value for m in at.markdown)
 
 
 def test_empty_resume_shows_a_warning_not_an_exception(at):

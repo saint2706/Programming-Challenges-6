@@ -45,12 +45,7 @@ def _print_matches(matches: list[Match], gaps: bool) -> None:
     for rank, m in enumerate(matches, 1):
         typer.echo(f"{rank:>2}. {m.score:7.3f}  {m.title} [{m.category}]  (id {m.id})")
         terms = ", ".join(f"{t} {w:.3f}" for t, w in m.terms) or "none"
-        if m.explanation == "exact":
-            typer.echo(f"      evidence: {terms}   (these terms sum to the score)")
-        else:
-            typer.echo(
-                f"      evidence: {terms}   (lexical overlap only; the score came from embeddings)"
-            )
+        typer.echo(f"      evidence: {terms}   ({m.evidence_note()})")
         if gaps and m.gaps:
             typer.echo(f"      missing:  {', '.join(m.gaps)}")
 

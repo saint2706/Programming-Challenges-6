@@ -45,7 +45,7 @@ with st.sidebar:
     if line:
         st.caption(line)
     st.caption(
-        "tfidf and bm25 explanations are exact: the listed terms add up to the score. "
+        "tfidf and bm25 explanations are exact: the listed terms plus the stated remainder add up to the score. "
         "For embedding and fusion the terms are only shared words; use the post-hoc probe for the model."
     )
 
@@ -73,15 +73,11 @@ with tab_jobs:
         with st.expander(
             f"{i}. {m.title} [{m.category}] - score {m.score:.3f}", expanded=i == 1
         ):
-            if m.explanation == "exact":
-                st.markdown("**Terms that earned this score** (they sum to it)")
-            else:
-                st.markdown(
-                    "**Words both texts share** (the score itself came from embeddings)"
-                )
+            st.markdown("**Terms behind this score**")
             st.markdown(
                 ", ".join(f"`{t}` {w:.3f}" for t, w in m.terms) or "_nothing in common_"
             )
+            st.markdown(f"_{m.evidence_note()}_")
             if m.gaps:
                 st.markdown(
                     "**Common in postings like this but missing from your resume**"

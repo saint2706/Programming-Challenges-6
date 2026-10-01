@@ -112,3 +112,22 @@ def test_occlusion_ranks_the_unit_that_carries_the_match_first():
 
 def test_occlusion_of_text_with_no_units_is_empty():
     assert explain.occlusion(_BagEncoder(), "", "python", k=3) == []
+
+
+def test_occlusion_drops_are_measured_against_the_same_truncated_text_they_perturb():
+    # 60 sentences: only the first carries the match. Units beyond MAX_UNITS are
+    # ignored by the probe, so the baseline must ignore them too.
+    units = ["Led python and sql dashboard work."] + [
+        f"Filler sentence number {i} about nothing." for i in range(59)
+    ]
+    resume = " ".join(units)
+    job = "python sql dashboard analytics role"
+    enc = _BagEncoder()
+    kept = explain.split_units(resume)[: explain.MAX_UNITS]
+    d = enc.encode([job])[0]
+    base = float(enc.encode([" ".join(kept)])[0] @ d)
+    out = explain.occlusion(enc, resume, job, k=3)
+    top_unit, top_drop = out[0]
+    without = " ".join(u for u in kept if u != top_unit)
+    assert top_unit.startswith("Led python")
+    assert top_drop == pytest.approx(base - float(enc.encode([without])[0] @ d))

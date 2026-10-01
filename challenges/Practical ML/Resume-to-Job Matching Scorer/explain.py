@@ -33,6 +33,18 @@ def contributions(
 tfidf_terms = bm25_terms = contributions
 
 
+def breakdown(
+    scorer: _SparseScorer, query: str, doc: str, k: int = 10
+) -> tuple[list[tuple[str, float]], float, int]:
+    """``(top-k terms, summed contribution of the rest, number of matching terms)``.
+
+    The listed terms plus the remainder add up to the score exactly; showing
+    only the top ``k`` without the remainder would overstate what they explain.
+    """
+    pairs = contributions(scorer, query, doc, k=10**9)
+    return pairs[:k], sum(w for _, w in pairs[k:]), len(pairs)
+
+
 def gaps(
     scorer: _SparseScorer,
     query: str,
@@ -109,7 +121,9 @@ def occlusion(
     if not units:
         return []
     d = encoder.encode([doc])[0]
-    base = float(encoder.encode([query])[0] @ d)
+    # baseline over the same truncated text every variant is built from, or each
+    # drop would also include the loss of the ignored tail
+    base = float(encoder.encode([" ".join(units)])[0] @ d)
     variants = [" ".join(units[:i] + units[i + 1 :]) for i in range(len(units))]
     drops = base - encoder.encode(variants) @ d
     ranked = sorted(

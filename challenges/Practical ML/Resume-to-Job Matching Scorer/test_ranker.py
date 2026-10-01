@@ -1,3 +1,4 @@
+import re
 import zlib
 
 import numpy as np
@@ -102,3 +103,29 @@ def test_explain_dense_names_the_resume_sentence_that_drives_the_match(ranker):
     resume = "Led nurse patient ward triage work. Collects stamps on weekends. Enjoys long walks."
     out = ranker.explain_dense(resume, "HEALTHCARE-0", k=2)
     assert out[0][0].startswith("Led nurse patient")
+
+
+@pytest.mark.parametrize("scorer", ["tfidf", "bm25"])
+def test_listed_terms_plus_the_remainder_equal_the_score_exactly(ranker, scorer):
+    resume = "nurse patient ward clinic dosage triage nurse patient team worked years managed responsible"
+    for m in ranker.rank_jobs(resume, top=3, scorer=scorer):
+        assert m.terms_total > len(m.terms)  # more terms matched than are listed
+        assert sum(w for _, w in m.terms) + m.terms_rest == pytest.approx(m.score)
+
+
+def test_when_every_matching_term_is_listed_there_is_no_remainder(ranker):
+    m = ranker.rank_jobs("nurse", top=1, scorer="tfidf")[0]
+    assert m.terms_total == len(m.terms) and m.terms_rest == pytest.approx(0.0)
+
+
+def test_evidence_note_says_how_much_of_the_score_the_listed_terms_explain(ranker):
+    resume = "nurse patient ward clinic dosage triage nurse patient team worked years managed responsible"
+    note = ranker.rank_jobs(resume, top=1, scorer="tfidf")[0].evidence_note()
+    assert re.fullmatch(
+        r"top 8 of \d+ terms; the other \d+ add \d\.\d{3}, so all of them sum to the score",
+        note,
+    )
+    short = ranker.rank_jobs("nurse", top=1, scorer="tfidf")[0].evidence_note()
+    assert short == "all 1 terms; they sum to the score" or short.startswith("all ")
+    dense = ranker.rank_jobs(resume, top=1, scorer="embedding")[0].evidence_note()
+    assert "lexical overlap only" in dense and "sum to the score" not in dense

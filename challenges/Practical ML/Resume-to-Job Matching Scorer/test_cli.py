@@ -32,6 +32,9 @@ def test_rank_jobs_prints_ranked_matches_with_evidence_and_gaps(tmp_path):
     lines = result.output.splitlines()
     assert lines[0].startswith(" 1.") and "HEALTHCARE" in lines[0]
     assert "evidence:" in result.output and "nurse" in result.output
+    assert (
+        "terms; the other" in result.output
+    )  # top-8 of more: the remainder is disclosed
     assert "missing:" in result.output
     assert result.output.count("HEALTHCARE") >= 3
 

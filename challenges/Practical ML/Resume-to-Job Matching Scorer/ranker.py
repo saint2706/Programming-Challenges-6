@@ -32,10 +32,28 @@ class Match:
     category: str
     score: float
     terms: list[tuple[str, float]] = field(default_factory=list)
+    # terms beyond the listed ones: for an "exact" explanation,
+    # sum(terms) + terms_rest == score
+    terms_rest: float = 0.0
+    terms_total: int = 0
     gaps: list[str] = field(default_factory=list)
     # "exact": the terms sum to the score. "lexical-overlap": the score came from
     # embeddings, and the terms are only the words the two texts share.
     explanation: str = "exact"
+
+    def evidence_note(self) -> str:
+        """What the listed terms do and do not account for, in one line."""
+        if self.explanation != "exact":
+            return "lexical overlap only; the score came from embeddings"
+        listed = len(self.terms)
+        if self.terms_total > listed:
+            return (
+                f"top {listed} of {self.terms_total} terms; the other "
+                f"{self.terms_total - listed} add {self.terms_rest:.3f}, "
+                "so all of them sum to the score"
+            )
+        noun = "term" if self.terms_total == 1 else "terms"
+        return f"all {self.terms_total} {noun}; they sum to the score"
 
 
 class Ranker:
@@ -118,6 +136,10 @@ class Ranker:
             raise ValueError(f"empty {what} text")
         return text
 
+    def _evidence(self, scorer: str, query: str, doc: str, k: int = 8) -> dict:
+        terms, rest, total = explain.breakdown(self.sparse[scorer], query, doc, k)
+        return {"terms": terms, "terms_rest": rest, "terms_total": total}
+
     # -- public ----------------------------------------------------------------
 
     def rank_jobs(
@@ -145,9 +167,7 @@ class Ranker:
                     title=row["title"],
                     category=row["category"],
                     score=score,
-                    terms=explain.contributions(
-                        self.sparse[evidence], text, row["text"], k=8
-                    ),
+                    **self._evidence(evidence, text, row["text"]),
                     gaps=explain.gaps(
                         self.sparse["tfidf"],
                         text,
@@ -178,9 +198,7 @@ class Ranker:
                     title=row["text"].split("\n", 1)[0][:60],
                     category=row["category"],
                     score=float(scores[i]),
-                    terms=explain.contributions(
-                        self.sparse[evidence], text, row["text"], k=8
-                    ),
+                    **self._evidence(evidence, text, row["text"]),
                     explanation="exact"
                     if scorer in ("tfidf", "bm25")
                     else "lexical-overlap",
