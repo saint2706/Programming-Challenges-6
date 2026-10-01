@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Annotated
 
 import data
 import pipeline
@@ -13,6 +14,7 @@ from ranker import RESULTS, SCORER_NAMES, Match, Ranker, load_default_ranker
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 
 SCORER_ORDER = ("random", "tfidf", "bm25", "embedding", "fusion", "rrf")
+SCORER_HELP = f"One of: {', '.join(SCORER_NAMES)}."
 
 
 def get_ranker() -> Ranker:
@@ -55,12 +57,13 @@ def _print_matches(matches: list[Match], gaps: bool) -> None:
 
 @app.command("rank-jobs")
 def rank_jobs(
-    resume_file: Path = typer.Argument(..., help="Plain-text resume."),
-    top: int = typer.Option(10, min=1, help="How many jobs to list."),
-    scorer: str = typer.Option("fusion", help=f"One of: {', '.join(SCORER_NAMES)}."),
-    explain_dense: bool = typer.Option(
-        False, "--explain-dense", help="Probe the embedding match (slower)."
-    ),
+    resume_file: Annotated[Path, typer.Argument(help="Plain-text resume.")],
+    top: Annotated[int, typer.Option(min=1, help="How many jobs to list.")] = 10,
+    scorer: Annotated[str, typer.Option(help=SCORER_HELP)] = "fusion",
+    explain_dense: Annotated[
+        bool,
+        typer.Option("--explain-dense", help="Probe the embedding match (slower)."),
+    ] = False,
 ) -> None:
     """Rank job postings for a resume."""
     _check_scorer(scorer)
@@ -84,9 +87,9 @@ def rank_jobs(
 
 @app.command("rank-resumes")
 def rank_resumes(
-    job_file: Path = typer.Argument(..., help="Plain-text job description."),
-    top: int = typer.Option(10, min=1),
-    scorer: str = typer.Option("fusion", help=f"One of: {', '.join(SCORER_NAMES)}."),
+    job_file: Annotated[Path, typer.Argument(help="Plain-text job description.")],
+    top: Annotated[int, typer.Option(min=1, help="How many resumes to list.")] = 10,
+    scorer: Annotated[str, typer.Option(help=SCORER_HELP)] = "fusion",
 ) -> None:
     """Rank the resume collection for a job description."""
     _check_scorer(scorer)
@@ -98,13 +101,19 @@ def rank_resumes(
     _print_matches(matches, gaps=False)
 
 
+def _interval(metric: dict) -> str:
+    return f"{metric['mean']:.3f} [{metric['lo']:.3f}, {metric['hi']:.3f}]"
+
+
 def format_report(report: dict) -> str:
     n = report["n"]
+    weights = ", ".join(f"{v} {w:.2f}" for v, w in report["fusion_weight"].items())
     lines = [
-        f"test split: {n['test_resumes']} resumes x {n['test_jobs']} postings   "
-        f"embedding backend: {report['backend']['name']}",
-        "fusion weight on the embedding (tuned on validation): "
-        + ", ".join(f"{v} {w:.2f}" for v, w in report["fusion_weight"].items()),
+        (
+            f"test split: {n['test_resumes']} resumes x {n['test_jobs']} postings   "
+            f"embedding backend: {report['backend']['name']}"
+        ),
+        f"fusion weight on the embedding (tuned on validation): {weights}",
     ]
     if report["skipped_categories"]:
         lines.append(
@@ -119,11 +128,9 @@ def format_report(report: dict) -> str:
             ]
             for name in SCORER_ORDER:
                 m = scorers[name]
-                ci = lambda k: (
-                    f"{m[k]['mean']:.3f} [{m[k]['lo']:.3f}, {m[k]['hi']:.3f}]"
-                )
                 lines.append(
-                    f"{name:<10}{ci('ndcg@10'):<26}{ci('mrr'):<26}{m['p@10']['mean']:.3f}  {m['map@50']['mean']:.3f}"
+                    f"{name:<10}{_interval(m['ndcg@10']):<26}{_interval(m['mrr']):<26}"
+                    f"{m['p@10']['mean']:.3f}  {m['map@50']['mean']:.3f}"
                 )
     return "\n".join(lines)
 
