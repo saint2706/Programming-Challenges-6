@@ -81,6 +81,46 @@ def _clean(obj):
     return obj
 
 
+def _null_validation(
+    clf, base, ref: pl.DataFrame, window: int, seed: int
+) -> dict | None:
+    """Calibrate on the first half of the reference, test on contiguous windows of the second.
+
+    Compares the i.i.d. and block nulls on data the thresholds never saw: the share
+    of (signal, statistic) cells above threshold, which should be about alpha.
+    """
+    half = ref.height // 2
+    if half < window or ref.height - half < window:
+        return None
+    first, second = columns_of(clf, ref[:half]), columns_of(clf, ref[half:])
+    n_windows = (ref.height - half) // window
+    out = {}
+    for mode in ("iid", "blocks"):
+        thr = calibrate(
+            null_distribution(base, first, window=window, seed=seed, mode=mode),
+            alpha=ALPHA,
+        )
+        cells, hit_windows = 0, 0
+        for w in range(n_windows):
+            sl = slice(w * window, (w + 1) * window)
+            alerting = 0
+            for column, values in second.items():
+                for stat, value in base.window_stats(column, values[sl]).items():
+                    cells += 1
+                    alerting += value > thr[(column, stat)]
+            hit_windows += alerting > 0
+            out.setdefault(mode, {"alerts": 0})["alerts"] += alerting
+        out[mode].update(
+            {
+                "windows": n_windows,
+                "cell_alert_rate": out[mode]["alerts"] / cells,
+                "windows_with_any_alert": hit_windows,
+            }
+        )
+        del out[mode]["alerts"]
+    return out
+
+
 def _accuracy(clf, df: pl.DataFrame) -> float:
     return float(((model.score(clf, df) > THRESHOLD) == df["label"].to_numpy()).mean())
 
@@ -152,6 +192,7 @@ def run_all(
     delay: int = LABEL_DELAY,
     bench_windows: int = 40,
     bench_drift_window: int = 15,
+    null_mode: str = "blocks",
 ) -> dict:
     data_dir, out_dir = Path(data_dir), Path(out_dir)
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -214,6 +255,8 @@ def run_all(
                 "live": float(live["label"].mean()),
             },
         },
+        "null_mode": null_mode,
+        "null_validation": _null_validation(clf, base, ref, window, seed),
         "thresholds": {
             "alpha": ALPHA,
             "rule_of_thumb_psi": RULE_OF_THUMB["psi"],

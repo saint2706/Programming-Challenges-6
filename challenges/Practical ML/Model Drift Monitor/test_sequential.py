@@ -60,3 +60,28 @@ def test_a_constant_reference_does_not_divide_by_zero():
     p = calibrate_sequential(np.full(1000, 3.0), reps=2, seed=0)
     assert p.scale == 1.0
     assert run(make_detectors(p)["page_hinkley"], np.full(200, 3.0)) == []
+
+
+def test_block_calibration_is_quiet_on_the_reference_in_its_own_order():
+    # a slowly wandering reference: the ordered stream is the honest null
+    rng = np.random.default_rng(21)
+    ref = np.cumsum(rng.normal(0, 0.02, 90)).repeat(50) + rng.normal(0, 1, 4500)
+    p = calibrate_sequential(ref, reps=4, seed=0, mode="blocks")
+    for name, det in make_detectors(p).items():
+        assert run(det, ref) == [], name
+
+
+def test_block_calibration_is_never_more_sensitive_than_iid_on_wandering_data():
+    rng = np.random.default_rng(22)
+    ref = np.cumsum(rng.normal(0, 0.02, 90)).repeat(50) + rng.normal(0, 1, 4500)
+    iid = calibrate_sequential(ref, reps=4, seed=0, mode="iid")
+    blocks = calibrate_sequential(ref, reps=4, seed=0, mode="blocks")
+    assert (
+        blocks.ph_threshold >= iid.ph_threshold
+        and blocks.adwin_delta <= iid.adwin_delta
+    )
+
+
+def test_unknown_sequential_mode_is_rejected():
+    with pytest.raises(ValueError, match="mode"):
+        calibrate_sequential(REF, reps=1, mode="nope")

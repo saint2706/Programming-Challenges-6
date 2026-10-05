@@ -6,10 +6,16 @@ the window size and the column. Instead: draw many same-size windows from the
 baseline, and alert above the (1 - alpha) quantile, so about ``alpha`` of
 no-drift windows raise a false alarm.
 
-The null windows are sampled i.i.d. with replacement. That ignores the serial
-correlation of a real time series, so real consecutive windows can be noisier
-than the null; the pipeline therefore also reports the false-alarm rate actually
-seen on real windows.
+Two ways to draw the null windows:
+
+- ``"iid"``: rows sampled i.i.d. with replacement. Right for stationary,
+  independent data, but it has no week-to-week variation of the level, so on a
+  real time series (the electricity data) it is far too tight: 28% of
+  threshold cells alert on the real reference windows instead of 1%.
+- ``"blocks"`` (default): contiguous slices of the reference at random start
+  positions, which keep the within-window autocorrelation and the level
+  variation between neighbouring weeks. Windows overlap, so the null is only as
+  rich as the reference is long.
 """
 
 from __future__ import annotations
@@ -32,13 +38,21 @@ def null_distribution(
     n_windows: int = 500,
     window: int = WINDOW,
     seed: int = 0,
+    mode: str = "blocks",
 ) -> dict[tuple[str, str], np.ndarray]:
     """``(column, statistic) -> statistic values over no-drift windows``."""
+    if mode not in ("iid", "blocks"):
+        raise ValueError(f"mode must be 'iid' or 'blocks', got {mode!r}")
     rng = np.random.default_rng(seed)
     n = len(next(iter(reference.values())))
+    if mode == "blocks" and n < window:
+        raise ValueError(f"reference has {n} rows, fewer than one window of {window}")
     out: dict[tuple[str, str], list[float]] = defaultdict(list)
     for _ in range(n_windows):
-        idx = rng.integers(0, n, window)  # the same rows for every column
+        if mode == "iid":
+            idx = rng.integers(0, n, window)  # the same rows for every column
+        else:
+            idx = np.arange(window) + rng.integers(0, n - window + 1)
         for column, values in reference.items():
             for stat, value in base.window_stats(
                 column, np.asarray(values)[idx]

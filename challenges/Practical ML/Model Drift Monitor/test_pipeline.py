@@ -129,3 +129,15 @@ def test_artifacts_reload_and_monitor(run):
     art = load_artifacts(tmp)
     assert {"clf", "baseline", "thresholds", "seq", "window", "delay"} <= set(art)
     assert ("score", "ks") in art["thresholds"]
+
+
+def test_null_validation_compares_iid_and_block_thresholds_on_unseen_reference_windows(
+    run,
+):
+    report, _ = run
+    assert report["null_mode"] == "blocks"
+    nv = report["null_validation"]
+    assert set(nv) == {"iid", "blocks"}
+    for mode in nv.values():
+        assert {"windows", "cell_alert_rate", "windows_with_any_alert"} <= set(mode)
+        assert mode["windows"] == 3 and 0 <= mode["cell_alert_rate"] <= 1

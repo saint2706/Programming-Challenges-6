@@ -60,3 +60,4 @@ def test_report_prints_the_headline_numbers_from_a_report_file(
     assert result.exit_code == 0, result.output
     assert "natural run" in result.output and "adwin_error" in result.output
     assert "injected drift" in result.output and "concept" in result.output
+    assert "unseen reference windows" in result.output

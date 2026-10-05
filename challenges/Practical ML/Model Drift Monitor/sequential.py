@@ -85,13 +85,27 @@ def calibrate_sequential(
     alpha: float = ALPHA,
     reps: int = 10,
     seed: int = 0,
+    mode: str = "blocks",
 ) -> SeqParams:
-    """Most sensitive parameters with <= ``alpha`` false alarms per ``window`` rows."""
+    """Most sensitive parameters with <= ``alpha`` false alarms per ``window`` rows.
+
+    ``mode="iid"`` resamples the reference rows independently; ``"blocks"`` (the
+    default) replays the reference in its own order, circularly rotated to
+    random start points, so a slowly wandering level counts as the null it is.
+    """
+    if mode not in ("iid", "blocks"):
+        raise ValueError(f"mode must be 'iid' or 'blocks', got {mode!r}")
     reference = np.asarray(reference, dtype=float)
     loc = float(reference.mean())
     scale = float(reference.std()) or 1.0
     rng = np.random.default_rng(seed)
-    streams = [rng.choice(reference, size=len(reference)) for _ in range(reps)]
+    if mode == "iid":
+        streams = [rng.choice(reference, size=len(reference)) for _ in range(reps)]
+    else:
+        streams = [reference] + [
+            np.roll(reference, int(rng.integers(1, len(reference))))
+            for _ in range(reps - 1)
+        ]
     allowed = alpha * len(reference) * reps / window
 
     # PH: smaller threshold = more sensitive; ADWIN: larger delta = more sensitive.

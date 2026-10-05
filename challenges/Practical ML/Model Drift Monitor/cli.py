@@ -72,6 +72,13 @@ def format_report(report: dict) -> str:
         "",
         "natural run: windows in which each detector alarmed",
     ]
+    nv = report.get("null_validation")
+    if nv:
+        lines.insert(
+            2,
+            "cells above threshold on unseen reference windows (target 1%): "
+            f"iid null {nv['iid']['cell_alert_rate']:.1%}, block null {nv['blocks']['cell_alert_rate']:.1%}",
+        )
     for det in HEADLINE_DETECTORS:
         wins = nat["alarm_windows"][det]
         lines.append(
