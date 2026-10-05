@@ -25,8 +25,7 @@ def synth(n, seed, shift_feature=None, shift=0.0, from_row=0):
     return pl.DataFrame(cols)
 
 
-@pytest.fixture(scope="module")
-def fitted():
+def make_fitted():
     train, ref = synth(2500, 0), synth(1500, 1)
     clf = model.fit(train, seed=0)
     base = build_baseline(clf, train, seed=0)
@@ -38,7 +37,12 @@ def fitted():
         "score": calibrate_sequential(model.score(clf, ref), window=W, reps=4, seed=0),
         "error": calibrate_sequential(err.astype(float), window=W, reps=4, seed=0),
     }
-    return clf, base, thr, seq
+    return clf, base, thr, seq, ref
+
+
+@pytest.fixture(scope="module")
+def fitted():
+    return make_fitted()[:4]
 
 
 def test_windows_partition_the_stream_and_drop_the_partial_tail():
