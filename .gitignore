@@ -38,6 +38,7 @@ challenges/Practical ML/House Price Predictor with Feature Importance Explainer/
 # Shopee Product Matching: competition archive (~2.7 GB), extracted slice images, embeddings, LanceDB index, report
 challenges/Practical ML/Duplicate Product Listing Detector/data/
 challenges/Practical ML/Resume-to-Job Matching Scorer/data/
+challenges/Practical ML/Email Priority Inbox Sorter/data/
 challenges/Practical ML/Duplicate Product Listing Detector/duplicates.csv
 # RSVP guest data and model-server request logs
 challenges/Web Development Showcase/Single-Page Event Invitation with RSVP/data/
