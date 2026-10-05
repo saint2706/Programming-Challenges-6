@@ -882,9 +882,11 @@ name = "model-drift-monitor"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "altair" },
     { name = "joblib" },
     { name = "lightgbm" },
     { name = "numpy" },
+    { name = "pandas" },
     { name = "polars" },
     { name = "pyarrow" },
     { name = "river" },
@@ -902,9 +904,11 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "altair", specifier = ">=6.3.0" },
     { name = "joblib", specifier = ">=1.6.0" },
     { name = "lightgbm", specifier = ">=4.7.0" },
     { name = "numpy", specifier = ">=2.5.3" },
+    { name = "pandas", specifier = ">=3.0.6" },
     { name = "polars", specifier = ">=1.44.2" },
     { name = "pyarrow", specifier = ">=25.0.1" },
     { name = "river", specifier = ">=0.26.1" },

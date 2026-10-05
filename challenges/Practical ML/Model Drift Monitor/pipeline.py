@@ -48,6 +48,26 @@ def load_artifacts(data_dir: Path = data.DATA_DIR) -> dict:
     return joblib.load(Path(data_dir) / ARTIFACTS_FILE)
 
 
+def load_context(data_dir: Path = data.DATA_DIR) -> tuple[dict, pl.DataFrame]:
+    """Saved artifacts plus the live split of the cached dataset."""
+    data_dir = Path(data_dir)
+    live = data.split(data.load(data_dir / data.PARQUET))[2]
+    return load_artifacts(data_dir), live
+
+
+def run_monitor(art: dict, live: pl.DataFrame):
+    """Monitor ``live`` with the saved model, baseline, thresholds and detectors."""
+    return monitor(
+        art["clf"],
+        art["baseline"],
+        art["thresholds"],
+        live,
+        art["seq"],
+        window=art["window"],
+        delay=art["delay"],
+    )
+
+
 def _clean(obj):
     """JSON-safe: NaN/inf -> None, numpy scalars -> python."""
     if isinstance(obj, dict):

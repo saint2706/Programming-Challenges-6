@@ -3,9 +3,11 @@ name = "model-drift-monitor"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "altair>=6.3.0",
     "joblib>=1.6.0",
     "lightgbm>=4.7.0",
     "numpy>=2.5.3",
+    "pandas>=3.0.6",
     "polars>=1.44.2",
     "pyarrow>=25.0.1",
     "river>=0.26.1",
