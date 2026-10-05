@@ -37,9 +37,12 @@ jobs:
           # passing the stale flag made lychee exit with an argument-parse
           # error before checking a single link, which this workflow then
           # misreported as "broken links found" (issue #5).
+          # unsplash.com answers every automated request with 401 (bot
+          # blocking), so its links can't be verified here (issue #17).
           args: >-
             --no-progress
             --exclude-path node_modules
+            --exclude '^https://unsplash\.com/'
             --accept 100..=103,200..=299,403,429
             --max-retries 3
             './**/*.md'
