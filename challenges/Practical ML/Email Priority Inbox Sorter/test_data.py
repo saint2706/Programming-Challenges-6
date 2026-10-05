@@ -143,3 +143,29 @@ def test_load_mailboxes_splits_sent_from_other_folders_and_filters_users(tmp_pat
     assert box.owner == "kay.mann@enron.com"
     assert sorted(m.message_id for m in box.sent) == ["<s1>", "<s2>"]
     assert len(received(box.others, box.owner)) == 1  # r1 appears in two folders
+
+
+def test_received_dedupes_copies_that_have_different_message_ids():
+    # the real corpus re-stamps the Message-ID of each folder's copy of one mail
+    me = "me@enron.com"
+    a = _msg("<1>", "a@x.com", [me, "b@x.com"], subject="Q3", cc=["c@x.com"])
+    b = _msg(
+        "<2>", "a@x.com", ["b@x.com", me], subject="Q3", cc=["c@x.com"]
+    )  # same mail
+    assert [m.message_id for m in received([a, b], me)] == ["<1>"]
+
+
+def test_different_mails_in_the_same_minute_are_not_collapsed():
+    me = "me@enron.com"
+    a = _msg("<1>", "a@x.com", [me], subject="Q3", body="first body")
+    b = _msg("<2>", "a@x.com", [me], subject="Q3", body="a different body")
+    c = _msg("<3>", "a@x.com", [me], subject="Q3", body="first body", cc=["z@x.com"])
+    assert [m.message_id for m in received([a, b, c], me)] == ["<1>", "<2>", "<3>"]
+
+
+def test_dedupe_keeps_the_first_copy_and_order():
+    from data import dedupe
+
+    a, b = _msg("<1>", "a@x.com", ["m@x"]), _msg("<2>", "a@x.com", ["m@x"])
+    other = _msg("<3>", "z@x.com", ["m@x"])
+    assert [m.message_id for m in dedupe([a, other, b])] == ["<1>", "<3>"]

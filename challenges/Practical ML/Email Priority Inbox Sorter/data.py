@@ -111,20 +111,48 @@ def owner_address(sent: list[Message]) -> str:
     return min(a for a, c in counts.items() if c == top)
 
 
-def received(msgs: list[Message], owner: str) -> list[Message]:
-    """Mail the owner received, once each, in the corpus's real date range, oldest first."""
-    seen: set[str] = set()
+def _fingerprint(m: Message) -> tuple:
+    return (
+        m.sender,
+        m.date,
+        m.subject,
+        tuple(sorted(m.to)),
+        tuple(sorted(m.cc)),
+        m.body,
+    )
+
+
+def dedupe(msgs: list[Message]) -> list[Message]:
+    """Keep the first copy of each message, in order.
+
+    Copies are matched by Message-ID *and* by content (sender, date, subject,
+    recipients, body): the corpus gives each folder's copy of one mail a fresh
+    Message-ID, so ID alone leaves about half the rows as duplicates.
+    """
+    seen_ids: set[str] = set()
+    seen_content: set[tuple] = set()
     out: list[Message] = []
     for m in msgs:
-        if m.sender == owner or owner not in m.to + m.cc:
+        fp = _fingerprint(m)
+        if m.message_id in seen_ids or fp in seen_content:
             continue
-        if m.date is None or not (MIN_YEAR <= m.date.year <= MAX_YEAR):
-            continue
-        if m.message_id in seen:
-            continue
-        seen.add(m.message_id)
+        seen_ids.add(m.message_id)
+        seen_content.add(fp)
         out.append(m)
-    return sorted(out, key=lambda m: (m.date, m.message_id))
+    return out
+
+
+def received(msgs: list[Message], owner: str) -> list[Message]:
+    """Mail the owner received, once each, in the corpus's real date range, oldest first."""
+    kept = [
+        m
+        for m in msgs
+        if m.sender != owner
+        and owner in m.to + m.cc
+        and m.date is not None
+        and MIN_YEAR <= m.date.year <= MAX_YEAR
+    ]
+    return sorted(dedupe(kept), key=lambda m: (m.date, m.message_id))
 
 
 def load_mailboxes(csv_path: Path, users: list[str]) -> dict[str, MailboxData]:

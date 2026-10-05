@@ -17,7 +17,7 @@ import joblib
 import numpy as np
 import polars as pl
 
-from data import CSV_NAME, DATA_DIR, Message, load_mailboxes, received
+from data import CSV_NAME, DATA_DIR, dedupe, load_mailboxes, received
 from evaluate import (
     ablation,
     bootstrap_ci,
@@ -55,16 +55,6 @@ DATASET_FILE = "dataset.parquet"
 ARTIFACTS_FILE = "models.joblib"
 
 
-def _dedupe(msgs: list[Message]) -> list[Message]:
-    seen: set[str] = set()
-    out = []
-    for m in msgs:
-        if m.message_id not in seen:
-            seen.add(m.message_id)
-            out.append(m)
-    return out
-
-
 def prepare(
     csv: Path, users: list[str], out_dir: Path
 ) -> tuple[pl.DataFrame, dict[str, dict]]:
@@ -77,12 +67,11 @@ def prepare(
         owner = box.owner
         # Mail the owner sent can sit in any folder (e.g. all_documents), so a
         # reply filed away from the sent folder still counts as a reply.
-        owner_sent = _dedupe(box.sent + [m for m in box.others if m.sender == owner])
-        addressed = {
-            m.message_id
-            for m in box.others
-            if m.sender != owner and owner in m.to + m.cc
-        }
+        owner_sent = dedupe(box.sent + [m for m in box.others if m.sender == owner])
+        raw_addressed = [
+            m for m in box.others if m.sender != owner and owner in m.to + m.cc
+        ]
+        addressed = dedupe(raw_addressed)
         rec = received(box.others, owner)
         cutoff = censor_cutoff(owner_sent)
         kept = [m for m in rec if m.date <= cutoff]
@@ -92,6 +81,7 @@ def prepare(
         frames.append(frame.join(feats, on="message_id", how="left"))
         n = max(len(kept), 1)
         stats[user] = {
+            "copies_in_folders": len(raw_addressed),
             "addressed_to_owner": len(addressed),
             "dropped_bad_or_missing_date": len(addressed) - len(rec),
             "received": len(rec),
