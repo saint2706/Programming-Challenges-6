@@ -8,6 +8,7 @@ dependencies = [
     "numpy>=2.3.5",
     "polars>=1.44.2",
     "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
     "shap>=0.52.0",
     "streamlit>=1.64.0",
     "typer>=0.27.2",
