@@ -18,7 +18,7 @@ from river import drift
 WINDOW = 336
 ALPHA = 0.01
 PH_THRESHOLDS = (5.0, 10.0, 20.0, 30.0, 50.0, 80.0, 120.0, 200.0, 400.0)
-ADWIN_DELTAS = (0.01, 0.002, 0.0005, 0.0001, 1e-5, 1e-6, 1e-8)
+ADWIN_DELTAS = (0.1, 0.05, 0.01, 0.002, 0.0005, 0.0001, 1e-5, 1e-6, 1e-8)
 PH_DELTA = 0.005  # in standard deviations of the reference stream
 
 

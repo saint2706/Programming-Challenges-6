@@ -36,3 +36,30 @@ def test_score_is_a_probability_one_per_row_and_deterministic():
 def test_model_uses_exactly_the_feature_columns():
     clf = fit(_task(300), seed=0)
     assert clf.n_features_in_ == len(FEATURES)
+
+
+def test_out_of_fold_scores_are_honest_not_in_sample():
+    from sklearn.metrics import log_loss
+
+    from model import oof_scores
+
+    df = _task(1200)
+    clf = fit(df, seed=0)
+    in_sample = score(clf, df)
+    oof = oof_scores(df, k=4, seed=0)
+    y = df["label"].to_numpy()
+    assert oof.shape == (1200,) and (oof >= 0).all() and (oof <= 1).all()
+    assert log_loss(y, oof) > log_loss(
+        y, in_sample
+    )  # unseen rows are scored less confidently
+    np.testing.assert_allclose(oof, oof_scores(df, k=4, seed=0))
+
+
+def test_oof_folds_are_contiguous_blocks_so_no_row_scores_itself():
+    from model import oof_scores
+
+    df = _task(400)
+    oof = oof_scores(df, k=4, seed=0)
+    # a model trained on rows 0-299 scores rows 300-399 identically to oof
+    clf = fit(df[:300], seed=0)
+    np.testing.assert_allclose(oof[300:], score(clf, df[300:]), atol=1e-9)
