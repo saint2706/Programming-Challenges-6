@@ -1,0 +1,22 @@
+[project]
+name = "model-drift-monitor"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "joblib>=1.6.0",
+    "lightgbm>=4.7.0",
+    "numpy>=2.5.3",
+    "polars>=1.44.2",
+    "pyarrow>=25.0.1",
+    "river>=0.26.1",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+    "streamlit>=1.65.0",
+    "typer>=0.27.2",
+]
+
+[dependency-groups]
+dev = [
+    "evidently>=0.7.23",
+    "pytest>=9.1.1",
+]
