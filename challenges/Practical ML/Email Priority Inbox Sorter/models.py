@@ -100,7 +100,7 @@ def svd_columns(n: int) -> list[str]:
     return [f"svd_{i}" for i in range(n)]
 
 
-def _fit_lgbm(
+def fit_lgbm(
     x_train: np.ndarray,
     y_train: np.ndarray,
     x_val: np.ndarray,
@@ -189,8 +189,8 @@ def fit_models(train: pl.DataFrame, val: pl.DataFrame, seed: int = 0) -> Models:
     shell = Models(text, lr, None, None, seed)  # type: ignore[arg-type]
     meta_train, meta_val = shell.matrix(train, False), shell.matrix(val, False)
     mt_train, mt_val = shell.matrix(train, True), shell.matrix(val, True)
-    shell.lgbm_meta = _fit_lgbm(meta_train, y_train, meta_val, y_val, seed)
-    shell.lgbm_meta_text = _fit_lgbm(mt_train, y_train, mt_val, y_val, seed)
+    shell.lgbm_meta = fit_lgbm(meta_train, y_train, meta_val, y_val, seed)
+    shell.lgbm_meta_text = fit_lgbm(mt_train, y_train, mt_val, y_val, seed)
     return shell
 
 
