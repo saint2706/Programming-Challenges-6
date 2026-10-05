@@ -28,12 +28,21 @@ _SPACES = re.compile(r"\s+")
 Kind = Literal["reply", "forward", "other"]
 
 
+def strip_prefixes(subject: str) -> tuple[str, int, int]:
+    """Drop a ``Re:``/``Fw:``/``Fwd:`` chain: ``(rest, n_re, n_fw)``."""
+    s, n_re, n_fw = subject, 0, 0
+    while (m := _PREFIX.match(s)) is not None:
+        if m.group(1).lower() == "re":
+            n_re += 1
+        else:
+            n_fw += 1
+        s = s[m.end() :]
+    return s, n_re, n_fw
+
+
 def normalize_subject(subject: str) -> str:
     """Strip any chain of ``Re:``/``Fw:``/``Fwd:``, collapse whitespace, lowercase."""
-    s = subject
-    while (m := _PREFIX.match(s)) is not None:
-        s = s[m.end() :]
-    return _SPACES.sub(" ", s).strip().lower()
+    return _SPACES.sub(" ", strip_prefixes(subject)[0]).strip().lower()
 
 
 def kind_of(subject: str) -> Kind:
