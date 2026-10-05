@@ -3,7 +3,7 @@ name = "personal-subscription-tracker-with-renewal-alerts"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.141.1",
+    "fastapi>=0.142.2",
     "plyer>=2.1.0",
     "python-multipart>=0.0.32",
     "sqlmodel>=0.0.47",
