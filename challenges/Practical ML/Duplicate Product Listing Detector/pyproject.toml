@@ -11,7 +11,7 @@ dependencies = [
     "pyarrow>=25.0.1",
     "sentence-transformers>=6.1.0",
     "streamlit>=1.64.0",
-    "torch>=2.14.0",
+    "torch>=2.14.1",
     "transformers>=5.18.0",
     "typer>=0.27.2",
 ]
