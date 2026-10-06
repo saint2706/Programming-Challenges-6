@@ -205,16 +205,19 @@ def run_all(
     base = build_baseline(clf, train, seed=seed)
     ref_cols = columns_of(clf, ref)
     thr = calibrate(
-        null_distribution(base, ref_cols, window=window, seed=seed), alpha=ALPHA
+        null_distribution(base, ref_cols, window=window, seed=seed, mode=null_mode),
+        alpha=ALPHA,
     )
     ref_err = ((model.score(clf, ref) > THRESHOLD) != ref["label"].to_numpy()).astype(
         float
     )
     seq = {
         "score": calibrate_sequential(
-            ref_cols["score"], window=window, alpha=ALPHA, seed=seed
+            ref_cols["score"], window=window, alpha=ALPHA, seed=seed, mode=null_mode
         ),
-        "error": calibrate_sequential(ref_err, window=window, alpha=ALPHA, seed=seed),
+        "error": calibrate_sequential(
+            ref_err, window=window, alpha=ALPHA, seed=seed, mode=null_mode
+        ),
     }
 
     res = monitor(clf, base, thr, live, seq, window=window, delay=delay)
@@ -223,11 +226,26 @@ def run_all(
 
     oof = model.oof_scores(train, seed=seed)
     live_scores = model.score(clf, live)
+    # The benchmark streams are i.i.d. draws from the reference, so they are judged
+    # against thresholds calibrated the same way; contiguous-block thresholds are for
+    # the natural (contiguous) live stream and would be mismatched here.
+    bench_thr = calibrate(
+        null_distribution(base, ref_cols, window=window, seed=seed, mode="iid"),
+        alpha=ALPHA,
+    )
+    bench_seq = {
+        "score": calibrate_sequential(
+            ref_cols["score"], window=window, alpha=ALPHA, seed=seed, mode="iid"
+        ),
+        "error": calibrate_sequential(
+            ref_err, window=window, alpha=ALPHA, seed=seed, mode="iid"
+        ),
+    }
     runs = benchmark(
         clf,
         base,
-        thr,
-        seq,
+        bench_thr,
+        bench_seq,
         ref,
         default_scenarios(clf),
         n_seeds=n_seeds,
