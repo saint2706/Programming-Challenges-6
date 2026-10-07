@@ -18,5 +18,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "causalml>=0.17.0",
     "pytest>=9.1.1",
+    "scikit-uplift>=0.5.1",
 ]
