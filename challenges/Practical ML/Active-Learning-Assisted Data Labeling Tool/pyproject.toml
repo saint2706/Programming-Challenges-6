@@ -1,0 +1,22 @@
+[project]
+name = "active-learning-labeling-tool"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "joblib>=1.6.0",
+    "numpy>=2.5.3",
+    "openvino>=2026.4.1",
+    "polars>=2.0.0",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+    "streamlit>=1.65.0",
+    "torch>=2.14.1",
+    "transformers>=5.19.0",
+    "typer>=0.27.3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "scikit-activeml>=1.0.0",
+]
