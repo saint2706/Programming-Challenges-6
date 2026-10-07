@@ -3,12 +3,17 @@
 tau(x) = E[Y | x, treated] - E[Y | x, control]. Every learner exposes ``fit(X, t, y)`` and
 ``predict(X) -> tau_hat`` (a ranking score; for the baselines it is just a score).
 
+``propensity`` is either a constant (a clean RCT) or a fitted model with ``predict(X) -> e(x)``
+(see ``propensity.py``): X, TO and DR use it; T, S, response and random never touch it.
+
 * S   one model with ``t`` as a feature; f(x,1) - f(x,0).
 * T   separate treated and control outcome models; mu1(x) - mu0(x). The brief's two-model approach.
 * X   Kunzel et al. 2019: impute each arm's missing outcome with the other arm's model,
       fit two effect models on the imputed effects, blend them with weight ``e``.
-* TO  transformed outcome: E[Y (t - e) / (e (1 - e)) | x] = tau(x), so regress it on x. The
+* TO  transformed outcome: E[Y (t - e(x)) / (e(x) (1 - e(x))) | x] = tau(x), so regress it on x. The
       classic class-variable transformation z = tY + (1-t)(1-Y) is only valid at e = 0.5; ours is 0.85.
+      It is also the learner most exposed to a wrong e: a constant e under even mild confounding
+      adds delta * (mu1/e + mu0/(1-e)) to the target (see ``test_learners.py``).
 * DR  doubly robust (Kennedy 2020), cross-fitted nuisance models, regressed pseudo-outcome.
 * response  P(Y | x, treated): who converts when contacted, which is not who is persuadable.
 * random    the chance baseline.
@@ -54,17 +59,26 @@ def _p1(model, X):
     return model.predict_proba(X)[:, 1]
 
 
+def transformed_outcome(y, t, e):
+    """Y (t - e) / (e (1 - e)): its conditional mean given x is tau(x) when ``e`` is the true e(x)."""
+    return y * (t - e) / (e * (1 - e))
+
+
 class Learner:
     name = "?"
 
-    def __init__(
-        self, propensity: float = 0.85, params: dict | None = None, seed: int = 0
-    ):
-        if not 0.0 < propensity < 1.0:
+    def __init__(self, propensity=0.85, params: dict | None = None, seed: int = 0):
+        if not hasattr(propensity, "predict") and not 0.0 < propensity < 1.0:
             raise ValueError(
                 f"propensity must be strictly between 0 and 1, got {propensity}"
             )
         self.propensity, self.params, self.seed = propensity, dict(params or {}), seed
+
+    def _e(self, X):
+        """e(x) for every row: the fitted model's prediction, or the constant."""
+        if hasattr(self.propensity, "predict"):
+            return self.propensity.predict(X)
+        return np.full(len(X), self.propensity)
 
     def _check(self, t, y):
         for arm, label in ((1, "treated"), (0, "control")):
@@ -127,7 +141,7 @@ class XLearner(Learner):
         return self
 
     def predict(self, X):
-        e = self.propensity
+        e = self._e(X)
         return e * self.tau0_.predict(X) + (1 - e) * self.tau1_.predict(X)
 
 
@@ -136,8 +150,9 @@ class TransformedOutcome(Learner):
 
     def fit(self, X, t, y):
         self._check(t, y)
-        e = self.propensity
-        self.model_ = _reg(self.params, self.seed).fit(X, y * (t - e) / (e * (1 - e)))
+        self.model_ = _reg(self.params, self.seed).fit(
+            X, transformed_outcome(y, t, self._e(X))
+        )
         return self
 
     def predict(self, X):
@@ -149,7 +164,7 @@ class DRLearner(Learner):
 
     def fit(self, X, t, y):
         self._check(t, y)
-        e = self.propensity
+        e = self._e(X)
         fold = np.random.default_rng(self.seed).integers(0, 2, len(X))
         phi = np.empty(len(X))
         for k in (0, 1):
@@ -160,8 +175,8 @@ class DRLearner(Learner):
             phi[te] = (
                 mu1
                 - mu0
-                + t[te] * (y[te] - mu1) / e
-                - (1 - t[te]) * (y[te] - mu0) / (1 - e)
+                + t[te] * (y[te] - mu1) / e[te]
+                - (1 - t[te]) * (y[te] - mu0) / (1 - e[te])
             )
         self.model_ = _reg(self.params, self.seed).fit(X, phi)
         return self

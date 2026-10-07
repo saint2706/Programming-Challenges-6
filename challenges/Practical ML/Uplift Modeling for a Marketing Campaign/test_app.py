@@ -53,3 +53,9 @@ def test_a_profitable_setting_shows_the_best_share(at):
     at.number_input(key="cost").set_value(0.01).run()
     assert not at.exception
     assert any("best share" in el.value.lower() for el in [*at.caption, *at.markdown])
+
+
+def test_the_unadjusted_effect_is_shown_beside_the_adjusted_one(at):
+    captions = " ".join(c.value for c in at.caption).lower()
+    assert "unadjusted" in captions
+    assert "inverse-propensity" in captions

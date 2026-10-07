@@ -1,9 +1,12 @@
 """The benchmark: tune on validation, score the test split once, plus the known-effect check.
 
 Real data has no ground truth for an individual's effect, so the learners are judged by
-uplift curves on the randomized test split (with a paired bootstrap) and by decile
-calibration; the semi-synthetic benchmark (``synth``) is where "did it recover tau" is
-answerable.
+uplift curves on the test split (with a paired bootstrap) and by decile calibration; the
+semi-synthetic benchmark (``synth``) is where "did it recover tau" is answerable.
+
+Treatment on Criteo is *nearly* but not exactly randomized (see ``propensity.py``), so every
+real-data number is inverse-propensity weighted with an e(x) fit on the train split. The plain
+(unweighted) difference-in-means numbers are kept as an ``unadjusted`` sensitivity next to them.
 """
 
 from __future__ import annotations
@@ -12,6 +15,7 @@ import data
 import learners
 import metrics
 import numpy as np
+import propensity
 import synth
 from scipy import stats
 
@@ -24,34 +28,59 @@ FRACS = (0.1, 0.2, 0.3, 0.5)
 SYNTH_PARAMS = {"n_estimators": 150, "min_child_samples": 100, "num_leaves": 15}
 
 
-def tune(cls, train, val, grid, e: float, seed: int) -> dict:
-    """The grid entry with the best Qini coefficient on the validation split."""
+def tune(cls, train, val, grid, e, seed: int, val_weights=None) -> dict:
+    """The grid entry with the best Qini coefficient on the validation split.
+
+    ``e`` is a constant or a propensity model; ``val_weights`` are the validation IPW weights."""
     X, t, y = train
     Xv, tv, yv = val
     best, best_score = grid[0], -np.inf
     for params in grid:
         score = metrics.qini_coefficient(
-            metrics.rank(cls(e, params, seed).fit(X, t, y).predict(Xv), tv, yv)
+            metrics.rank(
+                cls(e, params, seed).fit(X, t, y).predict(Xv), tv, yv, val_weights
+            )
         )
         if score > best_score:
             best, best_score = params, score
     return best
 
 
+UNADJUSTED_STATS = ("qini", "auuc", "incremental@20")
+
+
 def evaluate_real(
-    train, val, test, outcome: str, *, grid=GRID, n_boot: int = 200, seed: int = 0
+    train,
+    val,
+    test,
+    outcome: str,
+    *,
+    propensity_model,
+    grid=GRID,
+    n_boot: int = 200,
+    seed: int = 0,
 ):
-    """Fit every learner on ``train`` (params tuned on ``val``), score ``test`` once."""
-    e = data.propensity(train)
+    """Fit every learner on ``train`` (params tuned on ``val``), score ``test`` once.
+
+    ``propensity_model`` is e(x) fit on ``train``. Returns ``(summary, scores, models,
+    (t, y, w))`` where ``w`` are the test IPW weights."""
     tr, va, te = (data.xy(df, outcome) for df in (train, val, test))
     t_te, y_te = te[1], te[2]
+    w_va = propensity.ipw_weights(va[1], propensity_model.predict(va[0]))
+    w_te = propensity.ipw_weights(t_te, propensity_model.predict(te[0]))
     models, params, scores = {}, {}, {}
     for name, cls in {**learners.LEARNERS, **learners.BASELINES}.items():
-        params[name] = {} if name == "random" else tune(cls, tr, va, grid, e, seed)
-        models[name] = cls(e, params[name], seed).fit(*tr)
+        params[name] = (
+            {}
+            if name == "random"
+            else tune(cls, tr, va, grid, propensity_model, seed, w_va)
+        )
+        models[name] = cls(propensity_model, params[name], seed).fit(*tr)
         scores[name] = models[name].predict(te[0])
-    ranked = {n: metrics.rank(s, t_te, y_te) for n, s in scores.items()}
+    ranked = {n: metrics.rank(s, t_te, y_te, w_te) for n, s in scores.items()}
+    plain = {n: metrics.rank(s, t_te, y_te) for n, s in scores.items()}
     boot = metrics.bootstrap(ranked, n_boot=n_boot, seed=seed)
+    boot_plain = metrics.bootstrap(plain, n_boot=n_boot, seed=seed)
     out = {}
     for name in ranked:
         entry = {
@@ -62,15 +91,21 @@ def evaluate_real(
         entry["qini_vs_T"] = (
             None if name == "T" else metrics.diff_interval(boot, name, "T", "qini")
         )
+        entry["unadjusted"] = {
+            stat: metrics.interval(boot_plain, name, stat) for stat in UNADJUSTED_STATS
+        }
         entry["params"] = params[name]
-        entry["calibration"] = metrics.decile_calibration(scores[name], t_te, y_te)
+        entry["calibration"] = metrics.decile_calibration(
+            scores[name], t_te, y_te, arm_weights=w_te
+        )
         out[name] = entry
     summary = {
         "n_test": len(t_te),
         "ate": metrics.interval(boot, "T", "ate"),
+        "ate_unadjusted": metrics.interval(boot_plain, "T", "ate"),
         "learners": out,
     }
-    return summary, scores, models, (t_te, y_te)
+    return summary, scores, models, (t_te, y_te, w_te)
 
 
 def mean_ci(values) -> dict | None:

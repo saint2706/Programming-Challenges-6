@@ -29,3 +29,14 @@ def make_frame(n=20000, seed=0, confounded=False, strength=1.5) -> pl.DataFrame:
             "exposure": exposure,
         }
     )
+
+
+def confounded_rct(n=300_000, seed=0, tau=0.02):
+    """Heavy users (x > 0) are both treated more often and convert more at baseline."""
+    rng = np.random.default_rng(seed)
+    x = rng.normal(size=n)
+    e = 0.5 + 0.4 * np.tanh(2 * x)
+    t = (rng.random(n) < e).astype(int)
+    base = np.where(x > 0, 0.20, 0.05)
+    y = (rng.random(n) < base + tau * t).astype(int)
+    return x, t, y, e

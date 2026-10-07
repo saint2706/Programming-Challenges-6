@@ -13,7 +13,15 @@ TINY = {"n_estimators": 40, "min_child_samples": 30, "num_leaves": 15}
 
 def test_report_has_every_section(tiny):
     _, report, _ = tiny
-    assert set(report) >= {"config", "randomization", "rows", "outcomes", "synthetic"}
+    assert set(report) >= {
+        "config",
+        "randomization",
+        "propensity",
+        "rows",
+        "outcomes",
+        "synthetic",
+    }
+    assert 0.4 < report["propensity"]["auc"] < 0.6  # make_frame is randomized
     assert set(report["outcomes"]) == {"visit", "conversion"}
     assert set(report["synthetic"]) == {"heterogeneous", "constant", "none"}
     assert len(report["randomization"]) == 12
@@ -26,7 +34,7 @@ def test_artifacts_round_trip(tiny):
     assert set(art.scores) == {"visit", "conversion"}
     frame = art.scores["visit"]
     scorers = {"T", "S", "X", "TO", "DR", "response", "random"}
-    assert {"t", "y", *scorers} <= set(frame.columns)
+    assert {"t", "y", "w", *scorers} <= set(frame.columns)
     assert frame.height == report["outcomes"]["visit"]["n_test"]
     assert set(art.models["visit"]) == scorers
 
@@ -45,6 +53,9 @@ def test_ranked_scores_gives_one_ranking_per_scorer(tiny):
     assert "T" in ranked and "random" in ranked
     reported = art.report["outcomes"]["visit"]["learners"]["T"]["qini"]["est"]
     assert metrics.qini_coefficient(ranked["T"]) == pytest.approx(reported)
+    # the stored IPW weights are applied, so the ATE is the adjusted one
+    ate = art.report["outcomes"]["visit"]["ate"]["est"]
+    assert metrics.ate(ranked["T"]) == pytest.approx(ate)
 
 
 def test_report_is_strict_json(tiny):
@@ -102,3 +113,72 @@ def test_a_failed_randomization_check_aborts_before_any_stage(tmp_path):
 def test_load_artifacts_before_a_benchmark_explains_what_to_do(tmp_path):
     with pytest.raises(FileNotFoundError, match="benchmark"):
         pipeline.load_artifacts(tmp_path)
+
+
+@pytest.fixture
+def counted(monkeypatch):
+    """Count real-stage computations without changing them."""
+    calls = []
+    original = evaluate.evaluate_real
+
+    def wrapper(*args, **kwargs):
+        calls.append(args[3])
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(evaluate, "evaluate_real", wrapper)
+    return calls
+
+
+def small_kw(**over):
+    kw = {
+        "seed": 0,
+        "n_boot": 20,
+        "n_seeds": 1,
+        "df": make_frame(8000),
+        "grid": [TINY],
+        "synth_n": 2000,
+        "synth_params": TINY,
+        "stages": ("visit",),
+    }
+    return {**kw, **over}
+
+
+def test_changing_n_boot_recomputes_a_finished_stage(tmp_path, counted):
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw())
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw())
+    assert counted == ["visit"]  # second identical run reused the cache
+    again = pipeline.run_all(tmp_path, tmp_path / "r", **small_kw(n_boot=30))
+    assert counted == ["visit", "visit"]
+    assert again["config"]["n_boot"] == 30
+
+
+def test_changing_the_seed_recomputes_a_finished_stage(tmp_path, counted):
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw())
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw(seed=1))
+    assert counted == ["visit", "visit"]
+
+
+def test_changing_the_data_recomputes_a_finished_stage(tmp_path, counted):
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw())
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw(df=make_frame(8000, seed=1)))
+    assert counted == ["visit", "visit"]
+
+
+def test_running_one_stage_keeps_the_other_finished_stages_in_the_report(tmp_path):
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw(stages=("visit",)))
+    report = pipeline.run_all(
+        tmp_path, tmp_path / "r", **small_kw(stages=("conversion",))
+    )
+    assert set(report["outcomes"]) == {"visit", "conversion"}
+    assert (
+        pipeline.load_artifacts(tmp_path / "r").report["outcomes"].keys()
+        == report["outcomes"].keys()
+    )
+
+
+def test_a_stale_stage_that_was_not_requested_is_left_out_of_the_report(tmp_path):
+    pipeline.run_all(tmp_path, tmp_path / "r", **small_kw(stages=("visit",)))
+    report = pipeline.run_all(
+        tmp_path, tmp_path / "r", **small_kw(seed=1, stages=("conversion",))
+    )
+    assert set(report["outcomes"]) == {"conversion"}

@@ -1,7 +1,11 @@
-"""run_all: randomization check, split, benchmark each stage (cached), write artifacts.
+"""run_all: randomization check, split, propensity model, benchmark each stage (cached), artifacts.
 
-Stages (``visit``, ``conversion``, ``synthetic``) are cached as JSON in ``results/stages/`` so an
-interrupted run resumes and a finished stage is not recomputed (``fresh=True`` forces it).
+Stages (``propensity``, ``visit``, ``conversion``, ``synthetic``) are cached as JSON in
+``results/stages/``. A stage file stores the *key* it was computed under (seed, bootstrap size,
+grid, ... and a fingerprint of the data) and is reused only if the key matches, so changing any
+of them recomputes it, while a stage that was not asked for this time but is still valid stays in
+``report.json``. ``fresh=True`` recomputes the stages that were asked for.
+
 Generated scores and fitted models are git-ignored; ``results/report.json`` is tracked.
 """
 
@@ -18,10 +22,13 @@ import joblib
 import metrics
 import numpy as np
 import polars as pl
+import propensity
 
 HERE = Path(__file__).parent
 RESULTS_DIR = HERE / "results"
-STAGES = ("visit", "conversion", "synthetic")
+REAL_STAGES = ("visit", "conversion")
+STAGES = ("propensity", *REAL_STAGES, "synthetic")
+STAGE_VERSION = 2  # bump when a stage's payload format or meaning changes
 
 
 def clean(obj):
@@ -37,33 +44,27 @@ def clean(obj):
     return obj
 
 
-def _stage(
-    name,
-    results_dir,
-    train,
-    val,
-    test,
-    *,
-    n_boot,
-    seed,
-    grid,
-    n_seeds,
-    synth_n,
-    synth_params,
-):
+def fingerprint(df: pl.DataFrame) -> str:
+    """Row count plus an order-independent hash of the rows: a different sample changes it."""
+    return f"{df.height}:{int(np.bitwise_xor.reduce(df.hash_rows(seed=0).to_numpy()))}"
+
+
+def _key(name, fp, *, seed, n_boot, n_seeds, grid, synth_n, synth_params) -> dict:
+    """Everything a stage's result depends on, and nothing else."""
+    key = {"version": STAGE_VERSION, "data": fp, "seed": seed}
     if name == "synthetic":
-        X, t, _ = data.xy(train.head(synth_n))
-        return evaluate.evaluate_synth(
-            X, t, n_seeds=n_seeds, params=synth_params, seed=seed
-        )
-    summary, scores, models, (t_te, y_te) = evaluate.evaluate_real(
-        train, val, test, name, grid=grid, n_boot=n_boot, seed=seed
-    )
-    pl.DataFrame({"t": t_te, "y": y_te, **scores}).write_parquet(
-        results_dir / f"scores_{name}.parquet"
-    )
-    joblib.dump(models, results_dir / f"models_{name}.joblib")
-    return summary
+        key |= {"n_seeds": n_seeds, "synth_n": synth_n, "synth_params": synth_params}
+    elif name in REAL_STAGES:
+        key |= {"n_boot": n_boot, "grid": grid}
+    return clean(key)
+
+
+def _read_stage(path: Path, key: dict):
+    """The cached payload if the file exists and was computed under ``key``, else ``None``."""
+    if not path.exists():
+        return None
+    stored = json.loads(path.read_text())
+    return stored["payload"] if stored.get("key") == key else None
 
 
 def run_all(
@@ -84,6 +85,10 @@ def run_all(
     balance = data.assert_randomized(df)  # aborts before anything is written
     train, val, test = data.split(df, seed)
     (results_dir / "stages").mkdir(parents=True, exist_ok=True)
+    fp = fingerprint(df)
+    wanted = set(stages)
+    if wanted & set(REAL_STAGES):
+        wanted.add("propensity")  # the real stages need e(x)
     report = {
         "config": {
             "seed": seed,
@@ -91,34 +96,71 @@ def run_all(
             "n_seeds": n_seeds,
             "grid": grid,
             "synth_n": synth_n,
-            "propensity": data.propensity(train),
+            "treated_share": data.propensity(train),
         },
         "randomization": balance.to_dicts(),
         "rows": {"train": train.height, "val": val.height, "test": test.height},
         "outcomes": {},
     }
-    for name in stages:
+    model_path = results_dir / "propensity.joblib"
+    model = None
+
+    def propensity_model():
+        nonlocal model
+        if model is None:
+            # joblib unpickles: safe only because this file is written by our own run into the
+            # gitignored results/ dir. Never point this at files from elsewhere.
+            model = joblib.load(model_path)
+        return model
+
+    for name in STAGES:
         path = results_dir / "stages" / f"{name}.json"
-        if path.exists() and not fresh:
-            payload = json.loads(path.read_text())
-        else:
-            payload = clean(
-                _stage(
-                    name,
-                    results_dir,
+        key = _key(
+            name,
+            fp,
+            seed=seed,
+            n_boot=n_boot,
+            n_seeds=n_seeds,
+            grid=grid,
+            synth_n=synth_n,
+            synth_params=synth_params,
+        )
+        payload = None if fresh and name in wanted else _read_stage(path, key)
+        if payload is None:
+            if name not in wanted:
+                continue  # not asked for, and stale or missing: leave it out of the report
+            if name == "propensity":
+                X_tr, t_tr, _ = data.xy(train)
+                model = propensity.PropensityModel(seed=seed).fit(X_tr, t_tr)
+                joblib.dump(model, model_path)
+                Xt, tt, _ = data.xy(test)
+                payload = propensity.diagnose(model, Xt, tt)
+            elif name == "synthetic":
+                X, t, _ = data.xy(train.head(synth_n))
+                payload = evaluate.evaluate_synth(
+                    X, t, n_seeds=n_seeds, params=synth_params, seed=seed
+                )
+            else:
+                summary, scores, models, (t_te, y_te, w_te) = evaluate.evaluate_real(
                     train,
                     val,
                     test,
+                    name,
+                    propensity_model=propensity_model(),
+                    grid=grid,
                     n_boot=n_boot,
                     seed=seed,
-                    grid=grid,
-                    n_seeds=n_seeds,
-                    synth_n=synth_n,
-                    synth_params=synth_params,
                 )
-            )
-            path.write_text(json.dumps(payload, indent=2))
-        if name == "synthetic":
+                pl.DataFrame({"t": t_te, "y": y_te, "w": w_te, **scores}).write_parquet(
+                    results_dir / f"scores_{name}.parquet"
+                )
+                joblib.dump(models, results_dir / f"models_{name}.joblib")
+                payload = summary
+            payload = clean(payload)
+            path.write_text(json.dumps({"key": key, "payload": payload}, indent=2))
+        if name == "propensity":
+            report["propensity"] = payload
+        elif name == "synthetic":
             report["synthetic"] = payload
         else:
             report["outcomes"][name] = payload
@@ -155,10 +197,12 @@ def load_artifacts(results_dir=RESULTS_DIR, with_models: bool = False) -> Artifa
 
 
 def ranked_scores(art: Artifacts, outcome: str) -> dict[str, metrics.Ranked]:
+    """One ranking per scorer on the test split, with the stored IPW arm weights applied."""
     frame = art.scores[outcome]
     t, y = frame["t"].to_numpy(), frame["y"].to_numpy()
+    w = frame["w"].to_numpy() if "w" in frame.columns else None
     return {
-        c: metrics.rank(frame[c].to_numpy(), t, y)
+        c: metrics.rank(frame[c].to_numpy(), t, y, w)
         for c in frame.columns
-        if c not in ("t", "y")
+        if c not in ("t", "y", "w")
     }

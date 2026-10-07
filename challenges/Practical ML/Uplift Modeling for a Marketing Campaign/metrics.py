@@ -31,9 +31,13 @@ class Ranked:
     t: np.ndarray  # treatment in ranked order
     y: np.ndarray  # outcome in ranked order
     ends: np.ndarray  # index of the last row of each run of tied scores
+    arm: np.ndarray | None = None  # per-row arm weights (e.g. IPW) in ranked order
 
 
-def rank(score, t, y) -> Ranked:
+def rank(score, t, y, arm_weights=None) -> Ranked:
+    """Sort once. ``arm_weights`` (e.g. ``1 / P(own arm | x)``) correct the treated-vs-control
+    comparison when treatment was not assigned with a constant probability; they weight each
+    arm's outcome rate, while the share of customers targeted always counts customers."""
     score = np.asarray(score, dtype=np.float64)
     order = np.argsort(-score, kind="stable")
     s = score[order]
@@ -43,21 +47,26 @@ def rank(score, t, y) -> Ranked:
         np.asarray(t, dtype=np.float64)[order],
         np.asarray(y, dtype=np.float64)[order],
         ends,
+        None
+        if arm_weights is None
+        else np.asarray(arm_weights, dtype=np.float64)[order],
     )
 
 
 def _weights(r: Ranked, w):
-    return np.ones(len(r.t)) if w is None else np.asarray(w, dtype=np.float64)[r.order]
+    """``(count, arm)``: bootstrap multiplicities (customers) and the weights of the arm rates."""
+    count = np.ones(len(r.t)) if w is None else np.asarray(w, dtype=np.float64)[r.order]
+    return count, count if r.arm is None else count * r.arm
 
 
 def curve(r: Ranked, w=None):
     """``(x, q, u)``, each starting at 0: share targeted, Qini gain, incremental outcomes."""
-    ww = _weights(r, w)
-    wt, wc = ww * r.t, ww * (1.0 - r.t)
+    count, arm = _weights(r, w)
+    wt, wc = arm * r.t, arm * (1.0 - r.t)
     nt, nc = np.cumsum(wt)[r.ends], np.cumsum(wc)[r.ends]
     yt, yc = np.cumsum(wt * r.y)[r.ends], np.cumsum(wc * r.y)[r.ends]
-    n_k = np.cumsum(ww)[r.ends]
-    n = ww.sum()
+    n_k = np.cumsum(count)[r.ends]
+    n = count.sum()
     both = (nt > 0) & (nc > 0)
     safe_nt, safe_nc = np.where(both, nt, 1.0), np.where(both, nc, 1.0)
     q = np.where(both, yt - yc * safe_nt / safe_nc, 0.0)
@@ -81,10 +90,10 @@ def ate(r: Ranked, w=None) -> float:
 
 def uplift_at(r: Ranked, frac: float, w=None) -> float:
     """Observed treated-minus-control outcome rate inside the top ``frac`` of the ranking."""
-    ww = _weights(r, w)
-    cut = int(np.searchsorted(np.cumsum(ww), frac * ww.sum()))
+    count, arm = _weights(r, w)
+    cut = int(np.searchsorted(np.cumsum(count), frac * count.sum()))
     sl = slice(0, cut + 1)
-    wt, wc = ww[sl] * r.t[sl], ww[sl] * (1.0 - r.t[sl])
+    wt, wc = arm[sl] * r.t[sl], arm[sl] * (1.0 - r.t[sl])
     if wt.sum() == 0 or wc.sum() == 0:
         return 0.0
     return float((wt * r.y[sl]).sum() / wt.sum() - (wc * r.y[sl]).sum() / wc.sum())
@@ -149,24 +158,33 @@ def diff_interval(
     )
 
 
-def decile_calibration(score, t, y, n_bins: int = 10) -> list[dict]:
-    """Per predicted-uplift bin (1 = highest): observed uplift (difference in means) and its SE."""
+def decile_calibration(score, t, y, n_bins: int = 10, arm_weights=None) -> list[dict]:
+    """Per predicted-uplift bin (1 = highest): observed uplift (difference in means) and its SE.
+
+    With ``arm_weights`` (IPW) each arm's rate is a weighted mean and the SE is the usual
+    linearization ``sqrt(sum w^2 (y - p)^2) / sum w``, which equals ``sqrt(p (1 - p) / n)`` at unit weights.
+    """
     score, t, y = (np.asarray(a) for a in (score, t, y))
+    w = np.ones(len(y)) if arm_weights is None else np.asarray(arm_weights, float)
     rows = []
     order = np.argsort(-score, kind="stable")
+
+    def rate(ix):
+        if len(ix) == 0:
+            return float("nan"), 0.0
+        wm, ym = w[ix], y[ix]
+        p = float((wm * ym).sum() / wm.sum())
+        return p, float((wm**2 * (ym - p) ** 2).sum() / wm.sum() ** 2)
+
     for i, idx in enumerate(np.array_split(order, n_bins), 1):
-        ti, yi = t[idx], y[idx]
-        n1, n0 = int((ti == 1).sum()), int((ti == 0).sum())
-        p1 = float(yi[ti == 1].mean()) if n1 else float("nan")
-        p0 = float(yi[ti == 0].mean()) if n0 else float("nan")
-        se = float(np.sqrt(p1 * (1 - p1) / max(n1, 1) + p0 * (1 - p0) / max(n0, 1)))
+        (p1, v1), (p0, v0) = rate(idx[t[idx] == 1]), rate(idx[t[idx] == 0])
         rows.append(
             {
                 "decile": i,
                 "n": len(idx),
                 "mean_pred": float(score[idx].mean()),
                 "observed": p1 - p0,
-                "se": se,
+                "se": float(np.sqrt(v1 + v0)),
             }
         )
     return rows

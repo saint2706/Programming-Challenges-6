@@ -3,8 +3,9 @@ import evaluate
 import learners
 import numpy as np
 import polars as pl
+import propensity
 import pytest
-from helpers import make_frame
+from helpers import confounded_rct, make_frame
 
 TINY = {"n_estimators": 40, "min_child_samples": 30, "num_leaves": 15}
 GRID = [TINY, {**TINY, "num_leaves": 7}]
@@ -15,9 +16,21 @@ def frames():
     return data.split(make_frame(30000, strength=2.0), seed=0)
 
 
+def fit_propensity(train):
+    X, t, _ = data.xy(train)
+    return propensity.PropensityModel(seed=0).fit(X, t)
+
+
 @pytest.fixture(scope="module")
 def real(frames):
-    return evaluate.evaluate_real(*frames, "visit", grid=GRID, n_boot=40, seed=0)
+    return evaluate.evaluate_real(
+        *frames,
+        "visit",
+        propensity_model=fit_propensity(frames[0]),
+        grid=GRID,
+        n_boot=40,
+        seed=0,
+    )
 
 
 def test_tune_returns_a_grid_entry(frames):
@@ -74,7 +87,9 @@ def persuadable_when_response_is_low(n=30000, seed=0):
 
 def test_a_response_model_is_not_credited_as_an_uplift_model():
     tr, va, te = data.split(persuadable_when_response_is_low(), seed=0)
-    summary, *_ = evaluate.evaluate_real(tr, va, te, "visit", grid=GRID, n_boot=40)
+    summary, *_ = evaluate.evaluate_real(
+        tr, va, te, "visit", propensity_model=fit_propensity(tr), grid=GRID, n_boot=40
+    )
     out = summary["learners"]
     assert out["T"]["qini"]["lo"] > 0
     assert (
@@ -131,3 +146,37 @@ def test_synthetic_no_effect_scenario_has_an_uninformative_oracle_and_no_spearma
     assert none["oracle"]["qini"]["mean"] == 0.0  # tau == 0 everywhere: all scores tie
     assert none["T"]["spearman"] is None  # tau is constant, rank correlation undefined
     assert none["T"]["rmse"]["mean"] > 0  # the learner still predicts a nonzero effect
+
+
+def confounded_frame(n=120_000, seed=0):
+    x, t, y, _ = confounded_rct(n=n, seed=seed)
+    rng = np.random.default_rng(seed + 1)
+    noise = rng.normal(size=(n, 11)).astype(np.float32)
+    return pl.DataFrame(
+        {
+            "f0": x.astype(np.float32),
+            **{f"f{i + 1}": noise[:, i] for i in range(11)},
+            "treatment": t.astype(np.int8),
+            "visit": y.astype(np.int8),
+            "conversion": y.astype(np.int8),
+            "exposure": t.astype(np.int8),
+        }
+    )
+
+
+def test_evaluate_real_removes_the_confounding_from_the_headline_effect():
+    tr, va, te = data.split(confounded_frame(), seed=0)
+    summary, *_ = evaluate.evaluate_real(
+        tr, va, te, "visit", propensity_model=fit_propensity(tr), grid=[TINY], n_boot=30
+    )
+    assert summary["ate"]["est"] == pytest.approx(0.02, abs=0.015)  # true effect
+    assert summary["ate_unadjusted"]["est"] > 0.06  # the plain difference in means
+    entry = summary["learners"]["T"]
+    assert {"qini", "auuc", "incremental@20"} <= set(entry["unadjusted"])
+
+
+def test_every_learner_entry_carries_the_unadjusted_sensitivity(real):
+    for entry in real[0]["learners"].values():
+        ci = entry["unadjusted"]["qini"]
+        assert ci["lo"] <= ci["est"] <= ci["hi"]
+    assert "ate_unadjusted" in real[0]

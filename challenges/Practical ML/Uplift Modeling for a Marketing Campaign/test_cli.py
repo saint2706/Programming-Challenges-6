@@ -1,4 +1,5 @@
 import cli
+import numpy as np
 import polars as pl
 import pytest
 from helpers import make_frame
@@ -122,3 +123,32 @@ def test_format_report_lists_every_learner_with_intervals(tiny):
     for name in ("T", "S", "X", "TO", "DR", "response", "random"):
         assert name in text
     assert "visit" in text and "Qini" in text and "[" in text
+    assert (
+        "unadjusted" in text
+    )  # the plain difference in means is shown beside the adjusted ATE
+    assert "held-out AUC" in text
+
+
+def interaction_confounded_frame(n=60_000, seed=0):
+    """Treatment depends on f0 * f1 only: every per-feature SMD is ~0, the joint dependence is real."""
+    df = make_frame(n, seed=seed)
+    rng = np.random.default_rng(seed + 7)
+    p = 0.8 + 0.15 * np.tanh(3 * df["f0"].to_numpy() * df["f1"].to_numpy())
+    return df.with_columns(treatment=pl.Series((rng.random(n) < p).astype("int8")))
+
+
+def test_check_reports_how_predictable_treatment_is(monkeypatch):
+    monkeypatch.setattr(cli.data, "load", lambda *a, **k: make_frame(30000))
+    result = runner.invoke(cli.app, ["check"])
+    assert result.exit_code == 0, result.output
+    assert "AUC" in result.output
+    assert "adjust" not in result.output.lower()  # a clean RCT needs no warning
+
+
+def test_check_flags_a_joint_dependence_that_every_single_feature_hides(monkeypatch):
+    df = interaction_confounded_frame()
+    monkeypatch.setattr(cli.data, "load", lambda *a, **k: df)
+    result = runner.invoke(cli.app, ["check"])
+    assert result.exit_code == 0, result.output  # the per-feature gate passes
+    assert "AUC" in result.output
+    assert "inverse-propensity" in result.output.lower()

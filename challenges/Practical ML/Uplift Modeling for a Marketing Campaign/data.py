@@ -103,16 +103,34 @@ def balance(df: pl.DataFrame) -> pl.DataFrame:
     return pl.DataFrame(rows)
 
 
+def smd_se(n1: int, n0: int, smd: float = 0.0) -> float:
+    """Standard error of a standardized mean difference between groups of size ``n1`` and ``n0``."""
+    return float(np.sqrt((n1 + n0) / (n1 * n0) + smd**2 / (2 * (n1 + n0))))
+
+
 def assert_randomized(
-    df: pl.DataFrame, max_abs_smd: float = MAX_ABS_SMD
+    df: pl.DataFrame, max_abs_smd: float = MAX_ABS_SMD, z: float = 4.0
 ) -> pl.DataFrame:
-    """Return the balance table, or raise if any feature differs between arms."""
+    """Return the balance table, or raise on a *gross* imbalance between the arms.
+
+    A feature fails only if ``|SMD|`` exceeds both ``max_abs_smd`` and ``z`` standard errors, so
+    the check neither false-alarms on small clean samples (where 0.1 is about two standard
+    errors) nor needs tuning for large ones. It is a gate against a broken assignment, not a
+    proof of randomization: a feature-by-feature pass can hide a weak joint dependence, which
+    ``propensity.diagnose`` measures and the evaluation then adjusts for.
+    """
     bal = balance(df)
-    bad = bal.filter(pl.col("smd").abs() > max_abs_smd)
+    n1 = int((df[TREATMENT] == 1).sum())
+    n0 = df.height - n1
+    bad = bal.filter(
+        pl.col("smd").abs() > max_abs_smd,
+        pl.col("smd").abs() > z * smd_se(n1, n0),
+    )
     if bad.height:
         worst = ", ".join(f"{r['feature']} ({r['smd']:+.3f})" for r in bad.to_dicts())
         raise RandomizationError(
-            f"treatment arms are imbalanced beyond |SMD| > {max_abs_smd}: {worst}"
+            f"treatment arms are imbalanced beyond |SMD| > {max_abs_smd} "
+            f"(and {z:g} standard errors): {worst}"
         )
     return bal
 

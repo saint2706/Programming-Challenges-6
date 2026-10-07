@@ -2,6 +2,7 @@ import metrics
 import numpy as np
 import pytest
 import synth
+from helpers import confounded_rct
 
 S = np.array([6, 5, 4, 3, 2, 1.0])
 T = np.array([1, 0, 1, 0, 1, 0])
@@ -112,3 +113,56 @@ def test_decile_calibration_recovers_a_step_effect():
     assert top["observed"] == pytest.approx(0.2, abs=3 * top["se"])
     assert bottom["observed"] == pytest.approx(0.0, abs=3 * bottom["se"])
     assert top["mean_pred"] > bottom["mean_pred"]
+
+
+def test_a_plain_difference_in_means_is_biased_by_confounding():
+    _, t, y, _ = confounded_rct()
+    score = np.random.default_rng(1).random(len(y))
+    assert metrics.ate(metrics.rank(score, t, y)) > 0.05  # true effect is 0.02
+
+
+def test_inverse_propensity_arm_weights_remove_the_bias():
+    _, t, y, e = confounded_rct()
+    score = np.random.default_rng(1).random(len(y))
+    w = np.where(t == 1, 1 / e, 1 / (1 - e))
+    assert metrics.ate(metrics.rank(score, t, y, arm_weights=w)) == pytest.approx(
+        0.02, abs=0.004
+    )
+
+
+def test_unit_arm_weights_change_nothing():
+    plain = metrics.summarize(hand())
+    weighted = metrics.summarize(metrics.rank(S, T, Y, arm_weights=np.ones(6)))
+    assert weighted == pytest.approx(plain)
+
+
+def test_arm_weights_flow_through_the_bootstrap():
+    _, t, y, e = confounded_rct(n=60_000)
+    w = np.where(t == 1, 1 / e, 1 / (1 - e))
+    r = metrics.rank(np.random.default_rng(1).random(len(y)), t, y, arm_weights=w)
+    boot = metrics.bootstrap({"r": r}, n_boot=40, seed=0)
+    ci = metrics.interval(boot, "r", "ate")
+    assert ci["lo"] <= 0.02 + 0.01 and ci["hi"] >= 0.02 - 0.01
+    assert ci["est"] < 0.04  # not the confounded 0.05+
+
+
+def test_weighted_calibration_in_one_bin_equals_the_weighted_ate():
+    _, t, y, e = confounded_rct(n=100_000)
+    w = np.where(t == 1, 1 / e, 1 / (1 - e))
+    score = np.random.default_rng(1).random(len(y))
+    row = metrics.decile_calibration(score, t, y, n_bins=1, arm_weights=w)[0]
+    assert row["observed"] == pytest.approx(
+        metrics.ate(metrics.rank(score, t, y, arm_weights=w)), abs=1e-9
+    )
+    assert row["observed"] == pytest.approx(0.02, abs=0.008)
+    assert row["se"] > 0
+
+
+def test_weighted_calibration_se_matches_the_unweighted_formula_at_unit_weights():
+    rng = np.random.default_rng(0)
+    t = (rng.random(5000) < 0.5).astype(int)
+    y = (rng.random(5000) < 0.2).astype(int)
+    score = rng.random(5000)
+    a = metrics.decile_calibration(score, t, y, n_bins=4)
+    b = metrics.decile_calibration(score, t, y, n_bins=4, arm_weights=np.ones(5000))
+    assert [r["se"] for r in a] == pytest.approx([r["se"] for r in b])

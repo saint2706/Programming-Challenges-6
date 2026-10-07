@@ -1,6 +1,7 @@
 import learners
 import numpy as np
 import pytest
+from helpers import confounded_rct
 from scipy.stats import spearmanr
 
 FAST = {"n_estimators": 80, "min_child_samples": 50, "num_leaves": 15}
@@ -74,3 +75,37 @@ def test_an_arm_with_a_single_outcome_class_raises_a_clear_error(cls, rct):
 def test_propensity_must_be_strictly_between_zero_and_one(bad):
     with pytest.raises(ValueError, match="propensity"):
         learners.TLearner(bad)
+
+
+class FixedPropensity:
+    """A stand-in propensity model: e(x) is a known function of the first feature."""
+
+    def predict(self, X):
+        return 0.5 + 0.4 * np.tanh(2 * np.asarray(X)[:, 0])
+
+
+def test_a_learner_accepts_a_propensity_model_in_place_of_a_constant():
+    X = np.zeros((3, 12))
+    X[:, 0] = [-10.0, 0.0, 10.0]
+    model_based = learners.TLearner(FixedPropensity())._e(X)
+    assert model_based == pytest.approx([0.1, 0.5, 0.9], abs=1e-6)
+    assert learners.TLearner(0.85)._e(X) == pytest.approx([0.85] * 3)
+
+
+def test_the_transformed_outcome_needs_the_true_propensity_when_treatment_is_confounded():
+    _, t, y, e = confounded_rct()
+    right = learners.transformed_outcome(y, t, e).mean()
+    wrong = learners.transformed_outcome(y, t, np.full(len(y), t.mean())).mean()
+    assert right == pytest.approx(0.02, abs=0.008)  # the true effect
+    assert wrong > 0.08  # a constant e absorbs the confounding into the "effect"
+
+
+def test_a_learner_given_the_propensity_model_is_not_fooled_by_confounding():
+    x, t, y, _ = confounded_rct(n=200_000)
+    X = np.column_stack([x, np.random.default_rng(0).normal(size=(len(x), 11))])
+    X = X.astype(np.float32)
+    fast = {"n_estimators": 60, "min_child_samples": 200, "num_leaves": 15}
+    with_model = learners.TransformedOutcome(FixedPropensity(), fast).fit(X, t, y)
+    constant = learners.TransformedOutcome(float(t.mean()), fast).fit(X, t, y)
+    assert abs(with_model.predict(X).mean() - 0.02) < 0.03
+    assert constant.predict(X).mean() > 0.07

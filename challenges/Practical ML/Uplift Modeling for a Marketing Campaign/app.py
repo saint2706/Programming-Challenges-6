@@ -28,8 +28,9 @@ st.title("Uplift Modeling for a Marketing Campaign")
 st.caption(
     "Criteo Uplift v2.1 (a randomized ad campaign). A learner scores each customer by the "
     "*extra* chance they act because they were contacted; the curve shows what contacting "
-    "the top share is worth, against contacting at random. Intervals are a paired bootstrap "
-    "on the held-out test split."
+    "the top share is worth, against contacting at random. Treatment is not perfectly random "
+    "here, so every estimate is inverse-propensity weighted. Intervals are a bootstrap on the "
+    "held-out test split."
 )
 
 with st.sidebar:
@@ -68,6 +69,10 @@ left.metric(
 left.caption(f"95% CI [{1000 * inc['lo']:.2f}, {1000 * inc['hi']:.2f}]")
 mid.metric("Random targeting, same share", f"{1000 * frac * ate:.2f}")
 right.metric("Treat everyone", f"{1000 * ate:.2f}")
+raw = summary["ate_unadjusted"]
+right.caption(
+    f"unadjusted difference in means: {1000 * raw['est']:.2f} (not propensity-corrected)"
+)
 
 if value > 0:
     be = policy.break_even_cost(r, frac, value)
@@ -99,7 +104,7 @@ curves = (
     )
 )
 st.subheader("Uplift curves")
-st.altair_chart(curves, use_container_width=True)
+st.altair_chart(curves, width="stretch")
 
 st.subheader("Benchmark (test split)")
 
@@ -120,7 +125,7 @@ table = pd.DataFrame(
         for name, e in summary["learners"].items()
     }
 ).T
-st.dataframe(table, use_container_width=True)
+st.dataframe(table, width="stretch")
 
 st.subheader(f"Decile calibration: {learner}")
 st.caption(
@@ -139,4 +144,4 @@ bars = (
     )
 )
 err = alt.Chart(cal).mark_errorbar().encode(x="decile:O", y="lo:Q", y2="hi:Q")
-st.altair_chart(bars + err, use_container_width=True)
+st.altair_chart(bars + err, width="stretch")

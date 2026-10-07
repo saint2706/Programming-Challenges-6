@@ -12,6 +12,7 @@ import numpy as np
 import pipeline
 import polars as pl
 import policy
+import propensity
 import typer
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
@@ -57,7 +58,22 @@ def check() -> None:
     typer.echo(f"{'feature':<8}{'smd':>8}")
     for row in bal.to_dicts():
         typer.echo(f"{row['feature']:<8}{row['smd']:>+8.3f}")
-    typer.echo(f"ok: all |smd| <= {data.MAX_ABS_SMD} over {df.height:,} rows")
+    typer.echo(f"ok: no gross imbalance over {df.height:,} rows")
+    train, val, _ = data.split(df)
+    X, t, _ = data.xy(train)
+    Xv, tv, _ = data.xy(val)
+    diag = propensity.diagnose(propensity.PropensityModel().fit(X, t), Xv, tv)
+    shares = [b["treated_share"] for b in diag["bins"]]
+    typer.echo(
+        f"treatment predictable from the features: held-out AUC {diag['auc']:.3f} "
+        f"[{diag['auc_lo']:.3f}, {diag['auc_hi']:.3f}] (0.5 = pure randomization); "
+        f"treated share by predicted-propensity quintile {min(shares):.3f} to {max(shares):.3f}"
+    )
+    if diag["auc_lo"] > 0.5:
+        typer.echo(
+            "note: balanced feature by feature but not jointly, so the benchmark weights "
+            "customers by inverse-propensity and keeps the unadjusted numbers as a sensitivity"
+        )
 
 
 def _ci(c, scale=1.0, spec=".4f") -> str:
@@ -69,9 +85,20 @@ def _ci(c, scale=1.0, spec=".4f") -> str:
 
 def format_report(report: dict) -> str:
     lines = []
+    prop = report.get("propensity")
+    if prop:
+        lines.append(
+            f"treatment predictable from the features: held-out AUC {prop['auc']:.3f} "
+            f"[{prop['auc_lo']:.3f}, {prop['auc_hi']:.3f}] (0.5 = pure randomization); "
+            "every number below is inverse-propensity weighted"
+        )
     for outcome, summ in report["outcomes"].items():
         ate = _ci(summ["ate"], 1000, ".2f")
-        header = f"== {outcome}  (test n={summ['n_test']:,}, ATE {ate} per 1000) =="
+        raw = _ci(summ["ate_unadjusted"], 1000, ".2f")
+        header = (
+            f"== {outcome}  (test n={summ['n_test']:,}, ATE {ate} per 1000; "
+            f"unadjusted {raw}) =="
+        )
         lines.append("\n" + header)
         lines.append(
             f"{'learner':<10}{'Qini':>26}{'AUUC':>26}"
@@ -184,7 +211,8 @@ def target(
     ate = metrics.ate(r)
     n = len(r.t)
     typer.echo(
-        f"{learner}-learner on {outcome}: contact the top {budget:.0%} of {n:,} customers"
+        f"{learner}-learner on {outcome}: contact the top {budget:.0%} of {n:,} customers "
+        "(inverse-propensity weighted)"
     )
     typer.echo(f"  incremental {outcome}s per 1,000 customers: {_ci(inc, 1000, '.2f')}")
     typer.echo(

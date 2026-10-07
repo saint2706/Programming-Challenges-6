@@ -64,6 +64,18 @@ def test_balance_passes_on_a_randomized_frame():
     assert bal["smd"].abs().max() < 0.1 and bal.height == 12
 
 
+def test_small_randomized_samples_are_not_flagged_as_imbalanced():
+    # with 3,000 rows (~450 controls) a fixed 0.1 threshold is only ~2 standard errors, so it
+    # false-alarms on clean data; the check must scale with the sample size
+    for seed in range(40):
+        data.assert_randomized(make_frame(3000, seed=seed))
+
+
+def test_the_standard_error_of_an_smd_shrinks_with_the_sample():
+    assert data.smd_se(300, 2700) > 4 * data.smd_se(30_000, 270_000) * 0.99
+    assert data.smd_se(300_000, 1_700_000) < 0.003
+
+
 def test_balance_fails_when_treatment_depends_on_a_feature():
     with pytest.raises(data.RandomizationError, match="f0"):
         data.assert_randomized(make_frame(20000, confounded=True))
