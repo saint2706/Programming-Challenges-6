@@ -96,3 +96,14 @@ class Uncertainty:
         u = self._utility(state.P[cand])
         pos = top_positions(u, min(b, len(cand)), rng)
         return Selection(cand[pos], u[pos])
+
+
+NAMES = ("random", "least-confidence", "margin", "entropy")
+
+
+def make(name: str, *, clusters=None, n_clusters: int = 150) -> Strategy:
+    if name == "random":
+        return Random()
+    if name in UTILITIES:
+        return Uncertainty(name)
+    raise ValueError(f"unknown strategy {name!r}; choose from {NAMES}")
