@@ -90,6 +90,10 @@ def test_mean_curve_is_the_pointwise_mean_with_a_95_percent_band():
     assert np.all(np.array(cv["lo"]) < cv["acc"]) and np.all(
         np.array(cv["hi"]) > cv["acc"]
     )
+    assert cv["coverage"] == [3.0, 3.0] and cv["skew"] == [
+        0.5,
+        0.5,
+    ]  # intents with a label, top share
 
 
 def test_ceiling_is_the_all_labels_head_accuracy_and_run_job_wraps_a_curve():

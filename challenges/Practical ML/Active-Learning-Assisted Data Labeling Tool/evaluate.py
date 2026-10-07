@@ -45,6 +45,8 @@ def mean_curve(curves) -> dict:
         "acc": mean.tolist(),
         "lo": (mean - 1.96 * se).tolist(),
         "hi": (mean + 1.96 * se).tolist(),
+        "coverage": np.mean([c["coverage"] for c in curves], axis=0).tolist(),
+        "skew": np.mean([c["skew"] for c in curves], axis=0).tolist(),
     }
 
 
