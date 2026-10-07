@@ -36,3 +36,4 @@ challenges/Data Analytics/*/out/
 challenges/Data Analytics/Web Traffic Funnel Analyzer/data_cache/
 challenges/Data Analytics/Automated Data Quality Monitor/sample_data/batches/
 challenges/Data Analytics/Geo-Spatial Sales Heatmap Builder/*.html
+challenges/Practical ML/Active-Learning-Assisted Data Labeling Tool/*.log

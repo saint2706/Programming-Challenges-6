@@ -79,10 +79,16 @@ for item, reason in batch:
             key=f"pick-{item}",
             label_visibility="collapsed",
         )
-        guess = proj.classes[reason.top[0][0]]
-        right.button(
-            f"Accept: {guess}", key=f"guess-{item}", on_click=accept, args=(item, guess)
-        )
+        if (
+            not reason.cold
+        ):  # with no labels the "top class" is arbitrary: offer no guess
+            guess = proj.classes[reason.top[0][0]]
+            right.button(
+                f"Accept: {guess}",
+                key=f"guess-{item}",
+                on_click=accept,
+                args=(item, guess),
+            )
         with st.expander("Why this item?"):
             st.text(explain.render(reason, proj.classes, proj.texts))
 

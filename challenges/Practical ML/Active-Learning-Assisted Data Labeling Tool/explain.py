@@ -10,6 +10,7 @@ import numpy as np
 @dataclass
 class Reason:
     idx: int
+    cold: bool  # nothing labeled yet: the probabilities below are not a guess
     top: list[tuple[int, float]]  # (class id, probability), most likely first
     margin: float  # p(top 1) - p(top 2)
     neighbors: list[
@@ -63,6 +64,7 @@ def explain(state, selection, *, clusters=None, n_neighbors=3, novelty_pct=10.0)
         out.append(
             Reason(
                 idx=int(i),
+                cold=not have,
                 top=[(int(c), float(P[r, c])) for c in order[r]],
                 margin=float(margin[r]),
                 neighbors=neighbors,
@@ -76,8 +78,11 @@ def explain(state, selection, *, clusters=None, n_neighbors=3, novelty_pct=10.0)
 
 
 def render(reason: Reason, classes, texts=None, width: int = 70) -> str:
-    top = ", ".join(f"{classes[c]} {p:.0%}" for c, p in reason.top)
-    lines = [f"model: {top} (margin {reason.margin:.2f})"]
+    if reason.cold:
+        lines = ["nothing labeled yet: the model has no guess"]
+    else:
+        top = ", ".join(f"{classes[c]} {p:.0%}" for c, p in reason.top)
+        lines = [f"model: {top} (margin {reason.margin:.2f})"]
     if reason.neighbors:
         for j, c, s in reason.neighbors:
             snippet = f" '{texts[j][:width]}'" if texts is not None else ""
@@ -87,8 +92,6 @@ def render(reason: Reason, classes, texts=None, width: int = 70) -> str:
                 f"novel: far from everything labeled (nearest cosine {reason.nearest_sim:.2f}, "
                 f"in the farthest {reason.novelty_pct:.0f}% of the pool)"
             )
-    else:
-        lines.append("nothing labeled yet")
     if reason.cluster:
         c = reason.cluster
         lines.append(f"cluster {c['id']}: {c['size']} items, {c['labeled']} labeled")

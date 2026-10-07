@@ -52,19 +52,34 @@ def test_a_missing_project_is_an_error_message_not_a_traceback(monkeypatch, tmp_
     assert not at.exception and "init" in at.error[0].value
 
 
-def test_suggesting_shows_a_picker_and_an_accept_button_per_item(monkeypatch, proj):
+def guess_buttons(at):
+    return [b for b in at.button if b.key and b.key.startswith("guess-")]
+
+
+def warm_up(at):
+    """One simulated round, so the model has labels to guess from."""
+    at.button(key="suggest").click().run()
+    at.button(key="simulate").click().run()
+    at.button(key="suggest").click().run()
+
+
+def test_suggesting_shows_a_picker_per_item_and_a_guess_button_only_once_the_model_has_labels(
+    monkeypatch, proj
+):
     p, _ = proj
     at = open_app(monkeypatch, p.dir)
     assert at.metric[0].value.startswith("0 /")
     at.button(key="suggest").click().run()
     assert not at.exception and len(picks(at)) == 10
-    assert len([b for b in at.button if b.key and b.key.startswith("guess-")]) == 10
+    assert guess_buttons(at) == []  # nothing labeled: any "guess" would be fake
+    warm_up(at)
+    assert len(picks(at)) == 10 and len(guess_buttons(at)) == 10
 
 
 def test_accepting_the_models_guess_fills_the_picker(monkeypatch, proj):
     p, _ = proj
     at = open_app(monkeypatch, p.dir)
-    at.button(key="suggest").click().run()
+    warm_up(at)
     first = ids(at)[0]
     at.button(key=f"guess-{first}").click().run()
     chosen = at.selectbox(key=f"pick-{first}").value

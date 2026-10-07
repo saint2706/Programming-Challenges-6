@@ -96,3 +96,17 @@ def test_render_names_classes_snippets_and_the_novelty_note():
         Selection(np.array([0]), np.zeros(1)),
     )
     assert "nothing labeled yet" in render(cold[0], classes)
+
+
+def test_with_nothing_labeled_there_is_no_model_guess_to_show():
+    state, _ = make_state(n=100, k=4, n_labeled=12)
+    cold = State(state.X, EMPTY, EMPTY, np.full(state.P.shape, 0.25), 4, 10.0)
+    classes = ["alpha", "beta", "gamma", "delta"]
+    r = explain(cold, Selection(np.array([0]), np.zeros(1)))[0]
+    assert r.cold
+    text = render(r, classes)
+    assert (
+        "nothing labeled yet" in text and "model:" not in text and "alpha" not in text
+    )
+    warm = explain(state, Selection(state.unlabeled()[:1], np.zeros(1)))[0]
+    assert not warm.cold and "model:" in render(warm, classes)
