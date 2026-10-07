@@ -16,3 +16,26 @@ def rct():
         X, t, seed=0, scenario="heterogeneous", base_rate=0.15, strength=2.0
     )
     return X, t, y, tau
+
+
+@pytest.fixture(scope="session")
+def tiny(tmp_path_factory):
+    """``(artifacts, report, results_dir)`` from a complete small run_all."""
+    import pipeline
+    from helpers import make_frame
+
+    tmp = tmp_path_factory.mktemp("tiny")
+    tiny_params = {"n_estimators": 40, "min_child_samples": 30, "num_leaves": 15}
+    report = pipeline.run_all(
+        tmp,
+        tmp / "results",
+        seed=0,
+        n_boot=30,
+        n_seeds=2,
+        df=make_frame(20000, strength=2.0),
+        grid=[tiny_params],
+        synth_n=4000,
+        synth_params=tiny_params,
+    )
+    art = pipeline.load_artifacts(tmp / "results", with_models=True)
+    return art, report, tmp / "results"
