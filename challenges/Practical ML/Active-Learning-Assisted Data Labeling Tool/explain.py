@@ -31,6 +31,10 @@ def _unit(X: np.ndarray) -> np.ndarray:
 
 def explain(state, selection, *, clusters=None, n_neighbors=3, novelty_pct=10.0):
     idx = np.asarray(selection.idx, dtype=np.int64)
+    if (
+        len(idx) == 0
+    ):  # pool exhausted: nothing to explain (and no unlabeled items to compare to)
+        return []
     P = state.P[idx]
     order = np.argsort(-P, axis=1, kind="stable")[:, :3]
     ps = np.sort(P, axis=1)

@@ -150,3 +150,21 @@ def test_charts_and_the_stopping_signal_render_after_several_rounds(monkeypatch,
     assert at.metric[0].value.startswith("30 /")
     assert at.metric[2].value in ("not yet", "reached")
     assert len(Project(p.dir).store.rounds()) == 3
+
+
+def test_switching_project_drops_the_pending_batch_instead_of_labeling_the_wrong_one(
+    monkeypatch, proj, tmp_path
+):
+    a, _ = proj
+    b, _ = make_project(tmp_path / "other")
+    at = open_app(monkeypatch, a.dir)
+    at.button(key="suggest").click().run()
+    item = ids(at)[0]
+    at.selectbox(key=f"pick-{item}").select("k1")
+    at.sidebar.text_input[0].set_value(str(b.dir)).run()
+    assert not at.exception and not picks(at)  # A's batch is gone in B
+    assert "submit" not in [x.key for x in at.button]
+    assert (
+        Project(a.dir).store.current_labels() == {}
+        and Project(b.dir).store.current_labels() == {}
+    )

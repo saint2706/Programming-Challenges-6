@@ -110,3 +110,9 @@ def test_with_nothing_labeled_there_is_no_model_guess_to_show():
     )
     warm = explain(state, Selection(state.unlabeled()[:1], np.zeros(1)))[0]
     assert not warm.cold and "model:" in render(warm, classes)
+
+
+def test_nothing_left_to_explain_when_the_pool_is_fully_labeled():
+    state, _ = make_state(n=40, k=4, n_labeled=12)
+    full = State(state.X, np.arange(40), np.zeros(40, dtype=np.int64), state.P, 4, 10.0)
+    assert explain(full, Selection.empty()) == []

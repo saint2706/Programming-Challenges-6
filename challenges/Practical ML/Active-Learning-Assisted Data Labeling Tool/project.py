@@ -5,6 +5,8 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+from itertools import pairwise
+from math import isnan
 from pathlib import Path
 
 import explain
@@ -14,7 +16,9 @@ import strategies
 from model import Head
 from store import Store
 
-DEFAULT_RULE = {"threshold": 0.02, "k": 3}
+# ``spacing``: the benchmark measured prediction change between rounds of 50 labels, so the signal is
+# computed between rounds at least this many labels apart (one-label rounds change almost nothing)
+DEFAULT_RULE = {"threshold": 0.02, "k": 3, "spacing": 50}
 
 
 class Project:
@@ -31,7 +35,7 @@ class Project:
         self.class_id = {c: i for i, c in enumerate(self.classes)}
         self.texts = self.store.texts()
         self.C = float(self.store.get("C"))
-        self.rule = json.loads(self.store.get("rule"))
+        self.rule = {**DEFAULT_RULE, **json.loads(self.store.get("rule"))}
         self.has_gold = any(g is not None for g in self.store.gold())
         self.X_eval = self.y_eval = None
         eval_path = self.dir / "eval.npz"
@@ -158,7 +162,13 @@ class Project:
     def status(self) -> dict:
         idx, y = self.labeled()
         rounds = self.store.rounds()
-        change = [float("nan") if r["change"] is None else r["change"] for r in rounds]
+        signal = rounds[:1]
+        for r in rounds[1:]:
+            if r["n_labeled"] - signal[-1]["n_labeled"] >= self.rule["spacing"]:
+                signal.append(r)
+        change = [float("nan")] * min(1, len(signal)) + [
+            float((b["pred"] != a["pred"]).mean()) for a, b in pairwise(signal)
+        ]
         at = stats.stop_round(change, self.rule["threshold"], self.rule["k"])
         return {
             "items": len(self.texts),
@@ -175,9 +185,13 @@ class Project:
                 for r in rounds
             ],
             "rule": self.rule,
+            "signal_rounds": [
+                {"n_labeled": r["n_labeled"], "change": None if isnan(c) else c}
+                for r, c in zip(signal, change, strict=True)
+            ],
             "stop": {
                 "fired": at is not None,
-                "at_labels": None if at is None else rounds[at]["n_labeled"],
+                "at_labels": None if at is None else signal[at]["n_labeled"],
             },
         }
 

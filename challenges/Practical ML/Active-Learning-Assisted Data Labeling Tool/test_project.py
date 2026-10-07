@@ -116,7 +116,7 @@ def test_an_invalid_batch_writes_nothing_and_records_no_round(proj):
 
 
 def test_status_reports_coverage_and_fires_the_stopping_signal(tmp_path):
-    p, prob = build(tmp_path / "p", rule={"threshold": 1.01, "k": 1})
+    p, prob = build(tmp_path / "p", rule={"threshold": 1.01, "k": 1, "spacing": 1})
     p.submit(labels_for(prob, range(12)))
     s = p.status()
     assert (s["items"], s["labeled"], s["classes"], s["classes_with_label"]) == (
@@ -149,3 +149,27 @@ def test_export_lists_every_item_with_its_current_label_and_gold(proj, tmp_path)
     rows = list(csv.DictReader(out.open(encoding="utf-8")))
     assert len(rows) == 200 and rows[2]["label"] == CLASSES[prob.y[2]]
     assert rows[3]["label"] == "" and rows[3]["gold"] == CLASSES[prob.y[3]]
+
+
+def test_single_label_rounds_do_not_fake_a_stopping_signal(tmp_path):
+    """The rule was tuned on 50-label rounds: tiny rounds change few predictions by construction."""
+    p, prob = build(tmp_path / "p", rule={"threshold": 0.01, "k": 2, "spacing": 20})
+    p.submit(labels_for(prob, range(20)))
+    p.submit(labels_for(prob, range(20, 40)))
+    p.submit(labels_for(prob, range(40, 60)))
+    for i in range(60, 65):  # the one-label-at-a-time CLI workflow
+        p.submit(labels_for(prob, [i]))
+    s = p.status()
+    assert len(s["rounds"]) == 8 and s["rule"]["spacing"] == 20
+    picked = [r["n_labeled"] for r in s["signal_rounds"]]
+    assert picked == [20, 40, 60]  # only rounds at least `spacing` labels apart count
+    single = s["rounds"][-3:]
+    assert all(
+        r["change"] is not None and r["change"] < 0.01 for r in single
+    )  # tiny, as the reviewer saw
+    assert s["stop"]["at_labels"] != 65
+
+
+def test_the_spacing_defaults_to_the_benchmark_batch_size(tmp_path):
+    p, _ = build(tmp_path / "q")
+    assert p.rule["spacing"] == 50

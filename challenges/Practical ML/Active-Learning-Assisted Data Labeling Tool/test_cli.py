@@ -212,3 +212,16 @@ def test_format_report_handles_a_real_small_report(tmp_path):
     for name in ("random", "margin", "badge", "cluster-margin", "qbc", "k-center"):
         assert name in text
     assert "ceiling" in text and "stopping rule" in text and "batch size 5" in text
+
+
+def test_suggesting_from_a_fully_labeled_project_says_so_instead_of_crashing(project):
+    from project import Project
+
+    p = Project(project)
+    p.submit({i: INTENTS[i % 3] for i in range(60)})
+    for name in ("margin", "k-center", "cluster-margin"):
+        r = run("suggest", project, "--strategy", name)
+        assert r.exit_code == 0 and "every item is labeled" in r.output, (
+            name,
+            r.output,
+        )

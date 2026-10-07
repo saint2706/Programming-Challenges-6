@@ -186,7 +186,10 @@ def _stop_rule() -> dict | None:
     if not path.exists():
         return None
     rule = json.loads(path.read_text(encoding="utf-8")).get("stop", {}).get("rule")
-    return None if not rule else {"threshold": rule["threshold"], "k": rule["k"]}
+    if not rule:
+        return None
+    spacing = json.loads(path.read_text(encoding="utf-8"))["config"]["batch"]
+    return {"threshold": rule["threshold"], "k": rule["k"], "spacing": spacing}
 
 
 @app.command()
@@ -321,7 +324,8 @@ def status(path: Annotated[Path, typer.Argument(metavar="PROJECT")]) -> None:
         else "not reached yet"
     )
     typer.echo(
-        f"stopping signal (prediction change < {rule['threshold']} for {rule['k']} rounds): {state}"
+        f"stopping signal (prediction change < {rule['threshold']} for {rule['k']} rounds, "
+        f"measured between rounds {rule['spacing']}+ labels apart): {state}"
     )
 
 

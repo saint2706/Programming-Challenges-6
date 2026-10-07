@@ -25,10 +25,10 @@ uv run python cli.py export projects/demo labels.csv
 AL_PROJECT=projects/demo uv run streamlit run app.py   # the labeling UI
 
 uv run python cli.py init projects/mine --csv my.csv --classes classes.txt   # your own texts
-uv run pytest -q                      # 159 tests, no network, no model download
+uv run pytest -q                      # 164 tests, no network, no model download
 ```
 
-`benchmark` is resumable: each (strategy, seed, batch size) run is cached as one JSON file keyed by the data, the head's `C`, the budget and the run's own settings, so an interrupted run continues, a changed config never reuses stale curves, and adding seeds computes only the new ones.
+`benchmark` is resumable: each (strategy, seed, batch size) run is cached as one JSON file keyed by the data, the head's `C`, the budget and the run's own settings, so an interrupted run continues, a changed `Config`, dataset or head `C` never reuses stale curves, and adding seeds computes only the new ones. The key does not include the strategy code itself: after changing a strategy or the loop, bump `STAGE_VERSION` in `pipeline.py` (or run `benchmark --fresh`).
 
 ## Data and protocol
 
@@ -77,7 +77,7 @@ What the numbers say:
 - **Margin sampling is the strongest strategy here.** It reaches 90% of the ceiling after 429 labels where random needs 690, and 95% after 682 where random needs 1,277. BADGE and cluster-margin are next, with end accuracy about 0.916.
 - **Not every uncertainty measure helps, and not at every stage.** Least-confidence and entropy start *below* random (0.618 and 0.592 vs 0.651 at 227 labels) and overtake it later, so entropy has a slightly negative ALC while ending 2 points above random. Margin and BADGE are ahead at every checkpoint above.
 - **Pure diversity (k-center) is indistinguishable from random on ALC** and ends about 1 point higher. Banking77's pool is only mildly imbalanced (28 to 149 messages per intent, median 102), so random sampling already covers the intents well: with 177 labels it has seen 68.7 of 77 intents on average against 70.6 for the best strategy, and by 477 labels every strategy has seen 76-77. Diversity has little imbalance to fix on this dataset; a pool with rare intents would be a harder test of it.
-- **The "why" is grounded.** The current model's error rate on the items a strategy suggests, averaged over rounds, is 0.58 for margin, 0.60 for least-confidence and 0.54 for entropy, against 0.19 for random picks, while the same models err on only 0.13-0.18 of the unlabeled pool as a whole (random picks look like the pool: 0.193 vs 0.194). The suggestions really are the items it gets wrong. The neighbours shown with each suggestion are recomputed from the embeddings and checked against a brute-force search in the tests.
+- **Suggestions concentrate on what the model gets wrong.** The current model's error rate on the items a strategy suggests, averaged over rounds, is 0.58 for margin, 0.60 for least-confidence and 0.54 for entropy, against 0.19 for random picks. Over the same rounds the whole unlabeled pool has error 0.14 (margin), 0.19 (entropy) and 0.20 (random), so random picks look like the pool and the uncertainty scores pick out the hard items. That shows the *score* is informative; the reasons printed with each suggestion (top intents, nearest labeled neighbours, cluster) are a separate claim and are checked against brute force in the tests. The neighbours shown with each suggestion are recomputed from the embeddings and checked against a brute-force search in the tests.
 - **Selection cost:** margin, entropy, least-confidence and cluster-margin take about 0.01 s per round; BADGE 1.4 s, k-center 2.6 s, query-by-committee 3.1 s (measured with 12 jobs running in parallel, one BLAS thread each; cluster-margin's one-off clustering of the pool, a few seconds, is not included).
 
 ### Batch size
@@ -94,7 +94,7 @@ All three still beat random at every batch size. Margin's advantage is lower at 
 
 ### Knowing when to stop
 
-The stopping signal is the share of pool predictions that change between rounds (Bloodgood & Vijay-Shanker 2009). The rule (threshold, consecutive rounds) was chosen on 3 separate tuning seeds running margin sampling, scored on the *validation* split: stop when the change stays below **0.01 for 2 rounds**, the earliest rule whose accuracy gap to the budget end is at most 0.01. Applied to the 10 benchmark seeds:
+The stopping signal is the share of pool predictions that change between rounds (Bloodgood & Vijay-Shanker 2009). The rule (threshold, consecutive rounds) was chosen on 3 separate tuning seeds running margin sampling, scored on the *validation* split: stop when the change stays below **0.01 for 2 rounds**, the earliest rule whose accuracy gap to the budget end is at most 0.01. Applied to the 10 benchmark seeds (in a labeling project, `status` evaluates the same signal between rounds at least 50 labels apart, because one-label rounds change almost no predictions by construction):
 
 | Strategy         | Seeds where it fires | Mean labels at stop | Accuracy left on the table |
 | ---------------- | -------------------- | ------------------- | -------------------------- |
@@ -124,14 +124,14 @@ With nothing labeled yet the tool says so ("nothing labeled yet: the model has n
 
 ## How it is tested
 
-159 tests, no network and no model download, on a synthetic Gaussian-blob pool that stands in for embeddings:
+164 tests, no network and no model download, on a synthetic Gaussian-blob pool that stands in for embeddings:
 
 - every strategy returns unique, unlabeled, in-range indices of the right size, including at cold start, with one class labeled, with fewer than `b` items left and with nothing left;
 - k-center equals a brute-force farthest-first reference and scikit-activeml's `CoreSet`; the three uncertainty utilities match scikit-activeml's `UncertaintySampling` (margin up to a constant); BADGE's Kronecker distances equal distances between explicitly built gradient embeddings and its selection equals k-means++ run on them; query-by-committee and cluster-margin are checked against hand-computed votes and a hand-built round-robin;
 - the head returns valid 77-class distributions with unseen intents at exactly 0;
 - the loop is reproducible per seed, paired across strategies, and a run with shuffled evaluation labels picks exactly the same items;
 - the benchmark cache is invalidated by changes to the budget, the data or the config and reused otherwise;
-- the SQLite store keeps label history (last label wins), rejects labels outside the class list and writes a batch all-or-nothing;
+- the SQLite store keeps label history (last label wins), rejects labels outside the class list and validates a whole batch before writing any of it;
 - `CliRunner` covers every command and error path (exit code 2, one line, no traceback); Streamlit's `AppTest` covers the UI flow.
 
 ## Limits

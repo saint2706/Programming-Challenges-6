@@ -27,6 +27,14 @@ except FileNotFoundError as exc:
     st.error(str(exc))
     st.stop()
 
+if (
+    st.session_state.get("batch_for", path) != path
+):  # a pending batch belongs to the old project
+    st.session_state.pop("batch", None)
+    for key in [k for k in st.session_state if k.startswith("pick-")]:
+        del st.session_state[key]
+st.session_state["batch_for"] = path
+
 strategy = st.sidebar.selectbox(
     "Strategy", strategies.NAMES, index=strategies.NAMES.index("margin"), key="strategy"
 )
