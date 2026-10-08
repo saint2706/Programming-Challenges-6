@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderTimeline, renderTimelineItem } from '../render.js';
+import { renderTimeline, renderTimelineItem } from '../src/render.js';
 
 const sampleEntries = [
   {

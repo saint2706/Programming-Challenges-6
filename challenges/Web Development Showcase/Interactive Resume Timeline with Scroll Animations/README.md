@@ -8,6 +8,8 @@
 No backend, no build step, no framework. Open `index.html`, scroll, and each
 timeline entry reveals itself as it enters the viewport.
 
+The modules and stylesheet live in `src/`; `index.html` stays at the root so it still opens directly.
+
 ## What it does
 
 - **Renders a real timeline** — education, work experience, and

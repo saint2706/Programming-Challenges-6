@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { initScrollReveal } from '../reveal.js';
+import { initScrollReveal } from '../src/reveal.js';
 
 class MockIntersectionObserver {
   constructor(callback) {
