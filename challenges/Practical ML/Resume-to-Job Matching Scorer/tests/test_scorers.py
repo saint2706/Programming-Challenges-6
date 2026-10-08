@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from scorers import Bm25Scorer, FusionScorer, TfidfScorer, rrf, zscore
+from resume_matcher.scorers import Bm25Scorer, FusionScorer, TfidfScorer, rrf, zscore
 
 CORPUS = [
     "python sql tableau dashboards analyst reporting",

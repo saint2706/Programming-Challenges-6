@@ -6,7 +6,8 @@ import math
 from collections.abc import Sequence
 
 import numpy as np
-from scorers import zscore
+
+from resume_matcher.scorers import zscore
 
 
 def ndcg_at_k(rels: Sequence[int], k: int) -> float:

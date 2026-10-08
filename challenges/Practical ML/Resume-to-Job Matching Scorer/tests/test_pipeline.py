@@ -4,8 +4,8 @@ import zlib
 import numpy as np
 import polars as pl
 import pytest
-from evaluate import random_scores, summarise, tune_fusion_weight
-from pipeline import Prepared, evaluate_all, prepare, run_all
+from resume_matcher.evaluate import random_scores, summarise, tune_fusion_weight
+from resume_matcher.pipeline import Prepared, evaluate_all, prepare, run_all
 
 VOCAB = {
     "HEALTHCARE": ["nurse", "patient", "ward", "clinic", "dosage", "triage"],
@@ -163,7 +163,7 @@ def test_prepare_caps_pool_splits_disjointly_and_reports_skipped_categories(tmp_
 
 
 def test_run_all_writes_a_report_from_kaggle_shaped_csvs(tmp_path):
-    from embed import BackendChoice
+    from resume_matcher.embed import BackendChoice
 
     titles = {
         "HEALTHCARE": "Registered Nurse",

@@ -1,5 +1,5 @@
 import numpy as np
-from index import JobIndex
+from resume_matcher.index import JobIndex
 
 
 def _unit(rows):

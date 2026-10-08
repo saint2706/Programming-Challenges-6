@@ -2,7 +2,7 @@ from pathlib import Path
 
 import polars as pl
 import pytest
-from labels import (
+from resume_matcher.labels import (
     CATEGORY_PATTERNS,
     RESUME_CATEGORIES,
     audit_sample,
@@ -107,7 +107,7 @@ def test_audit_regressions_do_not_overreach(title, category):
 
 def test_committed_audit_file_still_matches_the_label_table():
     audit = pl.read_csv(
-        Path(__file__).parent / "audit" / "labels_audit.csv",
+        Path(__file__).parent.parent / "audit" / "labels_audit.csv",
         schema_overrides={"job_id": pl.Utf8},
     )
     assert audit.height == 100

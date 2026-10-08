@@ -1,14 +1,15 @@
 """Streamlit page: paste a resume, see ranked jobs and why each one matched.
 
-Run:  uv run streamlit run app.py
+Run:  uv run streamlit run src/resume_matcher/app.py
 """
 
 from __future__ import annotations
 
 import json
 
-import ranker as rk
 import streamlit as st
+
+from resume_matcher import ranker as rk
 
 st.set_page_config(page_title="Resume-to-Job Matching Scorer", layout="wide")
 

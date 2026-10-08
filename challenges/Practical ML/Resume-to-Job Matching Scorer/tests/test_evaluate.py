@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 import pytest
-from evaluate import (
+from resume_matcher.evaluate import (
     average_precision_at_k,
     bootstrap_ci,
     mrr,

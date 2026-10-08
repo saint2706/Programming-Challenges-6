@@ -1,9 +1,9 @@
 import random
 
-import explain
 import numpy as np
 import pytest
-from scorers import Bm25Scorer, TfidfScorer
+from resume_matcher import explain
+from resume_matcher.scorers import Bm25Scorer, TfidfScorer
 
 CORPUS = [
     "python sql tableau dashboards analyst reporting team",

@@ -1,7 +1,7 @@
-import cli
 import pytest
-from ranker import Ranker
-from test_ranker import HashEncoder, _frames
+from helpers import HashEncoder, _frames
+from resume_matcher import cli
+from resume_matcher.ranker import Ranker
 from typer.testing import CliRunner
 
 runner = CliRunner()

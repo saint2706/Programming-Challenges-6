@@ -2,7 +2,7 @@ import hashlib
 
 import numpy as np
 import pytest
-from embed import (
+from resume_matcher.embed import (
     CachedEncoder,
     ChunkedEncoder,
     EmbeddingCache,
@@ -214,7 +214,7 @@ def test_embedding_scorer_ranks_by_cosine_and_fit_is_a_noop():
 @pytest.fixture(scope="module")
 def real_torch_encoder():
     pytest.importorskip("transformers")
-    from embed import TorchRunner, load_chunked
+    from resume_matcher.embed import TorchRunner, load_chunked
 
     try:
         return load_chunked(TorchRunner)
@@ -235,7 +235,7 @@ def test_real_model_puts_related_texts_closer(real_torch_encoder):
 
 def test_openvino_cpu_matches_torch_on_the_real_model(real_torch_encoder):
     pytest.importorskip("openvino")
-    from embed import OpenVinoRunner, load_chunked
+    from resume_matcher.embed import OpenVinoRunner, load_chunked
 
     ov_enc = load_chunked(lambda model_id: OpenVinoRunner(model_id, "CPU"))
     texts = [

@@ -11,8 +11,9 @@ import re
 from collections.abc import Collection
 
 import numpy as np
-from embed import Encoder
-from scorers import _SparseScorer
+
+from resume_matcher.embed import Encoder
+from resume_matcher.scorers import _SparseScorer
 
 
 def contributions(

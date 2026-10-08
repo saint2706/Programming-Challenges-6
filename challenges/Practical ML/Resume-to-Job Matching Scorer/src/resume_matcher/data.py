@@ -15,7 +15,9 @@ from pathlib import Path
 
 import polars as pl
 
-HERE = Path(__file__).parent
+from resume_matcher.paths import project_root
+
+HERE = project_root()
 DATA_DIR = HERE / "data"
 
 RESUME_DATASET = "snehaanbhawal/resume-dataset"

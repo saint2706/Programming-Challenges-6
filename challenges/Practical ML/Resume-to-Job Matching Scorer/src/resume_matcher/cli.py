@@ -6,10 +6,16 @@ import json
 from pathlib import Path
 from typing import Annotated
 
-import data
-import pipeline
 import typer
-from ranker import RESULTS, SCORER_NAMES, Match, Ranker, load_default_ranker
+
+from resume_matcher import data, pipeline
+from resume_matcher.ranker import (
+    RESULTS,
+    SCORER_NAMES,
+    Match,
+    Ranker,
+    load_default_ranker,
+)
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 

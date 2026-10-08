@@ -1,8 +1,11 @@
+from pathlib import Path
+
 import pytest
-import ranker as ranker_module
-from ranker import Ranker
+import resume_matcher
+from helpers import HashEncoder, _frames
+from resume_matcher import ranker as ranker_module
+from resume_matcher.ranker import Ranker
 from streamlit.testing.v1 import AppTest
-from test_ranker import HashEncoder, _frames
 
 RESUME = "nurse patient ward triage dosage clinic nurse patient team worked"
 
@@ -17,7 +20,9 @@ def at(monkeypatch, tmp_path):
         jobs, resumes, HashEncoder(), index_dir=tmp_path / "idx", fusion_weight=0.5
     )
     monkeypatch.setattr(ranker_module, "load_default_ranker", lambda: r)
-    app = AppTest.from_file("app.py", default_timeout=60)
+    app = AppTest.from_file(
+        str(Path(resume_matcher.__file__).parent / "app.py"), default_timeout=60
+    )
     app.run()
     return app
 

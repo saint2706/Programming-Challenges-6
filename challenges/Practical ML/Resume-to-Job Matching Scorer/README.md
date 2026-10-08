@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/resume_matcher/`; the tests are in `tests/`.
+
 Ranks job postings for a resume (and resumes for a posting) with four scorers --
 TF-IDF, BM25, bge-small embeddings and a tuned fusion of the last two --
 benchmarks them against each other on real data, and explains every match from
@@ -18,7 +20,7 @@ and see the evidence.
 - [LinkedIn Job Postings](https://www.kaggle.com/datasets/arshkon/linkedin-job-postings)
   (Kaggle, 123,849 postings; 123,782 with a usable description).
 
-Both are fetched by `cli.py fetch` into a gitignored `data/` folder using your
+Both are fetched by `resume-matcher fetch` into a gitignored `data/` folder using your
 Kaggle token in `~/.kaggle/kaggle.json` (dataset downloads, so no competition
 rules to accept).
 
@@ -174,14 +176,14 @@ removing random shared terms. The gap list is a heuristic and its output is
 imperfect (it shows words like "modern" and "degree computer").
 
 ```
-$ uv run python cli.py rank-jobs examples/sample_resume.txt --top 3 --scorer tfidf
+$ uv run resume-matcher rank-jobs examples/sample_resume.txt --top 3 --scorer tfidf
  1.   0.142  Sr Data engineer with AWS, PYTHON (W2) [INFORMATION-TECHNOLOGY]
       evidence: aws 0.031, big data 0.018, python 0.017, certifications aws 0.017, ...   (top 8 of 19 terms; the other 11 add 0.021, so all of them sum to the score)
       missing:  frameworks, degree computer, pipelines, engineering, java, modern
  2.   0.138  Sr Data scientist [INFORMATION-TECHNOLOGY]
       evidence: tensorflow pytorch 0.019, pytorch 0.018, aws 0.015, tensorflow 0.015, ...
 
-$ uv run python cli.py rank-jobs examples/sample_resume.txt --top 1 --scorer embedding --explain-dense
+$ uv run resume-matcher rank-jobs examples/sample_resume.txt --top 1 --scorer embedding --explain-dense
 post-hoc: resume sentences the embedding match to the top job depends on
   +0.0309  Hands-on with Python, SQL, R, Tableau and Power BI for dashboards, reporting ...
   +0.0201  Python, SQL, R, Pandas, NumPy, Tableau, Power BI, scikit-learn, TensorFlow, ...
@@ -222,12 +224,12 @@ order silently gives cosine ~0.5 even on CPU.
 
 ```bash
 uv sync                                                # dependencies from pyproject.toml / uv.lock
-uv run python cli.py fetch                             # Kaggle token in ~/.kaggle/kaggle.json
-uv run python cli.py evaluate                          # full benchmark -> results/report.json
-uv run python cli.py report                            # print the saved benchmark
-uv run python cli.py rank-jobs examples/sample_resume.txt --top 5 --scorer fusion --explain-dense
-uv run python cli.py rank-resumes some_job.txt --top 5 --scorer bm25
-uv run streamlit run app.py
+uv run resume-matcher fetch                             # Kaggle token in ~/.kaggle/kaggle.json
+uv run resume-matcher evaluate                          # full benchmark -> results/report.json
+uv run resume-matcher report                            # print the saved benchmark
+uv run resume-matcher rank-jobs examples/sample_resume.txt --top 5 --scorer fusion --explain-dense
+uv run resume-matcher rank-resumes some_job.txt --top 5 --scorer bm25
+uv run streamlit run src/resume_matcher/app.py
 uv run pytest -q                                       # 153 tests, no network except two model smoke tests
 ```
 

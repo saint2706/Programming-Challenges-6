@@ -18,13 +18,18 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import data
-import labels
 import numpy as np
 import polars as pl
-from embed import BackendChoice, EmbeddingScorer, Encoder, default_encoder
-from evaluate import random_scores, summarise, tune_fusion_weight
-from scorers import Bm25Scorer, TfidfScorer, rrf, zscore
+
+from resume_matcher import data, labels
+from resume_matcher.embed import (
+    BackendChoice,
+    EmbeddingScorer,
+    Encoder,
+    default_encoder,
+)
+from resume_matcher.evaluate import random_scores, summarise, tune_fusion_weight
+from resume_matcher.scorers import Bm25Scorer, TfidfScorer, rrf, zscore
 
 GRID = np.round(np.linspace(0.0, 1.0, 11), 2)
 SCORERS = ("random", "tfidf", "bm25", "embedding", "fusion", "rrf")

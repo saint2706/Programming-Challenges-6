@@ -11,17 +11,17 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import data
-import explain
-import labels
 import numpy as np
 import polars as pl
-from embed import Encoder, default_encoder
-from index import JobIndex
-from scorers import Bm25Scorer, TfidfScorer, zscore
+
+from resume_matcher import data, explain, labels
+from resume_matcher.embed import Encoder, default_encoder
+from resume_matcher.index import JobIndex
+from resume_matcher.paths import project_root
+from resume_matcher.scorers import Bm25Scorer, TfidfScorer, zscore
 
 SCORER_NAMES = ("fusion", "embedding", "bm25", "tfidf")
-RESULTS = Path(__file__).parent / "results" / "report.json"
+RESULTS = project_root() / "results" / "report.json"
 COMMON_MIN_SHARE = 0.1
 
 
