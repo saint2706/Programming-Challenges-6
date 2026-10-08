@@ -72,6 +72,22 @@ def test_every_model_and_calibrator_gets_a_row(full):
     assert "vector" in section and "isotonic" in section
 
 
+def test_the_conformal_table_shows_coverage_before_empty_sets_are_filled(full):
+    rep, _ = full
+    section = (
+        report.tables_markdown(rep)
+        .split("## Conformal prediction")[1]
+        .split("\n## ")[0]
+    )
+    assert "unfilled coverage (test)" in section and "empty sets (test)" in section
+    row = rep["stages"]["conformal"]["models"]["ens-classification"]["temperature"][
+        "aps"
+    ]
+    assert report.fmt_ci(row["test"]["coverage_raw_ci"]) in section
+    assert report.fmt_ci(row["ood_test"]["coverage_raw_ci"]) in section
+    assert "most likely star" in section  # the table says what the fill does
+
+
 def test_a_partial_report_renders_what_exists_and_says_what_is_missing(tmp_path):
     features = make_features(seed=1)
     rep = pipeline.run_all(

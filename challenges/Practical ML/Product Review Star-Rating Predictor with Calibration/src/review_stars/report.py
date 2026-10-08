@@ -195,7 +195,12 @@ def _conformal_section(rep: dict) -> str:
         return msg
     st = _stage(rep, "conformal")
     out = [
-        f"\nTarget coverage {1 - st['alpha']:.0%}; sets built from temperature-scaled probabilities.\n"
+        (
+            f"\nTarget coverage {1 - st['alpha']:.0%}; sets built from temperature-scaled probabilities.\n"
+            "The sets shown are never empty: a randomized set that comes out empty gets the review's most likely star, "
+            "which adds coverage. *Unfilled* coverage is the set the guarantee applies to; *empty sets* is the share "
+            "of reviews that needed the fill.\n"
+        )
     ]
     rows = []
     for m, entry in st["models"].items():
@@ -205,6 +210,8 @@ def _conformal_section(rep: dict) -> str:
                 m,
                 fmt_ci(v["aps"]["test"]["coverage_ci"]), fmt(v["aps"]["test"]["mean_size"], ".2f"),
                 fmt_ci(v["aps"]["ood_test"]["coverage_ci"]), fmt(v["aps"]["ood_test"]["mean_size"], ".2f"),
+                fmt_ci(v["aps"]["test"]["coverage_raw_ci"]), fmt_ci(v["aps"]["ood_test"]["coverage_raw_ci"]),
+                fmt_pct(v["aps"]["test"]["empty_share"]), fmt_pct(v["aps"]["ood_test"]["empty_share"]),
                 fmt(v["aps_det"]["test"]["coverage"]), fmt(v["aps_det"]["test"]["mean_size"], ".2f"),
             ]
     )  # fmt: skip
@@ -216,6 +223,10 @@ def _conformal_section(rep: dict) -> str:
                 "size",
                 "APS coverage (Software)",
                 "size",
+                "unfilled coverage (test)",
+                "unfilled coverage (Software)",
+                "empty sets (test)",
+                "empty sets (Software)",
                 "deterministic APS coverage (test)",
                 "size",
             ],

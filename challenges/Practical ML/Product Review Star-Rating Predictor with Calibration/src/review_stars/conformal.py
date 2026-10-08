@@ -10,6 +10,10 @@
 * ``IntervalConformal``: intervals ``mu +- q * sigma`` for the regression framing, where ``q`` is
   the conformal quantile of the normalized residuals ``|y - mu| / sigma``.
 
+``ApsConformal.sets`` never returns an empty set by default: a randomized set that would be empty
+gets the review's most likely star, which adds coverage (about three points on this benchmark).
+``nonempty=False`` returns the sets the guarantee is about.
+
 The guarantee needs the calibration and test reviews to be exchangeable. Under a time or domain
 shift it does not hold, which is a result worth reporting, not a bug.
 

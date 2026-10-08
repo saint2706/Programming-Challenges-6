@@ -135,6 +135,25 @@ def test_conformal_shift_and_selective_stages_report_their_payloads(finished):
     )
 
 
+def test_conformal_reports_the_coverage_of_the_sets_before_empty_ones_are_filled(
+    finished,
+):
+    report, _ = finished
+    conf = report["stages"]["conformal"]["models"]["ens-classification"]["temperature"]
+    for split in ("test", "ood_test"):
+        aps, det = conf["aps"][split], conf["aps_det"][split]
+        assert 0.0 <= aps["empty_share"] <= 1.0
+        # filling an empty set can only add coverage, and at most one review per empty set
+        assert (
+            aps["coverage_raw"]
+            <= aps["coverage"]
+            <= aps["coverage_raw"] + aps["empty_share"] + 1e-9
+        )
+        assert aps["coverage_raw_ci"]["est"] == aps["coverage_raw"]
+        # the deterministic variant always keeps the top star: nothing is ever empty
+        assert det["empty_share"] == 0.0 and det["coverage_raw"] == det["coverage"]
+
+
 # ---------------------------------------------------------------- the stage cache
 
 

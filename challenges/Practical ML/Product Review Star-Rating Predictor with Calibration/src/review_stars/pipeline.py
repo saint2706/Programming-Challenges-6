@@ -55,7 +55,7 @@ from review_stars import text as text_mod
 from review_stars.config import FRAMINGS, Config
 from review_stars.probs import Predictions
 
-STAGE_VERSION = 1  # bump when a stage's payload format or meaning changes
+STAGE_VERSION = 2  # bump when a stage's payload format or meaning changes
 
 STAGES = (
     "train",
@@ -683,15 +683,25 @@ def _conformal_stage(ctx: Ctx):
                 row: dict = {"qhat": model.qhat}
                 for split in SCORED:
                     sd = ctx.split(split)
-                    mask = model.sets(
-                        ctx.proba(m, kind, split), u[split] if randomized else None
+                    P, draws_s = (
+                        ctx.proba(m, kind, split),
+                        (u[split] if randomized else None),
                     )
-                    hit = mask[np.arange(len(sd.y)), sd.y - 1]
+                    mask = model.sets(P, draws_s)
+                    raw = model.sets(P, draws_s, nonempty=False)
+                    rows = np.arange(len(sd.y))
+                    hit, raw_hit = mask[rows, sd.y - 1], raw[rows, sd.y - 1]
                     row[split] = {
                         **conformal.set_stats(mask, sd.y),
                         "coverage_ci": _hit_ci(
                             hit, sd.groups, cfg.n_boot, cfg.stat_seed
                         ),
+                        # the sets the guarantee covers, before empty ones get their top star
+                        "coverage_raw": float(raw_hit.mean()),
+                        "coverage_raw_ci": _hit_ci(
+                            raw_hit, sd.groups, cfg.n_boot, cfg.stat_seed
+                        ),
+                        "empty_share": float((~raw.any(axis=1)).mean()),
                     }
                 per_variant[variant] = row
             entry[kind] = per_variant
