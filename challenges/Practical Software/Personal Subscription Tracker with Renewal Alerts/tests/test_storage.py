@@ -4,7 +4,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
-from storage import (
+from subscription_tracker.storage import (
     Subscription,
     SubscriptionStore,
     add_months,

@@ -4,10 +4,10 @@ import re
 from datetime import timedelta
 from pathlib import Path
 
-import app as app_module
 import pytest
 from fastapi.testclient import TestClient
-from storage import SubscriptionStore, local_today
+from subscription_tracker import app as app_module
+from subscription_tracker.storage import SubscriptionStore, local_today
 
 
 def _first_subscription_id(dashboard_html: str) -> str:

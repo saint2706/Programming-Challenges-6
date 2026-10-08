@@ -2,12 +2,10 @@
 desktop notifications before a subscription renews.
 
 Run directly:
-    uv run --with fastapi --with uvicorn[standard] --with sqlmodel --with plyer \\
-        --with python-multipart python app.py
+    uv run sub-tracker
 
 Or with a reload server:
-    uv run --with fastapi --with uvicorn[standard] --with sqlmodel --with plyer \\
-        --with python-multipart uvicorn app:app --reload
+    uv run uvicorn subscription_tracker.app:app --reload
 
 Pages are rendered as small server-side HTML fragments (no template engine,
 no static file directory) to keep this a single self-contained script, per
@@ -25,17 +23,23 @@ import threading
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import date
-from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from notifier import notify
-from storage import BILLING_CYCLES, Subscription, SubscriptionStore, local_today
+
+from subscription_tracker.notifier import notify
+from subscription_tracker.paths import project_root
+from subscription_tracker.storage import (
+    BILLING_CYCLES,
+    Subscription,
+    SubscriptionStore,
+    local_today,
+)
 
 logger = logging.getLogger(__name__)
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = project_root()
 DB_PATH = BASE_DIR / "subscriptions.db"
 CHECK_INTERVAL_SECONDS = 3600  # hourly; use the "run check now" button to
 # verify notification behavior immediately instead of waiting for a tick.
@@ -448,5 +452,9 @@ def health() -> dict[str, object]:
     return {"status": "ok", "subscriptions": len(store.list_all())}
 
 
-if __name__ == "__main__":
+def main() -> None:
     uvicorn.run(app, host="127.0.0.1", port=8002)
+
+
+if __name__ == "__main__":
+    main()
