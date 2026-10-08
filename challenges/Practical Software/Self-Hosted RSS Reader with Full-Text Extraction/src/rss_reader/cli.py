@@ -2,9 +2,10 @@ from pathlib import Path
 
 import httpx
 import typer
-from extractor import fetch_and_extract
-from feeds import parse_feed
-from storage import ArticleStore
+
+from rss_reader.extractor import fetch_and_extract
+from rss_reader.feeds import parse_feed
+from rss_reader.storage import ArticleStore
 
 app = typer.Typer()
 

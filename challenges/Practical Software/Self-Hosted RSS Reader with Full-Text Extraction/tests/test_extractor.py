@@ -1,4 +1,4 @@
-from extractor import extract_from_html
+from rss_reader.extractor import extract_from_html
 
 ARTICLE_WITH_BOILERPLATE = """
 <html>

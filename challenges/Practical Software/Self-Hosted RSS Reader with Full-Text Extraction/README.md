@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/rss_reader/`; the tests are in `tests/`.
+
 A local RSS reader that polls feed URLs, stores articles in SQLite, extracts
 full article text from HTML using readability heuristics, and makes everything
 searchable with full-text search. All processing is local; no external service
@@ -78,24 +80,24 @@ duplicate-insertion tests.
 ```bash
 cd "challenges/Practical Software/Self-Hosted RSS Reader with Full-Text Extraction"
 
-uv run python cli.py add https://xkcd.com/feed.xml
+uv run rss-reader add https://xkcd.com/feed.xml
 # -> Added feed: xkcd (ID: 1)
 # -> Found 50 articles
 
-uv run python cli.py refresh
+uv run rss-reader refresh
 # -> Polling all feeds...
 # -> xkcd: +3 articles
 
-uv run python cli.py list --unread
+uv run rss-reader list --unread
 # -> [*] [15] xkcd: Sights of 2024
 #       2024-01-20T12:00:00
 
-uv run python cli.py read 15
+uv run rss-reader read 15
 # -> Title: xkcd: Sights of 2024
 # -> Link: https://xkcd.com/2856/
 # -> [extracted full article text...]
 
-uv run python cli.py search python
+uv run rss-reader search python
 # -> Found 3 articles
 # -> [*] [42] Python Release Candidate
 

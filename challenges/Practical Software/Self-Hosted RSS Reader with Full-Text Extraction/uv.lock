@@ -647,7 +647,7 @@ wheels = [
 [[package]]
 name = "self-hosted-rss-reader-with-full-text-extraction"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "feedparser" },
     { name = "httpx" },

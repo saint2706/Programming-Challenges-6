@@ -1,4 +1,4 @@
-from feeds import parse_feed
+from rss_reader.feeds import parse_feed
 
 SIMPLE_RSS = """<?xml version="1.0"?>
 <rss version="2.0">

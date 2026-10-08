@@ -2,8 +2,8 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import cli
-from storage import ArticleStore
+from rss_reader import cli
+from rss_reader.storage import ArticleStore
 from typer.testing import CliRunner
 
 runner = CliRunner()
@@ -37,7 +37,7 @@ SAMPLE_ARTICLE_HTML = """
 """
 
 
-@patch("cli.httpx.get")
+@patch("rss_reader.cli.httpx.get")
 def test_add_feed(mock_get):
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
@@ -55,7 +55,7 @@ def test_add_feed(mock_get):
             assert "Test Feed" in result.stdout
 
 
-@patch("cli.httpx.get")
+@patch("rss_reader.cli.httpx.get")
 def test_add_feed_fetch_error(mock_get):
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
@@ -77,7 +77,7 @@ def test_list_feeds_empty():
             assert "No feeds" in result.stdout
 
 
-@patch("cli.httpx.get")
+@patch("rss_reader.cli.httpx.get")
 def test_list_feeds(mock_get):
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
@@ -106,8 +106,8 @@ def test_remove_feed():
             assert "Removed feed" in result.stdout
 
 
-@patch("cli.fetch_and_extract")
-@patch("cli.httpx.get")
+@patch("rss_reader.cli.fetch_and_extract")
+@patch("rss_reader.cli.httpx.get")
 def test_refresh_feed(mock_get, mock_extract):
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
@@ -139,7 +139,7 @@ def test_list_articles_empty():
             assert "No articles" in result.stdout
 
 
-@patch("cli.httpx.get")
+@patch("rss_reader.cli.httpx.get")
 def test_list_articles(mock_get):
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"

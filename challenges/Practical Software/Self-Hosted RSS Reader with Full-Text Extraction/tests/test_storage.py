@@ -2,7 +2,7 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
-from storage import ArticleStore
+from rss_reader.storage import ArticleStore
 
 
 def test_init_db_creates_tables():
