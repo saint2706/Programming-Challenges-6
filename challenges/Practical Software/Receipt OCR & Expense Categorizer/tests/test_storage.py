@@ -3,8 +3,8 @@
 from datetime import UTC, datetime
 
 import pytest
-from receipt import Receipt
-from storage import (
+from receipt_ocr.receipt import Receipt
+from receipt_ocr.storage import (
     add_receipt,
     delete_receipt,
     get_category_totals,

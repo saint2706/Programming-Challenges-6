@@ -9,10 +9,11 @@ from __future__ import annotations
 from pathlib import Path
 
 import typer
-from categorizer import categorize
-from ocr import extract_text
-from receipt import parse_receipt
-from storage import (
+
+from receipt_ocr.categorizer import categorize
+from receipt_ocr.ocr import extract_text
+from receipt_ocr.receipt import parse_receipt
+from receipt_ocr.storage import (
     add_receipt,
     delete_receipt,
     get_category_totals,

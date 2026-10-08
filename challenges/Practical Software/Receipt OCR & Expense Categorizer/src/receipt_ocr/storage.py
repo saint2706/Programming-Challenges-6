@@ -6,7 +6,7 @@ import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
 
-from receipt import Receipt
+from receipt_ocr.receipt import Receipt
 
 
 def init_db(db_path: str | Path) -> None:

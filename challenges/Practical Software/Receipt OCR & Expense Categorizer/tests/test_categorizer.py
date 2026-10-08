@@ -1,7 +1,11 @@
 """Tests for receipt categorization."""
 
 import pytest
-from categorizer import categorize, categorize_by_fuzzy_match, categorize_by_keywords
+from receipt_ocr.categorizer import (
+    categorize,
+    categorize_by_fuzzy_match,
+    categorize_by_keywords,
+)
 
 
 class TestCategorizeByKeywords:

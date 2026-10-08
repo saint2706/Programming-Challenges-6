@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/receipt_ocr/`; the tests are in `tests/`.
+
 A receipt scanner that extracts text from receipt images using PaddleOCR,
 parses structured fields (merchant, date, total), automatically categorizes
 expenses by merchant name, and stores everything in SQLite for reporting
@@ -47,7 +49,7 @@ The parsing strategy is deliberately defensive and heuristic:
   fuzzy matching against a merchant database (handles typos and OCR errors).
 
 This is why
-eceipt.py is tested extensively with fixture text (not live OCR)
+receipt.py is tested extensively with fixture text (not live OCR)
 and why the OCR layer (ocr.py) is deliberately thin and swappable — the hard
 part is making parsing robust to garbage input, not the OCR itself.
 
@@ -85,31 +87,31 @@ receipt). Default SQLite path is ~/.expense_tracker/receipts.db.
 cd "challenges/Practical Software/Receipt OCR & Expense Categorizer"
 
 # Scan a single receipt
-uv run python cli.py scan /path/to/receipt.jpg
+uv run receipt-ocr scan /path/to/receipt.jpg
 
 # Batch-import all JPGs from a folder
-uv run python cli.py import-folder /path/to/receipt/folder
+uv run receipt-ocr import-folder /path/to/receipt/folder
 
 # List all receipts
-uv run python cli.py list
+uv run receipt-ocr list
 
 # Filter receipts by category
-uv run python cli.py list --category Groceries
+uv run receipt-ocr list --category Groceries
 
 # Filter by month (YYYY-MM)
-uv run python cli.py list --month 2026-01
+uv run receipt-ocr list --month 2026-01
 
 # Show expense report
-uv run python cli.py report
+uv run receipt-ocr report
 
 # Report for a specific month
-uv run python cli.py report --month 2026-01
+uv run receipt-ocr report --month 2026-01
 
 # Manually recategorize a receipt
-uv run python cli.py recategorize <receipt-id> Transport
+uv run receipt-ocr recategorize <receipt-id> Transport
 
 # Delete a receipt
-uv run python cli.py delete <receipt-id>
+uv run receipt-ocr delete <receipt-id>
 
 # Run all tests (no PaddleOCR downloads — mocked)
 uv run pytest -q # 84 tests
@@ -140,24 +142,24 @@ be clear at import time, and you can then swap ocr.py's implementation
 
 84 pytest cases across four files.
 
-    est_receipt.py (13 cases) covers extraction functions directly with fixture
+    test_receipt.py (13 cases) covers extraction functions directly with fixture
 
 OCR text: multiple date formats (MM/DD/YYYY, month names, different separators,
 swapped month/day detection), total extraction with keywords ("TOTAL", "Amount
 Due"), currency formats (dollar sign, commas, decimal), and graceful failures
 (missing fields → None, not crashes).
 
-    est_categorizer.py (22 cases) tests keyword rules for each category, case
+    test_categorizer.py (22 cases) tests keyword rules for each category, case
 
 insensitivity, partial merchant matching, fuzzy matching with typo tolerance,
 and the "Other" fallback.
 
-    est_storage.py (21 cases) covers CRUD round-trips against a temporary SQLite
+    test_storage.py (21 cases) covers CRUD round-trips against a temporary SQLite
 
 database, filtering by category and month, updating categories, category/monthly
 totals, and JSON serialization of receipt raw_text.
 
-    est_cli.py (28 cases) drives the Typer CLI via CliRunner with mocked OCR
+    test_cli.py (28 cases) drives the Typer CLI via CliRunner with mocked OCR
 
 calls (no real PaddleOCR model downloads): scan success/failure, import-folder
 batch processing, list with filters, report generation, recategorization,

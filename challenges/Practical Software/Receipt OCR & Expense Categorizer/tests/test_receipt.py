@@ -1,7 +1,12 @@
 """Tests for receipt parsing from OCR text."""
 
 import pytest
-from receipt import extract_date, extract_merchant, extract_total, parse_receipt
+from receipt_ocr.receipt import (
+    extract_date,
+    extract_merchant,
+    extract_total,
+    parse_receipt,
+)
 
 
 class TestExtractMerchant:

@@ -4,9 +4,9 @@ from datetime import UTC, datetime
 from unittest.mock import patch
 
 import pytest
-from cli import app
-from receipt import Receipt
-from storage import add_receipt, init_db
+from receipt_ocr.cli import app
+from receipt_ocr.receipt import Receipt
+from receipt_ocr.storage import add_receipt, init_db
 from typer.testing import CliRunner
 
 runner = CliRunner()
@@ -25,7 +25,7 @@ class TestScanCommand:
         image_path = tmp_path / "test.jpg"
         image_path.touch()
 
-        with patch("cli.extract_text") as mock_ocr:
+        with patch("receipt_ocr.cli.extract_text") as mock_ocr:
             mock_ocr.return_value = [
                 "WHOLE FOODS MARKET",
                 "123 Main St",
@@ -49,7 +49,7 @@ class TestScanCommand:
         image_path = tmp_path / "test.jpg"
         image_path.touch()
 
-        with patch("cli.extract_text") as mock_ocr:
+        with patch("receipt_ocr.cli.extract_text") as mock_ocr:
             mock_ocr.return_value = ["STORE NAME", "Total: $50.00"]
 
             result = runner.invoke(
@@ -71,7 +71,7 @@ class TestScanCommand:
         image_path = tmp_path / "empty.jpg"
         image_path.touch()
 
-        with patch("cli.extract_text") as mock_ocr:
+        with patch("receipt_ocr.cli.extract_text") as mock_ocr:
             mock_ocr.return_value = []
 
             result = runner.invoke(app, ["scan", str(image_path), "--db", str(tmp_db)])
@@ -86,7 +86,7 @@ class TestImportFolderCommand:
         img1.touch()
         img2.touch()
 
-        with patch("cli.extract_text") as mock_ocr:
+        with patch("receipt_ocr.cli.extract_text") as mock_ocr:
             mock_ocr.return_value = ["STORE", "Total: $20.00"]
 
             result = runner.invoke(
