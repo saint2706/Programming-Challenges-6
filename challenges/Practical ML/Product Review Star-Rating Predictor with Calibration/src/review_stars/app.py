@@ -135,7 +135,7 @@ with tab_predict:
                     yaxis_title="probability",
                     legend={"orientation": "h"},
                 )
-                st.plotly_chart(fig, use_container_width=True, key=f"bars-{framing}")
+                st.plotly_chart(fig, width="stretch", key=f"bars-{framing}")
 
 # ---------------------------------------------------------------- calibration
 
@@ -201,7 +201,7 @@ with tab_cal:
             yaxis_title="accuracy",
             title=f"{model}: reliability on {report_mod.SPLIT_TITLES[split]}",
         )
-        st.plotly_chart(fig, use_container_width=True, key="reliability")
+        st.plotly_chart(fig, width="stretch", key="reliability")
         hist.update_layout(
             barmode="group",
             height=200,
@@ -209,7 +209,7 @@ with tab_cal:
             yaxis_title="reviews",
             title="How sharp is it? Reviews per confidence bin",
         )
-        st.plotly_chart(hist, use_container_width=True, key="sharpness")
+        st.plotly_chart(hist, width="stretch", key="sharpness")
         st.dataframe(
             pl.DataFrame(
                 [
@@ -246,7 +246,7 @@ with tab_cal:
             xaxis_title="nominal mass of the smallest set",
             yaxis_title="empirical coverage",
         )
-        st.plotly_chart(cov, use_container_width=True, key="coverage")
+        st.plotly_chart(cov, width="stretch", key="coverage")
     shift_stage = stages.get("shift")
     if shift_stage:
         rec = shift_stage["models"][
@@ -318,4 +318,4 @@ with tab_sel:
             xaxis_title="coverage (share kept)",
             yaxis_title="error rate of what is kept",
         )
-        st.plotly_chart(fig, use_container_width=True, key="risk")
+        st.plotly_chart(fig, width="stretch", key="risk")
