@@ -3,8 +3,8 @@ from __future__ import annotations
 import io
 from pathlib import Path
 
-import remove_bg
-from cli import app
+from bg_remover import remove_bg
+from bg_remover.cli import app
 from PIL import Image
 from typer.testing import CliRunner
 

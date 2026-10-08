@@ -4,7 +4,7 @@ import io
 from pathlib import Path
 
 import pytest
-import remove_bg
+from bg_remover import remove_bg
 from PIL import Image, ImageDraw
 
 

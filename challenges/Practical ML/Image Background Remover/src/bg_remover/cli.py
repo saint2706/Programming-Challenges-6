@@ -1,6 +1,6 @@
 """Batch background-removal CLI, backed by rembg's pretrained matting models.
 
-Run: uv run --with "rembg[cpu]" --with typer python cli.py PHOTOS/ out/
+Run: uv run bg-remover PHOTOS/ out/
 """
 
 from __future__ import annotations
@@ -10,12 +10,6 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
-from remove_bg import (
-    AVAILABLE_MODELS,
-    DEFAULT_MODEL,
-    process_batch,
-    resolve_input_files,
-)
 from rich.console import Console
 from rich.progress import (
     BarColumn,
@@ -25,6 +19,13 @@ from rich.progress import (
     TimeElapsedColumn,
 )
 from rich.table import Table
+
+from bg_remover.remove_bg import (
+    AVAILABLE_MODELS,
+    DEFAULT_MODEL,
+    process_batch,
+    resolve_input_files,
+)
 
 app = typer.Typer(
     add_completion=False,

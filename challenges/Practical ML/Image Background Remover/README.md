@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/bg_remover/`; the tests are in `tests/`.
+
 A Typer CLI that removes the background from every supported image under an
 input file or directory, writing a transparent-background PNG per input into
 an output directory. The segmentation itself is delegated to
@@ -133,15 +135,15 @@ break. It's marked `@pytest.mark.network` and calls `pytest.skip(...)`
 ```bash
 cd "challenges/Practical ML/Image Background Remover"
 
-uv run python cli.py path/to/photos/ path/to/output/ --recursive
+uv run bg-remover path/to/photos/ path/to/output/ --recursive
 # First run downloads and caches the isnet-general-use model (~179MB) to
 # ~/.rembg/models/ -- subsequent runs (any model) reuse the cache.
 
 # Use a smaller/faster model instead:
-uv run python cli.py path/to/photos/ path/to/output/ --model u2netp
+uv run bg-remover path/to/photos/ path/to/output/ --model u2netp
 
 # A single file works too, no --recursive needed:
-uv run python cli.py photo.jpg out/
+uv run bg-remover photo.jpg out/
 
 uv run pytest -q                        # 26 tests, no network required
 uv run pytest -q -m network             # +1 real-model end-to-end test

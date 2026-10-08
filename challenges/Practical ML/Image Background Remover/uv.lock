@@ -189,7 +189,7 @@ wheels = [
 [[package]]
 name = "image-background-remover"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "pillow" },
     { name = "rembg", extra = ["cpu"] },
