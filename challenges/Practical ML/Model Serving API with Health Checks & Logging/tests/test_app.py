@@ -4,9 +4,9 @@ import io
 import json
 import uuid
 
-from app import app
 from fastapi.testclient import TestClient
-from logging_config import LOG_FILE
+from model_serving.app import app
+from model_serving.logging_config import LOG_FILE
 from PIL import Image
 
 
@@ -118,9 +118,9 @@ def test_readiness_and_model_info_fail_before_startup_lifespan_runs() -> None:
     # Calling the route functions directly (bypassing the lifespan-managed
     # TestClient context) simulates a request arriving before startup --
     # app_state must reflect "not ready" rather than crash.
-    import app as app_module
-    from app import health_ready, model_info
     from fastapi import HTTPException
+    from model_serving import app as app_module
+    from model_serving.app import health_ready, model_info
 
     original_state = dict(app_module.app_state)
     app_module.app_state["session"] = None

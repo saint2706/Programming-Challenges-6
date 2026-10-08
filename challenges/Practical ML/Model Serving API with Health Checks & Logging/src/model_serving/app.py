@@ -5,14 +5,11 @@ FastAPI app: liveness/readiness health probes, a /model/info introspection
 endpoint, and a structured JSON log line for every request.
 
 Run directly:
-    uv run --with fastapi --with "uvicorn[standard]" --with onnxruntime \\
-        --with pillow --with structlog --with numpy --with python-multipart \\
-        python app.py
+    uv run model-serving
 
 Or with a reload server:
-    uv run --with fastapi --with "uvicorn[standard]" --with onnxruntime \\
-        --with pillow --with structlog --with numpy --with python-multipart \\
-        uvicorn app:app --reload
+    uv run \\
+        uvicorn model_serving.app:app --reload
 """
 
 from __future__ import annotations
@@ -24,11 +21,12 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any
 
-import model_loader
 import uvicorn
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
-from logging_config import configure_logging, get_logger
 from PIL import Image, UnidentifiedImageError
+
+from model_serving import model_loader
+from model_serving.logging_config import configure_logging, get_logger
 
 configure_logging()
 logger = get_logger()
@@ -173,5 +171,9 @@ def model_info() -> dict[str, Any]:
     return _model_info_payload()
 
 
-if __name__ == "__main__":
+def main() -> None:
     uvicorn.run(app, host="127.0.0.1", port=8010)
+
+
+if __name__ == "__main__":
+    main()

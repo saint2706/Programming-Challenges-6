@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import model_loader
 import numpy as np
 import pytest
+from model_serving import model_loader
 from PIL import Image
 
 

@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/model_serving/`; the tests are in `tests/`.
+
 A small FastAPI service that serves a real pretrained ONNX model —
 [SqueezeNet 1.1](https://github.com/onnx/models/tree/main/validated/vision/classification/squeezenet)
 (ImageNet, 1000 classes, ~5 MB) — behind Kubernetes-style liveness/readiness
@@ -101,11 +103,11 @@ tampers with a *temp copy*, never the real vendored file.
 ```bash
 cd "challenges/Practical ML/Model Serving API with Health Checks & Logging"
 
-uv run app.py
+uv run model-serving
 # -> http://127.0.0.1:8010
 
 # or, with auto-reload during development:
-uv run uvicorn app:app --reload
+uv run uvicorn model_serving.app:app --reload
 
 uv run pytest -q # 15 tests
 ```

@@ -10,12 +10,13 @@ from __future__ import annotations
 
 import json
 import sys
-from pathlib import Path
 from typing import Any
 
 import structlog
 
-BASE_DIR = Path(__file__).parent
+from model_serving.paths import project_root
+
+BASE_DIR = project_root()
 LOG_DIR = BASE_DIR / "logs"
 LOG_FILE = LOG_DIR / "requests.jsonl"
 

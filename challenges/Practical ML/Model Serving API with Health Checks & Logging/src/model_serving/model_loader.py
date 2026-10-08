@@ -15,7 +15,9 @@ import numpy as np
 import onnxruntime as ort
 from PIL import Image
 
-BASE_DIR = Path(__file__).parent
+from model_serving.paths import project_root
+
+BASE_DIR = project_root()
 MODEL_PATH = BASE_DIR / "models" / "squeezenet1.1-7.onnx"
 LABELS_PATH = BASE_DIR / "models" / "imagenet_synset.txt"
 
