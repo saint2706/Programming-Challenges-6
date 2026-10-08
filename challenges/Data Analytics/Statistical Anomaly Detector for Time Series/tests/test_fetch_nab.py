@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 
-import fetch_nab
 import pytest
+from ts_anomaly import fetch_nab
 
 CSV = b"timestamp,value\n2014-01-01 00:00:00,1\n2014-01-01 00:05:00,2\n"
 LABELS = {

@@ -10,7 +10,17 @@ dependencies = [
     "statsmodels>=0.15.0",
 ]
 
+[project.scripts]
+ts-anomaly = "ts_anomaly.anomaly_detector:main"
+
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
 ]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "ts_anomaly"

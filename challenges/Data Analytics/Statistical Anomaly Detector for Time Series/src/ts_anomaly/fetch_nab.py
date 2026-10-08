@@ -1,7 +1,7 @@
 """Fetch more labelled series from the Numenta Anomaly Benchmark (MIT license).
 
-    uv run python fetch_nab.py realKnownCause/machine_temperature_system_failure
-    uv run python anomaly_detector.py .cache/nab/machine_temperature_system_failure.csv --labels .cache/nab/labels.json -o out/machine.html
+    uv run python -m ts_anomaly.fetch_nab realKnownCause/machine_temperature_system_failure
+    uv run ts-anomaly .cache/nab/machine_temperature_system_failure.csv --labels .cache/nab/labels.json -o out/machine.html
 
 Downloads the series CSV and its labelled windows into `.cache/nab/` (ignored by
 git). `sample_data/` already vendors four series, so this is only needed for the
@@ -20,8 +20,10 @@ import urllib.request
 from collections.abc import Callable
 from pathlib import Path
 
+from ts_anomaly.paths import project_root
+
 RAW = "https://raw.githubusercontent.com/numenta/NAB/master"
-CACHE = Path(__file__).parent / ".cache" / "nab"
+CACHE = project_root() / ".cache" / "nab"
 # "<category>/<name>" with no dots-only segments or slashes beyond the one separator,
 # so a key can neither climb out of the cache directory nor rewrite the URL path.
 _KEY = re.compile(r"^[A-Za-z]+/[A-Za-z0-9][A-Za-z0-9_.-]*$")

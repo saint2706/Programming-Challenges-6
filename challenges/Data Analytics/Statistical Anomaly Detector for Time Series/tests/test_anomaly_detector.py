@@ -3,14 +3,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import anomaly_detector as ad
 import numpy as np
 import polars as pl
 import pytest
-from detectors import Params
-from synth import base_series
+from ts_anomaly import anomaly_detector as ad
+from ts_anomaly.detectors import Params
+from ts_anomaly.synth import base_series
 
-HERE = Path(__file__).parent
+HERE = Path(__file__).parent.parent
 SAMPLE = HERE / "sample_data"
 LABELS = SAMPLE / "labels.json"
 

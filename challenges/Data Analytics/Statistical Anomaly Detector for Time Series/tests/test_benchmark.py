@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import benchmark as bm
 import numpy as np
 import pytest
-from detectors import Params, run_method, stl_detect
-from evaluate import event_counts, point_counts
 from scipy import stats
-from synth import base_series, clean_noise, make_scenarios
+from ts_anomaly import benchmark as bm
+from ts_anomaly.detectors import Params, run_method, stl_detect
+from ts_anomaly.evaluate import event_counts, point_counts
+from ts_anomaly.synth import base_series, clean_noise, make_scenarios
 
 
 def test_scenarios_are_deterministic_and_well_formed():

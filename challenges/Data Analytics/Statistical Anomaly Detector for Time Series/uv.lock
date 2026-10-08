@@ -394,7 +394,7 @@ wheels = [
 [[package]]
 name = "statistical-anomaly-detector-for-time-series"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "numpy" },
     { name = "plotly" },

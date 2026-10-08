@@ -1,8 +1,8 @@
 """Benchmarks and failure-mode demonstrations for the detectors.
 
-    uv run python benchmark.py                       # everything except MSTL (~2 min)
-    uv run python benchmark.py --only masking fpr    # chosen sections
-    uv run python benchmark.py --mstl --write benchmark_results.md
+    uv run python -m ts_anomaly.benchmark                       # everything except MSTL (~2 min)
+    uv run python -m ts_anomaly.benchmark --only masking fpr    # chosen sections
+    uv run python -m ts_anomaly.benchmark --mstl --write benchmark_results.md
 
 Sections: samuelson, masking, injected, wrong-period, rolling, fpr, stl-calibration,
 period-detection, nab.
@@ -18,8 +18,10 @@ import time
 from pathlib import Path
 
 import numpy as np
-from anomaly_detector import analyze, load_series, load_windows
-from detectors import (
+from scipy import stats
+
+from ts_anomaly.anomaly_detector import analyze, load_series, load_windows
+from ts_anomaly.detectors import (
     METHODS,
     DetectorError,
     Params,
@@ -30,9 +32,9 @@ from detectors import (
     stl_detect,
     z_scores,
 )
-from evaluate import event_counts, point_counts
-from scipy import stats
-from synth import (
+from ts_anomaly.evaluate import event_counts, point_counts
+from ts_anomaly.paths import project_root
+from ts_anomaly.synth import (
     base_series,
     clean_noise,
     inject_level_shift,
@@ -40,7 +42,7 @@ from synth import (
     make_scenarios,
 )
 
-HERE = Path(__file__).parent
+HERE = project_root()
 SAMPLE = HERE / "sample_data"
 TOL = 2  # events count as found if a flag lands within 2 samples of the truth
 
@@ -420,7 +422,7 @@ NAB_FILES = (
 
 
 def nab_table(mstl: bool = False) -> str:
-    from anomaly_detector import evaluate_detection
+    from ts_anomaly.anomaly_detector import evaluate_detection
 
     rows = []
     for name in NAB_FILES:

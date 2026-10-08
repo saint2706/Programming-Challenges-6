@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from detectors import (
+from scipy import stats
+from ts_anomaly.detectors import (
     DetectorError,
     Params,
     autocorrelation,
@@ -22,8 +23,7 @@ from detectors import (
     z_scores,
     zscore,
 )
-from scipy import stats
-from synth import base_series, clean_noise, inject_spikes
+from ts_anomaly.synth import base_series, clean_noise, inject_spikes
 
 # The worked example from the NIST/SEMATECH e-Handbook, section 1.3.5.17.3
 # (Rosner's 1983 data): 54 values, 3 outliers (6.01, 5.42, 5.34) at alpha 0.05.

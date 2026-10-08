@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/ts_anomaly/`; the tests are in `tests/`.
+
 Ten statistical detectors (no ML, no training) for a univariate time series,
 benchmarked against each other on real labelled data and on synthetic series with
 planted anomalies. The point of the challenge is less "flag the big values" than
@@ -27,22 +29,22 @@ score.
 cd "challenges/Data Analytics/Statistical Anomaly Detector for Time Series"
 
 # One report per series: data-quality table, per-method results, interactive chart.
-uv run python anomaly_detector.py sample_data/nyc_taxi.csv --labels sample_data/labels.json -o out/nyc_taxi.html
-uv run python anomaly_detector.py sample_data/art_daily_jumpsdown.csv --labels sample_data/labels.json -o out/art.html
-uv run python anomaly_detector.py sample_data/ambient_temperature_system_failure.csv --labels sample_data/labels.json -o out/ambient.html
+uv run ts-anomaly sample_data/nyc_taxi.csv --labels sample_data/labels.json -o out/nyc_taxi.html
+uv run ts-anomaly sample_data/art_daily_jumpsdown.csv --labels sample_data/labels.json -o out/art.html
+uv run ts-anomaly sample_data/ambient_temperature_system_failure.csv --labels sample_data/labels.json -o out/ambient.html
 
 # Two seasonalities at once (daily + weekly on 30-minute data) -> MSTL. Takes ~30 s.
-uv run python anomaly_detector.py sample_data/nyc_taxi.csv --labels sample_data/labels.json --period 48,336 --methods mad,stl-z,stl-gesd -o out/nyc_mstl.html
+uv run ts-anomaly sample_data/nyc_taxi.csv --labels sample_data/labels.json --period 48,336 --methods mad,stl-z,stl-gesd -o out/nyc_mstl.html
 
 # Any two-column CSV (timestamp, value); no labels needed.
-uv run python anomaly_detector.py my_metric.csv --time-col ts --value-col cpu --methods mad,stl-gesd --flags-out out/flags.csv -o out/my.html
+uv run ts-anomaly my_metric.csv --time-col ts --value-col cpu --methods mad,stl-gesd --flags-out out/flags.csv -o out/my.html
 
 # More NAB series (downloaded into .cache/nab/, ignored by git), then run on them:
-uv run python fetch_nab.py realKnownCause/machine_temperature_system_failure
-uv run python anomaly_detector.py .cache/nab/machine_temperature_system_failure.csv --labels .cache/nab/labels.json -o out/machine.html
+uv run python -m ts_anomaly.fetch_nab realKnownCause/machine_temperature_system_failure
+uv run ts-anomaly .cache/nab/machine_temperature_system_failure.csv --labels .cache/nab/labels.json -o out/machine.html
 
-uv run python benchmark.py --mstl --write out/benchmark_results.md   # everything below, ~3 min
-uv run python benchmark.py --only masking fpr                        # or chosen sections
+uv run python -m ts_anomaly.benchmark --mstl --write out/benchmark_results.md   # everything below, ~3 min
+uv run python -m ts_anomaly.benchmark --only masking fpr                        # or chosen sections
 uv run pytest -q # 95 tests
 ```
 

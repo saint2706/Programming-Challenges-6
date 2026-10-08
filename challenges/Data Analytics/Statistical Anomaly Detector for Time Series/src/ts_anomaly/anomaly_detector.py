@@ -1,6 +1,6 @@
 """Statistical anomaly detector for a time-series CSV -> flags + one self-contained HTML report.
 
-Run with:  uv run python anomaly_detector.py sample_data/nyc_taxi.csv --labels sample_data/labels.json -o report.html
+Run with:  uv run ts-anomaly sample_data/nyc_taxi.csv --labels sample_data/labels.json -o report.html
 """
 
 from __future__ import annotations
@@ -15,7 +15,10 @@ from pathlib import Path
 import numpy as np
 import plotly.graph_objects as go
 import polars as pl
-from detectors import (
+from plotly.offline import get_plotlyjs
+from plotly.subplots import make_subplots
+
+from ts_anomaly.detectors import (
     METHODS,
     STL_METHODS,
     Detection,
@@ -25,7 +28,7 @@ from detectors import (
     detect_period,
     run_method,
 )
-from evaluate import (
+from ts_anomaly.evaluate import (
     NabResult,
     nab_score,
     point_counts,
@@ -33,8 +36,6 @@ from evaluate import (
     windows_to_index,
     windows_to_truth,
 )
-from plotly.offline import get_plotlyjs
-from plotly.subplots import make_subplots
 
 # Tried in order and coalesced: Polars infers one format from the first value it
 # sees, so a file mixing "...Z", "...+02:00" and naive timestamps would otherwise

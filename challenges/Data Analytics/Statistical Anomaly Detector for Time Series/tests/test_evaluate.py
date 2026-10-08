@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-from evaluate import (
+from ts_anomaly.evaluate import (
     event_counts,
     nab_score,
     point_counts,
