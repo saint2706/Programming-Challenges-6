@@ -46,7 +46,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import shap
-from model import TrainedModels, apply_category_schema
+
+from house_prices.model import TrainedModels, apply_category_schema
 
 TOP_N = 8
 

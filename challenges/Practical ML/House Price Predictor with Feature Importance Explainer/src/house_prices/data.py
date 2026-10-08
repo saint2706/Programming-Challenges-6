@@ -15,15 +15,15 @@ values, e.g. one row's `Electrical`) is filled with a separate sentinel,
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 
+from house_prices.paths import project_root
+
 DATA_ID = 42165  # OpenML "house_prices" -- the Kaggle Ames Housing dataset.
-BASE_DIR = Path(__file__).parent
+BASE_DIR = project_root()
 CACHE_PATH = BASE_DIR / "data" / "ames_housing.csv"
 TARGET = "SalePrice"
 ID_COLUMN = "Id"

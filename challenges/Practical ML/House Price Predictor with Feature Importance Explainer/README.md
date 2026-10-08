@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/house_prices/`; the tests are in `tests/`.
+
 Trains a Ridge (linear) baseline and a LightGBM (tree) model on the
 [Ames Housing dataset](https://www.openml.org/search?type=data&id=42165)
 (the classic Kaggle "House Prices: Advanced Regression Techniques" data —
@@ -137,7 +139,7 @@ and `test_category_schema_maps_unseen_category_to_missing_not_a_wrong_code`.
 ```bash
 cd "challenges/Practical ML/House Price Predictor with Feature Importance Explainer"
 
-uv run app.py
+uv run house-prices
 # -> http://127.0.0.1:8010  (first run fetches Ames Housing from OpenML,
 #    a few MB; cached afterward)
 

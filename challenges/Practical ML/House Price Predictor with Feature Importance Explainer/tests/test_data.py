@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import data
 import numpy as np
 import pandas as pd
+from house_prices import data
 
 
 def _tiny_frame() -> pd.DataFrame:

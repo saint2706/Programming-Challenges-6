@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import model
 import numpy as np
 import pandas as pd
+from house_prices import model
 
 # -- Category schema: the "hard part" (see model.py's module docstring) ----
 

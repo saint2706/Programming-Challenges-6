@@ -7,9 +7,7 @@ models' dollar predictions, and a per-model breakdown of which features
 pushed the price up or down and by how much.
 
 Run:
-    uv run --with fastapi --with "uvicorn[standard]" --with scikit-learn \\
-        --with lightgbm --with shap --with pandas --with numpy \\
-        --with matplotlib --with python-multipart python app.py
+    uv run house-prices
 
 Pages are plain f-string HTML fragments (no template directory, no
 static file directory) per this repo's convention. HTMX swaps in the
@@ -24,13 +22,16 @@ from contextlib import asynccontextmanager
 
 import pandas as pd
 import uvicorn
-from data import (
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+
+from house_prices.data import (
     clean_features,
     load_ames_housing,
     numeric_and_categorical_columns,
     train_test_split_frame,
 )
-from explain import (
+from house_prices.explain import (
     compute_global_importance,
     explain_lightgbm,
     explain_ridge,
@@ -38,9 +39,7 @@ from explain import (
     render_global_importance_chart,
     top_combined_features,
 )
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse
-from model import default_house_row, predict_both, train_models
+from house_prices.model import default_house_row, predict_both, train_models
 
 EDITABLE_FEATURE_COUNT = 12
 BACKGROUND_SAMPLE_SIZE = (
@@ -254,5 +253,9 @@ def health() -> dict[str, object]:
     return {"status": "ok", "models_loaded": "models" in STATE}
 
 
-if __name__ == "__main__":
+def main() -> None:
     uvicorn.run(app, host="127.0.0.1", port=8010)
+
+
+if __name__ == "__main__":
+    main()

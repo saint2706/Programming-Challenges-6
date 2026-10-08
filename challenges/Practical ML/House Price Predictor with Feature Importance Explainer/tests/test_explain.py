@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import base64
 
-import explain
 import numpy as np
 import pytest
+from house_prices import explain
 
 
 @pytest.fixture(scope="module")

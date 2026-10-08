@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import pytest
-from app import STATE, app
 from fastapi.testclient import TestClient
+from house_prices.app import STATE, app
 
 
 @pytest.fixture(scope="module")
