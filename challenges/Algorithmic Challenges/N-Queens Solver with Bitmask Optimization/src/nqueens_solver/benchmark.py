@@ -1,8 +1,8 @@
 """Benchmark: mirror-halved counting vs full search, and the cost of going
 from "how many solutions" to "how many *fundamentally different* solutions".
 
-    uv run python benchmark.py
-    uv run python benchmark.py --quick
+    uv run python -m nqueens_solver.benchmark
+    uv run python -m nqueens_solver.benchmark --quick
 """
 
 from __future__ import annotations
@@ -10,7 +10,11 @@ from __future__ import annotations
 import argparse
 import time
 
-from nqueens import _count_from, count_fundamental_solutions, count_solutions
+from nqueens_solver.nqueens import (
+    _count_from,
+    count_fundamental_solutions,
+    count_solutions,
+)
 
 
 def _full_count(n: int) -> int:

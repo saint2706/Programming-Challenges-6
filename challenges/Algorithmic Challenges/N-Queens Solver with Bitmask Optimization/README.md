@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/nqueens_solver/`; the tests are in `tests/`.
+
 The brief asks for bitmask backtracking and a visualization. Both are here,
 plus two things past the brief: a **2-fold mirror-symmetry speedup** on top
 of the bitmask search (the actual "beat the naive version" optimization),
@@ -58,7 +60,7 @@ already inside that same subtree, so searching the full subtree once
 15      32.0016      17.2214     1.86x    2279184
 ```
 
-(`uv run python benchmark.py`.) The speedup clusters around 1.8-2.3x, not
+(`uv run python -m nqueens_solver.benchmark`.) The speedup clusters around 1.8-2.3x, not
 exactly 2x, because halving only row 0's choices doesn't halve the *work* of
 searching them evenly — later rows still explore an asymmetric fraction of
 the tree depending on which half-column was chosen first. Full 8-fold
@@ -162,7 +164,7 @@ sorting visualizers in this repo — a short **motion** phase, then a still
 with no Manim import:
 
 ```
-uv run python pacing.py
+uv run python -m nqueens_solver.pacing
 n=6 limit=4:  258 steps, motion=39.5s hold=57.5s total=97.0s
 n=8 limit=3:  349 steps, motion=52.9s hold=77.8s total=130.7s
 ```
@@ -196,18 +198,18 @@ example and `test_pacing.py` for the regression test.
 ## Running it
 
 ```bash
-uv run python nqueens.py -n 8               # counts + Burnside check for one n
-uv run python nqueens.py --verify           # n = 0..12 against OEIS
+uv run python -m nqueens_solver.nqueens -n 8               # counts + Burnside check for one n
+uv run python -m nqueens_solver.nqueens --verify           # n = 0..12 against OEIS
 
 uv run pytest -q # 60 tests
-uv run python benchmark.py --quick          # n = 8..12, fast
-uv run python benchmark.py                  # the tables above (n up to 15, ~40s)
-uv run python pacing.py                     # animation durations, no rendering
+uv run python -m nqueens_solver.benchmark --quick          # n = 8..12, fast
+uv run python -m nqueens_solver.benchmark                  # the tables above (n up to 15, ~40s)
+uv run python -m nqueens_solver.pacing                     # animation durations, no rendering
 
-uv run manim -pql visualize.py NQueensScene
+uv run manim -pql src/nqueens_solver/visualize.py NQueensScene
 
 # Fast layout iteration with every reading-hold dropped:
-NQUEENS_HOLD_SCALE=0 uv run manim -pql visualize.py NQueensScene
+NQUEENS_HOLD_SCALE=0 uv run manim -pql src/nqueens_solver/visualize.py NQueensScene
 ```
 
 Manim needs **ffmpeg** on the PATH plus the system Cairo/Pango development

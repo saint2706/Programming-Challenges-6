@@ -8,14 +8,15 @@ a genuine *sample* of the search rather than either (a) exhaustively
 rendering every one of a potentially huge solution count, or (b) finding all
 of them first and only rendering a slice -- the search itself stops early.
 
-    uv run --with manim manim -pql visualize.py NQueensScene
+    uv run manim -pql src/nqueens_solver/visualize.py NQueensScene
 """
 
 from __future__ import annotations
 
 from manim import *
-from nqueens import solve_bitmask_steps
-from pacing import (
+
+from nqueens_solver.nqueens import solve_bitmask_steps
+from nqueens_solver.pacing import (
     CLOSING_HOLD,
     HOLD_SCALE,
     TITLE_MIN_HOLD,

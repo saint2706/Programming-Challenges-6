@@ -10,7 +10,7 @@ against OEIS A002562.
 from __future__ import annotations
 
 import pytest
-from nqueens import (
+from nqueens_solver.nqueens import (
     D4_TRANSFORMS,
     all_solutions,
     canonical_form,

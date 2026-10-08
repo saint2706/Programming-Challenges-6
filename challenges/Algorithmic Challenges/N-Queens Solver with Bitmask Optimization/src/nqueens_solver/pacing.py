@@ -17,7 +17,7 @@ n=6 finding just 4 solutions already produces ~250 place/backtrack steps
 for the changed digits, at roughly double the read rate, which is what
 keeps the total from scaling linearly with the (large) step count.
 
-    uv run python pacing.py
+    uv run python -m nqueens_solver.pacing
 """
 
 from __future__ import annotations
@@ -120,7 +120,7 @@ def scene_duration(steps, title: str = "", subtitle: str = "") -> dict[str, floa
 
 
 def _report() -> None:
-    from nqueens import solve_bitmask_steps
+    from nqueens_solver.nqueens import solve_bitmask_steps
 
     for n, limit in [(6, 4), (8, 3)]:
         steps = list(solve_bitmask_steps(n, limit=limit))

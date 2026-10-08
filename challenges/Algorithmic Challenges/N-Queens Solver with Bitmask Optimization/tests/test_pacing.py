@@ -12,8 +12,8 @@ every repeat paid full price too).
 
 from __future__ import annotations
 
-from nqueens import solve_bitmask_steps
-from pacing import (
+from nqueens_solver.nqueens import solve_bitmask_steps
+from nqueens_solver.pacing import (
     CaptionPacer,
     caption_template,
     motion_time,
