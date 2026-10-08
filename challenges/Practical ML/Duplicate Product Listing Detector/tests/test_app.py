@@ -2,13 +2,13 @@
 
 from pathlib import Path
 
-import data
-import pipeline
+import duplicate_listings
 import pytest
+from duplicate_listings import data, pipeline
+from helpers import FakeImage, FakeText, make_catalog
 from streamlit.testing.v1 import AppTest
-from test_pipeline import FakeImage, FakeText, make_catalog
 
-APP = str(Path(__file__).parent / "app.py")
+APP = str(Path(duplicate_listings.__file__).parent / "app.py")
 
 
 @pytest.fixture

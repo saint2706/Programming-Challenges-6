@@ -2,11 +2,10 @@
 
 from pathlib import Path
 
-import embed
-import index
 import numpy as np
 import polars as pl
 import pytest
+from duplicate_listings import embed, index
 
 
 def unit(rows: list[list[float]]) -> np.ndarray:

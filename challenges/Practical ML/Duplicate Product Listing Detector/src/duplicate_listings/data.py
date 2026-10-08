@@ -15,9 +15,11 @@ from pathlib import Path
 
 import polars as pl
 
+from duplicate_listings.paths import project_root
+
 COMPETITION = "shopee-product-matching"
 ARCHIVE_NAME = f"{COMPETITION}.zip"
-DATA_DIR = Path(__file__).parent / "data"
+DATA_DIR = project_root() / "data"
 COLUMNS = ["posting_id", "image", "image_phash", "title", "label_group"]
 
 

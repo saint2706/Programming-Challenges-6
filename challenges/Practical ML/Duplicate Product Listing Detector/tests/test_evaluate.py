@@ -2,11 +2,10 @@
 
 from pathlib import Path
 
-import embed
-import evaluate
 import numpy as np
 import polars as pl
 import pytest
+from duplicate_listings import embed, evaluate
 
 
 def synthetic(

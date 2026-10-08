@@ -1,19 +1,18 @@
 """Command-line interface: fetch -> embed -> evaluate -> dedupe.
 
-uv run python cli.py fetch --groups 1400
-uv run python cli.py embed
-uv run python cli.py evaluate
-uv run python cli.py dedupe --split test --out duplicates.csv
+uv run duplicate-listings fetch --groups 1400
+uv run duplicate-listings embed
+uv run duplicate-listings evaluate
+uv run duplicate-listings dedupe --split test --out duplicates.csv
 """
 
 from enum import Enum
 from pathlib import Path
 from typing import Annotated
 
-import data
-import evaluate
-import pipeline
 import typer
+
+from duplicate_listings import data, evaluate, pipeline
 
 app = typer.Typer(
     add_completion=False,

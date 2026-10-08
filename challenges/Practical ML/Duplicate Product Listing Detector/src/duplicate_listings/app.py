@@ -1,8 +1,8 @@
 """Streamlit review UI: candidate duplicate pairs side by side, with live scoring.
 
-    uv run streamlit run app.py
+    uv run streamlit run src/duplicate_listings/app.py
 
-Run `cli.py fetch`, `embed` and `evaluate` first; this page reads what they
+Run `duplicate-listings fetch`, `embed` and `evaluate` first; this page reads what they
 cached. Two sliders (text/image fusion weight and decision threshold) re-score
 the cached candidate pairs instantly -- nothing is re-embedded or re-indexed.
 """
@@ -11,11 +11,9 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-import data
-import embed
-import evaluate
-import pipeline
 import streamlit as st
+
+from duplicate_listings import data, embed, evaluate, pipeline
 
 DATA_DIR = Path(os.environ.get("DUPLICATE_DETECTOR_DATA_DIR", data.DATA_DIR))
 

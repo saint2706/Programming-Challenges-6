@@ -10,10 +10,9 @@ import json
 import warnings
 from pathlib import Path
 
-import data
-import embed
-import evaluate
 import polars as pl
+
+from duplicate_listings import data, embed, evaluate
 
 SLICE_FILE = "slice.csv"
 EMBEDDINGS_FILE = "embeddings.npz"

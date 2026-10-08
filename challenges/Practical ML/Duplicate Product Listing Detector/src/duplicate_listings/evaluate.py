@@ -14,11 +14,11 @@ The protocol that keeps the numbers honest:
 from dataclasses import dataclass
 from pathlib import Path
 
-import index
-import match
 import numpy as np
 import polars as pl
-from embed import Embeddings
+
+from duplicate_listings import index, match
+from duplicate_listings.embed import Embeddings
 
 MODES = ("text", "image", "fused")
 

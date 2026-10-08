@@ -4,9 +4,9 @@ import io
 import zipfile
 from pathlib import Path
 
-import data
 import polars as pl
 import pytest
+from duplicate_listings import data
 
 
 def make_catalog(group_sizes: list[int]) -> pl.DataFrame:

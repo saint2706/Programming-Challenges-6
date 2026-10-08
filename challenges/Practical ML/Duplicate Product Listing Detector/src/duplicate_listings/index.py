@@ -13,7 +13,8 @@ import lancedb
 import numpy as np
 import polars as pl
 import pyarrow as pa
-from embed import Embeddings
+
+from duplicate_listings.embed import Embeddings
 
 QUERY_CHUNK = 256
 

@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-import embed
 import numpy as np
 import polars as pl
 import pytest
+from duplicate_listings import embed
 from PIL import Image
 
 

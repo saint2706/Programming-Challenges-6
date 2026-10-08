@@ -2,12 +2,10 @@
 
 from pathlib import Path
 
-import cli
-import data
-import pipeline
 import polars as pl
 import pytest
-from test_pipeline import FakeImage, FakeText, make_catalog
+from duplicate_listings import cli, data, pipeline
+from helpers import FakeImage, FakeText, make_catalog
 from typer.testing import CliRunner
 
 runner = CliRunner()

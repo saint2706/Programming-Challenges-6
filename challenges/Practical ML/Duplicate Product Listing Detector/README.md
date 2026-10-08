@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/duplicate_listings/`; the tests are in `tests/`.
+
 Finds listings in an e-commerce catalog that are really the same product.
 Titles are embedded with `multilingual-e5-small`, photos with SigLIP 2, both
 go into one [LanceDB](https://lancedb.com) table, and candidate pairs are
@@ -80,11 +82,11 @@ listed in the embedding result; the listing still matches on text.
 
 ```bash
 uv sync
-uv run python cli.py fetch --groups 1400     # catalog + slice + images
-uv run python cli.py embed                   # SigLIP 2 + multilingual-e5, cached
-uv run python cli.py evaluate                # tune on val, report on test
-uv run python cli.py dedupe --split test --out duplicates.csv
-uv run streamlit run app.py                  # review UI
+uv run duplicate-listings fetch --groups 1400     # catalog + slice + images
+uv run duplicate-listings embed                   # SigLIP 2 + multilingual-e5, cached
+uv run duplicate-listings evaluate                # tune on val, report on test
+uv run duplicate-listings dedupe --split test --out duplicates.csv
+uv run streamlit run src/duplicate_listings/app.py                  # review UI
 ```
 
 `fetch` downloads the competition archive once (about 1.8 GB) and extracts

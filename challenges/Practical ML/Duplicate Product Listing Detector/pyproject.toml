@@ -16,7 +16,17 @@ dependencies = [
     "typer>=0.27.2",
 ]
 
+[project.scripts]
+duplicate-listings = "duplicate_listings.cli:app"
+
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
 ]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "duplicate_listings"

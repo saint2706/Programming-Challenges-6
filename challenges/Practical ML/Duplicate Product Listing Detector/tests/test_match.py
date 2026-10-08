@@ -1,8 +1,8 @@
 """Tests for match.py -- pure numpy/logic, no models, no index."""
 
-import match
 import numpy as np
 import pytest
+from duplicate_listings import match
 
 
 def test_fuse_is_convex_combination():
