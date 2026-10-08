@@ -5,7 +5,7 @@ export const squash = (text) => text.replace(/\s+/g, '');
 
 /**
  * Read a PDF the way an applicant tracking system would: page sizes, the text of each page with
- * the position of every run, which fonts were used and whether each is a real embedded font.
+ * the position of every run, the links, which fonts were used and whether each is a real embedded font.
  */
 export async function readPdf(bytes) {
   // Font names live in plain objects in Chrome's PDFs: `/BaseFont /AAAAAA+Inter-Bold`. Read them
@@ -23,6 +23,10 @@ export async function readPdf(bytes) {
     const viewport = page.getViewport({ scale: 1 });
     const content = await page.getTextContent();
     await page.getOperatorList(); // makes pdf.js load the page's fonts
+    // the links a reader can follow: Chrome writes each `<a href>` as a Link annotation with a URI action
+    const links = (await page.getAnnotations())
+      .filter((annotation) => annotation.subtype === 'Link' && annotation.url)
+      .map((annotation) => ({ url: annotation.url, rect: annotation.rect }));
     const items = content.items
       .filter((item) => 'str' in item)
       .map((item) => ({
@@ -38,7 +42,7 @@ export async function readPdf(bytes) {
       const font = page.commonObjs.get(id);
       fonts.set(`${number}:${id}`, { isType3: Boolean(font.isType3Font), missingFile: Boolean(font.missingFile) });
     }
-    pages.push({ width: viewport.width, height: viewport.height, items, text: items.map((item) => item.str).join('') });
+    pages.push({ width: viewport.width, height: viewport.height, items, links, text: items.map((item) => item.str).join('') });
   }
 
   const metadata = await doc.getMetadata();
