@@ -16,7 +16,9 @@ from pathlib import Path
 
 import polars as pl
 
-HERE = Path(__file__).parent
+from data_quality.paths import project_root
+
+HERE = project_root()
 TAXI_CSV = HERE / "sample_data" / "taxis.csv"
 
 # Days 1-21 train the baseline; days 22-31 are held out as real, clean incoming batches.

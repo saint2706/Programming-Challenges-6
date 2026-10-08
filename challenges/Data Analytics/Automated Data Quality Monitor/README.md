@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/data_quality/`; the tests are in `tests/`.
+
 Schema-drift and anomaly alerts on incoming CSV batches. `profile` learns what
 "normal" looks like from known-good batches and freezes it in a small JSON
 baseline; `check` compares one new batch against it, prints the alerts, writes
@@ -97,18 +99,18 @@ feeds `</script><script>alert(1)</script>` as a column name and
 ```bash
 cd "challenges/Data Analytics/Automated Data Quality Monitor"
 
-uv run python make_sample.py     # writes sample_data/batches/{train,incoming,drifted}/
+uv run python -m data_quality.make_sample     # writes sample_data/batches/{train,incoming,drifted}/
 
 # 1. learn a baseline from 21 known-good daily batches
-uv run python dq_monitor.py profile sample_data/batches/train -o out/baseline.json
+uv run data-quality profile sample_data/batches/train -o out/baseline.json
 
 # 2. check a clean real day -> status OK, exit 0
-uv run python dq_monitor.py check sample_data/batches/incoming/taxi_2019-03-25.csv -b out/baseline.json --as-of 2019-03-26T06:00:00
+uv run data-quality check sample_data/batches/incoming/taxi_2019-03-25.csv -b out/baseline.json --as-of 2019-03-26T06:00:00
 
 # 3. check a corrupted one (every fare x1.5) -> critical, exit 1, with an HTML + JSON report
-uv run python dq_monitor.py check sample_data/batches/drifted/taxi_2019-03-22__fare_x1.5.csv -b out/baseline.json --as-of 2019-03-23T06:00:00 --html out/report.html --json out/report.json
+uv run data-quality check sample_data/batches/drifted/taxi_2019-03-22__fare_x1.5.csv -b out/baseline.json --as-of 2019-03-23T06:00:00 --html out/report.html --json out/report.json
 
-uv run python evaluate.py        # false-positive and detection rates (about 20 s)
+uv run python -m data_quality.evaluate        # false-positive and detection rates (about 20 s)
 uv run pytest -q                 # 125 tests, about 35 s
 ```
 

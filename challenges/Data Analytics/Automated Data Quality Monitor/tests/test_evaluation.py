@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import itertools
 
-import dq_monitor as dq
-import evaluate as ev
 import numpy as np
 import polars as pl
 import pytest
-from corruptions import CORRUPTIONS, mix_sweep, null_sweep, scale_sweep
-from taxi import daily_batches, load_taxi, split
+from data_quality import dq_monitor as dq
+from data_quality import evaluate as ev
+from data_quality.corruptions import CORRUPTIONS, mix_sweep, null_sweep, scale_sweep
+from data_quality.taxi import daily_batches, load_taxi, split
 
 
 @pytest.fixture(scope="module")

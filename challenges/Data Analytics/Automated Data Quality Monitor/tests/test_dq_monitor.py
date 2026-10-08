@@ -6,12 +6,12 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-import dq_monitor as dq
 import numpy as np
 import polars as pl
 import pytest
+from data_quality import dq_monitor as dq
 
-HERE = Path(__file__).parent
+HERE = Path(__file__).parent.parent
 
 
 def make_frame(n: int = 200, seed: int = 0, start: str = "2024-01-01") -> pl.DataFrame:

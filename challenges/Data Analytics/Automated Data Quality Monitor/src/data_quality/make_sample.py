@@ -1,6 +1,6 @@
 """Write the demo CSV batches (idempotent; everything is derived from sample_data/taxis.csv).
 
-    uv run python make_sample.py
+    uv run python -m data_quality.make_sample
 
 sample_data/batches/train/      taxi days 1-21, the known-good baseline batches
 sample_data/batches/incoming/   taxi days 22-31, real clean batches to check
@@ -14,8 +14,9 @@ from pathlib import Path
 
 import numpy as np
 import polars as pl
-from corruptions import CORRUPTIONS
-from taxi import HERE, load_taxi, split
+
+from data_quality.corruptions import CORRUPTIONS
+from data_quality.taxi import HERE, load_taxi, split
 
 OUT = HERE / "sample_data" / "batches"
 # The corruptions shipped as ready-made files (all of them are exercised by evaluate.py).

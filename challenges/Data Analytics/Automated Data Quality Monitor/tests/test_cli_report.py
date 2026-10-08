@@ -5,13 +5,13 @@ from __future__ import annotations
 import json
 import re
 
-import dq_monitor as dq
 import numpy as np
 import polars as pl
 import pytest
-from corruptions import CORRUPTIONS
-from dq_report import render_report
-from taxi import load_taxi, split
+from data_quality import dq_monitor as dq
+from data_quality.corruptions import CORRUPTIONS
+from data_quality.dq_report import render_report
+from data_quality.taxi import load_taxi, split
 from typer.testing import CliRunner
 
 runner = CliRunner()

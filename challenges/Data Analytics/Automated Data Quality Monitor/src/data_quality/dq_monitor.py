@@ -1,8 +1,8 @@
 """Automated Data Quality Monitor: learn a baseline from good CSV batches, check new ones.
 
 Run with:
-    uv run python dq_monitor.py profile batches/*.csv -o baseline.json
-    uv run python dq_monitor.py check new_batch.csv -b baseline.json --html report.html
+    uv run data-quality profile batches/*.csv -o baseline.json
+    uv run data-quality check new_batch.csv -b baseline.json --html report.html
 
 `profile` learns what "normal" looks like (schema, volume, null rates, numeric and
 categorical distributions, key uniqueness, string formats, timestamp cadence).
@@ -1291,7 +1291,7 @@ def check(
     if json_out:
         json_out.write_text(json.dumps(result.to_dict(), indent=1), encoding="utf-8")
     if html_out:
-        from dq_report import render_report
+        from data_quality.dq_report import render_report
 
         html_out.write_text(render_report(result, base), encoding="utf-8")
 

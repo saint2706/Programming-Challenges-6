@@ -13,8 +13,9 @@ from typing import Any
 
 import numpy as np
 import plotly.graph_objects as go
-from dq_monitor import CheckResult, coerce
 from plotly.offline import get_plotlyjs
+
+from data_quality.dq_monitor import CheckResult, coerce
 
 _SEV_COLOR = {
     "critical": "#c62828",

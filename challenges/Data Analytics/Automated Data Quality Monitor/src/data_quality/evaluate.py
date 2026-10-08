@@ -1,6 +1,6 @@
 """False-positive rate on clean batches vs detection rate on planted corruptions.
 
-    uv run python evaluate.py            # 300 clean + 30 trials per corruption, seed 0
+    uv run python -m data_quality.evaluate            # 300 clean + 30 trials per corruption, seed 0
 
 Baseline: taxi days 1-21. Clean batches: the 10 real held-out days, plus simulated ones
 drawn without replacement from the held-out rows (150-260 rows each, like a real day).
@@ -15,9 +15,22 @@ from datetime import timedelta
 
 import numpy as np
 import polars as pl
-from corruptions import CORRUPTIONS, Corruption, mix_sweep, null_sweep, scale_sweep
-from dq_monitor import CheckResult, Config, build_baseline, check_batch, default_config
-from taxi import load_taxi, split
+
+from data_quality.corruptions import (
+    CORRUPTIONS,
+    Corruption,
+    mix_sweep,
+    null_sweep,
+    scale_sweep,
+)
+from data_quality.dq_monitor import (
+    CheckResult,
+    Config,
+    build_baseline,
+    check_batch,
+    default_config,
+)
+from data_quality.taxi import load_taxi, split
 
 
 @dataclass
