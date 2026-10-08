@@ -15,8 +15,8 @@ isolation from any real data dependency:
 
 from __future__ import annotations
 
-import lexicon
 import pytest
+from offline_dictionary import lexicon
 
 real_lexicon = pytest.mark.skipif(
     not lexicon.is_installed(),

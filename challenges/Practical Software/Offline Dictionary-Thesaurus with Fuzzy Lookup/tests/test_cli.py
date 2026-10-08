@@ -10,11 +10,10 @@ failed) if it hasn't been downloaded in the current environment.
 
 from __future__ import annotations
 
-import cli
-import lexicon
 import pytest
-from cli import app
-from lexicon import Sense
+from offline_dictionary import cli, lexicon
+from offline_dictionary.cli import app
+from offline_dictionary.lexicon import Sense
 from typer.testing import CliRunner
 
 runner = CliRunner()

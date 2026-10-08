@@ -37,7 +37,7 @@ class LexiconNotInstalledError(RuntimeError):
         super().__init__(
             "The Open English WordNet lexicon isn't installed yet.\n"
             "Run this once (requires internet access, ~13MB download):\n\n"
-            f'    uv run --with wn python -c "import wn; wn.download({LEXICON_SPEC!r})"\n'
+            f'    uv run python -c "import wn; wn.download({LEXICON_SPEC!r})"\n'
         )
 
 

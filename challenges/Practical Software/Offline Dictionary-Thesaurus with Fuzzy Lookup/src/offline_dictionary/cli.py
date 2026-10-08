@@ -1,9 +1,9 @@
 """CLI for the offline dictionary/thesaurus.
 
-Run: uv run --with wn --with rapidfuzz --with typer --with rich python cli.py define run
+Run: uv run offline-dict define run
 
 First-run setup (one-time, needs internet, ~13MB):
-    uv run --with wn python -c "import wn; wn.download('oewn:2021')"
+    uv run python -c "import wn; wn.download('oewn:2021')"
 """
 
 from __future__ import annotations
@@ -11,7 +11,10 @@ from __future__ import annotations
 from typing import Annotated
 
 import typer
-from lexicon import (
+from rich.console import Console
+from rich.panel import Panel
+
+from offline_dictionary.lexicon import (
     LexiconNotInstalledError,
     antonyms,
     define,
@@ -21,8 +24,6 @@ from lexicon import (
     suggest,
     synonyms,
 )
-from rich.console import Console
-from rich.panel import Panel
 
 app = typer.Typer(
     add_completion=False,

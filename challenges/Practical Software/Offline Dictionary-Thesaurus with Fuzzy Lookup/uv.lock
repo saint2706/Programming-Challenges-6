@@ -121,7 +121,7 @@ wheels = [
 [[package]]
 name = "offline-dictionary-thesaurus-with-fuzzy-lookup"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "rapidfuzz" },
     { name = "rich" },

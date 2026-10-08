@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/offline_dictionary/`; the tests are in `tests/`.
+
 An offline dictionary and thesaurus: real definitions, example sentences,
 synonyms, and antonyms, looked up from a local copy of the Open English
 WordNet -- no network calls at lookup time, no API keys, and typo-tolerant
@@ -102,10 +104,10 @@ cd "challenges/Practical Software/Offline Dictionary-Thesaurus with Fuzzy Lookup
 uv run python -c "import wn; wn.download('oewn:2021')"
 
 # Then everything below is fully offline:
-uv run python cli.py define run
-uv run python cli.py synonyms happy
-uv run python cli.py antonyms hot
-uv run python cli.py search happ --limit 5
+uv run offline-dict define run
+uv run offline-dict synonyms happy
+uv run offline-dict antonyms hot
+uv run offline-dict search happ --limit 5
 
 uv run pytest -q # 42 tests
 ```
@@ -114,7 +116,7 @@ Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`
 (`uv add`/`uv run` manage them automatically -- no `--with` flags needed).
 
 ```
-$ python cli.py define happy
+$ uv run offline-dict define happy
 happy
 
 adjective
@@ -132,7 +134,7 @@ adjective satellite
   3. well expressed and to the point
      "a happy turn of phrase"
 
-$ python cli.py define happpy
+$ uv run offline-dict define happpy
 'happpy' not found. Did you mean:
   happy
   happily
@@ -146,7 +148,7 @@ friendly message instead of a traceback, telling you the exact command to
 run:
 
 ```
-$ python cli.py define run
+$ uv run offline-dict define run
 The Open English WordNet lexicon isn't installed yet.
 Run this once (requires internet access, ~13MB download):
 
