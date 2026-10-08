@@ -1,0 +1,35 @@
+[project]
+name = "product-review-star-rating-calibration"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "joblib>=1.6.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "openvino>=2026.4.1",
+    "plotly>=7.1.0",
+    "polars>=2.0.0",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+    "streamlit>=1.65.0",
+    "torch>=2.14.1",
+    "transformers>=5.19.0",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+review-stars = "review_stars.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "review_stars"
+
+[dependency-groups]
+dev = [
+    "mapie>=1.5.0",
+    "pytest>=9.1.1",
+    "relplot>=1.0.3",
+]
