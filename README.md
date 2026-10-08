@@ -36,6 +36,27 @@ This repo is organized around five categories that reflect where I want to spend
 
 Each category runs roughly **7 Beginner / 8 Intermediate / 8 Advanced / 7 Expert** — 30 challenges total.
 
+## Project Layout
+
+The larger Python challenges share one layout so new ones can copy it:
+
+- `src/<package>/` holds the code. Modules import each other absolutely (`from <package> import data`).
+- `tests/` holds the pytest suite; shared fixtures sit in `conftest.py` and shared helpers in `tests/helpers.py`.
+- `pyproject.toml` uses the `uv_build` backend, names the package under `[tool.uv.build-backend]`, and lists console scripts under `[project.scripts]`.
+- `uv.lock` is committed. Data, results and sample files stay beside `pyproject.toml`; code finds them through the package's `project_root()`, which a `<PACKAGE>_HOME` environment variable can override.
+
+Run commands from the challenge directory:
+
+```bash
+uv run <script> --help                      # console script from [project.scripts]
+uv run python -m <package> --help           # same entry point
+uv run streamlit run src/<package>/app.py   # Streamlit apps
+uv run manim -ql src/<package>/visualize.py <Scene>
+uv run pytest -q
+```
+
+Smaller challenges (two or three modules) stay flat.
+
 ## How to Contribute (A Guide for New Developers)
 
 1. **Understand the problem** before writing code — sketch the approach, note edge cases, decide what "done" looks like.
