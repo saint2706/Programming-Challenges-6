@@ -52,7 +52,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import shap
-from model import CurveMetrics, ThresholdMetrics, TrainedModels, apply_category_schema
+
+from churn_dashboard.model import (
+    CurveMetrics,
+    ThresholdMetrics,
+    TrainedModels,
+    apply_category_schema,
+)
 
 TOP_N = 8
 

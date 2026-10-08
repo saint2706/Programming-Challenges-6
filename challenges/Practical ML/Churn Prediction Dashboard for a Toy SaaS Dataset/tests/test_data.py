@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import data
 import numpy as np
 import pandas as pd
+from churn_dashboard import data
 
 
 def _tiny_raw_frame() -> pd.DataFrame:

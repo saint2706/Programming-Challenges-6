@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/churn_dashboard/`; the tests are in `tests/`.
+
 Trains a Logistic Regression baseline and a LightGBM classifier on the
 [Telco Customer Churn dataset](https://www.openml.org/search?type=data&id=42178)
 (7,021 customers after deduplication, ~26.5% churned), then serves a
@@ -162,7 +164,7 @@ verbatim during training -- `data.clean_features` drops exact duplicates
 ```bash
 cd "challenges/Practical ML/Churn Prediction Dashboard for a Toy SaaS Dataset"
 
-uv run streamlit run app.py
+uv run streamlit run src/churn_dashboard/app.py
 # -> http://localhost:8501  (first run fetches Telco Customer Churn from
 #    OpenML, ~1MB; cached afterward)
 

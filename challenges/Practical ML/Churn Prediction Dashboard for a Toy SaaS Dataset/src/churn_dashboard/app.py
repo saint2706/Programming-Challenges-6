@@ -9,11 +9,10 @@ already-cached test-set probabilities.
 
 from __future__ import annotations
 
-import data
-import explain
-import model
 import pandas as pd
 import streamlit as st
+
+from churn_dashboard import data, explain, model
 
 st.set_page_config(page_title="Churn Prediction Dashboard", layout="wide")
 

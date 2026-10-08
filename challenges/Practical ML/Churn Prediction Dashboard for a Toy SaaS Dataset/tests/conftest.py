@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import data
-import model
 import pytest
+from churn_dashboard import data, model
 
 
 @pytest.fixture(scope="session")

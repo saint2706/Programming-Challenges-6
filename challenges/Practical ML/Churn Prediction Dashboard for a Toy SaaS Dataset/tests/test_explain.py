@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import explain
 import matplotlib.pyplot as plt
-import model
 import numpy as np
 import pytest
+from churn_dashboard import explain, model
 
 
 @pytest.fixture(scope="module")

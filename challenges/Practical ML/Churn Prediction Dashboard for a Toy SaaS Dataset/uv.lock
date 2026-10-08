@@ -193,7 +193,7 @@ wheels = [
 [[package]]
 name = "churn-prediction-dashboard-for-a-toy-saas-dataset"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "lightgbm" },
     { name = "matplotlib" },

@@ -9,13 +9,16 @@ is slow -- hence the generous timeout.
 
 from __future__ import annotations
 
+from pathlib import Path
+
+import churn_dashboard
 from streamlit.testing.v1 import AppTest
 
 APP_TIMEOUT = 180  # first run trains two real models and computes real SHAP values.
 
 
 def _run_app() -> AppTest:
-    at = AppTest.from_file("app.py")
+    at = AppTest.from_file(str(Path(churn_dashboard.__file__).parent / "app.py"))
     at.run(timeout=APP_TIMEOUT)
     assert not at.exception
     return at

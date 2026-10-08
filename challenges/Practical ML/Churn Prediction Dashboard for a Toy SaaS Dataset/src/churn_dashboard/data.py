@@ -32,17 +32,17 @@ has to run *before* `train_test_split_frame`, not as an afterthought.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import pandas as pd
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
+
+from churn_dashboard.paths import project_root
 
 # OpenML "Telco-Customer-Churn", version 1 -- pinned explicitly by data_id
 # (not fetched by name) since a second, materially different version
 # (id=45568) is also registered under the same name.
 DATA_ID = 42178
-BASE_DIR = Path(__file__).parent
+BASE_DIR = project_root()
 CACHE_PATH = BASE_DIR / "data" / "telco_churn.csv"
 TARGET = "Churn"
 

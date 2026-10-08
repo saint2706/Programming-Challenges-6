@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import model
 import numpy as np
 import pandas as pd
+from churn_dashboard import model
 
 # -- Category schema: same "hard part" as the House Price Predictor --------
 
