@@ -1,0 +1,663 @@
+/* App chrome. The pages themselves are styled by styles/preview.css and styles/templates.css. */
+
+:root {
+  color-scheme: light dark;
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #eef0f3;
+  --border: #d5d9e0;
+  --text: #111827;
+  --text-2: #4b5563;
+  --brand: #1d4ed8;
+  --brand-text: #ffffff;
+  --brand-soft: #e3ebfd;
+  --danger: #b91c1c;
+  --warn: #92400e;
+  --focus: #1d4ed8;
+  --canvas: #dfe3e9;
+  --radius: 8px;
+  --panel-w: 26rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1218;
+    --surface: #171b23;
+    --surface-2: #1f2430;
+    --border: #2f3644;
+    --text: #e8ebf0;
+    --text-2: #a4acba;
+    --brand: #7aa2ff;
+    --brand-text: #0b1220;
+    --brand-soft: #1b2744;
+    --danger: #ff8a8a;
+    --warn: #f5b971;
+    --focus: #8fb1ff;
+    --canvas: #0b0d12;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: 0.5rem;
+  z-index: 20;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--brand);
+  color: var(--brand-text);
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/* ---------- Layout ---------- */
+
+.app {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  height: 100dvh;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(20rem, var(--panel-w)) minmax(0, 1fr);
+  grid-row: 3;
+  min-height: 0;
+}
+
+.panel {
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.stage {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.view-switch {
+  display: none;
+  gap: 0.25rem;
+}
+
+.page-count {
+  margin: 0;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-count .warn {
+  color: var(--warn);
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+/* ---------- Buttons ---------- */
+
+.button,
+.icon-button,
+.menu summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  list-style: none;
+}
+
+.button:hover,
+.icon-button:hover,
+.menu summary:hover {
+  background: var(--surface-2);
+}
+
+.button:disabled,
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.button.primary {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--brand-text);
+  font-weight: 600;
+}
+
+.button.primary:hover {
+  filter: brightness(1.08);
+}
+
+.button.small {
+  min-height: 2rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.9rem;
+}
+
+.button[aria-pressed='true'] {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  font-weight: 600;
+}
+
+.icon-button {
+  min-width: 2.25rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.icon-button.danger {
+  color: var(--danger);
+}
+
+.menu {
+  position: relative;
+}
+
+.menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu-list {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  z-index: 10;
+  display: grid;
+  min-width: 13rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+}
+
+.menu-list button {
+  padding: 0.5rem 0.65rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-list button:hover {
+  background: var(--surface-2);
+}
+
+/* ---------- Notices ---------- */
+
+.notice {
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--brand-soft);
+}
+
+.notice.error {
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+  color: var(--text);
+}
+
+.notice p {
+  flex: 1;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* ---------- Panel ---------- */
+
+.editor-panel {
+  display: grid;
+  gap: 0;
+}
+
+.group {
+  border-bottom: 1px solid var(--border);
+}
+
+.group > summary {
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.group > :not(summary) {
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+
+.group[open] {
+  padding-bottom: 1rem;
+}
+
+.hint,
+.muted {
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.hint {
+  margin: 0.25rem 1rem 0.75rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.field > label,
+.field-group-label {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.field input[type='text'],
+.field input[type='number'],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field [aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.field-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 0.75rem;
+}
+
+.form-grid > :first-child,
+.form-grid > :nth-child(2),
+.form-grid > :nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+fieldset.entry {
+  margin-bottom: 0.9rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+fieldset.entry legend {
+  padding: 0 0.35rem;
+  font-weight: 600;
+}
+
+.entry-actions,
+.bullet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.bullet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: start;
+}
+
+.bullet-actions {
+  flex-direction: column;
+  margin: 1.4rem 0 0;
+}
+
+.profile-row {
+  display: grid;
+  gap: 0 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.choice-group {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.choice-group legend {
+  margin-bottom: 0.3rem;
+  color: var(--text-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.choice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.choice:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.choice.inline {
+  padding-block: 0.4rem;
+}
+
+.choice input {
+  grid-row: span 2;
+  align-self: center;
+}
+
+.choice-name {
+  font-weight: 600;
+}
+
+.choice-hint {
+  grid-column: 2;
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+
+.accent-row,
+.fit-row,
+.range-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.range-row input[type='range'] {
+  flex: 1;
+  min-width: 8rem;
+}
+
+.range-row output {
+  min-width: 3.25rem;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.accent-row input[type='color'] {
+  width: 2.75rem;
+  height: 2.25rem;
+  padding: 0.1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.contrast.low {
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.fit-row input[type='number'] {
+  width: 5rem;
+}
+
+/* ---------- Section list ---------- */
+
+.sections {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.sections > li {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.sections > li.is-hidden .section-title {
+  opacity: 0.55;
+}
+
+.sections > li[data-dragging='true'] {
+  opacity: 0.5;
+}
+
+.sections > li[data-drop-edge='top'] {
+  box-shadow: 0 -3px 0 var(--brand);
+}
+
+.sections > li[data-drop-edge='bottom'] {
+  box-shadow: 0 3px 0 var(--brand);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem;
+}
+
+.handle {
+  min-width: 2rem;
+  min-height: 2.25rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-2);
+  cursor: grab;
+}
+
+.handle:hover {
+  background: var(--surface-2);
+}
+
+.section-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  padding: 0 0.4rem;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.count {
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.show-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+
+.section-body {
+  padding: 0.5rem 0.75rem 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Narrow screens: one pane at a time ---------- */
+
+@media (max-width: 899px) {
+  .view-switch {
+    display: flex;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    border-right: 0;
+  }
+
+  /* Kept laid out (the preview measures itself) but out of sight and out of the tab order. */
+  .app[data-view='edit'] .stage {
+    position: absolute;
+    left: -100000px;
+    width: 100vw;
+    height: 100dvh;
+    visibility: hidden;
+  }
+
+  .app[data-view='preview'] .panel {
+    display: none;
+  }
+
+  .toolbar-actions {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .button,
+  .icon-button {
+    transition: background-color 0.12s ease;
+  }
+}
+
+/* ---------- Print: only the pages ---------- */
+
+@media print {
+  .no-print,
+  .skip-link,
+  .sr-only {
+    display: none !important;
+  }
+
+  html,
+  body,
+  .app,
+  .workspace {
+    display: block;
+    height: auto;
+    background: #fff;
+  }
+
+  .stage,
+  .app[data-view='edit'] .stage {
+    position: static;
+    width: auto;
+    height: auto;
+    visibility: visible;
+  }
+}
