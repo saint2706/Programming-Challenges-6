@@ -12,8 +12,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import ClassVar
 
-from board import Board, Card, Column
-from storage import load_board, save_board
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
@@ -30,7 +28,11 @@ from textual.widgets import (
     TextArea,
 )
 
-DEFAULT_BOARD_PATH = Path(__file__).parent / "board.json"
+from kanban_board.board import Board, Card, Column
+from kanban_board.paths import project_root
+from kanban_board.storage import load_board, save_board
+
+DEFAULT_BOARD_PATH = project_root() / "board.json"
 
 
 class CardEditorScreen(ModalScreen[tuple[str, str, list[str]] | None]):
@@ -370,5 +372,9 @@ class KanbanApp(App):
         self.push_screen(MainScreen(self.board, self.board_path))
 
 
-if __name__ == "__main__":
+def main() -> None:
     KanbanApp().run()
+
+
+if __name__ == "__main__":
+    main()

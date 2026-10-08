@@ -1,6 +1,6 @@
 """Unit tests for the Kanban board data model."""
 
-from board import Board, Card, Column
+from kanban_board.board import Board, Card, Column
 
 
 def test_create_column():

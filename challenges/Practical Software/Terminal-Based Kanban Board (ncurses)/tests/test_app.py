@@ -7,9 +7,9 @@ these tests only confirm the UI actually wires that logic up correctly end to en
 from __future__ import annotations
 
 import pytest
-from app import KanbanApp, MainScreen
-from board import Board
-from storage import load_board, save_board
+from kanban_board.app import KanbanApp, MainScreen
+from kanban_board.board import Board
+from kanban_board.storage import load_board, save_board
 
 pytestmark = pytest.mark.asyncio
 

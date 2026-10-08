@@ -16,7 +16,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from board import Board
+from kanban_board.board import Board
 
 FORMAT_VERSION = 1
 

@@ -4,6 +4,8 @@
 **Difficulty:** Intermediate
 **Status:** Implemented (Python)
 
+Source modules live in `src/kanban_board/`; the tests are in `tests/`.
+
 A real terminal Kanban board: columns side-by-side, cards with title/description/tags, keyboard-driven navigation and card movement, JSON persistence with atomic writes. Built as a [Textual](https://textual.textualize.io/) TUI (modern Python terminal UI framework) so it feels like a standalone app you'd actually use.
 
 ## Why Textual, not literal ncurses?
@@ -70,7 +72,7 @@ corrupted — a binary magic-byte preamble would defeat that.
 
 ```bash
 cd "challenges/Practical Software/Terminal-Based Kanban Board (ncurses)"
-uv run python app.py
+uv run kanban
 ```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`

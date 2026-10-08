@@ -2,8 +2,8 @@
 
 import json
 
-from board import Board
-from storage import load_board, save_board
+from kanban_board.board import Board
+from kanban_board.storage import load_board, save_board
 
 
 def test_save_and_load_empty_board(tmp_path):
