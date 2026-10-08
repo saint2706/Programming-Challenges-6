@@ -6,9 +6,10 @@ import time
 from dataclasses import dataclass
 
 import numpy as np
-from model import Head
 from sklearn.metrics import f1_score
-from strategies import State
+
+from active_labeling.model import Head
+from active_labeling.strategies import State
 
 METRICS = (
     "n",

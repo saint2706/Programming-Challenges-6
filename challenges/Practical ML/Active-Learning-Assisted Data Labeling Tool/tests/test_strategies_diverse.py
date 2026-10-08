@@ -1,10 +1,8 @@
 import numpy as np
 import pytest
-import strategies
-from helpers import assert_valid, make_pool, make_state
-from model import Head
-from scipy.spatial.distance import cdist
-from strategies import (
+from active_labeling import strategies
+from active_labeling.model import Head
+from active_labeling.strategies import (
     Badge,
     ClusterMargin,
     KCenter,
@@ -16,6 +14,8 @@ from strategies import (
     gradient_sqdist,
     vote_entropy,
 )
+from helpers import assert_valid, make_pool, make_state
+from scipy.spatial.distance import cdist
 
 EMPTY = np.array([], dtype=np.int64)
 

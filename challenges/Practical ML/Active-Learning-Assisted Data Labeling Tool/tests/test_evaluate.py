@@ -1,7 +1,7 @@
-import evaluate
 import numpy as np
+from active_labeling import evaluate
+from active_labeling.model import Head
 from helpers import make_problem
-from model import Head
 
 
 def fake_curve(acc, n=None, change=None):

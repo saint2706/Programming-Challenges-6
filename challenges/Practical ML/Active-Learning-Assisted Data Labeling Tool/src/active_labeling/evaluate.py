@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import loop
 import numpy as np
-import stats
-import strategies
-from model import Head
 from threadpoolctl import threadpool_limits
+
+from active_labeling import loop, stats, strategies
+from active_labeling.model import Head
 
 TARGETS = (0.90, 0.95)
 

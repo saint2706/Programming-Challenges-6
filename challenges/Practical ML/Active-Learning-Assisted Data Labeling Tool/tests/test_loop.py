@@ -1,10 +1,10 @@
 from dataclasses import replace
 
 import numpy as np
-import strategies
+from active_labeling import strategies
+from active_labeling.loop import METRICS, initial_labels, run_loop
+from active_labeling.model import Head
 from helpers import make_problem
-from loop import METRICS, initial_labels, run_loop
-from model import Head
 
 
 def run(name="margin", prob=None, seed=0, **kw):

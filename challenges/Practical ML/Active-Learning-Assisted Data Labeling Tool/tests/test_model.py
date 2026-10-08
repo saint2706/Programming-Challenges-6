@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
+from active_labeling.model import C_GRID, Head, select_C
 from helpers import make_pool
-from model import C_GRID, Head, select_C
 
 
 def test_proba_covers_every_class_and_unseen_classes_get_exactly_zero():

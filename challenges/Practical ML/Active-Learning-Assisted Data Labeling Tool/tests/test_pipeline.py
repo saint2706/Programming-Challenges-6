@@ -2,13 +2,12 @@ import json
 import shutil
 from dataclasses import replace
 
-import evaluate
 import numpy as np
-import pipeline
 import pytest
+from active_labeling import evaluate, pipeline
+from active_labeling.model import C_GRID
+from active_labeling.pipeline import Config
 from helpers import fake_choice, make_problem, tiny_config
-from model import C_GRID
-from pipeline import Config
 
 CFG = tiny_config()
 

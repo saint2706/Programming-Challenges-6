@@ -1,9 +1,9 @@
 import io
 import json
 
-import data
 import numpy as np
 import pytest
+from active_labeling import data
 
 CLASSES = [f"c{i}" for i in range(5)]
 

@@ -7,24 +7,26 @@ Suggest which unlabeled samples to label next, and why.
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/active_labeling/`; the tests are in `tests/`.
+
 A labeling tool for text classification. Given a pool of unlabeled messages it suggests which ones to label next and says why, retrains as labels come in, and shows how much labeling effort that saves. It is also a benchmark: a simulated annotator with hidden gold labels measures eight query strategies against random sampling, with paired confidence intervals over seeds. The pool is Banking77 (77 customer-service intents).
 
 ## Run it
 
 ```bash
 uv sync
-uv run python cli.py fetch            # Banking77 CSVs from PolyAI's GitHub into data/ (about 1 MB)
-uv run python cli.py embed            # embed pool/validation/test once; prints the verified backend
-uv run python cli.py benchmark        # 8 strategies x 10 seeds + batch-size and stopping stages (resumable)
+uv run active-labeling fetch            # Banking77 CSVs from PolyAI's GitHub into data/ (about 1 MB)
+uv run active-labeling embed            # embed pool/validation/test once; prints the verified backend
+uv run active-labeling benchmark        # 8 strategies x 10 seeds + batch-size and stopping stages (resumable)
 
-uv run python cli.py init projects/demo --demo        # a labeling project on the Banking77 pool
-uv run python cli.py suggest projects/demo --strategy margin --batch 5
-uv run python cli.py label projects/demo 2517 card_acceptance
-uv run python cli.py status projects/demo
-uv run python cli.py export projects/demo labels.csv
-AL_PROJECT=projects/demo uv run streamlit run app.py   # the labeling UI
+uv run active-labeling init projects/demo --demo        # a labeling project on the Banking77 pool
+uv run active-labeling suggest projects/demo --strategy margin --batch 5
+uv run active-labeling label projects/demo 2517 card_acceptance
+uv run active-labeling status projects/demo
+uv run active-labeling export projects/demo labels.csv
+AL_PROJECT=projects/demo uv run streamlit run src/active_labeling/app.py   # the labeling UI
 
-uv run python cli.py init projects/mine --csv my.csv --classes classes.txt   # your own texts
+uv run active-labeling init projects/mine --csv my.csv --classes classes.txt   # your own texts
 uv run pytest -q                      # 164 tests, no network, no model download
 ```
 

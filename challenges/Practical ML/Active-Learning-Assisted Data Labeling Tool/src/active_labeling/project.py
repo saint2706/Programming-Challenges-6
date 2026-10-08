@@ -9,12 +9,11 @@ from itertools import pairwise
 from math import isnan
 from pathlib import Path
 
-import explain
 import numpy as np
-import stats
-import strategies
-from model import Head
-from store import Store
+
+from active_labeling import explain, stats, strategies
+from active_labeling.model import Head
+from active_labeling.store import Store
 
 # ``spacing``: the benchmark measured prediction change between rounds of 50 labels, so the signal is
 # computed between rounds at least this many labels apart (one-label rounds change almost nothing)
@@ -27,7 +26,7 @@ class Project:
         db = self.dir / "project.db"
         if not db.exists():
             raise FileNotFoundError(
-                f"{self.dir} is not a project; create one with `python cli.py init {self.dir} --demo`"
+                f"{self.dir} is not a project; create one with `uv run active-labeling init {self.dir} --demo`"
             )
         self.store = Store(db)
         self.X = np.load(self.dir / "embeddings.npy").astype(np.float64)

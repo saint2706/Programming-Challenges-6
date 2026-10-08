@@ -1,9 +1,9 @@
 import zlib
 
-import embed
 import numpy as np
 import pytest
-from embed import BackendChoice, TextEncoder, embed_cached, pick_backend
+from active_labeling import embed
+from active_labeling.embed import BackendChoice, TextEncoder, embed_cached, pick_backend
 
 
 class FakeRunner:

@@ -1,7 +1,5 @@
-import cli
-import data
-import pipeline
 import pytest
+from active_labeling import cli, data, pipeline
 from helpers import fake_choice, make_problem, tiny_config
 from typer.testing import CliRunner
 
@@ -215,7 +213,7 @@ def test_format_report_handles_a_real_small_report(tmp_path):
 
 
 def test_suggesting_from_a_fully_labeled_project_says_so_instead_of_crashing(project):
-    from project import Project
+    from active_labeling.project import Project
 
     p = Project(project)
     p.submit({i: INTENTS[i % 3] for i in range(60)})

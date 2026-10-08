@@ -11,8 +11,9 @@ from dataclasses import dataclass
 from typing import Protocol
 
 import numpy as np
-from model import Head
 from scipy.cluster.hierarchy import fcluster, linkage
+
+from active_labeling.model import Head
 
 
 @dataclass

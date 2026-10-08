@@ -1,7 +1,7 @@
 import numpy as np
-from explain import explain, render
+from active_labeling.explain import explain, render
+from active_labeling.strategies import Selection, State
 from helpers import make_state
-from strategies import Selection, State
 
 EMPTY = np.array([], dtype=np.int64)
 

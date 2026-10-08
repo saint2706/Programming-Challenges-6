@@ -17,17 +17,13 @@ import math
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
-import data
-import embed
-import evaluate
-import loop
-import model
 import numpy as np
-import stats
-import strategies
 from joblib import Parallel, delayed
 
-HERE = Path(__file__).parent
+from active_labeling import data, embed, evaluate, loop, model, stats, strategies
+from active_labeling.paths import project_root
+
+HERE = project_root()
 RESULTS_DIR = HERE / "results"
 STAGES = ("main", "batch", "stop")
 TUNE_SEED_BASE = 1000

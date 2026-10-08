@@ -1,16 +1,16 @@
-"""Streamlit labeling UI over a project folder created with ``python cli.py init``.
+"""Streamlit labeling UI over a project folder created with ``uv run active-labeling init``.
 
-Run:  AL_PROJECT=projects/demo uv run streamlit run app.py
+Run:  AL_PROJECT=projects/demo uv run streamlit run src/active_labeling/app.py
 """
 
 from __future__ import annotations
 
 import os
 
-import explain
-import strategies
 import streamlit as st
-from project import Project
+
+from active_labeling import explain, strategies
+from active_labeling.project import Project
 
 st.set_page_config(page_title="Active-learning labeler", layout="wide")
 st.title("Active-learning labeler")
@@ -18,7 +18,7 @@ st.title("Active-learning labeler")
 path = st.sidebar.text_input("Project folder", os.environ.get("AL_PROJECT", "")).strip()
 if not path:
     st.info(
-        "Create a project with `python cli.py init <folder> --demo` (or `--csv`), then enter its folder here."
+        "Create a project with `uv run active-labeling init <folder> --demo` (or `--csv`), then enter its folder here."
     )
     st.stop()
 try:

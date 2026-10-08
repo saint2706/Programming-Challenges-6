@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from store import Store
+from active_labeling.store import Store
 
 CLASSES = ["a", "b", "c"]
 

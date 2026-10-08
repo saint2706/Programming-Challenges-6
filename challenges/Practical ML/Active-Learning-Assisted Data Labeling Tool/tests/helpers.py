@@ -27,8 +27,8 @@ def make_pool(n=600, k=10, d=16, seed=0, spread=0.35, imbalance=0.75):
 
 def make_state(n=300, k=6, n_labeled=30, seed=0, spread=0.6, C=10.0, all_classes=True):
     """A fitted-head ``State`` over a synthetic pool, plus the gold labels of the whole pool."""
-    from model import Head
-    from strategies import State
+    from active_labeling.model import Head
+    from active_labeling.strategies import State
 
     X, y = make_pool(n, k, seed=seed, spread=spread)
     rng = np.random.default_rng(seed + 1)
@@ -55,7 +55,7 @@ def assert_valid(sel, state, b):
 
 def make_problem(n=400, k=6, seed=0, spread=0.6):
     """A small ``loop.Problem``: pool, validation and evaluation items from one distribution."""
-    from loop import Problem
+    from active_labeling.loop import Problem
 
     X, y = make_pool(n + 400, k, seed=seed, spread=spread)
     return Problem(
@@ -87,14 +87,14 @@ class FakeEncoder:
 
 
 def fake_choice():
-    from embed import BackendChoice
+    from active_labeling.embed import BackendChoice
 
     return BackendChoice(FakeEncoder(), "fake", [("fake", "ok")])
 
 
 def tiny_config():
     """A ``pipeline.Config`` small enough for tests: 2 seeds, 4 rounds of 10 after 12 cold-start labels."""
-    from pipeline import Config
+    from active_labeling.pipeline import Config
 
     return Config(
         seeds=2,

@@ -17,7 +17,9 @@ import numpy as np
 import polars as pl
 from sklearn.model_selection import train_test_split
 
-HERE = Path(__file__).parent
+from active_labeling.paths import project_root
+
+HERE = project_root()
 DATA_DIR = HERE / "data"
 BASE_URL = "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/"
 FILES = ("train.csv", "test.csv", "categories.json")
@@ -62,7 +64,7 @@ def load_raw(data_dir: Path = DATA_DIR) -> Raw:
     missing = [n for n in FILES if not (data_dir / n).exists()]
     if missing:
         raise FileNotFoundError(
-            f"{data_dir} lacks {missing}; run `python cli.py fetch` first"
+            f"{data_dir} lacks {missing}; run `uv run active-labeling fetch` first"
         )
     classes = json.loads((data_dir / "categories.json").read_text(encoding="utf-8"))
     index = {c: i for i, c in enumerate(classes)}

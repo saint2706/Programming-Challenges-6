@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
-import strategies
-from helpers import assert_valid, make_state
-from strategies import (
+from active_labeling import strategies
+from active_labeling.strategies import (
     Random,
     Selection,
     State,
@@ -12,6 +11,7 @@ from strategies import (
     margins,
     top_positions,
 )
+from helpers import assert_valid, make_state
 
 P3 = np.array([[0.5, 0.3, 0.2], [0.9, 0.05, 0.05], [1.0, 0.0, 0.0]])
 

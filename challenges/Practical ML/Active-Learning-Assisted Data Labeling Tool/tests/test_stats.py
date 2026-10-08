@@ -1,5 +1,5 @@
 import numpy as np
-import stats
+from active_labeling import stats
 
 
 def test_alc_is_the_mean_accuracy_over_the_labeling_range():

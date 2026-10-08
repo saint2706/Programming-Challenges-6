@@ -2,10 +2,10 @@ import csv
 
 import numpy as np
 import pytest
-import strategies
+from active_labeling import strategies
+from active_labeling.model import Head
+from active_labeling.project import Project
 from helpers import make_problem
-from model import Head
-from project import Project
 
 K = 4
 CLASSES = [f"k{i}" for i in range(K)]

@@ -5,13 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Annotated
 
-import data
-import embed
-import explain
-import pipeline
-import project as project_mod
-import strategies
 import typer
+
+from active_labeling import data, embed, explain, pipeline, strategies
+from active_labeling import project as project_mod
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 
@@ -285,7 +282,7 @@ def suggest(
         typer.echo(f"#{r.idx}  {proj.texts[r.idx]}")
         for line in explain.render(r, proj.classes, proj.texts).splitlines():
             typer.echo(f"    {line}")
-    typer.echo(f"\nlabel one with: python cli.py label {path} <id> <class>")
+    typer.echo(f"\nlabel one with: uv run active-labeling label {path} <id> <class>")
 
 
 @app.command()

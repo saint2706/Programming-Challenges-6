@@ -1,12 +1,13 @@
 from pathlib import Path
 
+import active_labeling
 import pytest
-import strategies
+from active_labeling import strategies
+from active_labeling.project import Project
 from helpers import make_problem
-from project import Project
 from streamlit.testing.v1 import AppTest
 
-APP = str(Path(__file__).parent / "app.py")
+APP = str(Path(active_labeling.__file__).parent / "app.py")
 CLASSES = [f"k{i}" for i in range(4)]
 
 
