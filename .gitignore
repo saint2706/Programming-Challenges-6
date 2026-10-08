@@ -27,6 +27,8 @@ challenges/Practical ML/Duplicate Product Listing Detector/duplicates.csv
 challenges/Practical ML/Uplift Modeling for a Marketing Campaign/results/*.joblib
 challenges/Practical ML/Uplift Modeling for a Marketing Campaign/results/*.parquet
 challenges/Practical ML/Uplift Modeling for a Marketing Campaign/results/stages/
+challenges/Practical ML/Product Review Star-Rating Predictor with Calibration/results/stages/
+challenges/Practical ML/Product Review Star-Rating Predictor with Calibration/results/models/
 challenges/Practical ML/Active-Learning-Assisted Data Labeling Tool/projects/
 challenges/Practical ML/Active-Learning-Assisted Data Labeling Tool/results/jobs/
 challenges/Practical ML/Model Serving API with Health Checks & Logging/logs/
