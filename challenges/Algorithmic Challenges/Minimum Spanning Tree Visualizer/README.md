@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/mst_visualizer/`; the tests are in `tests/`.
+
 The brief asks for two algorithms. Three are implemented, because the third
 is the one that explains the other two: **Boruvka's algorithm** (1926) is the
 oldest MST algorithm and the common ancestor both Kruskal (1956) and Prim
@@ -117,7 +119,7 @@ in every complexity bound above.
 1000    dense (V^2/4)      966.91ms   1183.84ms    385.10ms
 ```
 
-(`uv run python benchmark.py`, best-of-3, random integer weights.)
+(`uv run python -m mst_visualizer.benchmark`, best-of-3, random integer weights.)
 
 Two things the `O(E log E)` / `O(E log V)` / `O(E log V)` bounds do not
 predict:
@@ -194,7 +196,7 @@ prose). `pacing.py` keeps this pure arithmetic, with no Manim import, so it
 can be checked and tuned without rendering anything:
 
 ```
-uv run python pacing.py
+uv run python -m mst_visualizer.pacing
 scene       steps    motion      hold     total
 kruskal         9      3.4s      9.3s     12.7s
 prim            9      3.4s      9.6s     13.0s
@@ -225,20 +227,20 @@ visualize.py KruskalScene` drops every hold for fast layout iteration.
 ## Running it
 
 ```bash
-uv run python mst.py --demo             # kruskal/prim/boruvka on one small graph
-uv run python mst.py --verify           # cross-check 200 random graphs agree
+uv run python -m mst_visualizer.mst --demo             # kruskal/prim/boruvka on one small graph
+uv run python -m mst_visualizer.mst --verify           # cross-check 200 random graphs agree
 
 uv run pytest -q # 40 tests
-uv run python benchmark.py --quick      # fast sanity timings
-uv run python benchmark.py              # the table above (takes a few minutes)
-uv run python pacing.py                 # per-scene animation durations, no rendering
+uv run python -m mst_visualizer.benchmark --quick      # fast sanity timings
+uv run python -m mst_visualizer.benchmark              # the table above (takes a few minutes)
+uv run python -m mst_visualizer.pacing                 # per-scene animation durations, no rendering
 
-uv run manim -pql visualize.py KruskalScene
-uv run manim -pql visualize.py PrimScene
-uv run manim -pql visualize.py BoruvkaScene
+uv run manim -pql src/mst_visualizer/visualize.py KruskalScene
+uv run manim -pql src/mst_visualizer/visualize.py PrimScene
+uv run manim -pql src/mst_visualizer/visualize.py BoruvkaScene
 
 # Fast layout iteration with every reading-hold dropped:
-MST_HOLD_SCALE=0 uv run manim -pql visualize.py KruskalScene
+MST_HOLD_SCALE=0 uv run manim -pql src/mst_visualizer/visualize.py KruskalScene
 ```
 
 Manim needs **ffmpeg** on the PATH plus the system Cairo/Pango development

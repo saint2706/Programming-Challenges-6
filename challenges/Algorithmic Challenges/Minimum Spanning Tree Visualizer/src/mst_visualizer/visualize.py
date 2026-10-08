@@ -8,9 +8,9 @@ layout computed once from the vertex count); an edge is drawn dashed-gray
 while under consideration, flashes green and turns solid on acceptance, or
 flashes red and disappears on rejection.
 
-    uv run --with manim manim -pql visualize.py KruskalScene
-    uv run --with manim manim -pql visualize.py PrimScene
-    uv run --with manim manim -pql visualize.py BoruvkaScene
+    uv run manim -pql src/mst_visualizer/visualize.py KruskalScene
+    uv run manim -pql src/mst_visualizer/visualize.py PrimScene
+    uv run manim -pql src/mst_visualizer/visualize.py BoruvkaScene
 """
 
 from __future__ import annotations
@@ -18,8 +18,9 @@ from __future__ import annotations
 import math
 
 from manim import *
-from mst import boruvka_steps, kruskal_steps, prim_steps
-from pacing import (
+
+from mst_visualizer.mst import boruvka_steps, kruskal_steps, prim_steps
+from mst_visualizer.pacing import (
     CLOSING_HOLD,
     HOLD_SCALE,
     TITLE_MIN_HOLD,

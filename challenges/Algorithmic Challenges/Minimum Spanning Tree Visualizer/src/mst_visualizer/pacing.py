@@ -15,7 +15,7 @@ endpoints ("Accept 0-1 (w=4)" -> "Accept 1-2 (w=7)"), so a repeat of an
 already-seen caption *shape* is charged only for the characters that
 changed, at roughly double the rate; an exact repeat costs nothing.
 
-    uv run python pacing.py
+    uv run python -m mst_visualizer.pacing
 """
 
 from __future__ import annotations
@@ -110,7 +110,7 @@ def scene_duration(steps, title: str = "", subtitle: str = "") -> dict[str, floa
 
 
 def _report() -> None:
-    from mst import ALGORITHMS
+    from mst_visualizer.mst import ALGORITHMS
 
     demo_edges = [
         (0, 1, 4), (0, 2, 4), (1, 2, 2), (1, 3, 5),

@@ -6,8 +6,8 @@ predicts a *single-threaded Python* ranking, because Boruvka's O(log V)
 sequential rounds each re-scan every remaining edge -- overhead the other
 two never pay. This script measures where that overhead actually lands.
 
-    uv run python benchmark.py
-    uv run python benchmark.py --quick
+    uv run python -m mst_visualizer.benchmark
+    uv run python -m mst_visualizer.benchmark --quick
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import argparse
 import random
 import time
 
-from mst import ALGORITHMS, solve
+from mst_visualizer.mst import ALGORITHMS, solve
 
 
 def random_graph(n: int, density: float, seed: int) -> list[tuple[int, int, float]]:

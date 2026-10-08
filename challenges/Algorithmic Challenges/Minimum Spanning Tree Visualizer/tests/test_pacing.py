@@ -10,8 +10,8 @@ sized by subtitle-reading-speed rules, with repeats of the same caption
 from __future__ import annotations
 
 import pytest
-from mst import kruskal_steps
-from pacing import (
+from mst_visualizer.mst import kruskal_steps
+from mst_visualizer.pacing import (
     CaptionPacer,
     caption_template,
     motion_time,

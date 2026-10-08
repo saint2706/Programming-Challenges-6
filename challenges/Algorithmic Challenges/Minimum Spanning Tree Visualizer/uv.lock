@@ -342,7 +342,7 @@ wheels = [
 [[package]]
 name = "minimum-spanning-tree-visualizer"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "manim" },
 ]

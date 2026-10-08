@@ -14,7 +14,13 @@ import itertools
 import random
 
 import pytest
-from mst import DisjointSet, boruvka_steps, kruskal_steps, prim_steps, solve
+from mst_visualizer.mst import (
+    DisjointSet,
+    boruvka_steps,
+    kruskal_steps,
+    prim_steps,
+    solve,
+)
 
 ALGORITHMS = {"kruskal": kruskal_steps, "prim": prim_steps, "boruvka": boruvka_steps}
 
