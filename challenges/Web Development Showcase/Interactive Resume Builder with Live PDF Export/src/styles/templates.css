@@ -1,0 +1,341 @@
+/*
+ * The three templates. Everything is sized in `em`, relative to the page's font size
+ * (`--base-size` x the user's `--scale`), so "Fit to N pages" scales type and spacing together.
+ */
+
+/* ---------- Shared building blocks ---------- */
+
+.page .name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.page .headline {
+  margin: 0.2em 0 0;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.page .contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.55em;
+  row-gap: 0.1em;
+  margin: 0.55em 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.95em;
+}
+
+.page .contact li {
+  display: flex;
+  align-items: center;
+}
+
+/* a drawn dot, not a text bullet, so it never reaches the PDF's text layer */
+.page .contact li + li::before {
+  content: '';
+  flex: none;
+  width: 0.2em;
+  height: 0.2em;
+  margin-right: 0.55em;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.55;
+}
+
+.page a,
+.page .link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.page .b-heading {
+  font-family: var(--font-heading);
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.page .b-entry .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.1em 1em;
+}
+
+.page .b-entry .primary {
+  font-weight: 600;
+}
+
+.page .dates {
+  color: var(--faint);
+  font-size: 0.92em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.page .b-entry .secondary {
+  justify-content: flex-start;
+  color: var(--muted);
+}
+
+.page .b-text {
+  color: #1f2937;
+}
+
+.page .b-text .editable {
+  display: block;
+}
+
+.page .b-bullets {
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+/*
+ * Bullets are a flex row (a drawn dot, then the text), not a `position: relative` item with an
+ * absolutely positioned dot. Chrome paints positioned elements in a later pass than normal flow,
+ * which put every bullet at the end of the PDF's text and scrambled its reading order. Nothing in
+ * a page may be positioned, so the PDF text follows the document order.
+ */
+.page .b-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7em;
+  padding: 0.22em 0 0 0.35em;
+}
+
+.page .b-bullets li::before {
+  content: '';
+  flex: none;
+  width: 0.26em;
+  height: 0.26em;
+  margin-top: 0.62em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.page .b-bullets li > .editable {
+  flex: 1;
+  min-width: 0;
+}
+
+.page .b-skill {
+  display: grid;
+  grid-template-columns: 9em minmax(0, 1fr);
+  column-gap: 0.8em;
+}
+
+.page .skill-name {
+  font-weight: 600;
+}
+
+.page .skill-keywords {
+  color: #1f2937;
+}
+
+.page .b-cert {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1em;
+}
+
+.page .cert-name {
+  font-weight: 600;
+}
+
+.page .cert-meta {
+  display: inline-flex;
+  gap: 0.8em;
+  color: var(--muted);
+}
+
+.page .b-lang {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.page .fluency {
+  color: var(--muted);
+}
+
+/* ---------- Classic ---------- */
+
+.t-classic {
+  --base-size: 10pt;
+  --gap: 0.5em;
+}
+
+.t-classic .b {
+  padding-top: var(--gap);
+}
+
+.t-classic .b-header {
+  padding-top: 0;
+}
+
+.t-classic .name {
+  font-size: 2.35em;
+}
+
+.t-classic .headline {
+  font-size: 1.12em;
+}
+
+.t-classic .b-heading {
+  padding-top: 1.25em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, #fff);
+}
+
+/* ---------- Compact ---------- */
+
+.t-compact {
+  --base-size: 9pt;
+  --gap: 0.32em;
+}
+
+.t-compact .b {
+  padding-top: var(--gap);
+}
+
+.t-compact .b-header {
+  padding-top: 0;
+  padding-bottom: 0.15em;
+}
+
+.t-compact .name {
+  font-size: 2em;
+}
+
+.t-compact .headline {
+  margin-top: 0.1em;
+  font-size: 1.05em;
+}
+
+.t-compact .contact {
+  margin-top: 0.35em;
+}
+
+.t-compact .b-heading {
+  margin-top: 0.7em;
+  padding: 0.05em 0 0.05em 0.6em;
+  border-left: 0.28em solid var(--accent);
+  font-size: 0.78em;
+}
+
+.t-compact .b-bullets li {
+  padding-top: 0.12em;
+}
+
+.t-compact .b-bullets li::before {
+  top: 0.68em;
+}
+
+.t-compact .b-skill {
+  grid-template-columns: 7.5em minmax(0, 1fr);
+}
+
+/* ---------- Sidebar ---------- */
+
+.t-sidebar {
+  --base-size: 9.6pt;
+  --gap: 0.5em;
+  --side-w: 56mm;
+  --col-gap: 9mm;
+  --side-bg: color-mix(in srgb, var(--accent) 7%, #fff);
+  --side-edge: calc(var(--margin-x) + var(--side-w) + var(--col-gap) / 2);
+
+  background: linear-gradient(to right, var(--side-bg) var(--side-edge), #fff var(--side-edge));
+}
+
+.t-sidebar .page-body {
+  display: grid;
+  grid-template-columns: var(--side-w) minmax(0, 1fr);
+  grid-template-areas: 'side main';
+  align-items: start;
+  column-gap: var(--col-gap);
+}
+
+.t-sidebar .region-main {
+  grid-area: main;
+}
+
+.t-sidebar .region-sidebar {
+  grid-area: side;
+}
+
+.t-sidebar .b {
+  padding-top: var(--gap);
+}
+
+.t-sidebar .b-header {
+  padding-top: 0;
+}
+
+.t-sidebar .name {
+  font-size: 2.2em;
+}
+
+.t-sidebar .headline {
+  font-size: 1.1em;
+}
+
+.t-sidebar .b-heading {
+  padding-top: 1.1em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, #fff);
+}
+
+.t-sidebar .region-sidebar .b-heading {
+  border-bottom-color: color-mix(in srgb, var(--accent) 45%, #fff);
+}
+
+.t-sidebar .region-sidebar .contact {
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  row-gap: 0.25em;
+}
+
+.t-sidebar .region-sidebar .contact li + li::before {
+  display: none;
+}
+
+.t-sidebar .b-skill {
+  display: block;
+}
+
+.t-sidebar .skill-keywords {
+  display: block;
+  color: var(--muted);
+}
+
+.t-sidebar .b-cert {
+  display: block;
+}
+
+.t-sidebar .cert-name {
+  display: block;
+}
+
+.t-sidebar .cert-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+  font-size: 0.92em;
+}

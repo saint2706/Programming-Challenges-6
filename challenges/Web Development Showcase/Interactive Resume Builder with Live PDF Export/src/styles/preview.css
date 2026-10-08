@@ -1,0 +1,200 @@
+/*
+ * Page geometry, the hidden measuring tree and the print rules.
+ *
+ * Rules that keep "measured height == printed height":
+ *  - vertical spacing is padding inside `display: flow-root` blocks, never collapsing margins;
+ *  - bullets, separators and rules are drawn shapes, never text, so the PDF contains exactly the
+ *    text the page shows;
+ *  - the measuring tree uses the same classes, widths and fonts as a real page.
+ */
+
+.preview {
+  --ink: #111827;
+  --muted: #4b5563;
+  --faint: #6b7280;
+  --margin-top: 14mm;
+  --margin-bottom: 14mm;
+  --margin-x: 16mm;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+}
+
+.preview-scroll {
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 16px;
+  background: var(--canvas, #e5e7eb);
+}
+
+.preview-scroll:focus-visible {
+  outline: 2px solid var(--focus, #1d4ed8);
+  outline-offset: -2px;
+}
+
+.preview-status {
+  margin: 3rem auto;
+  text-align: center;
+  color: var(--faint);
+}
+
+.pages-frame {
+  margin: 0 auto;
+}
+
+.pages-scaler {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-gap, 24px);
+  width: var(--page-w);
+  transform-origin: top left;
+}
+
+.page {
+  position: relative;
+  box-sizing: border-box;
+  width: var(--page-w);
+  height: var(--page-h);
+  padding: var(--margin-top) var(--margin-x) var(--margin-bottom);
+  overflow: hidden;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: calc(var(--base-size, 10pt) * var(--scale, 1));
+  line-height: 1.4;
+  font-kerning: normal;
+  font-synthesis: none;
+  hyphens: manual;
+  overflow-wrap: anywhere;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.18),
+    0 8px 24px rgb(0 0 0 / 0.12);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
+}
+
+.page-body {
+  height: 100%;
+}
+
+.region {
+  min-width: 0;
+}
+
+.page .b {
+  display: flow-root;
+  margin: 0;
+}
+
+/* The hidden copy of a page used to measure blocks. It is laid out, never seen or announced. */
+.measure {
+  position: absolute;
+  top: 0;
+  left: -100000px;
+  width: var(--page-w);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.page-measure {
+  height: auto;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.page-measure .page-body {
+  height: auto;
+}
+
+/* In-place editing affordances. Outlines and backgrounds never change layout. */
+.editable {
+  border-radius: 2px;
+  outline: none;
+}
+
+.editable:empty::before {
+  content: attr(data-placeholder);
+  color: var(--faint);
+}
+
+.editable.multiline {
+  white-space: pre-line;
+}
+
+@media screen {
+  .page .editable:hover {
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+  }
+
+  .page .editable:focus {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--accent) 65%, transparent);
+    outline-offset: 2px;
+  }
+}
+
+@media print {
+  html,
+  body {
+    margin: 0;
+    background: #fff;
+  }
+
+  .preview-scroll {
+    height: auto;
+    overflow: visible;
+    padding: 0;
+    background: none;
+  }
+
+  .pages-frame {
+    width: auto !important;
+    height: auto !important;
+    margin: 0;
+  }
+
+  .pages-scaler {
+    display: block;
+    width: auto;
+    transform: none !important;
+  }
+
+  .page {
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  /* The measuring tree must stay laid out in print: a re-measure while it is display:none would
+     read zero heights. It is empty (zero height) except during a synchronous measure, so it adds
+     nothing to the printed pages. */
+  .preview-status {
+    display: none;
+  }
+
+  .editable,
+  .page .editable:hover,
+  .page .editable:focus {
+    background: none;
+    outline: none;
+  }
+
+  /* An empty field keeps its placeholder's space (so the page matches what was measured) but is
+     not painted, so it never reaches the PDF. */
+  .editable:empty::before {
+    visibility: hidden;
+  }
+}
