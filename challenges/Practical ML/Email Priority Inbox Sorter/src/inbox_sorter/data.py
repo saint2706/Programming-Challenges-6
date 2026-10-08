@@ -19,7 +19,9 @@ from pathlib import Path
 
 import polars as pl
 
-HERE = Path(__file__).parent
+from inbox_sorter.paths import project_root
+
+HERE = project_root()
 DATA_DIR = HERE / "data"
 CSV_NAME = "emails.csv"
 DATASET = "wcukierski/enron-email-dataset"

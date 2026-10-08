@@ -2,10 +2,9 @@ from datetime import date
 
 import polars as pl
 import pytest
-
-from features import LOCAL_OFFSET
-from inbox import days_with_mail, rank_inbox
-from models import time_split
+from inbox_sorter.features import LOCAL_OFFSET
+from inbox_sorter.inbox import days_with_mail, rank_inbox
+from inbox_sorter.models import time_split
 
 
 def _a_busy_test_day(df, box="aa-b"):

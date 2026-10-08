@@ -8,10 +8,8 @@ from typing import Annotated
 
 import typer
 
-import data
-import inbox
-import pipeline
-from models import MODEL_NAMES
+from inbox_sorter import data, inbox, pipeline
+from inbox_sorter.models import MODEL_NAMES
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 

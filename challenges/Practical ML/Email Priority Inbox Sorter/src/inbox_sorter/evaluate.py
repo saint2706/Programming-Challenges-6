@@ -14,8 +14,8 @@ import numpy as np
 import polars as pl
 from sklearn.metrics import average_precision_score, roc_auc_score
 
-from features import LOCAL_OFFSET
-from models import fit_lgbm
+from inbox_sorter.features import LOCAL_OFFSET
+from inbox_sorter.models import fit_lgbm
 
 MIN_DAY_MESSAGES = 5
 NDCG_K = 5

@@ -1,79 +1,12 @@
 import json
-from datetime import UTC, datetime, timedelta
-from email.utils import format_datetime
+from datetime import timedelta
 
-import numpy as np
 import polars as pl
 import pytest
-
-from features import FEATURE_COLUMNS
-from models import MODEL_NAMES
-from pipeline import load_artifacts, prepare, run_all
-
-BASE = datetime(2000, 3, 1, tzinfo=UTC)
-SECRET = "do-not-leak-this-subject-xyz"
-
-
-def _raw(mid, when, sender, to, subject, body):
-    return (
-        f"Message-ID: <{mid}>\nDate: {format_datetime(when)}\nFrom: {sender}\n"
-        f"To: {to}\nSubject: {subject}\n\n{body}\n"
-    )
-
-
-def synthetic_csv(tmp_path, n=360):
-    """Two mailboxes. The owner nearly always answers `boss`, rarely anyone else."""
-    rng = np.random.default_rng(0)
-    rows = []
-    for user, owner in (("aa-b", "aa.b@enron.com"), ("cc-d", "cc.d@enron.com")):
-        k = 0
-        for i in range(n):
-            when = BASE + timedelta(hours=7 * i)
-            sender = ["boss@enron.com", "peer@enron.com", "news@spam.com"][i % 3]
-            subject = f"{SECRET} {user} {i}"
-            body = (
-                "urgent please review? "
-                if sender == "boss@enron.com"
-                else "newsletter "
-            ) * 3
-            rows.append(
-                (
-                    f"{user}/inbox/{k}.",
-                    _raw(f"{user}-r{i}", when, sender, owner, subject, body),
-                )
-            )
-            k += 1
-            p = 0.9 if sender == "boss@enron.com" else 0.08
-            if rng.random() < p:
-                rows.append(
-                    (
-                        f"{user}/_sent_mail/{k}.",
-                        _raw(
-                            f"{user}-s{i}",
-                            when + timedelta(hours=2),
-                            owner,
-                            sender,
-                            f"Re: {subject}",
-                            "ok",
-                        ),
-                    )
-                )
-                k += 1
-        # keep the owner active to the end so nothing but the final window is censored
-        for j in range(5):
-            when = BASE + timedelta(hours=7 * n + 24 * j)
-            rows.append(
-                (
-                    f"{user}/_sent_mail/{k}.",
-                    _raw(
-                        f"{user}-x{j}", when, owner, "someone@x.com", f"misc {j}", "hi"
-                    ),
-                )
-            )
-            k += 1
-    p = tmp_path / "emails.csv"
-    pl.DataFrame(rows, schema=["file", "message"], orient="row").write_csv(p)
-    return p
+from helpers import BASE, SECRET, synthetic_csv
+from inbox_sorter.features import FEATURE_COLUMNS
+from inbox_sorter.models import MODEL_NAMES
+from inbox_sorter.pipeline import load_artifacts, prepare, run_all
 
 
 @pytest.fixture(scope="module")

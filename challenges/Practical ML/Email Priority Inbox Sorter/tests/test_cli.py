@@ -1,8 +1,7 @@
 import pytest
+from inbox_sorter import cli
+from inbox_sorter.inbox import days_with_mail
 from typer.testing import CliRunner
-
-import cli
-from inbox import days_with_mail
 
 runner = CliRunner()
 
@@ -66,7 +65,7 @@ def test_report_without_a_report_file_says_what_to_run(monkeypatch, tmp_path):
 def test_report_prints_a_table_from_a_report_file(monkeypatch, tmp_path):
     import json
 
-    from models import MODEL_NAMES
+    from inbox_sorter.models import MODEL_NAMES
 
     def model():
         return {

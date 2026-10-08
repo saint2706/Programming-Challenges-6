@@ -3,9 +3,8 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import polars as pl
-
-from data import Message
-from features import (
+from inbox_sorter.data import Message
+from inbox_sorter.features import (
     FEATURE_COLUMNS,
     FEATURE_GROUPS,
     build_sent_index,
@@ -13,7 +12,7 @@ from features import (
     metadata_features,
     received_frame,
 )
-from thread import label_received
+from inbox_sorter.thread import label_received
 
 ME = "me@enron.com"
 T0 = datetime.fromisoformat("2001-05-01T10:00")

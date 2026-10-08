@@ -1,52 +1,17 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import numpy as np
 import polars as pl
 import pytest
-from sklearn.metrics import average_precision_score
-
-from features import FEATURE_COLUMNS
-from models import (
+from helpers import T0, synthetic
+from inbox_sorter.models import (
     MODEL_NAMES,
     Calibrator,
     TextFeatures,
     fit_models,
     time_split,
 )
-
-T0 = datetime.fromisoformat("2001-01-01T00:00")
-
-
-def synthetic(n_per_box=900, seed=0, boxes=("m1", "m2")):
-    """A task with a planted metadata signal and a planted text signal."""
-    rng = np.random.default_rng(seed)
-    rows = []
-    for box in boxes:
-        for i in range(n_per_box):
-            meta = rng.random()
-            urgent = rng.random() < 0.3
-            p = 0.04 + 0.5 * meta**3 + 0.35 * urgent
-            acted = bool(rng.random() < min(p, 0.95))
-            feats = {c: 0.0 for c in FEATURE_COLUMNS}
-            feats["sender_prior_acted_rate"] = meta
-            feats["n_to"] = float(rng.integers(1, 5))
-            feats["owner_in_to"] = float(rng.random() < 0.5)
-            words = " ".join(
-                rng.choice(["lunch", "report", "fyi", "draft", "meeting"], 6)
-            )
-            text = ("urgent deadline " if urgent else "casual note ") + words
-            rows.append(
-                {
-                    "message_id": f"{box}-{i}",
-                    "mailbox": box,
-                    "date": T0 + timedelta(hours=i),
-                    "subject": text.split(" ")[0],
-                    "body": text,
-                    "acted": acted,
-                    **feats,
-                }
-            )
-    return pl.DataFrame(rows, schema_overrides={"date": pl.Datetime("us")})
+from sklearn.metrics import average_precision_score
 
 
 def test_time_split_is_ordered_and_disjoint_per_mailbox():

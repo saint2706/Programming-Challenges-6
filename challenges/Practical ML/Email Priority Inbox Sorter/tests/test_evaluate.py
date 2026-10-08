@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 import numpy as np
 import polars as pl
 import pytest
-
-from evaluate import (
+from helpers import synthetic
+from inbox_sorter.evaluate import (
     ablation,
     bootstrap_ci,
     daily_inbox_metrics,
@@ -14,9 +14,8 @@ from evaluate import (
     roc_auc,
     summarize,
 )
-from features import FEATURE_GROUPS
-from models import time_split
-from test_models import synthetic
+from inbox_sorter.features import FEATURE_GROUPS
+from inbox_sorter.models import time_split
 
 T0 = datetime.fromisoformat("2001-06-04T15:00")  # a Monday, 09:00 Houston
 

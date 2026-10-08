@@ -2,9 +2,8 @@
 
 import polars as pl
 import pytest
-
-from pipeline import load_artifacts, run_all
-from test_pipeline import synthetic_csv
+from helpers import synthetic_csv
+from inbox_sorter.pipeline import load_artifacts, run_all
 
 
 @pytest.fixture(scope="session")

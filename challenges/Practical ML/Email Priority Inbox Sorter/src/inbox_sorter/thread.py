@@ -16,7 +16,7 @@ from typing import Literal
 
 import polars as pl
 
-from data import Message
+from inbox_sorter.data import Message
 
 WINDOW_DAYS = 14
 

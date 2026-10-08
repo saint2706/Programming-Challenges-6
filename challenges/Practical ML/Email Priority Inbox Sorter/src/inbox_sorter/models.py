@@ -19,7 +19,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
 
-from features import FEATURE_COLUMNS
+from inbox_sorter.features import FEATURE_COLUMNS
 
 MODEL_NAMES = ["random", "to_me", "tfidf_lr", "lgbm_meta", "lgbm_meta_text"]
 SVD_COMPONENTS = 64

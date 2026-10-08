@@ -18,8 +18,8 @@ from datetime import datetime, timedelta
 import numpy as np
 import polars as pl
 
-from data import Message
-from thread import normalize_subject, strip_prefixes
+from inbox_sorter.data import Message
+from inbox_sorter.thread import normalize_subject, strip_prefixes
 
 MASS_MAIL_RECIPIENTS = 10
 # Enron was in Houston: shift the naive-UTC timestamps by a fixed -6h (CST, DST

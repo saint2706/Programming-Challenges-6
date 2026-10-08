@@ -2,8 +2,13 @@ from datetime import datetime
 
 import polars as pl
 import pytest
-
-from data import Message, load_mailboxes, owner_address, parse_message, received
+from inbox_sorter.data import (
+    Message,
+    load_mailboxes,
+    owner_address,
+    parse_message,
+    received,
+)
 
 RAW = r"""Message-ID: <1.JavaMail.evans@thyme>
 Date: Mon, 14 May 2001 16:39:00 -0700 (PDT)
@@ -164,7 +169,7 @@ def test_different_mails_in_the_same_minute_are_not_collapsed():
 
 
 def test_dedupe_keeps_the_first_copy_and_order():
-    from data import dedupe
+    from inbox_sorter.data import dedupe
 
     a, b = _msg("<1>", "a@x.com", ["m@x"]), _msg("<2>", "a@x.com", ["m@x"])
     other = _msg("<3>", "z@x.com", ["m@x"])

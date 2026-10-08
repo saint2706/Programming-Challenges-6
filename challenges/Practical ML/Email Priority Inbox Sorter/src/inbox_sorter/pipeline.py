@@ -17,8 +17,8 @@ import joblib
 import numpy as np
 import polars as pl
 
-from data import CSV_NAME, DATA_DIR, dedupe, load_mailboxes, received
-from evaluate import (
+from inbox_sorter.data import CSV_NAME, DATA_DIR, dedupe, load_mailboxes, received
+from inbox_sorter.evaluate import (
     ablation,
     bootstrap_ci,
     daily_inbox_metrics,
@@ -27,17 +27,18 @@ from evaluate import (
     reliability,
     summarize,
 )
-from explain import contributions, group_contributions
-from features import (
+from inbox_sorter.explain import contributions, group_contributions
+from inbox_sorter.features import (
     FEATURE_GROUPS,
     build_sent_index,
     metadata_features,
     received_frame,
 )
-from models import MODEL_NAMES, Calibrator, Models, fit_models, time_split
-from thread import censor_cutoff, label_received
+from inbox_sorter.models import MODEL_NAMES, Calibrator, Models, fit_models, time_split
+from inbox_sorter.paths import project_root
+from inbox_sorter.thread import censor_cutoff, label_received
 
-HERE = Path(__file__).parent
+HERE = project_root()
 RESULTS_DIR = HERE / "results"
 
 # The six mailboxes with the most sent mail: enough replies to learn from.

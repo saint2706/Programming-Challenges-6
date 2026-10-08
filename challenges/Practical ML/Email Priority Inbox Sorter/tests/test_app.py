@@ -1,7 +1,9 @@
-import pytest
-from streamlit.testing.v1 import AppTest
+from pathlib import Path
 
-import inbox
+import inbox_sorter
+import pytest
+from inbox_sorter import inbox
+from streamlit.testing.v1 import AppTest
 
 
 @pytest.fixture
@@ -10,7 +12,9 @@ def at(monkeypatch, trained):
 
     st.cache_resource.clear()
     monkeypatch.setattr(inbox, "load_context", lambda: trained)
-    app = AppTest.from_file("app.py", default_timeout=90)
+    app = AppTest.from_file(
+        str(Path(inbox_sorter.__file__).parent / "app.py"), default_timeout=90
+    )
     app.run()
     return app
 

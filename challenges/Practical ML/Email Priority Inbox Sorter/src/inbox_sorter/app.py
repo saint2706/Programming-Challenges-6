@@ -1,13 +1,13 @@
 """Streamlit inbox: pick a mailbox and a held-out day, see mail sorted by priority and why.
 
-Run:  uv run streamlit run app.py
+Run:  uv run streamlit run src/inbox_sorter/app.py
 """
 
 from __future__ import annotations
 
 import streamlit as st
 
-import inbox
+from inbox_sorter import inbox
 
 st.set_page_config(page_title="Email Priority Inbox Sorter", layout="wide")
 

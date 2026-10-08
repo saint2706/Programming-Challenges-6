@@ -1,9 +1,8 @@
 import numpy as np
 import pytest
-
-from explain import READABLE, contributions, group_contributions, reasons
-from models import fit_models, time_split
-from test_models import synthetic
+from helpers import synthetic
+from inbox_sorter.explain import READABLE, contributions, group_contributions, reasons
+from inbox_sorter.models import fit_models, time_split
 
 
 @pytest.fixture(scope="module")
@@ -51,7 +50,7 @@ def test_svd_components_are_merged_into_one_wording_reason(setup):
 
 
 def test_every_metadata_feature_has_a_readable_label():
-    from features import FEATURE_COLUMNS
+    from inbox_sorter.features import FEATURE_COLUMNS
 
     assert set(FEATURE_COLUMNS) <= set(READABLE)
     assert len(set(READABLE.values())) == len(READABLE)

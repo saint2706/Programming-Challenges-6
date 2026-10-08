@@ -1,9 +1,13 @@
 from datetime import datetime, timedelta
 
 import pytest
-
-from data import Message
-from thread import censor_cutoff, kind_of, label_received, normalize_subject
+from inbox_sorter.data import Message
+from inbox_sorter.thread import (
+    censor_cutoff,
+    kind_of,
+    label_received,
+    normalize_subject,
+)
 
 ME = "me@enron.com"
 T0 = datetime.fromisoformat("2001-05-01T10:00")

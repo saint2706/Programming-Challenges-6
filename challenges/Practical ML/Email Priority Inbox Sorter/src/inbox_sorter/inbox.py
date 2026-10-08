@@ -9,11 +9,11 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
-from data import DATA_DIR
-from explain import reasons
-from features import LOCAL_OFFSET
-from models import time_split
-from pipeline import DATASET_FILE, Artifacts, load_artifacts
+from inbox_sorter.data import DATA_DIR
+from inbox_sorter.explain import reasons
+from inbox_sorter.features import LOCAL_OFFSET
+from inbox_sorter.models import time_split
+from inbox_sorter.pipeline import DATASET_FILE, Artifacts, load_artifacts
 
 EXPLAINED_MODELS = ("lgbm_meta_text", "lgbm_meta")
 REASONS_PER_MESSAGE = 4

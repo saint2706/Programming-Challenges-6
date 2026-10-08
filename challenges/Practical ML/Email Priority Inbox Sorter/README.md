@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/inbox_sorter/`; the tests are in `tests/`.
+
 Learns which received emails the mailbox owner will act on, ranks an inbox by
 that, and says why for every message. The label is **behavior** -- did the owner
 reply to or forward the mail -- not a hand-made notion of "importance", and the
@@ -15,7 +17,7 @@ Typer CLI runs it; a Streamlit page shows a held-out day's inbox sorted, with a
 ## Data
 
 [Enron Email Dataset](https://www.kaggle.com/datasets/wcukierski/enron-email-dataset)
-(Kaggle, about 517,000 raw messages). `cli.py fetch` downloads `emails.csv` into a
+(Kaggle, about 517,000 raw messages). `inbox-sorter fetch` downloads `emails.csv` into a
 gitignored `data/` folder with your Kaggle token in `~/.kaggle/kaggle.json`. The
 corpus is real people's mail (a public release), so **nothing from it is
 committed**: tests use synthetic fixtures and `results/report.json` holds
@@ -207,13 +209,13 @@ this test set.)
 ## Usage
 
 ```bash
-uv run python cli.py fetch                       # Kaggle token in ~/.kaggle/kaggle.json
-uv run python cli.py prepare                     # parse, label, featurize -> data/dataset.parquet
-uv run python cli.py train                       # prepare + fit + evaluate -> results/report.json
-uv run python cli.py report                      # print the last benchmark
-uv run python cli.py rank-inbox mann-k --day 2001-11-26 --top 10   # held-out days only
-uv run python cli.py rank-inbox mann-k --day 2001-11-26 --reveal   # also show what the owner did
-uv run streamlit run app.py
+uv run inbox-sorter fetch                       # Kaggle token in ~/.kaggle/kaggle.json
+uv run inbox-sorter prepare                     # parse, label, featurize -> data/dataset.parquet
+uv run inbox-sorter train                       # prepare + fit + evaluate -> results/report.json
+uv run inbox-sorter report                      # print the last benchmark
+uv run inbox-sorter rank-inbox mann-k --day 2001-11-26 --top 10   # held-out days only
+uv run inbox-sorter rank-inbox mann-k --day 2001-11-26 --reveal   # also show what the owner did
+uv run streamlit run src/inbox_sorter/app.py
 ```
 
 `rank-inbox` only serves days in the test period: ranking mail the model was
