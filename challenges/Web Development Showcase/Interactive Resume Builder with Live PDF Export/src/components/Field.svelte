@@ -4,7 +4,7 @@
    * a valid value is committed immediately; an invalid one stays in the box (so you can fix it)
    * with an error message, and the resume keeps its last good value.
    */
-  import { isSafeHref } from '../lib/links.js';
+  import { isEmail, isSafeHref } from '../lib/links.js';
 
   let { label, value, type = 'text', maxlength = 500, rows = 3, placeholder = '', autocomplete = 'off', oncommit } = $props();
 
@@ -14,8 +14,8 @@
   function check(kind, text) {
     if (kind === 'date' && text !== '' && !DATE.test(text)) return 'Use YYYY, YYYY-MM or YYYY-MM-DD.';
     if (kind === 'url' && text !== '' && !isSafeHref(text)) return 'Use an http(s), mailto or tel link.';
-    if (kind === 'email' && text !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) return 'Use a valid email address.';
-    if (kind === 'tel' && text !== '' && !/^[0-9\s+\-().]*$/.test(text)) return 'Use digits, spaces, +, -, (), or .';
+    if (kind === 'email' && text !== '' && !isEmail(text)) return 'Use a valid email address.';
+    if (kind === 'tel' && text !== '' && !/^[0-9 +\-().]*$/.test(text)) return 'Use digits, spaces, +, -, (), or .';
     return '';
   }
 

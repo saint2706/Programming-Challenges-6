@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { isSafeHref } from './links.js';
+import { isEmail, isSafeHref } from './links.js';
 
 /**
  * The resume document: a JSON Resume (v1) subset plus an `x-layout` key for the builder's own
@@ -90,16 +90,13 @@ const basics = z.object({
       z
         .string()
         .max(254)
-        .refine(
-          (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-          'Use a valid email address'
-        ),
+        .refine(isEmail, 'Use a valid email address'),
     ])
     .default(''),
   phone: z
     .string()
     .max(20)
-    .regex(/^[0-9\s+\-().]*$/, 'Use digits, spaces, +, -, (), or .')
+    .regex(/^[0-9 +\-().]*$/, 'Use digits, spaces, +, -, (), or .')
     .default(''),
   url: link,
   summary: long,

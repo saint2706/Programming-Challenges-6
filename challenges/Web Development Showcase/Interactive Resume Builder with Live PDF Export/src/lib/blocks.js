@@ -1,6 +1,6 @@
 import { getTemplate } from '../templates/index.js';
 import { formatDate, formatRange } from './dates.js';
-import { safeHref } from './links.js';
+import { mailHref, safeHref, telHref } from './links.js';
 import { SECTION_META } from './sections.js';
 
 /**
@@ -68,8 +68,8 @@ function linkOf(url) {
 function contactData(basics) {
   const { location, email, phone, url, profiles } = basics;
   const place = [location.city, location.region, location.countryCode].filter(Boolean).join(', ');
-  const emailData = isBlank(email) ? null : { label: email.trim(), href: `mailto:${email.trim()}` };
-  const phoneData = isBlank(phone) ? null : { label: phone.trim(), href: `tel:${phone.trim()}` };
+  const emailData = isBlank(email) ? null : { label: email.trim(), href: mailHref(email) };
+  const phoneData = isBlank(phone) ? null : { label: phone.trim(), href: telHref(phone) };
   const website = isBlank(url) ? null : { label: hostname(url.trim()), href: safeHref(url) };
   const links = profiles
     .filter((p) => p.network || p.username || p.url)
