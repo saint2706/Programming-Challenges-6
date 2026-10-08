@@ -1,7 +1,11 @@
 import numpy as np
 import pytest
-
-from sequential import SeqParams, calibrate_sequential, make_detectors, run
+from drift_monitor.sequential import (
+    SeqParams,
+    calibrate_sequential,
+    make_detectors,
+    run,
+)
 
 REF = np.random.default_rng(0).normal(5.0, 2.0, 4500)
 

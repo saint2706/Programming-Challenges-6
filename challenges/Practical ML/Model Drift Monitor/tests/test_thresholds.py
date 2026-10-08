@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
-
-from stats import Baseline
-from thresholds import RULE_OF_THUMB, calibrate, null_distribution
+from drift_monitor.stats import Baseline
+from drift_monitor.thresholds import RULE_OF_THUMB, calibrate, null_distribution
 
 
 def _setup(n_train=5000, n_ref=4000, seed=1):

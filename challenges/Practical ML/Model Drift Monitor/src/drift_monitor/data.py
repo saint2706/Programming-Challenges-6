@@ -12,7 +12,9 @@ from pathlib import Path
 
 import polars as pl
 
-HERE = Path(__file__).parent
+from drift_monitor.paths import project_root
+
+HERE = project_root()
 DATA_DIR = HERE / "data"
 OPENML_ID = 151
 PARQUET = "electricity.parquet"

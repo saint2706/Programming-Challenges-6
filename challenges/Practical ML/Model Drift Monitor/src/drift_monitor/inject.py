@@ -16,7 +16,7 @@ from __future__ import annotations
 import numpy as np
 import polars as pl
 
-from data import NUMERIC
+from drift_monitor.data import NUMERIC
 
 
 def covariate(

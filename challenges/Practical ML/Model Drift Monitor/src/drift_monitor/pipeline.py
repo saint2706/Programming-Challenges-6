@@ -16,14 +16,26 @@ import polars as pl
 from scipy.stats import spearmanr
 from sklearn.metrics import roc_auc_score
 
-import data
-import model
-from evaluate import alarm_windows, benchmark, default_scenarios, summarize
-from monitor import LABEL_DELAY, THRESHOLD, WINDOW, build_baseline, columns_of, monitor
-from sequential import calibrate_sequential
-from thresholds import ALPHA, RULE_OF_THUMB, calibrate, null_distribution
+from drift_monitor import data, model
+from drift_monitor.evaluate import (
+    alarm_windows,
+    benchmark,
+    default_scenarios,
+    summarize,
+)
+from drift_monitor.monitor import (
+    LABEL_DELAY,
+    THRESHOLD,
+    WINDOW,
+    build_baseline,
+    columns_of,
+    monitor,
+)
+from drift_monitor.paths import project_root
+from drift_monitor.sequential import calibrate_sequential
+from drift_monitor.thresholds import ALPHA, RULE_OF_THUMB, calibrate, null_distribution
 
-HERE = Path(__file__).parent
+HERE = project_root()
 RESULTS_DIR = HERE / "results"
 ARTIFACTS_FILE = "artifacts.joblib"
 DETECTORS = (

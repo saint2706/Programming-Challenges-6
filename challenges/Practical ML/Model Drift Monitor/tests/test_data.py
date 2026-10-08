@@ -1,8 +1,7 @@
 import numpy as np
 import polars as pl
 import pytest
-
-from data import CATEGORICAL, FEATURES, NUMERIC, load, split
+from drift_monitor.data import CATEGORICAL, FEATURES, NUMERIC, load, split
 
 
 def _frame(n=1000, seed=0):

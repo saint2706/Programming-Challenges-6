@@ -1,25 +1,8 @@
 import json
 
-import numpy as np
-import polars as pl
 import pytest
-
-from data import NUMERIC
-from pipeline import load_artifacts, run_all
-
-W = 100
-
-
-def drifting(n=6000, seed=0, step_at=3600):
-    """Stationary, then nswprice shifts by +1.0 from row ``step_at``."""
-    rng = np.random.default_rng(seed)
-    cols = {"day": rng.integers(1, 8, n)}
-    for name in NUMERIC:
-        cols[name] = rng.random(n)
-    cols["nswprice"][step_at:] += 1.0
-    p = 1 / (1 + np.exp(-(6 * (np.clip(cols["nswprice"], 0, 1) - 0.5))))
-    cols["label"] = (rng.random(n) < p).astype(int)
-    return pl.DataFrame(cols)
+from drift_monitor.pipeline import load_artifacts, run_all
+from helpers import W, drifting
 
 
 @pytest.fixture(scope="module")

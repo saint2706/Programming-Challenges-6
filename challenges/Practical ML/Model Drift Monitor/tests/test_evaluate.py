@@ -2,8 +2,7 @@ import math
 
 import polars as pl
 import pytest
-
-from evaluate import (
+from drift_monitor.evaluate import (
     DETECT_WITHIN,
     Scenario,
     benchmark,
@@ -11,8 +10,8 @@ from evaluate import (
     summarize,
     wilson,
 )
-from monitor import monitor
-from test_monitor import W, make_fitted, synth
+from drift_monitor.monitor import monitor
+from helpers import W, make_fitted, synth
 
 
 def test_wilson_handles_zero_all_and_empty():

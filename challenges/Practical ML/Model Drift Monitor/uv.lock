@@ -880,7 +880,7 @@ wheels = [
 [[package]]
 name = "model-drift-monitor"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "altair" },
     { name = "joblib" },

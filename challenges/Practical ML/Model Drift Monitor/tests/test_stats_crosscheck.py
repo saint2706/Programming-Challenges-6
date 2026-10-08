@@ -5,6 +5,7 @@ import pandas as pd
 import pytest
 
 pytest.importorskip("evidently")
+from drift_monitor.stats import Baseline
 from evidently.legacy.calculations.stattests.jensenshannon import (
     _jensenshannon,
 )
@@ -17,8 +18,6 @@ from evidently.legacy.calculations.stattests.wasserstein_distance_norm import (
 )
 from evidently.legacy.core import ColumnType
 from scipy import stats as sps
-
-from stats import Baseline
 
 RNG = np.random.default_rng(5)
 

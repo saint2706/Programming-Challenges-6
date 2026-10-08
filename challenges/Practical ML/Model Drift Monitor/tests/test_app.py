@@ -1,7 +1,9 @@
-import pytest
-from streamlit.testing.v1 import AppTest
+from pathlib import Path
 
-import pipeline
+import drift_monitor
+import pytest
+from drift_monitor import pipeline
+from streamlit.testing.v1 import AppTest
 
 
 @pytest.fixture
@@ -10,7 +12,9 @@ def at(monkeypatch, tiny_context):
 
     st.cache_resource.clear()
     monkeypatch.setattr(pipeline, "load_context", lambda: tiny_context)
-    app = AppTest.from_file("app.py", default_timeout=120)
+    app = AppTest.from_file(
+        str(Path(drift_monitor.__file__).parent / "app.py"), default_timeout=120
+    )
     app.run()
     return app
 

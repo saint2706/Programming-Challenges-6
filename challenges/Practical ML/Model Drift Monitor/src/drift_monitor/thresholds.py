@@ -25,7 +25,7 @@ from collections.abc import Mapping
 
 import numpy as np
 
-from stats import Baseline
+from drift_monitor.stats import Baseline
 
 WINDOW = 336
 ALPHA = 0.01

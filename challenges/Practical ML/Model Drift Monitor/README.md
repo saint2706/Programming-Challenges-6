@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/drift_monitor/`; the tests are in `tests/`.
+
 A drift monitor for a deployed classifier: it compares each week of live traffic
 with the training baseline, raises alerts whose thresholds are *calibrated* rather
 than copied from a rule of thumb, and lines the alerts up against the accuracy the
@@ -19,7 +21,7 @@ the delayed accuracy.
 [Electricity](https://www.openml.org/d/151) (OpenML data id 151, Harries 1999): 45,312
 half-hourly rows from the Australian NSW market, seven features (`day`, `period`,
 `nswprice`, `nswdemand`, `vicprice`, `vicdemand`, `transfer`), label = whether the NSW
-price goes UP or DOWN against a moving average. `cli.py fetch` downloads it (no token)
+price goes UP or DOWN against a moving average. `drift-monitor fetch` downloads it (no token)
 into a gitignored `data/`.
 
 Split in time order: **30% train (13,594 rows), 10% reference (4,531), 60% live
@@ -161,11 +163,11 @@ plan and are deliberate:
 
 ```bash
 uv sync
-uv run python cli.py fetch      # download the data
-uv run python cli.py train      # fit, calibrate, monitor, benchmark (several minutes)
-uv run python cli.py report     # print results/report.json
-uv run python cli.py monitor --from-window 0 --to-window 20
-uv run streamlit run app.py     # dashboard
+uv run drift-monitor fetch      # download the data
+uv run drift-monitor train      # fit, calibrate, monitor, benchmark (several minutes)
+uv run drift-monitor report     # print results/report.json
+uv run drift-monitor monitor --from-window 0 --to-window 20
+uv run streamlit run src/drift_monitor/app.py     # dashboard
 uv run pytest                   # 85 tests
 ```
 

@@ -1,10 +1,8 @@
 """Shared fixtures: a tiny trained pipeline on synthetic drifting data, built once."""
 
 import pytest
-
-import data
-import pipeline
-from test_pipeline import W, drifting
+from drift_monitor import data, pipeline
+from helpers import W, drifting
 
 
 @pytest.fixture(scope="session")

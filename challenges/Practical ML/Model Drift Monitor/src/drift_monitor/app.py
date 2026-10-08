@@ -1,6 +1,6 @@
 """Streamlit dashboard: drift over time, what drifted in a window, and what it cost in accuracy.
 
-Run:  uv run streamlit run app.py
+Run:  uv run streamlit run src/drift_monitor/app.py
 """
 
 from __future__ import annotations
@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-import pipeline
-from data import FEATURES
-from monitor import columns_of
+from drift_monitor import pipeline
+from drift_monitor.data import FEATURES
+from drift_monitor.monitor import columns_of
 
 st.set_page_config(page_title="Model Drift Monitor", layout="wide")
 

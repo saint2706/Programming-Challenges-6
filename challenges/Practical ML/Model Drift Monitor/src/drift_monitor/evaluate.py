@@ -17,10 +17,10 @@ from dataclasses import dataclass
 import numpy as np
 import polars as pl
 
-import inject
-from data import NUMERIC
-from monitor import WINDOW, MonitorResult, monitor
-from stats import Baseline
+from drift_monitor import inject
+from drift_monitor.data import NUMERIC
+from drift_monitor.monitor import WINDOW, MonitorResult, monitor
+from drift_monitor.stats import Baseline
 
 DETECT_WITHIN = 10
 RULE_OF_THUMB_PSI = 0.2

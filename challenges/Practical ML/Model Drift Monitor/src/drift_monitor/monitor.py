@@ -15,10 +15,10 @@ import numpy as np
 import polars as pl
 from sklearn.metrics import log_loss, roc_auc_score
 
-import model
-from data import CATEGORICAL, FEATURES
-from sequential import SeqParams, make_detectors, run
-from stats import Baseline, class_rate_shift
+from drift_monitor import model
+from drift_monitor.data import CATEGORICAL, FEATURES
+from drift_monitor.sequential import SeqParams, make_detectors, run
+from drift_monitor.stats import Baseline, class_rate_shift
 
 WINDOW = 336
 LABEL_DELAY = 4

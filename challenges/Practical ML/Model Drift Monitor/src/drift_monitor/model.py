@@ -8,7 +8,7 @@ import lightgbm as lgb
 import numpy as np
 import polars as pl
 
-from data import FEATURES
+from drift_monitor.data import FEATURES
 
 
 def _x(df: pl.DataFrame) -> np.ndarray:

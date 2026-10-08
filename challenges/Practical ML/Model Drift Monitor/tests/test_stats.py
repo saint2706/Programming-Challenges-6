@@ -1,8 +1,7 @@
 import numpy as np
 import pytest
+from drift_monitor.stats import Baseline, class_rate_shift, js, ks, psi, wasserstein
 from scipy import stats as sps
-
-from stats import Baseline, class_rate_shift, js, ks, psi, wasserstein
 
 RNG = np.random.default_rng(0)
 

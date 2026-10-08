@@ -1,8 +1,7 @@
 import numpy as np
 import polars as pl
-
-from data import FEATURES, NUMERIC
-from model import fit, score
+from drift_monitor.data import FEATURES, NUMERIC
+from drift_monitor.model import fit, score
 
 
 def _task(n=1500, seed=0):
@@ -39,9 +38,8 @@ def test_model_uses_exactly_the_feature_columns():
 
 
 def test_out_of_fold_scores_are_honest_not_in_sample():
+    from drift_monitor.model import oof_scores
     from sklearn.metrics import log_loss
-
-    from model import oof_scores
 
     df = _task(1200)
     clf = fit(df, seed=0)
@@ -56,7 +54,7 @@ def test_out_of_fold_scores_are_honest_not_in_sample():
 
 
 def test_oof_folds_are_contiguous_blocks_so_no_row_scores_itself():
-    from model import oof_scores
+    from drift_monitor.model import oof_scores
 
     df = _task(400)
     oof = oof_scores(df, k=4, seed=0)

@@ -1,10 +1,8 @@
 import numpy as np
 import pytest
-
-import inject
-import model
-from data import FEATURES
-from test_monitor import synth
+from drift_monitor import inject, model
+from drift_monitor.data import FEATURES
+from helpers import synth
 
 START = 600
 

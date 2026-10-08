@@ -1,9 +1,8 @@
 import json
 
 import pytest
+from drift_monitor import cli
 from typer.testing import CliRunner
-
-import cli
 
 runner = CliRunner()
 
