@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/sorting_race/`; the tests are in `tests/`.
+
 Manim animations for 14 sorting algorithms, spanning comparison-based, non-comparison-based, and hybrid strategies, all racing the same input array so their behavior can be compared directly.
 
 ## The array
@@ -34,7 +36,7 @@ Standouts:
 
 ## Design
 
-- `sorting_algorithms.py` -- 14 algorithms, each an instrumented generator that mutates the array in place and `yield`s a `Step` (compare / swap / write / sorted indices / an optional algorithm-specific `aux` payload) after every meaningful operation. Pure algorithm logic, no Manim import. Also holds `SUBTITLES`, the one-line characterisation shown under each title, because that is a fact about the algorithm rather than about the animation. Run directly (`uv run python sorting_algorithms.py`) to self-check that every algorithm produces a correctly sorted array.
+- `sorting_algorithms.py` -- 14 algorithms, each an instrumented generator that mutates the array in place and `yield`s a `Step` (compare / swap / write / sorted indices / an optional algorithm-specific `aux` payload) after every meaningful operation. Pure algorithm logic, no Manim import. Also holds `SUBTITLES`, the one-line characterisation shown under each title, because that is a fact about the algorithm rather than about the animation. Run directly (`uv run python -m sorting_race.sorting_algorithms`) to self-check that every algorithm produces a correctly sorted array.
 - `visualize.py` -- one generic `SortRaceScene` driver that reacts only to the `Step` fields above; it has no per-algorithm animation code. Bars stay at a fixed x-position per array index -- a swap is shown as two bars simultaneously changing height and flashing red, not as bars physically sliding past each other. This is what makes 14 correct, watchable animations tractable from one small driver instead of 14 bespoke ones. Each of the 14 `Scene` subclasses is now just a lookup key into `ALGORITHMS`.
 - `pacing.py` -- how long each step stays on screen. No Manim import, so the timings can be checked and tuned without rendering anything.
 - Auxiliary panels (rendered only for the algorithms that need them): a `[l, r)` bracket for merge segments, a pivot marker for Quick Sort, heap parent/child edges, a cycle-start marker, bucket/digit/hole columns for the non-comparison sorts, a colored mode banner for IntroSort, and colored run-bands for TimSort.
@@ -74,7 +76,7 @@ A viewer who has read the template once only has to re-read what changed. So
 | A caption *shape* seen before (digits normalised) | only the characters that differ, at 30 cps |
 | A new shape                                       | the whole line, at 14 cps                  |
 
-`uv run python pacing.py` prints the result without rendering:
+`uv run python -m sorting_race.pacing` prints the result without rendering:
 
 ```
 scene                 steps    motion      hold     total   s/step
@@ -99,7 +101,7 @@ on layout.
 ## The fourteen algorithms
 
 All measurements below are from this repository's own code, on `BASE_ARRAY`:
-step counts from `python sorting_algorithms.py`, stability from a search over
+step counts from `uv run python -m sorting_race.sorting_algorithms`, stability from a search over
 40 000 random arrays for a counterexample rather than from a textbook.
 
 | #  | Algorithm        | Family         | Time (avg / worst)     | Extra space | Stable? | Steps |
@@ -352,18 +354,18 @@ second sort preserves the first one's work.
 cd "challenges/Algorithmic Challenges/Custom Sorting Algorithm Race Visualizer"
 
 # No install step and no virtualenv to manage: uv resolves manim per command.
-uv run python sorting_algorithms.py                # self-check: all 14 sort correctly
-uv run python pacing.py                            # per-scene durations, no rendering
+uv run python -m sorting_race.sorting_algorithms                # self-check: all 14 sort correctly
+uv run python -m sorting_race.pacing                            # per-scene durations, no rendering
 uv run pytest -q # 46 pacing tests
 
 # One algorithm, fast iteration:
-uv run manim -pql visualize.py BubbleSortScene
+uv run manim -pql src/sorting_race/visualize.py BubbleSortScene
 
 # Same, with the reading holds dropped so layout iterates quickly:
-SORT_RACE_HOLD_SCALE=0 uv run manim -pql visualize.py BubbleSortScene
+SORT_RACE_HOLD_SCALE=0 uv run manim -pql src/sorting_race/visualize.py BubbleSortScene
 
 # Every algorithm, final quality:
-uv run manim -qm visualize.py SelectionSortScene BubbleSortScene \
+uv run manim -qm src/sorting_race/visualize.py SelectionSortScene BubbleSortScene \
     InsertionSortScene MergeSortScene QuickSortScene HeapSortScene \
     CycleSortScene ThreeWayMergeSortScene CountingSortScene RadixSortScene \
     BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene

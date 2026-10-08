@@ -29,7 +29,7 @@ Sort past three, for no gain in comprehension.
 Run this file to see the resulting per-scene durations without rendering
 anything (it imports no Manim):
 
-    uv run python pacing.py
+    uv run python -m sorting_race.pacing
 """
 
 from __future__ import annotations
@@ -161,7 +161,7 @@ def scene_duration(steps, title: str = "", subtitle: str = "") -> dict[str, floa
 
 
 def _report() -> None:
-    from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES
+    from sorting_race.sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES
 
     print(
         f"{'scene':<20} {'steps':>6} {'motion':>9} {'hold':>9} {'total':>9} "

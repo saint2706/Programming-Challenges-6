@@ -16,20 +16,21 @@ a frame legible. `pacing.py` decides how long each hold lasts and why, and
 prints the resulting per-scene durations without rendering anything.
 
 Render one scene, low quality, to iterate fast:
-    uv run --with manim manim -pql visualize.py BubbleSortScene
+    uv run manim -pql src/sorting_race/visualize.py BubbleSortScene
 
 Render everything at once:
-    uv run --with manim manim -qm visualize.py SelectionSortScene BubbleSortScene \
+    uv run manim -qm src/sorting_race/visualize.py SelectionSortScene BubbleSortScene \
         InsertionSortScene MergeSortScene QuickSortScene HeapSortScene \
         CycleSortScene ThreeWayMergeSortScene CountingSortScene RadixSortScene \
         BucketSortScene PigeonholeSortScene IntroSortScene TimSortScene
 
 Preview at speed while iterating on layout (0 = drop every hold):
-    SORT_RACE_HOLD_SCALE=0 uv run --with manim manim -pql visualize.py TimSortScene
+    SORT_RACE_HOLD_SCALE=0 uv run manim -pql src/sorting_race/visualize.py TimSortScene
 """
 
 from manim import *
-from pacing import (
+
+from sorting_race.pacing import (
     CLOSING_HOLD,
     HOLD_SCALE,
     TITLE_MIN_HOLD,
@@ -37,7 +38,7 @@ from pacing import (
     motion_time,
     reading_time,
 )
-from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES
+from sorting_race.sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES
 
 BG_COLOR = "#101418"
 DEFAULT_COLOR = "#3B82C4"

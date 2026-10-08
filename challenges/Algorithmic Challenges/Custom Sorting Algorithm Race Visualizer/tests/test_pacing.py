@@ -3,13 +3,13 @@
 Pure arithmetic over the step stream, so none of this needs Manim installed --
 which is the point of keeping `pacing.py` separate from `visualize.py`.
 
-Run with:  uv run --with pytest pytest -q
+Run with:  uv run pytest -q
 """
 
 from __future__ import annotations
 
 import pytest
-from pacing import (
+from sorting_race.pacing import (
     CLOSING_HOLD,
     CPS_FIRST,
     CPS_REPEAT,
@@ -28,7 +28,7 @@ from pacing import (
     reading_time,
     scene_duration,
 )
-from sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES, Step
+from sorting_race.sorting_algorithms import ALGORITHMS, BASE_ARRAY, SUBTITLES, Step
 
 # ---------------------------------------------------------------------------
 # The two text measures
@@ -209,7 +209,7 @@ def test_every_algorithm_has_a_subtitle():
 
 
 def test_hold_scale_zero_removes_only_the_holds(monkeypatch):
-    import pacing
+    from sorting_race import pacing
 
     steps = list(ALGORITHMS["Bubble Sort"](list(BASE_ARRAY)))
     full = scene_duration(steps, "Bubble Sort", SUBTITLES["Bubble Sort"])
