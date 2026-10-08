@@ -8,8 +8,8 @@ the UI actually wires that logic up correctly end to end.
 from __future__ import annotations
 
 import pytest
-from app import DiaryApp, EntryListItem, MainScreen, UnlockScreen
-from diary import JournalStore, Mood
+from encrypted_diary.app import DiaryApp, EntryListItem, MainScreen, UnlockScreen
+from encrypted_diary.diary import JournalStore, Mood
 from textual.widgets import Input, ListView, Sparkline
 
 pytestmark = pytest.mark.asyncio

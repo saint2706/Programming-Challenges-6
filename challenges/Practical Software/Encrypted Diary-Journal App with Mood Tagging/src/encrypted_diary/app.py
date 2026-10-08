@@ -4,7 +4,7 @@ handling so it stays thin and the security-critical code stays testable
 without a terminal.
 
 Run directly:
-    uv run --with textual --with cryptography python app.py
+    uv run encrypted-diary
 """
 
 from __future__ import annotations
@@ -12,7 +12,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import ClassVar
 
-from diary import Entry, JournalStore, JournalUnlockError, Mood
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
@@ -31,7 +30,10 @@ from textual.widgets import (
     TextArea,
 )
 
-DEFAULT_JOURNAL_PATH = Path(__file__).parent / "journal.enc"
+from encrypted_diary.diary import Entry, JournalStore, JournalUnlockError, Mood
+from encrypted_diary.paths import project_root
+
+DEFAULT_JOURNAL_PATH = project_root() / "journal.enc"
 
 
 class UnlockScreen(ModalScreen[JournalStore]):
@@ -266,5 +268,9 @@ class DiaryApp(App):
         await self.push_screen(MainScreen(store))
 
 
-if __name__ == "__main__":
+def main() -> None:
     DiaryApp().run()
+
+
+if __name__ == "__main__":
+    main()

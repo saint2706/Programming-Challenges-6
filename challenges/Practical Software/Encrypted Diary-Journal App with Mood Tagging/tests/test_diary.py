@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 
 import pytest
-from diary import (
+from encrypted_diary.diary import (
     MAGIC,
     Entry,
     JournalStore,
@@ -118,7 +118,7 @@ def test_atomic_write_survives_failed_write(tmp_path, monkeypatch):
     store.add_entry(Mood.HAPPY, "safe entry")
     original_bytes = path.read_bytes()
 
-    import diary as diary_module
+    from encrypted_diary import diary as diary_module
 
     def boom(*args, **kwargs):
         raise OSError("simulated disk failure")

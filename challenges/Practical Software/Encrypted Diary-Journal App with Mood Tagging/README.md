@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/encrypted_diary/`; the tests are in `tests/`.
+
 A real terminal journal app: passphrase-gated, AES-256-GCM encrypted at
 rest, with a mood tag on every entry and an in-terminal mood-trend
 sparkline. Built as a [Textual](https://textual.textualize.io/) TUI so it
@@ -84,7 +86,7 @@ this before it became a real "why is today missing" confusion in daily use.
 ```bash
 cd "challenges/Practical Software/Encrypted Diary-Journal App with Mood Tagging"
 
-uv run python app.py
+uv run encrypted-diary
 ```
 
 Dependencies are declared in this folder's own `pyproject.toml`/`uv.lock`

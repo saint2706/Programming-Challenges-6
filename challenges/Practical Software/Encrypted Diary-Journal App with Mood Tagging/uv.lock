@@ -162,7 +162,7 @@ wheels = [
 [[package]]
 name = "encrypted-diary-journal-app-with-mood-tagging"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "cryptography" },
     { name = "textual" },
