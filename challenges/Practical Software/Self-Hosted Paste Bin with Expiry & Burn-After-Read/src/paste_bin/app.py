@@ -1,11 +1,11 @@
 """Self-hosted paste bin: TTL expiry, burn-after-read, syntax highlighting.
 
 Run directly:
-    uv run --with fastapi --with uvicorn[standard] --with pygments --with python-multipart python app.py
+    uv run paste-bin
 
 Or with a reload server:
-    uv run --with fastapi --with uvicorn[standard] --with pygments --with python-multipart \\
-        uvicorn app:app --reload
+    uv run \\
+        uvicorn paste_bin.app:app --reload
 
 Pages are rendered as small server-side HTML fragments (no template engine,
 no static file directory) to keep this a single self-contained script, per
@@ -21,7 +21,6 @@ import threading
 import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from pathlib import Path
 from urllib.parse import quote
 
 import uvicorn
@@ -31,9 +30,11 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, get_lexer_by_name, guess_lexer
 from pygments.util import ClassNotFound
-from storage import Paste, PasteStore
 
-BASE_DIR = Path(__file__).parent
+from paste_bin.paths import project_root
+from paste_bin.storage import Paste, PasteStore
+
+BASE_DIR = project_root()
 DB_PATH = BASE_DIR / "pastebin.db"
 CLEANUP_INTERVAL_SECONDS = 60
 
@@ -310,5 +311,9 @@ def health() -> dict[str, object]:
     return {"status": "ok", "pastes": store.count()}
 
 
-if __name__ == "__main__":
+def main() -> None:
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
+if __name__ == "__main__":
+    main()

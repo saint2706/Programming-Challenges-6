@@ -4,7 +4,7 @@ import threading
 import time
 from pathlib import Path
 
-from storage import PasteStore
+from paste_bin.storage import PasteStore
 
 
 def test_create_and_get(tmp_path: Path) -> None:

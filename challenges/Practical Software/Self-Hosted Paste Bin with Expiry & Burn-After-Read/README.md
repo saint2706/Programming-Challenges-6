@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/paste_bin/`; the tests are in `tests/`.
+
 A small, self-hostable pastebin: create a paste, get a link, optionally make
 it a one-time-view ("burn after read") link or give it a TTL, and view it
 with syntax highlighting. No external services -- one SQLite file, one
@@ -59,11 +61,11 @@ asserts exactly one of them ever sees the content.
 ```bash
 cd "challenges/Practical Software/Self-Hosted Paste Bin with Expiry & Burn-After-Read"
 
-uv run app.py
+uv run paste-bin
 # -> http://127.0.0.1:8000
 
 # or, with auto-reload during development:
-uv run uvicorn app:app --reload
+uv run uvicorn paste_bin.app:app --reload
 
 uv run pytest -q      # 26 tests
 ```
@@ -84,7 +86,7 @@ It's a normal ASGI app, so anything that runs `uvicorn`/`gunicorn` works:
 
 ```bash
 # systemd-style long-running process
-uv run uvicorn app:app --host 0.0.0.0 --port 8000 --workers 1
+uv run uvicorn paste_bin.app:app --host 0.0.0.0 --port 8000 --workers 1
 ```
 
 **Use exactly one worker process**, or put a reverse proxy with sticky

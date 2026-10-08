@@ -4,16 +4,16 @@ import time
 from pathlib import Path
 from urllib.parse import quote
 
-import app as app_module
 import pytest
 from fastapi.testclient import TestClient
-from storage import Paste
+from paste_bin import app as app_module
+from paste_bin.storage import Paste
 
 
 @pytest.fixture()
 def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
     # Point the module-level store at a fresh temp DB per test.
-    from storage import PasteStore
+    from paste_bin.storage import PasteStore
 
     monkeypatch.setattr(app_module, "store", PasteStore(tmp_path / "test.db"))
     with TestClient(app_module.app) as c:
