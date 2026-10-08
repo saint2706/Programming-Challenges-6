@@ -4,7 +4,7 @@ import json
 import threading
 from pathlib import Path
 
-from access_log import AccessLogger
+from lan_file_server.access_log import AccessLogger
 
 
 def test_log_appends_one_json_line(tmp_path: Path) -> None:

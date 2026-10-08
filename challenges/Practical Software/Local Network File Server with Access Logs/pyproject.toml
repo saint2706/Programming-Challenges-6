@@ -8,8 +8,18 @@ dependencies = [
     "uvicorn[standard]>=0.54.0",
 ]
 
+[project.scripts]
+lan-server = "lan_file_server.server:main"
+
 [dependency-groups]
 dev = [
     "httpx2>=2.13.1",
     "pytest>=9.1.1",
 ]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "lan_file_server"

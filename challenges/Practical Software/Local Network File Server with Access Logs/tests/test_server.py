@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 
 import pytest
-import server as server_module
 from fastapi.testclient import TestClient
+from lan_file_server import server as server_module
 
 TOKEN = "test-shared-token-123"
 

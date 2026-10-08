@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/lan_file_server/`; the tests are in `tests/`.
+
 A small, token-protected file server for sharing a folder with other devices
 on your LAN: directory browsing, downloads, and a full accounting of who
 fetched what and when. No database, no accounts system — one shared secret,
@@ -91,9 +93,9 @@ self-hosted tool, not a general-purpose path library.
   repeated on the exact value at the redirect (12 bypass forms are covered by
   regression tests at both the function and HTTP level).
 - **`FILESERVER_ROOT` / `FILESERVER_TOKEN` / `FILESERVER_LOG` env vars**
-  configure the server at import time (so `uvicorn server:app --reload`
+  configure the server at import time (so `uvicorn lan_file_server.server:app --reload`
   works for development), with `--root`/`--token`/`--log`/`--host`/`--port`
-  CLI flags as the equivalent for the `python server.py` entry point. If no
+  CLI flags as the equivalent for the `uv run lan-server` entry point. If no
   token is given either way, one is generated and printed once — the same
   pattern Jupyter uses for its own token auth.
 
@@ -102,12 +104,12 @@ self-hosted tool, not a general-purpose path library.
 ```bash
 cd "challenges/Practical Software/Local Network File Server with Access Logs"
 
-uv run python server.py --root /path/to/folder --token "a-secret-only-you-know"
+uv run lan-server --root /path/to/folder --token "a-secret-only-you-know"
 # -> Serving <root> on http://0.0.0.0:8000
 
 # or, with auto-reload during development:
 FILESERVER_ROOT=. FILESERVER_TOKEN=devsecret \
-uv run uvicorn server:app --reload
+uv run uvicorn lan_file_server.server:app --reload
 
 uv run pytest -q # 97 tests
 ```

@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 import pytest
-from security import PathTraversalError, resolve_safe_path, verify_token
+from lan_file_server.security import PathTraversalError, resolve_safe_path, verify_token
 
 
 @pytest.fixture()
@@ -156,7 +156,7 @@ def test_verify_token_handles_non_ascii_secrets() -> None:
 def test_verify_token_uses_constant_time_comparison(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    import security
+    from lan_file_server import security
 
     calls: list[tuple[bytes, bytes]] = []
     real = security.hmac.compare_digest

@@ -3,14 +3,13 @@ by a shared-secret token, with every list/download/denial recorded to a
 JSON-lines access log.
 
 Run directly:
-    uv run --with fastapi --with "uvicorn[standard]" --with python-multipart \\
-        python server.py --root . --token mysecret
+    uv run lan-server --root . --token mysecret
 
 Or with a reload server (reads config from env vars instead of CLI flags,
-since `uvicorn server:app --reload` never calls our `__main__` block):
+since `uvicorn lan_file_server.server:app --reload` never calls our `__main__` block):
     FILESERVER_ROOT=. FILESERVER_TOKEN=mysecret \\
-        uv run --with fastapi --with "uvicorn[standard]" --with python-multipart \\
-        uvicorn server:app --reload
+        uv run \\
+        uvicorn lan_file_server.server:app --reload
 
 Pages are rendered as small server-side HTML fragments (no template engine,
 no static file directory), per this repo's convention -- see the sibling
@@ -29,13 +28,15 @@ from pathlib import Path
 from urllib.parse import quote, urlparse
 
 import uvicorn
-from access_log import AccessLogger
 from fastapi import Depends, FastAPI, Form, HTTPException, Request
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
-from security import PathTraversalError, resolve_safe_path, verify_token
 from starlette.responses import Response
 
-BASE_DIR = Path(__file__).parent
+from lan_file_server.access_log import AccessLogger
+from lan_file_server.paths import project_root
+from lan_file_server.security import PathTraversalError, resolve_safe_path, verify_token
+
+BASE_DIR = project_root()
 SESSION_COOKIE_NAME = "fs_session"
 SESSION_TTL_SECONDS = 12 * 3600
 _START_TIME = time.time()
@@ -497,7 +498,7 @@ def health() -> dict[str, object]:
     return {"status": "ok", "uptime_seconds": int(time.time() - _START_TIME)}
 
 
-if __name__ == "__main__":
+def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -535,3 +536,7 @@ if __name__ == "__main__":
         f"-- from another device on your LAN, use this machine's LAN IP instead of {args.host}."
     )
     uvicorn.run(app, host=args.host, port=args.port)
+
+
+if __name__ == "__main__":
+    main()

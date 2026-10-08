@@ -173,7 +173,7 @@ wheels = [
 [[package]]
 name = "local-network-file-server-with-access-logs"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "python-multipart" },
