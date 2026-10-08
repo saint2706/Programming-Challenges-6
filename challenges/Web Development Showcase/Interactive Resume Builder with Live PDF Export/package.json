@@ -1,0 +1,35 @@
+{
+    "name": "interactive-resume-builder",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vitest run",
+        "test:e2e": "vite build && vitest run --config vitest.e2e.config.js",
+        "bench": "vite build && node e2e/bench.mjs"
+    },
+    "dependencies": {
+        "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
+        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
+        "@fontsource/ibm-plex-sans": "^5.0.0",
+        "@fontsource/inter": "^5.0.0",
+        "@fontsource/source-serif-4": "^5.0.0",
+        "svelte": "^5.15.0",
+        "zod": "^4.0.0"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^5.0.0",
+        "@testing-library/jest-dom": "^6.6.0",
+        "@testing-library/svelte": "^5.2.0",
+        "@testing-library/user-event": "^14.5.0",
+        "axe-core": "^4.10.0",
+        "fast-check": "^4.0.0",
+        "jsdom": "^26.0.0",
+        "pdfjs-dist": "^6.4.299",
+        "puppeteer-core": "^25.12.0",
+        "vite": "^6.0.0",
+        "vitest": "^5.0.2"
+    }
+}
