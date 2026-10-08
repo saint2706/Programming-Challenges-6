@@ -6,8 +6,8 @@ import json
 import math
 
 import pytest
-from geo_heatmap import DATA
-from projection import (
+from sales_heatmap.geo_heatmap import DATA
+from sales_heatmap.projection import (
     CONUS,
     EARTH_RADIUS_KM,
     Albers,

@@ -1,8 +1,8 @@
 """Geo-Spatial Sales Heatmap Builder: regional aggregate data -> one self-contained choropleth HTML map.
 
 Run with:
-    uv run python geo_heatmap.py demo --level county -o retail.html
-    uv run python geo_heatmap.py build my_sales.csv --region-col state --value-col revenue -o map.html
+    uv run sales-heatmap demo --level county -o retail.html
+    uv run sales-heatmap build my_sales.csv --region-col state --value-col revenue -o map.html
 """
 
 from __future__ import annotations
@@ -15,10 +15,12 @@ from pathlib import Path
 
 import numpy as np
 import polars as pl
-from classify import SCHEMES, assign, class_counts, compute_edges, gvf
-from projection import project_collection
-from regions import JoinReport, RegionIndex, resolve_keys
-from spatial import (
+
+from sales_heatmap.classify import SCHEMES, assign, class_counts, compute_edges, gvf
+from sales_heatmap.paths import project_root
+from sales_heatmap.projection import project_collection
+from sales_heatmap.regions import JoinReport, RegionIndex, resolve_keys
+from sales_heatmap.spatial import (
     GlobalMoran,
     LocalMoran,
     Weights,
@@ -28,7 +30,7 @@ from spatial import (
     morans_i,
 )
 
-HERE = Path(__file__).resolve().parent
+HERE = project_root()
 DATA = HERE / "data"
 
 # Why a region has no colour on a given measure.  0 means it has a value.
@@ -527,7 +529,7 @@ def cmd_build(args: argparse.Namespace) -> MapModel:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    from report import PALETTES
+    from sales_heatmap.report import PALETTES
 
     parser = argparse.ArgumentParser(
         description="Build a self-contained choropleth map from regional data."
@@ -625,7 +627,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    from report import PALETTES, render_html
+    from sales_heatmap.report import PALETTES, render_html
 
     args = build_parser().parse_args(argv)
     if not 2 <= args.classes <= 9:

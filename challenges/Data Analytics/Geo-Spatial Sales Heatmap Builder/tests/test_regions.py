@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 from conftest import grid_features
-from geo_heatmap import load_bundled_boundaries
-from regions import RegionIndex, norm_text, normalize_fips, resolve_keys
+from sales_heatmap.geo_heatmap import load_bundled_boundaries
+from sales_heatmap.regions import RegionIndex, norm_text, normalize_fips, resolve_keys
 
 
 @pytest.fixture(scope="module")

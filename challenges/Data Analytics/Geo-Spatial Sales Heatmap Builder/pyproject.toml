@@ -8,6 +8,9 @@ dependencies = [
     "polars>=1.44.2",
 ]
 
+[project.scripts]
+sales-heatmap = "sales_heatmap.geo_heatmap:main"
+
 [dependency-groups]
 dev = [
     "jenkspy>=0.4.1",
@@ -17,3 +20,10 @@ dev = [
 fetch = [
     "pyshp>=3.1.6",
 ]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "sales_heatmap"

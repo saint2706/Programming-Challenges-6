@@ -6,12 +6,12 @@ import json
 import re
 from itertools import pairwise
 
-import geo_heatmap as gh
 import polars as pl
 import pytest
 from conftest import grid_features
-from geo_heatmap import OK, aggregate_to_regions, build_model
-from report import (
+from sales_heatmap import geo_heatmap as gh
+from sales_heatmap.geo_heatmap import OK, aggregate_to_regions, build_model
+from sales_heatmap.report import (
     PALETTES,
     format_full,
     format_number,

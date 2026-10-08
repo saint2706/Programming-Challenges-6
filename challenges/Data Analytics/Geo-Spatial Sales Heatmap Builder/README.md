@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/sales_heatmap/`; the tests are in `tests/`.
+
 Choropleth maps from regional aggregate data. Point it at a CSV with one row per
 record (a state or county in some spelling, plus a number) and it writes **one
 self-contained HTML map**: no server, no CDN, no map tiles. The bundled demo maps
@@ -54,11 +56,11 @@ real 2017 Economic Census retail sales for all 3,220 U.S. counties.
 cd "challenges/Data Analytics/Geo-Spatial Sales Heatmap Builder"
 
 # the bundled 2017 retail-sales data (county: ~2 MB file, ~15 s incl. 9,999-permutation LISA)
-uv run python geo_heatmap.py demo --level county -o retail_county.html
-uv run python geo_heatmap.py demo --level state --naics 445 -o groceries_state.html
+uv run sales-heatmap demo --level county -o retail_county.html
+uv run sales-heatmap demo --level state --naics 445 -o groceries_state.html
 
 # your own CSV; auto-detects state vs county from the keys
-uv run python geo_heatmap.py build sample_data/messy_orders.csv \
+uv run sales-heatmap build sample_data/messy_orders.csv \
   --region-col state --value-col order_value --population-col customer_pop \
   --prefix '$' --label "Order value" -o messy.html
 
@@ -187,4 +189,4 @@ BH-FDR over all regions. Uncorrected counts are still reported.
 | `data/`, `vendor/` | committed Census data (~2.5 MB) and Leaflet 1.9.4 (BSD-2)     |
 | `test_*.py`        | 253 tests, all offline (`uv run pytest -q`)                   |
 
-Refresh the data with `uv run --group fetch python fetch_data.py` (needs network and `pyshp`).
+Refresh the data with `uv run --group fetch python -m sales_heatmap.fetch_data` (needs network and `pyshp`).

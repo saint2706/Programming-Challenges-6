@@ -6,17 +6,17 @@ import json
 
 import numpy as np
 import pytest
-import spatial
 from conftest import grid_features
-from geo_heatmap import DATA
-from scipy import stats
-from spatial import (
+from sales_heatmap import spatial
+from sales_heatmap.geo_heatmap import DATA
+from sales_heatmap.spatial import (
     benjamini_hochberg,
     build_weights,
     contiguity,
     local_moran,
     morans_i,
 )
+from scipy import stats
 
 
 def dense_weights(neighbors: list[set[int]]) -> np.ndarray:

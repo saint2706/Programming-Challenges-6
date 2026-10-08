@@ -182,7 +182,7 @@ wheels = [
 [[package]]
 name = "geo-spatial-sales-heatmap-builder"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "folium" },
     { name = "numpy" },

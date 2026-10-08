@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import geo_heatmap as gh
 import numpy as np
 import polars as pl
 import pytest
-from geo_heatmap import (
+from sales_heatmap import geo_heatmap as gh
+from sales_heatmap.geo_heatmap import (
     BLANK,
     NO_POPULATION,
     NO_RECORD,

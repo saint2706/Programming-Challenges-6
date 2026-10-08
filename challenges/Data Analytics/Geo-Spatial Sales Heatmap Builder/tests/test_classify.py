@@ -7,7 +7,7 @@ import itertools
 import jenkspy
 import numpy as np
 import pytest
-from classify import (
+from sales_heatmap.classify import (
     assign,
     class_counts,
     compute_edges,
@@ -89,7 +89,7 @@ class TestJenks:
         assert list(assign(values, edges)) == [0] * 4 + [1] * 4 + [2] * 4
 
     def test_sampled_path_for_many_distinct_values(self, monkeypatch):
-        monkeypatch.setattr("classify.JENKS_MAX_DISTINCT", 50)
+        monkeypatch.setattr("sales_heatmap.classify.JENKS_MAX_DISTINCT", 50)
         values = np.random.default_rng(5).normal(size=400)
         edges = jenks_edges(values, 4)
         assert len(edges) == 5 and np.all(np.diff(edges) > 0)

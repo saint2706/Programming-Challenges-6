@@ -1,6 +1,6 @@
 """Rebuild the vendored data files from their original public sources.
 
-Run with:  uv run --group fetch python fetch_data.py
+Run with:  uv run --group fetch python -m sales_heatmap.fetch_data
 
 Everything under ``data/`` and ``vendor/`` is committed, so you only need this
 to reproduce or refresh them.  Downloads are cached under ``.cache/`` and each
@@ -26,7 +26,9 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+from sales_heatmap.paths import project_root
+
+HERE = project_root()
 CACHE = HERE / ".cache"
 DATA = HERE / "data"
 VENDOR = HERE / "vendor"

@@ -10,13 +10,14 @@ from __future__ import annotations
 import html
 import json
 import math
-from pathlib import Path
 
 import folium
 import numpy as np
 from branca.element import Element, MacroElement
-from classify import SCHEME_LABELS, SCHEMES
-from geo_heatmap import (
+from jinja2 import Template
+
+from sales_heatmap.classify import SCHEME_LABELS, SCHEMES
+from sales_heatmap.geo_heatmap import (
     BLANK,
     NO_POPULATION,
     NO_RECORD,
@@ -25,11 +26,11 @@ from geo_heatmap import (
     MapModel,
     View,
 )
-from jinja2 import Template
-from projection import group_of, inset_boxes
-from spatial import CLUSTER_LABELS
+from sales_heatmap.paths import project_root
+from sales_heatmap.projection import group_of, inset_boxes
+from sales_heatmap.spatial import CLUSTER_LABELS
 
-VENDOR = Path(__file__).resolve().parent / "vendor"
+VENDOR = project_root() / "vendor"
 
 # Anchor colours, light (low values) -> dark (high values), interpolated to the requested class count.
 # viridis and cividis are perceptually uniform and designed for colour-vision deficiency;
