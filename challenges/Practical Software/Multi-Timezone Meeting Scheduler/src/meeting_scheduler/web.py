@@ -3,7 +3,7 @@
 Reuses the exact same `scheduler.py` core as the CLI -- this file only does
 HTTP plumbing and HTML rendering. Run:
 
-    uv run --with fastapi --with "uvicorn[standard]" --with python-multipart python web.py
+    uv run python -m meeting_scheduler.web
 """
 
 from __future__ import annotations
@@ -14,7 +14,12 @@ from datetime import date
 import uvicorn
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
-from scheduler import find_overlaps, format_window, parse_participant_spec
+
+from meeting_scheduler.scheduler import (
+    find_overlaps,
+    format_window,
+    parse_participant_spec,
+)
 
 app = FastAPI(title="Multi-Timezone Meeting Scheduler")
 

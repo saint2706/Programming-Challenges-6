@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, time
 
 import pytest
-from scheduler import (
+from meeting_scheduler.scheduler import (
     Participant,
     find_overlaps,
     format_window,

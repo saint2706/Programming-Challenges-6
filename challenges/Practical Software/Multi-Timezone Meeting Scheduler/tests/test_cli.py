@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from cli import app
+from meeting_scheduler.cli import app
 from typer.testing import CliRunner
 
 runner = CliRunner()

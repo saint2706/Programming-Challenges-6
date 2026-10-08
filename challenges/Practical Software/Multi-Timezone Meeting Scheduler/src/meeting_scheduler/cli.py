@@ -1,6 +1,6 @@
 """CLI for the multi-timezone meeting scheduler.
 
-Run: uv run --with typer --with rich --with tzdata python cli.py find ...
+Run: uv run meeting-scheduler find ...
 """
 
 from __future__ import annotations
@@ -11,7 +11,8 @@ from typing import Annotated
 import typer
 from rich.console import Console
 from rich.table import Table
-from scheduler import (
+
+from meeting_scheduler.scheduler import (
     find_overlaps,
     format_window,
     parse_participant_spec,

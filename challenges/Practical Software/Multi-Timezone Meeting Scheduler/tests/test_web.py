@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
-from web import app
+from meeting_scheduler.web import app
 
 client = TestClient(app)
 

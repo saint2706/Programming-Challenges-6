@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/meeting_scheduler/`; the tests are in `tests/`.
+
 Given a list of people, each in their own IANA timezone with their own
 working hours, find when enough of them are simultaneously at work on a
 given calendar date — correctly, across a DST transition. Ships as both a
@@ -78,17 +80,17 @@ by exactly one.
 cd "challenges/Practical Software/Multi-Timezone Meeting Scheduler"
 
 # CLI
-uv run cli.py find \
+uv run meeting-scheduler find \
     --date 2026-09-24 --ref-tz America/New_York --display-tz America/New_York \
     -p "Asha|Asia/Kolkata|09:00-18:00" \
     -p "Ben|Europe/London|09:00-17:00" \
     -p "Cara|America/New_York|09:00-17:00" \
     --min-participants 2
 
-uv run cli.py zones kolkata
+uv run meeting-scheduler zones kolkata
 
 # Web UI
-uv run web.py
+uv run python -m meeting_scheduler.web
 # -> http://127.0.0.1:8001
 
 uv run pytest -q   # 33 tests
