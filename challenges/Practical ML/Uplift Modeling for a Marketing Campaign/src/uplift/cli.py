@@ -5,15 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Annotated
 
-import data
-import learners
-import metrics
 import numpy as np
-import pipeline
 import polars as pl
-import policy
-import propensity
 import typer
+
+from uplift import data, learners, metrics, pipeline, policy, propensity
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 SCORERS = [*learners.LEARNERS]

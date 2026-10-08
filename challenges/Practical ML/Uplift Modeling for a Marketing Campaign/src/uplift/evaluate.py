@@ -11,13 +11,10 @@ real-data number is inverse-propensity weighted with an e(x) fit on the train sp
 
 from __future__ import annotations
 
-import data
-import learners
-import metrics
 import numpy as np
-import propensity
-import synth
 from scipy import stats
+
+from uplift import data, learners, metrics, propensity, synth
 
 GRID = [
     {"num_leaves": nl, "min_child_samples": mcs}

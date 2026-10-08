@@ -5,6 +5,8 @@
 
 **Status:** Implemented (Python)
 
+Source modules live in `src/uplift/`; the tests are in `tests/`.
+
 Who should a marketing campaign contact? Not the customers most likely to convert, but the ones whose
 chance of converting goes **up because they were contacted**. This project estimates that
 per-customer incremental effect (uplift) on the real Criteo ad campaign, with the brief's
@@ -24,7 +26,7 @@ AdKDD 2018): 13,979,592 users from incrementality tests, 12 anonymized dense fea
 (non-commercial), so the data is downloaded, never committed.
 
 - **Mirror, not the documented URL.** `scikit-uplift` documents `go.criteo.net/...`; it returns 404 now (checked
-  2026-10-07). `cli.py fetch` downloads Criteo's own HuggingFace mirror once (297 MB) into a gitignored
+  2026-10-07). `uplift fetch` downloads Criteo's own HuggingFace mirror once (297 MB) into a gitignored
   `data/`, takes a seeded random sample of **2,000,000 rows** and caches it as parquet.
 - **Intent-to-treat.** `treatment` is the intervention. The dataset's `exposure` column (was the ad actually
   shown) is a post-treatment variable and is **refused as a feature** (`data.xy` raises), because it would leak
@@ -38,7 +40,7 @@ AdKDD 2018): 13,979,592 users from incrementality tests, 12 anonymized dense fea
 
 ### Is it a randomized trial? Nearly, and the difference matters
 
-`cli.py check` runs two tests. A per-feature gate (standardized mean difference between arms, failing only
+`uplift check` runs two tests. A per-feature gate (standardized mean difference between arms, failing only
 beyond both 0.1 and 4 standard errors, so it neither false-alarms on small clean samples nor needs tuning on
 large ones) passes: the worst feature is 0.051. That looks balanced. It is not quite:
 
@@ -176,7 +178,7 @@ and the learners 0.0007 to 0.0015.
 
 ## Targeting policy
 
-`cli.py target` turns a ranking into a decision: expected incremental outcomes from contacting the top
+`uplift target` turns a ranking into a decision: expected incremental outcomes from contacting the top
 `--budget` share (propensity-weighted, with a bootstrap CI), against random targeting of the same share and
 treating everyone, plus the break-even cost per contact and the profit-maximizing share for a **value per
 incremental outcome** and **cost per contact that you supply**. Criteo has no revenue or cost data, so neither is
@@ -198,14 +200,14 @@ slightly optimistic.
 ## Usage
 
 ```bash
-uv run python cli.py fetch                       # download the mirror once, cache a 2M-row sample
-uv run python cli.py check                       # per-feature gate + how predictable treatment is
-uv run python cli.py benchmark                   # propensity, tune, score, bootstrap; writes results/report.json
-uv run python cli.py benchmark --stage visit     # one stage at a time; finished stages are reused if the seed,
+uv run uplift fetch                       # download the mirror once, cache a 2M-row sample
+uv run uplift check                       # per-feature gate + how predictable treatment is
+uv run uplift benchmark                   # propensity, tune, score, bootstrap; writes results/report.json
+uv run uplift benchmark --stage visit     # one stage at a time; finished stages are reused if the seed,
                                                  # bootstrap size, grid and data are unchanged (--fresh recomputes)
-uv run python cli.py target --budget 0.2 --value 5 --cost 0.05
-uv run python cli.py score customers.parquet --output scored.parquet   # adds uplift and uplift_rank
-uv run streamlit run app.py                      # the targeting dashboard
+uv run uplift target --budget 0.2 --value 5 --cost 0.05
+uv run uplift score customers.parquet --output scored.parquet   # adds uplift and uplift_rank
+uv run streamlit run src/uplift/app.py                      # the targeting dashboard
 uv run pytest -q                                 # 143 tests, no network
 ```
 

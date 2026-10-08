@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import synth
+from uplift import synth
 
 
 def features(n=4000, seed=0):

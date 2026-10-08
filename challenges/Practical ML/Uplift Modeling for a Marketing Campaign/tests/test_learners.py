@@ -1,8 +1,8 @@
-import learners
 import numpy as np
 import pytest
 from helpers import confounded_rct
 from scipy.stats import spearmanr
+from uplift import learners
 
 FAST = {"n_estimators": 80, "min_child_samples": 50, "num_leaves": 15}
 NAMES = list(learners.LEARNERS)

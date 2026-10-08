@@ -1,8 +1,7 @@
-import data
 import numpy as np
-import propensity
 import pytest
 from helpers import make_frame
+from uplift import data, propensity
 
 
 def test_hanley_mcneil_matches_a_hand_computed_value():

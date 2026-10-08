@@ -1,12 +1,9 @@
 import json
 
-import data
-import evaluate
-import metrics
 import numpy as np
-import pipeline
 import pytest
 from helpers import make_frame
+from uplift import data, evaluate, metrics, pipeline
 
 TINY = {"n_estimators": 40, "min_child_samples": 30, "num_leaves": 15}
 

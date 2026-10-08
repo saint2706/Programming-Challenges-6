@@ -1,10 +1,10 @@
 import gzip
 
-import data
 import numpy as np
 import polars as pl
 import pytest
 from helpers import make_frame
+from uplift import data
 
 RAW_COLUMNS = {*data.FEATURES, "treatment", "conversion", "visit", "exposure"}
 

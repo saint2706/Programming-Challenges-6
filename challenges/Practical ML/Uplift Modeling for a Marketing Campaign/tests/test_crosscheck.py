@@ -1,9 +1,8 @@
 """Independent oracles: scikit-uplift for the curves, causalml for the learners."""
 
-import learners
-import metrics
 import numpy as np
 import pytest
+from uplift import learners, metrics
 
 FAST = {"n_estimators": 60, "min_child_samples": 50, "num_leaves": 15}
 N = 20_000

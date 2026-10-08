@@ -19,7 +19,9 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
-HERE = Path(__file__).parent
+from uplift.paths import project_root
+
+HERE = project_root()
 DATA_DIR = HERE / "data"
 RAW_NAME = "criteo-research-uplift-v2.1.csv.gz"
 RAW_URL = (
@@ -86,7 +88,7 @@ def fetch(
 def load(data_dir: Path = DATA_DIR) -> pl.DataFrame:
     path = data_dir / SAMPLE_NAME
     if not path.exists():
-        raise FileNotFoundError(f"{path} not found; run `python cli.py fetch` first")
+        raise FileNotFoundError(f"{path} not found; run `uv run uplift fetch` first")
     return pl.read_parquet(path)
 
 

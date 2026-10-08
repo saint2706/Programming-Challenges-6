@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-import synth
+from uplift import synth
 
 
 @pytest.fixture(scope="session")
@@ -21,8 +21,8 @@ def rct():
 @pytest.fixture(scope="session")
 def tiny(tmp_path_factory):
     """``(artifacts, report, results_dir)`` from a complete small run_all."""
-    import pipeline
     from helpers import make_frame
+    from uplift import pipeline
 
     tmp = tmp_path_factory.mktemp("tiny")
     tiny_params = {"n_estimators": 40, "min_child_samples": 30, "num_leaves": 15}

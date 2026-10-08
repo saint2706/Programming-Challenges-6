@@ -8,8 +8,9 @@ neither, so nothing is invented.
 
 from __future__ import annotations
 
-import metrics
 import numpy as np
+
+from uplift import metrics
 
 GRID = np.linspace(0.0, 1.0, 101)
 

@@ -1,7 +1,9 @@
-import metrics
-import pipeline
+from pathlib import Path
+
 import pytest
+import uplift
 from streamlit.testing.v1 import AppTest
+from uplift import metrics, pipeline
 
 
 @pytest.fixture
@@ -11,7 +13,9 @@ def at(monkeypatch, tiny):
     st.cache_resource.clear()
     art = tiny[0]
     monkeypatch.setattr(pipeline, "load_artifacts", lambda *a, **k: art)
-    app = AppTest.from_file("app.py", default_timeout=120)
+    app = AppTest.from_file(
+        str(Path(uplift.__file__).parent / "app.py"), default_timeout=120
+    )
     app.run()
     return app
 

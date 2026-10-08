@@ -1,9 +1,9 @@
-import cli
 import numpy as np
 import polars as pl
 import pytest
 from helpers import make_frame
 from typer.testing import CliRunner
+from uplift import cli
 
 runner = CliRunner()
 
@@ -32,7 +32,7 @@ def test_check_fails_with_exit_code_2_on_confounded_data(monkeypatch):
 
 def test_check_without_data_says_to_fetch(monkeypatch):
     def missing(*a, **k):
-        raise FileNotFoundError("run `python cli.py fetch` first")
+        raise FileNotFoundError("run `uv run uplift fetch` first")
 
     monkeypatch.setattr(cli.data, "load", missing)
     result = runner.invoke(cli.app, ["check"])
@@ -101,7 +101,7 @@ def test_score_ignores_columns_it_must_not_use(tmp_path):
 def test_commands_before_a_benchmark_exit_2(monkeypatch):
     def missing(with_models=False):
         raise FileNotFoundError(
-            "results/report.json not found; run `python cli.py benchmark` first"
+            "results/report.json not found; run `uv run uplift benchmark` first"
         )
 
     monkeypatch.setattr(cli, "get_artifacts", missing)

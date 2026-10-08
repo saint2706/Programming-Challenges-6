@@ -1,11 +1,8 @@
-import data
-import evaluate
-import learners
 import numpy as np
 import polars as pl
-import propensity
 import pytest
 from helpers import confounded_rct, make_frame
+from uplift import data, evaluate, learners, propensity
 
 TINY = {"n_estimators": 40, "min_child_samples": 30, "num_leaves": 15}
 GRID = [TINY, {**TINY, "num_leaves": 7}]

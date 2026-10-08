@@ -1,17 +1,16 @@
 """Streamlit dashboard: who to contact, and what it is worth.
 
-Run:  uv run streamlit run app.py
+Run:  uv run streamlit run src/uplift/app.py
 """
 
 from __future__ import annotations
 
 import altair as alt
-import metrics
 import numpy as np
 import pandas as pd
-import pipeline
-import policy
 import streamlit as st
+
+from uplift import metrics, pipeline, policy
 
 st.set_page_config(page_title="Uplift Modeling", layout="wide")
 

@@ -1,8 +1,7 @@
-import metrics
 import numpy as np
 import pytest
-import synth
 from helpers import confounded_rct
+from uplift import metrics, synth
 
 S = np.array([6, 5, 4, 3, 2, 1.0])
 T = np.array([1, 0, 1, 0, 1, 0])

@@ -2,7 +2,7 @@
 
 import numpy as np
 import polars as pl
-import synth
+from uplift import synth
 
 N_FEATURES = 12
 

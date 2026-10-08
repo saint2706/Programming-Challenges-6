@@ -1,7 +1,6 @@
-import metrics
 import numpy as np
-import policy
 import pytest
+from uplift import metrics, policy
 
 S = np.array([6, 5, 4, 3, 2, 1.0])
 T = np.array([1, 0, 1, 0, 1, 0])

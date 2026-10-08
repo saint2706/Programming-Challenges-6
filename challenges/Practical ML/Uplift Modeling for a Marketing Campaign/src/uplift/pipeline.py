@@ -16,15 +16,14 @@ import math
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import data
-import evaluate
 import joblib
-import metrics
 import numpy as np
 import polars as pl
-import propensity
 
-HERE = Path(__file__).parent
+from uplift import data, evaluate, metrics, propensity
+from uplift.paths import project_root
+
+HERE = project_root()
 RESULTS_DIR = HERE / "results"
 REAL_STAGES = ("visit", "conversion")
 STAGES = ("propensity", *REAL_STAGES, "synthetic")
@@ -181,7 +180,7 @@ def load_artifacts(results_dir=RESULTS_DIR, with_models: bool = False) -> Artifa
     report_path = results_dir / "report.json"
     if not report_path.exists():
         raise FileNotFoundError(
-            f"{report_path} not found; run `python cli.py benchmark` first"
+            f"{report_path} not found; run `uv run uplift benchmark` first"
         )
     art = Artifacts(report=json.loads(report_path.read_text()))
     for outcome in art.report["outcomes"]:
