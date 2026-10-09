@@ -1,0 +1,20 @@
+{
+  "sources": {
+    "openflights_airports.dat": {
+      "url": "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat",
+      "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
+    },
+    "ourairports_airports.csv": {
+      "url": "https://davidmegginson.github.io/ourairports-data/airports.csv",
+      "sha256": "0673f846680d703dd4ff81b6c1f557ddf09eb73df164c3ea98623fdd72545333"
+    }
+  },
+  "rows": {
+    "openflights": 7698,
+    "ourairports": 86226
+  },
+  "sample_rows": {
+    "openflights": 500,
+    "ourairports": 637
+  }
+}

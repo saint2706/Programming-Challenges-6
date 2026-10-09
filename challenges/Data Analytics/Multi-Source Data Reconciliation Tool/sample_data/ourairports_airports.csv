@@ -1,0 +1,638 @@
+id,ident,type,name,latitude_deg,longitude_deg,elevation_ft,continent,iso_country,iso_region,municipality,scheduled_service,icao_code,iata_code,gps_code,local_code,home_link,wikipedia_link,keywords
+54,AYCH,medium_airport,Chimbu Airport,-6.024290084838867,144.9709930419922,4974,OC,PG,PG-CPK,Kundiawa,yes,AYCH,CMU,AYCH,,,https://en.wikipedia.org/wiki/Chimbu_Airport,
+108,LBPL,medium_airport,Dolna Mitropoliya Air Base,43.451771,24.502423,330,EU,BG,BG-15,Dolna Mitropoliya,no,LBPL,,LBPL,,,https://en.wikipedia.org/wiki/Dolna_Mitropoliya_Air_Base,LB41
+111,BG-JAM,medium_airport,Bezmer Air Base,42.454899,26.3522,509,EU,BG,BG-28,Bezmer,no,,JAM,LBIA,,,https://en.wikipedia.org/wiki/Bezmer_Airbase,LB44
+185,SDMC,small_airport,Maricá Airport,-22.9195,-42.830898,5,SA,BR,BR-RJ,Maricá,no,,JMR,SBMI,RJ0009,,https://en.wikipedia.org/wiki/Maric%C3%A1_Airport,SDMC
+201,SDSC,small_airport,Mário Pereira Lopes–São Carlos International Airport,-21.875032,-47.903851,2649,SA,BR,BR-SP,São Carlos,no,SDSC,QSC,SDSC,SP0029,,https://en.wikipedia.org/wiki/S%C3%A3o_Carlos_Airport,
+293,SNCW,small_airport,Alcântara Space Center Airport,-2.373,-44.3964,148,SA,BR,BR-MA,Alcântara,no,,,SNCW,MA9001,,https://pt.wikipedia.org/wiki/Aeroporto_de_Alc%C3%A2ntara,
+294,SNCX,small_airport,Colatina Airport,-19.487476,-40.579362,502,SA,BR,BR-ES,Colatina,no,,QCH,SNCX,ES0004,,https://pt.wikipedia.org/wiki/Aeroporto_de_Colatina,
+315,SNGI,small_airport,Guanambi Airport,-14.2082,-42.746101,1815,SA,BR,BR-BA,Guanambi,no,SNGI,GNM,SNGI,SNGI,,https://en.wikipedia.org/wiki/Guanambi_Airport,
+369,SNPD,small_airport,Patos de Minas Airport,-18.672673,-46.491292,2794,SA,BR,BR-MG,Patos de Minas,no,SNPD,POJ,SNPD,MG0010,,https://en.wikipedia.org/wiki/Patos_de_Minas_Airport,Pedro Pereira dos Santos
+436,SSBL,small_airport,Blumenau Airport,-26.831661,-49.093569,60,SA,BR,BR-SC,Blumenau,no,SSBL,BNU,SSBL,SC0019,,https://en.wikipedia.org/wiki/Blumenau_Airport,
+752,CCE4,small_airport,Black Tickle Airport,53.469836,-55.787501,57,NA,CA,CA-NL,Black Tickle,yes,,YBI,CCE4,CCE4,,https://en.wikipedia.org/wiki/Black_Tickle_Airport,CE4
+1200,CKL3,small_airport,Wunnumin Lake Airport,52.893902,-89.2892,819,NA,CA,CA-ON,Wunnumin Lake,yes,,WNN,CKL3,CKL3,,https://en.wikipedia.org/wiki/Wunnummin_Lake_Airport,
+1317,CNL3,small_airport,Brockville - Thousand Islands Regional Tackaberry Airport,44.6394004822,-75.7502975464,402,NA,CA,CA-ON,Brockville,no,,XBR,CNL3,CNL3,,https://en.wikipedia.org/wiki/Brockville-Thousand_Islands_Regional_Tackaberry_Airport,NL3
+1323,CYSA,small_airport,Stratford Municipal Airport,43.415599823,-80.93440246579999,1215,NA,CA,CA-ON,Stratford,no,,,CYSA,CYSA,http://www.city.stratford.on.ca/site_ourcitylife/know_your_city_airport.asp,https://en.wikipedia.org/wiki/Stratford_Municipal_Airport,"NM4, CNM4"
+1652,CYAC,small_airport,Cat Lake Airport,51.7272,-91.824402,1344,NA,CA,CA-ON,Cat Lake,yes,CYAC,YAC,CYAC,,,https://en.wikipedia.org/wiki/Cat_Lake_Airport,
+1657,CYAM,medium_airport,Sault Ste Marie Airport,46.483216,-84.508467,630,NA,CA,CA-ON,Sault Ste Marie,yes,CYAM,YAM,CYAM,,http://www.saultairport.com/,https://en.wikipedia.org/wiki/Sault_Ste._Marie_Airport,
+1662,CYAV,medium_airport,Winnipeg / St. Andrews Airport,50.0564,-97.032501,760,NA,CA,CA-MB,Winnipeg/Saint Andrews,yes,CYAV,,CYAV,,,https://en.wikipedia.org/wiki/Winnipeg/St._Andrews_Airport,YAV
+1674,CYBK,medium_airport,Baker Lake Airport,64.29889678960001,-96.077796936,59,NA,CA,CA-NU,Baker Lake,yes,CYBK,YBK,CYBK,,,https://en.wikipedia.org/wiki/Baker_Lake_Airport,
+1678,CYBR,medium_airport,Brandon Municipal Airport,49.91,-99.951897,1343,NA,CA,CA-MB,Brandon,yes,CYBR,YBR,CYBR,,,https://en.wikipedia.org/wiki/Brandon_Airport,
+1689,CYCG,medium_airport,Castlegar/West Kootenay Regional Airport,49.296398,-117.632004,1624,NA,CA,CA-BC,Castlegar,yes,CYCG,YCG,CYCG,,https://www.wkrairport.ca/,https://en.wikipedia.org/wiki/Castlegar_Airport,
+1710,CYDN,medium_airport,Dauphin Barker Airport,51.1008,-100.052002,999,NA,CA,CA-MB,Dauphin,yes,CYDN,YDN,CYDN,,,https://en.wikipedia.org/wiki/Dauphin_(Lt._Col_W.G._(Billy)_Barker_VC_Airport),
+1720,CYEM,medium_airport,Manitoulin East Municipal Airport,45.842435,-81.857595,869,NA,CA,CA-ON,Sheguiandah,no,CYEM,YEM,CYEM,,,https://en.wikipedia.org/wiki/Manitowaning/Manitoulin_East_Municipal_Airport,
+1727,CYEY,medium_airport,Amos/Magny Airport,48.563903,-78.249702,1068,NA,CA,CA-QC,Amos,no,CYEY,YEY,CYEY,,,https://en.wikipedia.org/wiki/Amos/Magny_Airport,
+1742,CYGH,small_airport,Fort Good Hope Airport,66.240658,-128.647757,268,NA,CA,CA-NT,Fort Good Hope,yes,CYGH,YGH,CYGH,,,https://en.wikipedia.org/wiki/Fort_Good_Hope_Airport,
+1743,CYGK,medium_airport,Kingston Norman Rogers Airport,44.2253,-76.596901,305,NA,CA,CA-ON,Kingston,no,CYGK,YGK,CYGK,,http://www.ygkairport.com,https://en.wikipedia.org/wiki/Kingston/Norman_Rogers_Airport,
+1750,CYGT,small_airport,Igloolik Airport,69.3647,-81.816101,174,NA,CA,CA-NU,Igloolik,yes,CYGT,YGT,CYGT,,,https://en.wikipedia.org/wiki/Igloolik_Airport,
+1771,CYIB,medium_airport,Atikokan Municipal Airport,48.773899,-91.638603,1408,NA,CA,CA-ON,Atikokan,no,CYIB,YIB,CYIB,,http://www.atikokaninfo.com/community/transportation/airport/,https://en.wikipedia.org/wiki/Atikokan_Municipal_Airport,
+1779,CYJM,small_airport,Fort St James Airport,54.39720153808594,-124.26300048828125,2364,NA,CA,CA-BC,Fort St. James,no,,,CYJM,,,https://en.wikipedia.org/wiki/Fort_St._James_(Perison)_Airport,YJM
+1780,CYJN,medium_airport,St Jean Airport,45.29439926147461,-73.28109741210938,136,NA,CA,CA-QC,St Jean,no,CYJN,YJN,CYJN,,,https://en.wikipedia.org/wiki/St-Jean_Airport,
+1800,CYLH,small_airport,Lansdowne House Airport,52.195599,-87.934196,834,NA,CA,CA-ON,Lansdowne House,yes,CYLH,YLH,CYLH,,,https://en.wikipedia.org/wiki/Lansdowne_House_Airport,
+1801,CYLJ,medium_airport,Meadow Lake Airport,54.125301361083984,-108.52300262451172,1576,NA,CA,CA-SK,Meadow Lake,no,CYLJ,YLJ,CYLJ,,,https://en.wikipedia.org/wiki/Meadow_Lake_Airport,
+1809,CYMA,medium_airport,Mayo Airport,63.61640167236328,-135.8679962158203,1653,NA,CA,CA-YT,Mayo,no,CYMA,YMA,CYMA,,,https://en.wikipedia.org/wiki/Mayo_Airport,
+1834,CYOD,medium_airport,CFB Cold Lake,54.404998779296875,-110.27899932861328,1775,NA,CA,CA-AB,Cold Lake,no,CYOD,YOD,CYOD,,,https://en.wikipedia.org/wiki/CFB_Cold_Lake,
+1863,CYQA,medium_airport,Muskoka Airport,44.975376,-79.306546,925,NA,CA,CA-ON,Gravenhurst,yes,CYQA,YQA,CYQA,,,https://en.wikipedia.org/wiki/Muskoka_Airport,
+1903,CYSH,medium_airport,Smiths Falls-Montague (Russ Beach) Airport,44.945801,-75.940598,416,NA,CA,CA-ON,Smiths Falls,no,CYSH,YSH,CYSH,,http://www.smithsfallsflyingclub.com/,https://en.wikipedia.org/wiki/Smiths_Falls-Montague_Airport,Smith Falls
+1933,CYVC,medium_airport,La Ronge Airport,55.151401519800004,-105.262001038,1242,NA,CA,CA-SK,La Ronge,yes,CYVC,YVC,CYVC,,,https://en.wikipedia.org/wiki/La_Ronge_(Barber_Field)_Airport,
+1957,CYXE,large_airport,Saskatoon John G. Diefenbaker International Airport,52.170723,-106.700793,1653,NA,CA,CA-SK,Saskatoon,yes,CYXE,YXE,CYXE,,,https://en.wikipedia.org/wiki/Saskatoon/John_G._Diefenbaker_International_Airport,
+1961,CYXL,medium_airport,Sioux Lookout Airport,50.11389923095703,-91.9052963256836,1258,NA,CA,CA-ON,Sioux Lookout,yes,CYXL,YXL,CYXL,,,https://en.wikipedia.org/wiki/Sioux_Lookout_Airport,
+1964,CYXQ,medium_airport,Beaver Creek Airport,62.410301208496094,-140.86700439453125,2131,NA,CA,CA-YT,Beaver Creek,no,CYXQ,YXQ,CYXQ,,,https://en.wikipedia.org/wiki/Beaver_Creek_Airport,
+1966,CYXS,medium_airport,Prince George (International) Airport,53.884311,-122.666554,2267,NA,CA,CA-BC,Prince George,yes,CYXS,YXS,CYXS,,https://www.pgairport.ca/,https://en.wikipedia.org/wiki/Prince_George_Airport,Prince George International
+1973,CYYC,large_airport,Calgary International Airport,51.118822,-114.009933,3557,NA,CA,CA-AB,Calgary,yes,CYYC,YYC,CYYC,,http://www.calgaryairport.com/,https://en.wikipedia.org/wiki/Calgary_International_Airport,McCall Field
+1995,CYZH,medium_airport,Slave Lake Airport,55.292945,-114.777276,1912,NA,CA,CA-AB,Slave Lake,no,CYZH,YZH,CYZH,,http://slavelakeairport.com,https://en.wikipedia.org/wiki/Slave_Lake_Airport,YZH
+2000,CYZU,medium_airport,Whitecourt Airport,54.143902,-115.787003,2567,NA,CA,CA-AB,Whitecourt,yes,CYZU,YZU,CYZU,,,https://en.wikipedia.org/wiki/Whitecourt_Airport,
+2003,CYZX,medium_airport,CFB Greenwood,44.98440170288086,-64.91690063476562,92,NA,CA,CA-NS,Greenwood,no,CYZX,YZX,CYZX,,,https://en.wikipedia.org/wiki/CFB_Greenwood,Greenwood Airport
+2004,CYZY,medium_airport,Mackenzie Airport,55.297786,-123.133907,2264,NA,CA,CA-BC,Mackenzie,no,CYZY,,CYZY,,,https://en.wikipedia.org/wiki/Mackenzie_Airport,YZY
+2012,CZEE,medium_airport,Kelsey Airport,56.0374984741,-96.50969696039999,600,NA,CA,CA-MB,Kelsey,no,CZEE,KES,CZEE,ZEE,,https://en.wikipedia.org/wiki/Kelsey_Airport,
+2016,CZFG,small_airport,Pukatawagan Airport,55.749199,-101.265999,958,NA,CA,CA-MB,Pukatawagan,yes,CZFG,XPK,CZFG,ZFG,,https://en.wikipedia.org/wiki/Pukatawagan_Airport,
+2019,CZGF,medium_airport,Grand Forks Airport,49.015598,-118.431,1720,NA,CA,CA-BC,Grand Forks,no,CZGF,ZGF,CZGF,,,https://en.wikipedia.org/wiki/Grand_Forks_Airport,
+2028,CZML,small_airport,South Cariboo Region / 108 Mile Airport,51.736099243199995,-121.333000183,3126,NA,CA,CA-BC,108 Mile,no,CZML,ZMH,CZML,,,https://en.wikipedia.org/wiki/108_Mile_Ranch_Airport,"ZML, South Cariboo Regional Airport"
+2041,CZTM,small_airport,Shamattawa Airport,55.86356,-92.081137,289,NA,CA,CA-MB,Shamattawa,yes,CZTM,ZTM,CZTM,,,https://en.wikipedia.org/wiki/Shamattawa_Airport,
+2048,DAAD,medium_airport,Bou Saada Airport,35.3325,4.20639,1506,AF,DZ,DZ-28,Ouled Sidi Brahim,no,DAAD,BUJ,DAAD,,,https://en.wikipedia.org/wiki/Bou_Saada_Airport,
+2056,DAAT,large_airport,Aguenar – Hadj Bey Akhamok Airport,22.810992,5.450832,4518,AF,DZ,DZ-11,Tamanrasset,yes,DAAT,TMR,DAAT,,,https://en.wikipedia.org/wiki/Tamanrasset_Airport,
+2063,DABT,large_airport,Batna Mostefa Ben Boulaid Airport,35.752102,6.30859,2697,AF,DZ,DZ-05,Batna,yes,DABT,BLJ,DABT,,,https://en.wikipedia.org/wiki/Batna_Airport,
+2072,DAOR,medium_airport,Béchar Boudghene Ben Ali Lotfi Airport,31.645700454711914,-2.269860029220581,2661,AF,DZ,DZ-08,Béchar,yes,DAOR,CBH,DAOR,,,https://en.wikipedia.org/wiki/B%C3%A9char_Ouakda_Airport,Béchar Ouakda Airport
+2075,DAUA,medium_airport,Touat-Cheikh Sidi Mohamed Belkebir Airport,27.837601,-0.186414,919,AF,DZ,DZ-01,Adrar,yes,DAUA,AZR,DAUA,,,https://en.wikipedia.org/wiki/Touat_Cheikh_Sidi_Mohamed_Belkebir_Airport,لكبير  مطار أدرار – توات الشيخ سيدي محمد بن
+2096,DIAP,large_airport,Félix-Houphouët-Boigny International Airport,5.26139,-3.92629,21,AF,CI,CI-AB,Abidjan,yes,DIAP,ABJ,DIAP,,,https://en.wikipedia.org/wiki/F%C3%A9lix-Houphou%C3%ABt-Boigny_International_Airport,Port Bouët
+2106,DNBE,medium_airport,Benin Airport,6.316979885101318,5.5995001792907715,258,AF,NG,NG-ED,Benin,yes,DNBE,BNI,DNBE,,http://www.faannigeria.org/nigeria-airport.php?airport=22,https://en.wikipedia.org/wiki/Benin_Airport,
+2110,DNIB,medium_airport,Ibadan Airport,7.362460136413574,3.97832989692688,725,AF,NG,NG-OY,Ibadan,yes,DNIB,IBA,DNIB,,http://www.faannigeria.org/nigeria-airport.php?airport=7,https://en.wikipedia.org/wiki/Ibadan_Airport,
+2122,DNYO,medium_airport,Yola Airport,9.257550239562988,12.430399894714355,599,AF,NG,NG-AD,Yola,yes,DNYO,YOL,DNYO,,http://www.faannigeria.org/nigeria-airport.php?airport=16,https://en.wikipedia.org/wiki/Yola_Airport,
+2135,DTTD,medium_airport,Remada Air Base,32.306198,10.3821,1004,AF,TN,TN-83,Remada,no,DTTD,,DTTD,,,https://en.wikipedia.org/wiki/Remada_Air_Base,
+2138,DTTI,small_airport,Borj El Amri Airport,36.721298,9.94315,110,AF,TN,TN-13,Burj al Hafsiyah,no,DTTI,,DTTI,,,https://en.wikipedia.org/wiki/Bordj_El_Amri_Airport,
+2157,EBCI,large_airport,Brussels South Charleroi Airport,50.461963,4.459562,614,EU,BE,BE-WHT,Charleroi,yes,EBCI,CRL,EBCI,,http://www.charleroi-airport.com,https://en.wikipedia.org/wiki/Brussels_South_Charleroi_Airport,Gosselies Airport
+2161,EBKT,medium_airport,Kortrijk-Wevelgem International Airport,50.818878,3.209551,55,EU,BE,BE-VWV,Wevelgem,no,EBKT,KJK,EBKT,,http://www.kortrijkairport.be,https://en.wikipedia.org/wiki/Flanders_International_Airport,"Kortrijk, Courtrai"
+2169,EBZR,small_airport,Oostmalle Airfield,51.269092,4.762428,53,EU,BE,BE-VAN,Zoersel,no,EBZR,OBL,EBZR,,http://www.ebzr.be/,https://en.wikipedia.org/wiki/Oostmalle_Airfield,Malle Airfield
+2200,EDBR,medium_airport,Rothenburg/Görlitz Airfield,51.363335,14.95,515,EU,DE,DE-SN,Rothenburg/Oberlausitz,no,EDBR,,EDBR,,http://www.flugplatz-rothenburg-goerlitz.de/,http://de.wikipedia.org/wiki/Flugplatz_Rothenburg/G%C3%B6rlitz,
+2214,EDDH,large_airport,Hamburg Helmut Schmidt Airport,53.630402,9.98823,53,EU,DE,DE-HH,Hamburg,yes,EDDH,HAM,EDDH,,https://www.hamburg-airport.de/en/,https://en.wikipedia.org/wiki/Hamburg_Airport,Hamburg-Fuhlsbüttel Airport
+2234,EDHI,medium_airport,Hamburg-Finkenwerder Airport,53.535278,9.835556,23,EU,DE,DE-HH,Hamburg,no,EDHI,XFW,EDHI,,,https://en.wikipedia.org/wiki/Hamburg_Finkenwerder_Airport,Airbus
+2235,EDHK,medium_airport,Kiel-Holtenau Airport,54.37957,10.145266,102,EU,DE,DE-SH,Kiel,no,EDHK,KEL,EDHK,,,https://en.wikipedia.org/wiki/Kiel-Holtenau_airport,
+2264,EDQT,small_airport,Haßfurt-Schweinfurt Airfield,50.0182,10.529165,719,EU,DE,DE-BY,Haßfurt,no,EDQT,,EDQT,,,https://de.wikipedia.org/wiki/Flugplatz_Ha%C3%9Ffurt-Schweinfurt,"Flugplatz Haßfurt-Schweinfurt, Hassfurt"
+2267,EDRT,small_airport,Trier-Föhren Airfield,49.863888,6.7875,666,EU,DE,DE-RP,Föhren,no,EDRT,,EDRT,,,https://en.wikipedia.org/wiki/Trier-F%C3%B6hren_Airfield,"ZQF, Flugplatz Trier-Föhren"
+2275,EDTG,small_airport,Bremgarten Airfield,47.903186,7.617416,696,EU,DE,DE-BW,Eschbach,no,,,EDTG,,http://www.gewerbepark-breisgau.de/Flugplatz,http://de.wikipedia.org/wiki/Flugplatz_Bremgarten,"Flugplatz Bremgarten, Sonderlandeplatz Bremgarten"
+2278,EDTY,medium_airport,Adolf Würth Airport,49.118332,9.783889,1299,EU,DE,DE-BW,Schwäbisch Hall,no,,,EDTY,,http://www.edty.de,https://de.wikipedia.org/wiki/Flugplatz_Schw%C3%A4bisch_Hall-Hessental,
+2299,EEKE,medium_airport,Kuressaare Airport,58.22990036010742,22.50950050354004,14,EU,EE,EE-74,Kuressaare,yes,EEKE,URE,EEKE,,http://www.eeke.ee/,https://en.wikipedia.org/wiki/Kuressaare_Airport,
+2341,EFRO,large_airport,Rovaniemi Airport,66.563327,25.829751,642,EU,FI,FI-10,Rovaniemi,yes,EFRO,RVN,EFRO,,http://www.finavia.fi/en/rovaniemi/,https://en.wikipedia.org/wiki/Rovaniemi_Airport,
+2343,EFSA,medium_airport,Savonlinna Airport,61.9431,28.945101,311,EU,FI,FI-04,Savonlinna,yes,EFSA,SVL,EFSA,,http://www.finavia.fi/en/savonlinna/,https://en.wikipedia.org/wiki/Savonlinna_Airport,
+2352,EFVR,medium_airport,Varkaus Airport,62.171101,27.868601,286,EU,FI,FI-04,Varkaus / Joroinen,no,EFVR,VRK,EFVR,,http://www.finavia.fi/en/varkaus/,https://en.wikipedia.org/wiki/Varkaus_Airport,
+2385,EGAA,large_airport,Belfast International Airport,54.6575012207,-6.2158298492399995,268,EU,GB,GB-NIR,Belfast,yes,EGAA,BFS,EGAA,,http://www.belfastairport.com/,https://en.wikipedia.org/wiki/Belfast_International_Airport,"Aldergrove, RAF Aldergrove"
+2387,EGAC,medium_airport,George Best Belfast City Airport,54.618099,-5.8725,15,EU,GB,GB-NIR,Belfast,yes,EGAC,BHD,EGAC,,http://www.belfastcityairport.com/,https://en.wikipedia.org/wiki/George_Best_Belfast_City_Airport,
+2398,EGCC,large_airport,Manchester Airport,53.349375,-2.279521,257,EU,GB,GB-ENG,"Manchester, Greater Manchester",yes,EGCC,MAN,EGCC,,http://www.manchesterairport.co.uk/,https://en.wikipedia.org/wiki/Manchester_Airport,"Ringway Airport, RAF Ringway"
+2423,EGHL,medium_airport,Lasham Airfield,51.18744,-1.031663,618,EU,GB,GB-ENG,"Alton, Hampshire",no,EGHL,,EGHL,,http://www.lasham.org.uk/,https://en.wikipedia.org/wiki/Lasham_Airfield,"Basingstoke, RAF Lasham"
+2424,EGJA,medium_airport,Alderney Airport,49.706104,-2.21472,290,EU,GG,GG-A,Saint Anne,yes,EGJA,ACI,EGJA,,,https://en.wikipedia.org/wiki/Alderney_Airport,"The Blaye, Channel Islands"
+2431,EGLF,medium_airport,Farnborough Airport,51.275799,-0.776333,238,EU,GB,GB-ENG,"Farnborough, Hampshire",no,EGLF,FAB,EGLF,,https://www.farnboroughairport.com/,https://en.wikipedia.org/wiki/Farnborough_Airfield,"TAG London Farnborough Airport, RAE Farnborough, EGUF"
+2436,EGMD,medium_airport,Lydd London Ashford Airport,50.956246,0.939074,13,EU,GB,GB-ENG,"Romney Marsh, Kent",no,EGMD,LYX,EGMD,,http://www.lydd-airport.co.uk/,https://en.wikipedia.org/wiki/Lydd_Airport,London Ashford
+2455,EGOW,small_airport,RAF Woodvale,53.5816,-3.05552,37,EU,GB,GB-ENG,"Southport, Sefton",no,EGOW,,EGOW,,,https://en.wikipedia.org/wiki/RAF_Woodvale,
+2461,EGPF,large_airport,Glasgow Airport,55.871899,-4.43306,26,EU,GB,GB-SCT,Glasgow,yes,EGPF,GLA,EGPF,,http://www.glasgowairport.com/,https://en.wikipedia.org/wiki/Glasgow_International_Airport,"Port-adhair Eadar-nàiseanta Ghlaschu, RAF Abbotsinch, RAF Ayr"
+2476,EGSS,large_airport,London Stansted Airport,51.884998,0.235,348,EU,GB,GB-ENG,"London, Essex",yes,EGSS,STN,EGSS,,http://www.stanstedairport.com/,https://en.wikipedia.org/wiki/London_Stansted_Airport,LON
+2519,EHGG,large_airport,Groningen Airport Eelde,53.119107,6.577652,17,EU,NL,NL-DR,Groningen,yes,EHGG,GRQ,EHGG,,,https://en.wikipedia.org/wiki/Groningen_Airport_Eelde,
+2538,EISG,medium_airport,Sligo Airport,54.280200958252,-8.5992097854614,11,EU,IE,IE-SO,Sligo,no,EISG,SXL,EISG,,http://www.sligoairport.com/,https://en.wikipedia.org/wiki/Sligo_Airport,
+2540,EKAH,large_airport,Aarhus Airport,56.303331,10.618286,82,EU,DK,DK-82,Aarhus,yes,EKAH,AAR,EKAH,,http://www.aar.dk/,https://en.wikipedia.org/wiki/Aarhus_Airport,Tirstrup
+2544,EKGH,small_airport,Grønholt Hillerød Airfield,55.941399,12.3822,97,EU,DK,DK-84,Grønholt,no,,,EKGH,,,https://da.wikipedia.org/wiki/Gr%C3%B8nholt_Flyveplads,"Gronholt, Groenholt, Hillerod, Hilleroed"
+2578,ENGM,large_airport,Oslo-Gardermoen International Airport,60.193901,11.1004,681,EU,NO,NO-32,Oslo (Gardermoen),yes,ENGM,OSL,ENGM,,https://avinor.no/en/airport/oslo-airport,"https://en.wikipedia.org/wiki/Oslo_Airport,_Gardermoen",
+2594,ENSN,medium_airport,Skien Airport,59.185001,9.56694,463,EU,NO,NO-40,Geiteryggen,no,ENSN,,ENSN,,,https://en.wikipedia.org/wiki/Skien_Airport%2C_Geiteryggen,SKE
+2596,ENSR,medium_airport,Sørkjosen Airport,69.786797,20.9594,16,EU,NO,NO-55,Sørkjosen,yes,ENSR,SOJ,ENSR,,https://avinor.no/en/airport/sorkjosen-airport/,https://en.wikipedia.org/wiki/S%C3%B8rkjosen_Airport,
+2639,EPZG,medium_airport,Zielona Góra-Babimost Airport,52.1385,15.7986,194,EU,PL,PL-LB,Nowe Kramsko,yes,EPZG,IEG,EPZG,,,https://en.wikipedia.org/wiki/Zielona_G%C3%B3ra_Airport,
+2661,ESKV,small_airport,Arvika Airfield,59.6759,12.6394,237,EU,SE,SE-S,Arvika,no,,,ESKV,,https://www.arvikaflygklubb.se,https://sv.wikipedia.org/wiki/Arvika_flygplats,
+2664,ESMK,medium_airport,Kristianstad Airport,55.9217,14.0855,76,EU,SE,SE-M,Kristianstad,no,ESMK,KID,ESMK,,https://kidairport.com,https://en.wikipedia.org/wiki/Kristianstad_Airport,
+2690,ESNV,medium_airport,Vilhelmina South Lapland Airport,64.579102,16.833599,1140,EU,SE,SE-AC,Vilhelmina,yes,ESNV,VHM,ESNV,,,https://en.wikipedia.org/wiki/Vilhelmina_Airport,
+2691,ESNX,medium_airport,Arvidsjaur Airport,65.59030151367188,19.28190040588379,1245,EU,SE,SE-BD,Arvidsjaur,yes,ESNX,AJR,ESNX,,,https://en.wikipedia.org/wiki/Arvidsjaur_Airport,
+2695,ESOK,medium_airport,Karlstad Airport,59.444698,13.3374,352,EU,SE,SE-S,Karlstad,yes,ESOK,KSD,ESOK,,https://www.ksdarprt.se/,https://en.wikipedia.org/wiki/Karlstad_Airport,
+2704,ESSF,small_airport,Hultsfred Airport,57.525799,15.8233,366,EU,SE,SE-H,Hultsfred,no,ESSF,HLF,ESSF,,https://www.hultsfredairport.se,https://en.wikipedia.org/wiki/Hultsfred_Airport,Hultsfred-Vimmerby
+2711,ESTA,medium_airport,Ängelholm-Helsingborg Airport,56.29610061645508,12.847100257873535,68,EU,SE,SE-M,Ängelholm,yes,ESTA,AGH,ESTA,,http://www.lfv.se/templates/LFV_AirportStartPage____4777.aspx,https://en.wikipedia.org/wiki/%C3%84ngelholm-Helsingborg_Airport,"ESDB, Ängelholm Air Base"
+2722,ETHC,medium_airport,Celle Army Airfield,52.591202,10.0221,129,EU,DE,DE-NI,Celle,no,ETHC,,ETHC,,,https://en.wikipedia.org/wiki/Celle_Air_Base,ZCN
+2733,ETIN,small_airport,Kitzingen Airfield,49.744293,10.207313,689,EU,DE,DE-BY,Kitzingen,no,,KZG,EDGY,,https://www.flugplatz-kitzingen.de/,https://en.wikipedia.org/wiki/Kitzingen_Airport,"ETIN, EDIN, Kitzingen AAF"
+2736,ETNG,medium_airport,Geilenkirchen Air Base,50.9608,6.04242,296,EU,DE,DE-NW,Geilenkirchen,no,ETNG,GKE,ETNG,,,https://en.wikipedia.org/wiki/NATO_Air_Base_Geilenkirchen,
+2746,ETOR,closed,Coleman Army Air Field,49.563599,8.46339,309,EU,DE,DE-BW,,no,,,,,,https://en.wikipedia.org/wiki/Coleman_Army_Airfield,ETOR
+2759,EVVA,small_airport,Ventspils International Airport,57.3578,21.544201,19,EU,LV,LV-VEN,Ventspils,no,EVVA,VNT,EVVA,,https://www.airport.ventspils.lv/,https://en.wikipedia.org/wiki/Ventspils_International_Airport,
+2815,FAMU,medium_airport,Mkuze Airport,-27.626101,32.0443,400,AF,ZA,ZA-NL,Mkuze,yes,FAMU,MZQ,FAMU,,https://umda.org.za/mkuze-airport/,https://en.wikipedia.org/wiki/Mkuze,"Mkuzi Airport, eMkhuze, uMkhuze, Mkhuze"
+2834,FASB,medium_airport,Springbok Airport,-29.689300537109375,17.939599990844727,2690,AF,ZA,ZA-NC,Springbok,no,FASB,SBU,FASB,,,,
+2853,FAVV,medium_airport,Vereeniging Airport,-26.566401,27.9608,4846,AF,ZA,ZA-GT,Vereeniging,no,FAVV,,FAVV,,,,
+2860,FBFT,large_airport,Phillip Gaonwe Matante International Airport,-21.159183,27.468826,3283,AF,BW,BW-FR,Francistown,yes,FBPM,FRW,FBPM,,https://www.caab.co.bw/p-g-matante-international-airport/,https://en.wikipedia.org/wiki/Francistown_Airport,FBFT
+2878,FIMP,large_airport,Sir Seewoosagur Ramgoolam International Airport,-20.430201,57.683601,186,AF,MU,MU-GP,Plaine Magnien,yes,FIMP,MRU,FIMP,,http://aml.mru.aero/,https://en.wikipedia.org/wiki/Sir_Seewoosagur_Ramgoolam_International_Airport,Plaisance International Airport
+2883,FKKL,medium_airport,Salak Airport,10.451399803161621,14.257399559020996,1390,AF,CM,CM-EN,Maroua,yes,FKKL,MVR,FKKL,,,https://en.wikipedia.org/wiki/Salak_Airport,
+2886,FKKR,large_airport,Garoua International Airport,9.334785,13.372129,794,AF,CM,CM-NO,Garoua,yes,FKKR,GOU,FKKR,,,https://en.wikipedia.org/wiki/Garoua_International_Airport,
+2888,FKKV,medium_airport,Bamenda Airport,6.03924,10.1226,4065,AF,CM,CM-NW,Bamenda,no,FKKV,BPC,FKKV,,,https://en.wikipedia.org/wiki/Bamenda_Airport,
+2913,FMNA,medium_airport,Arrachart Airport,-12.3494,49.291698,374,AF,MG,MG-D,Antisiranana,yes,FMNA,DIE,FMNA,,,https://en.wikipedia.org/wiki/Arrachart_Airport,Diego-Suárez
+2917,FMNH,medium_airport,Antsirabe Airport,-14.9994,50.320202,20,AF,MG,MG-D,Antsirabe,no,FMNH,ANM,FMNH,,,https://en.wikipedia.org/wiki/Antsirabato_Airport,
+2941,FNLB,small_airport,Lobito Airport,-12.3712,13.5366,10,AF,AO,AO-BGU,Lobito,no,FNLB,LLT,FNLB,,,https://en.wikipedia.org/wiki/Lobito_Airport,
+2969,FPST,large_airport,São Tomé International Airport,0.378175,6.71215,33,AF,ST,ST-01,São Tomé,yes,FPST,TMS,FPST,,,https://en.wikipedia.org/wiki/S%C3%A3o_Tom%C3%A9_International_Airport,
+2971,FQCH,medium_airport,Chimoio Airport,-19.15130043029785,33.42900085449219,2287,AF,MZ,MZ-B,Chimoio,yes,FQCH,VPY,FQCH,,,https://en.wikipedia.org/wiki/Chimoio_Airport,
+2998,FTTJ,large_airport,N'Djamena International Airport,12.1337,15.034,968,AF,TD,TD-ND,N'Djamena,yes,FTTJ,NDJ,FTTJ,,,https://en.wikipedia.org/wiki/N'Djamena_International_Airport,Ndjamena Hassan Djamous
+3002,FVCP,small_airport,Charles Prince Airport,-17.7516,30.9247,4845,AF,ZW,ZW-HA,Harare,no,FVCP,,FVCP,,,https://en.wikipedia.org/wiki/Charles_Prince_Airport,
+3004,FVFA,large_airport,Victoria Falls International Airport,-18.097437,25.836867,3490,AF,ZW,ZW-MN,Victoria Falls,yes,FVFA,VFA,FVFA,,https://www.acz.co.zw/airports/tour/victoria-falls-international-airport,https://en.wikipedia.org/wiki/Victoria_Falls_Airport,
+3012,FVSH,small_airport,Zvishavane Airport,-20.289499,30.0882,3012,AF,ZW,ZW-MI,Zvishavane,no,FVSH,,FVSH,,,https://en.wikipedia.org/wiki/Zvishavane_Airport,
+3044,FZBO,medium_airport,Bandundu Airport,-3.31132,17.381701,1063,AF,CD,CD-KL,Bandundu,yes,FZBO,FDU,FZBO,,,https://en.wikipedia.org/wiki/Bandundu_Airport,
+3047,FZFD,medium_airport,Gbadolite Airport,4.252745,20.975271,1509,AF,CD,CD-NU,Gbadolite,yes,FZFD,BDT,FZFD,,,https://en.wikipedia.org/wiki/Gbadolite_Airport,Moanda
+3055,FZKJ,medium_airport,Buta Zega Airport,2.818058,24.793997,1378,AF,CD,CD-BU,Buta,no,FZKJ,BZU,FZKJ,,,https://en.wikipedia.org/wiki/Buta_Zega_Airport,
+3067,GAGO,medium_airport,Gao International Airport,16.248466,-0.005389,870,AF,ML,ML-7,Gao,yes,GAGO,GAQ,GAGO,,,https://en.wikipedia.org/wiki/Gao_International_Airport,Korogoussou
+3080,GCLA,medium_airport,La Palma Airport,28.626499,-17.7556,107,AF,ES,ES-CN,"Sta Cruz de la Palma, La Palma Island",yes,GCLA,SPC,GCLA,,https://www.aena.es/en/la-palma.html,https://en.wikipedia.org/wiki/La_Palma_Airport,
+3105,GMFK,medium_airport,Moulay Ali Cherif Airport,31.9475002289,-4.39833021164,3428,AF,MA,MA-08,Errachidia,yes,GMFK,ERH,GMFK,,,https://en.wikipedia.org/wiki/Moulay_Ali_Cherif_Airport,
+3108,GMMA,medium_airport,Smara Airport,26.731987,-11.683655,350,AF,EH,EH-U-A,Smara,yes,GMMA,SMW,GMMA,,,https://en.wikipedia.org/wiki/Smara_Airport,"GSMA, Semara, Semara Airport"
+3109,GMME,large_airport,Rabat-Salé Airport,34.051498,-6.75152,276,AF,MA,MA-04,Rabat,yes,GMME,RBA,GMME,,https://www.onda.ma/en/Our-Airports/Rabat-Sale-Airport,https://en.wikipedia.org/wiki/Sale_Airport,
+3119,GMTA,medium_airport,Cherif Al Idrissi Airport,35.177101,-3.83952,95,AF,MA,MA-01,Al Hoceima,yes,GMTA,AHU,GMTA,,,https://en.wikipedia.org/wiki/Cherif_Al_Idrissi_Airport,
+3150,GVAC,large_airport,Amílcar Cabral International Airport,16.7414,-22.9494,177,AF,CV,CV-B,Espargos,yes,GVAC,SID,GVAC,,,https://en.wikipedia.org/wiki/Am%C3%ADlcar_Cabral_International_Airport,Sal Island
+3151,GVBA,large_airport,Aristides Pereira International Airport,16.136499,-22.888901,69,AF,CV,CV-B,Rabil,yes,GVBA,BVC,GVBA,,,https://en.wikipedia.org/wiki/Rabil_Airport,Boa Vista Island
+3162,HADR,large_airport,Aba Tenna Dejazmach Yilma International Airport,9.623549,41.855027,3827,AF,ET,ET-DD,Dire Dawa,yes,HADR,DIR,HADR,,,https://en.wikipedia.org/wiki/Aba_Tenna_Dejazmach_Yilma_International_Airport,
+3182,HEBS,medium_airport,Bani Sweif Air Base,29.20224,31.013471,102,AF,EG,EG-BNS,Bani Sweif,no,,,HEBS,,,,
+3186,HEGN,large_airport,Hurghada International Airport,27.176776,33.796692,32,AF,EG,EG-BA,Hurghada,yes,HEGN,HRG,HEGN,,,https://en.wikipedia.org/wiki/Hurghada_International_Airport,"Al Ghardaqah, الغردقة"
+3197,HESC,medium_airport,Saint Catherine International Airport,28.684292,34.064409,4402,AS,EG,EG-JS,Saint Catherine,no,HESC,SKV,HESC,,,https://en.wikipedia.org/wiki/St._Catherine_International_Airport,
+3205,HKEL,large_airport,Eldoret International Airport,0.404458,35.238899,6941,AF,KE,KE-27,Eldoret,yes,HKEL,EDL,HKEL,,http://www.kenyaairports.co.ke/kaa/airports/eldoret/,https://en.wikipedia.org/wiki/Eldoret_International_Airport,HKED
+3207,HKKG,small_airport,Kakamega Airport,0.271353,34.78812,5020,AF,KE,KE-37,Kakamega,no,HKKG,GGM,HKKG,,,https://en.wikipedia.org/wiki/Kakamega_Airport,
+3208,HKKI,large_airport,Kisumu International Airport,-0.086139,34.728901,3734,AF,KE,KE-42,Kisumu,yes,HKKI,KIS,HKKI,,http://www.kenyaairports.co.ke/kaa/airports/kisumu/,https://en.wikipedia.org/wiki/Kisumu_Airport,
+3220,HLGL,small_airport,Warehouse 59e Airport,28.638500213623047,21.437999725341797,325,AF,LY,LY-WA,,no,,,HLGL,,,,
+3221,HLGT,medium_airport,Ghat Airport,25.145599,10.1426,2296,AF,LY,LY-GT,Ghat,no,HLGT,GHT,HLGT,,,https://en.wikipedia.org/wiki/Ghat_Airport,
+3242,HSKA,medium_airport,Kassala Airport,15.387499809265137,36.328800201416016,1671,AF,SD,SD-05,Kassala,yes,HSKA,KSL,HSKA,,,https://en.wikipedia.org/wiki/Kassala_Airport,
+3246,HSPN,large_airport,Port Sudan New International Airport,19.434558,37.234125,135,AF,SD,SD-26,Port Sudan,yes,HSPN,PZU,HSPN,,,https://en.wikipedia.org/wiki/Port_Sudan_New_International_Airport,
+3265,HUSO,medium_airport,Soroti Airport,1.7276899814605713,33.622798919677734,3697,AF,UG,UG-E,Soroti,yes,HUSO,SRT,HUSO,,,https://en.wikipedia.org/wiki/Soroti_Airport,
+3360,KACK,medium_airport,Nantucket Memorial Airport,41.25310135,-70.06020355,47,NA,US,US-MA,Nantucket,yes,KACK,ACK,KACK,ACK,,https://en.wikipedia.org/wiki/Nantucket_Memorial_Airport,
+3361,KACT,medium_airport,Waco Regional Airport,31.611299514770508,-97.23049926757812,516,NA,US,US-TX,Waco,yes,KACT,ACT,KACT,ACT,,https://en.wikipedia.org/wiki/Waco_Regional_Airport,
+3366,KAFW,medium_airport,Perot Field/Fort Worth Alliance Airport,32.99044,-97.31947,722,NA,US,US-TX,Fort Worth,no,KAFW,AFW,KAFW,AFW,http://www.allianceairport.com/,https://en.wikipedia.org/wiki/Fort_Worth_Alliance_Airport,
+3368,KAGS,medium_airport,Augusta Regional At Bush Field,33.3699,-81.9645,144,NA,US,US-GA,Augusta,yes,KAGS,AGS,KAGS,AGS,,https://en.wikipedia.org/wiki/Augusta_Regional_Airport,
+3369,KAHN,medium_airport,Athens Ben Epps Airport,33.948842,-83.325634,808,NA,US,US-GA,Athens,no,KAHN,AHN,KAHN,AHN,,https://en.wikipedia.org/wiki/Athens-Ben_Epps_Airport,
+3375,KALO,medium_airport,Waterloo Regional Airport,42.557098388671875,-92.40029907226562,873,NA,US,US-IA,Waterloo,yes,KALO,ALO,KALO,ALO,,https://en.wikipedia.org/wiki/Waterloo_Regional_Airport,
+3388,KAVP,medium_airport,Wilkes-Barre/Scranton International Airport,41.337064,-75.724232,962,NA,US,US-PA,Wilkes-Barre/Scranton,yes,KAVP,AVP,KAVP,AVP,http://www.flyavp.com/,https://en.wikipedia.org/wiki/Wilkes-Barre/Scranton_International_Airport,
+3405,KBGR,medium_airport,Bangor International Airport,44.806364,-68.826668,192,NA,US,US-ME,Bangor,yes,KBGR,BGR,KBGR,BGR,https://flybangor.com,https://en.wikipedia.org/wiki/Bangor_International_Airport,
+3416,KBLI,medium_airport,Bellingham International Airport,48.79280090332031,-122.53800201416016,170,NA,US,US-WA,Bellingham,yes,KBLI,BLI,KBLI,BLI,,https://en.wikipedia.org/wiki/Bellingham_International_Airport,
+3431,KBUF,large_airport,Buffalo Niagara International Airport,42.940498,-78.732201,728,NA,US,US-NY,Buffalo,yes,KBUF,BUF,KBUF,BUF,https://www.buffaloairport.com/,https://en.wikipedia.org/wiki/Buffalo_Niagara_International_Airport,
+3463,KCOS,large_airport,City of Colorado Springs Municipal Airport,38.805801,-104.700996,6187,NA,US,US-CO,Colorado Springs,yes,KCOS,COS,KCOS,COS,https://flycos.coloradosprings.gov/,https://en.wikipedia.org/wiki/Colorado_Springs_Airport,"Peterson SFB, Colorado Springs Airport"
+3468,KCSG,medium_airport,Columbus Airport,32.516415,-84.939602,397,NA,US,US-GA,Columbus,yes,KCSG,CSG,KCSG,CSG,https://flycolumbusga.com,https://en.wikipedia.org/wiki/Columbus_Metropolitan_Airport,
+3469,KCSV,medium_airport,Crossville Memorial Airport Whitson Field,35.95131,-85.08499,1881,NA,US,US-TN,Crossville,no,KCSV,CSV,KCSV,CSV,http://www.crossvilletn.gov/index.php/departments/airport,,
+3478,KDAB,medium_airport,Daytona Beach International Airport,29.18255,-81.059464,34,NA,US,US-FL,Daytona Beach,yes,KDAB,DAB,KDAB,DAB,,https://en.wikipedia.org/wiki/Daytona_Beach_International_Airport,
+3483,KDCA,large_airport,Ronald Reagan Washington National Airport,38.8521,-77.037697,15,NA,US,US-DC,Washington,yes,KDCA,DCA,KDCA,DCA,http://www.flyreagan.com/dca/reagan-national-airport,https://en.wikipedia.org/wiki/Ronald_Reagan_Washington_National_Airport,WAS
+3499,KDYS,medium_airport,Dyess Air Force Base,32.420799,-99.854599,1789,NA,US,US-TX,Abilene,no,KDYS,DYS,KDYS,DYS,http://www.dyess.af.mil/,https://en.wikipedia.org/wiki/Dyess_Air_Force_Base,
+3511,KELO,medium_airport,Ely Municipal Airport,47.82450104,-91.83070374,1456,NA,US,US-MN,Ely,no,KELO,LYU,KELO,ELO,http://www.ely.mn.us/index.asp?Type=B_BASIC&SEC=%7B936B252D-C48B-42BD-B996-37F320A6CFF7%7D,https://en.wikipedia.org/wiki/Ely_Municipal_Airport,
+3525,KFAY,medium_airport,Fayetteville Regional Airport - Grannis Field,34.991199,-78.880302,189,NA,US,US-NC,Fayetteville,yes,KFAY,FAY,KFAY,FAY,,https://en.wikipedia.org/wiki/Fayetteville_Regional_Airport,
+3554,KGFL,medium_airport,Floyd Bennett Memorial Airport,43.3412017822,-73.6102981567,328,NA,US,US-NY,Glens Falls,no,KGFL,GFL,KGFL,GFL,http://www.warrencountydpw.com/airport_07/,https://en.wikipedia.org/wiki/Floyd_Bennett_Memorial_Airport,
+3559,KGNV,medium_airport,Gainesville Regional Airport,29.6900997162,-82.2717971802,152,NA,US,US-FL,Gainesville,yes,KGNV,GNV,KGNV,GNV,,https://en.wikipedia.org/wiki/Gainesville_Regional_Airport,
+3564,KGRI,medium_airport,Central Nebraska Regional Airport,40.967498779296875,-98.30960083007812,1847,NA,US,US-NE,Grand Island,yes,KGRI,GRI,KGRI,GRI,,https://en.wikipedia.org/wiki/Central_Nebraska_Regional_Airport,
+3566,KGRR,large_airport,Gerald R. Ford International Airport,42.880798,-85.522797,794,NA,US,US-MI,Grand Rapids,yes,KGRR,GRR,KGRR,GRR,,https://en.wikipedia.org/wiki/Gerald_R._Ford_International_Airport,
+3587,KHOT,medium_airport,Memorial Field Airport,34.4788,-93.096262,540,NA,US,US-AR,Hot Springs,yes,KHOT,HOT,KHOT,HOT,,https://en.wikipedia.org/wiki/Hot_Springs_Memorial_Field_Airport,
+3589,KHPN,medium_airport,Westchester County Airport,41.06700134277344,-73.70760345458984,439,NA,US,US-NY,White Plains,yes,KHPN,HPN,KHPN,HPN,,https://en.wikipedia.org/wiki/Westchester_County_Airport,"Manhattan, New York City, NYC"
+3591,KHRL,medium_airport,Valley International Airport,26.228500366210938,-97.65440368652344,36,NA,US,US-TX,Harlingen,yes,KHRL,HRL,KHRL,HRL,,https://en.wikipedia.org/wiki/Valley_International_Airport,
+3592,KHRO,medium_airport,Boone County Airport,36.26150131225586,-93.15470123291016,1365,NA,US,US-AR,Harrison,yes,KHRO,HRO,KHRO,HRO,,https://en.wikipedia.org/wiki/Boone_County_Airport,
+3603,KIAG,medium_airport,Niagara Falls International Airport,43.1073,-78.946198,589,NA,US,US-NY,Niagara Falls,yes,KIAG,IAG,KIAG,IAG,https://www.niagarafallsairport.com/,https://en.wikipedia.org/wiki/Niagara_Falls_International_Airport,
+3609,KILM,medium_airport,Wilmington International Airport,34.272345,-77.905117,32,NA,US,US-NC,Wilmington,yes,KILM,ILM,KILM,ILM,https://flyilm.com,https://en.wikipedia.org/wiki/Wilmington_International_Airport,
+3619,KJAN,medium_airport,Jackson-Medgar Wiley Evers International Airport,32.311199,-90.075897,346,NA,US,US-MS,Jackson,yes,KJAN,JAN,KJAN,JAN,,https://en.wikipedia.org/wiki/Jackson-Evers_International_Airport,
+3646,KLMT,medium_airport,Crater Lake-Klamath Regional Airport,42.156101,-121.733002,4095,NA,US,US-OR,Klamath Falls,no,KLMT,LMT,KLMT,LMT,,https://en.wikipedia.org/wiki/Klamath_Falls_Airport,Klamath Falls Airport
+3674,KMEI,medium_airport,Key Field / Meridian Regional Airport,32.3326,-88.7519,297,NA,US,US-MS,Meridian,yes,KMEI,MEI,KMEI,MEI,,https://en.wikipedia.org/wiki/Meridian_Regional_Airport,
+3684,KMHT,medium_airport,Manchester-Boston Regional Airport,42.932598,-71.435699,266,NA,US,US-NH,Manchester,yes,KMHT,MHT,KMHT,MHT,https://flymanchester.com,https://en.wikipedia.org/wiki/Manchester-Boston_Regional_Airport,Manchester Airport
+3709,KMSP,large_airport,Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field,44.880081,-93.221741,841,NA,US,US-MN,Minneapolis,yes,KMSP,MSP,KMSP,MSP,https://www.mspairport.com/,https://en.wikipedia.org/wiki/Minneapolis–Saint_Paul_International_Airport,
+3713,KMTN,medium_airport,Martin State Airport,39.325699,-76.413803,21,NA,US,US-MD,Baltimore,no,KMTN,MTN,KMTN,MTN,,https://en.wikipedia.org/wiki/Martin_State_Airport,
+3714,KMUI,medium_airport,Muir Army Air Field (Fort Indiantown Gap) Airport,40.435214,-76.568661,488,NA,US,US-PA,Fort Indiantown Gap(Annville),no,KMUI,MUI,KMUI,MUI,,https://en.wikipedia.org/wiki/Muir_Army_Airfield,
+3730,KNIP,medium_airport,Jacksonville Naval Air Station (Towers Field),30.2358,-81.680603,21,NA,US,US-FL,Jacksonville,no,KNIP,NIP,KNIP,NIP,,https://en.wikipedia.org/wiki/Naval_Air_Station_Jacksonville,
+3731,KNJK,medium_airport,El Centro NAF Airport (Vraciu Field),32.829201,-115.671996,-42,NA,US,US-CA,El Centro,no,KNJK,NJK,KNJK,NJK,https://www.cnic.navy.mil/regions/cnrsw/installations/naf_el_centro.html,https://en.wikipedia.org/wiki/Naval_Air_Facility_El_Centro,"Naval Air Facility El Centro, MCAS El Centro"
+3743,KNZY,medium_airport,North Island Naval Air Station-Halsey Field,32.69919968,-117.2149963,26,NA,US,US-CA,San Diego,no,KNZY,NZY,KNZY,NZY,,https://en.wikipedia.org/wiki/Naval_Air_Station_North_Island,
+3749,KOLM,medium_airport,Olympia Regional Airport,46.969399,-122.903,209,NA,US,US-WA,Olympia,yes,KOLM,OLM,KOLM,OLM,,https://en.wikipedia.org/wiki/Olympia_Airport,
+3771,KPHL,large_airport,Philadelphia International Airport,39.871899,-75.241096,36,NA,US,US-PA,Philadelphia,yes,KPHL,PHL,KPHL,PHL,http://www.phl.org/,https://en.wikipedia.org/wiki/Philadelphia_International_Airport,
+3773,KPIA,medium_airport,General Wayne A. Downing Peoria International Airport,40.663841,-89.692631,660,NA,US,US-IL,Peoria,yes,KPIA,PIA,KPIA,PIA,,https://en.wikipedia.org/wiki/General_Wayne_A._Downing_Peoria_International_Airport,Peoria International Airport
+3782,KPMD,medium_airport,Palmdale Regional Airport / USAF Plant 42 Airport,34.629398,-118.084999,2543,NA,US,US-CA,Palmdale,no,KPMD,PMD,KPMD,PMD,,https://en.wikipedia.org/wiki/LA/Palmdale_Regional_Airport,
+3839,KRBL,medium_airport,Red Bluff Municipal Airport,40.1506996155,-122.251998901,352,NA,US,US-CA,Red Bluff,no,KRBL,RBL,KRBL,RBL,,https://en.wikipedia.org/wiki/Red_Bluff_Municipal_Airport,
+3851,KRMG,medium_airport,Richard B Russell Airport,34.3506011963,-85.15799713130001,644,NA,US,US-GA,Rome,no,KRMG,RMG,KRMG,RMG,http://www.romefloyd.com/EconomicDevelopment/Airport/tabid/306/Default.aspx,https://en.wikipedia.org/wiki/Richard_B._Russell_Airport,Towers Field
+3859,KRUT,medium_airport,Rutland - Southern Vermont Regional Airport,43.5294,-72.9496,787,NA,US,US-VT,Rutland,yes,KRUT,RUT,KRUT,RUT,,https://en.wikipedia.org/wiki/Rutland_State_Airport,
+3900,KSRR,medium_airport,Sierra Blanca Regional Airport,33.462799,-105.535004,6814,NA,US,US-NM,Alto,no,KSRR,RUI,KSRR,SRR,,https://en.wikipedia.org/wiki/Sierra_Blanca_Regional_Airport,Ruidoso
+3912,KSWO,medium_airport,Stillwater Regional Airport,36.162132,-97.085581,1000,NA,US,US-OK,Stillwater,yes,KSWO,SWO,KSWO,SWO,http://stillwater.org/government/city_facilities/stillwater_regional_airport/,https://en.wikipedia.org/wiki/Stillwater_Regional_Airport,
+3923,KTIX,medium_airport,Space Coast Regional Airport,28.514799118042,-80.799201965332,34,NA,US,US-FL,Titusville,no,KTIX,TIX,KTIX,TIX,,https://en.wikipedia.org/wiki/Space_Coast_Regional_Airport,
+3929,KTTN,medium_airport,Trenton Mercer Airport,40.276699,-74.813499,213,NA,US,US-NJ,Ewing Township,yes,KTTN,TTN,KTTN,TTN,,https://en.wikipedia.org/wiki/Trenton-Mercer_Airport,
+3944,KVBG,medium_airport,Vandenberg Space Force Base,34.737301,-120.584,369,NA,US,US-CA,Lompoc,no,KVBG,VBG,KVBG,VBG,,https://en.wikipedia.org/wiki/Vandenberg_Air_Force_Base,
+3946,KVLD,medium_airport,Valdosta Regional Airport,30.782499313354492,-83.27670288085938,203,NA,US,US-GA,Valdosta,yes,KVLD,VLD,KVLD,VLD,,https://en.wikipedia.org/wiki/Valdosta_Regional_Airport,
+3951,KWRB,medium_airport,Robins Air Force Base,32.640099,-83.591904,294,NA,US,US-GA,Warner Robins,no,KWRB,WRB,KWRB,WRB,http://www.robins.af.mil/,https://en.wikipedia.org/wiki/Robins_Air_Force_Base,
+3955,KWYS,medium_airport,Yellowstone Airport,44.6884,-111.117996,6649,NA,US,US-MT,West Yellowstone,yes,KWYS,WYS,KWYS,WYS,https://yellowstoneairport.mdt.mt.gov,https://en.wikipedia.org/wiki/Yellowstone_Airport,
+3977,LBSF,large_airport,Sofia Airport,42.696357,23.417671,1742,EU,BG,BG-22,Sofia,yes,LBSF,SOF,LBSF,,http://sofia-airport.bg,https://en.wikipedia.org/wiki/Sofia_Airport,"Sofia International Airport, Vrazhdebna Air Base"
+3980,LCLK,large_airport,Larnaca International Airport,34.875099,33.624901,8,AS,CY,CY-04,Larnaca,yes,LCLK,LCA,LCLK,,http://www.cyprusairports.com.cy/showpage.php?PageID=2,https://en.wikipedia.org/wiki/Larnaca_International_Airport,Διεθνές Aεροδρόμιο Λάρνακας
+4035,LEPA,large_airport,Palma de Mallorca Airport,39.551701,2.73881,27,EU,ES,ES-IB,Palma de Mallorca,yes,LEPA,PMI,LEPA,,https://www.aena.es/en/palma-de-mallorca.html,https://en.wikipedia.org/wiki/Son_Sant_Joan_Airport,"Son Sant Joan Airport, LESJ"
+4043,LEVD,medium_airport,Valladolid Airport,41.7061,-4.85194,2776,EU,ES,ES-CL,Valladolid,yes,LEVD,VLL,LEVD,,https://www.aena.es/en/valladolid.html,https://en.wikipedia.org/wiki/Valladolid_Airport,
+4057,LFAY,medium_airport,Amiens Glisy Airfield,49.873004,2.387074,208,EU,FR,FR-HDF,Amiens,no,LFAY,,LFAY,,,https://en.wikipedia.org/wiki/Amiens_%E2%80%93_Glisy_Aerodrome,"QAM, Aérodrome d'Amiens-Glisy"
+4070,LFBO,large_airport,Toulouse-Blagnac Airport,43.629101,1.36382,499,EU,FR,FR-OCC,Toulouse/Blagnac,yes,LFBO,TLS,LFBO,,http://www.toulouse.aeroport.fr/,https://en.wikipedia.org/wiki/Toulouse_Blagnac_International_Airport,Airbus
+4077,LFBZ,medium_airport,Biarritz Pays Basque airport,43.468372,-1.523223,245,EU,FR,FR-NAQ,Biarritz,yes,LFBZ,BIQ,LFBZ,,https://biarritz.aeroport.fr/en/,https://en.wikipedia.org/wiki/Biarritz_-_Anglet_-_Bayonne_Airport,
+4078,LFCC,medium_airport,Cahors Lalbenque airport,44.351398,1.47528,912,EU,FR,FR-OCC,Cahors,no,LFCC,ZAO,LFCC,,,https://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Cahors_-_Lalbenque,
+4086,LFCR,medium_airport,Rodez–Aveyron Airport,44.407902,2.48267,1910,EU,FR,FR-OCC,Rodez/Marcillac,yes,LFCR,RDZ,LFCR,,https://www.aeroport-rodez.fr/en/,https://en.wikipedia.org/wiki/Rodez%E2%80%93Aveyron_Airport,
+4094,LFDI,small_airport,Libourne-Artigues-de-Lussac Airfield,44.98347,-0.138359,157,EU,FR,FR-NAQ,Libourne/Artigues-de-Lussac,no,,,LFDI,,,https://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Libourne_-_Artigues-de-Lussac,
+4104,LFGA,medium_airport,Colmar Houssen airport,48.109901,7.35901,628,EU,FR,FR-GES,Colmar,no,LFGA,CMR,LFGA,,https://www.colmar.aeroport.fr/en/,https://en.wikipedia.org/wiki/Colmar_Airport,
+4112,LFHQ,small_airport,Saint-Flour-Coltines Airfield,45.076401,2.99361,3218,EU,FR,FR-ARA,Saint-Flour/Coltines,no,,,LFHQ,,https://www.aerodrome-stflour-coltines.fr/,https://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Saint-Flour_-_Coltines,
+4130,LFLA,medium_airport,Auxerre Branches airport,47.850201,3.49711,523,EU,FR,FR-BFC,Auxerre,no,LFLA,AUF,LFLA,,https://www.auxerre.aeroport.fr/,https://en.wikipedia.org/wiki/Auxerre_%E2%80%93_Branches_Aerodrome,
+4161,LFMT,large_airport,Montpellier-Méditerranée Airport,43.576199,3.96301,17,EU,FR,FR-OCC,Montpellier/Méditerranée,yes,LFMT,MPL,LFMT,,https://www.montpellier.aeroport.fr/,https://en.wikipedia.org/wiki/Montpellier_-_M%C3%A9diterran%C3%A9e_Airport,
+4167,LFNH,small_airport,Edgar Soumille Airfield,44.027689,5.084255,394,EU,FR,FR-PAC,"Carpentras, Vaucluse",no,,,LFNH,,,https://fr.wikipedia.org/wiki/A%C3%A9rodrome_Edgar_Soumille,Pernes-les-Fontaines
+4186,LFPK,small_airport,Coulommiers-Voisins Aerodrome,48.839602,3.008653,470,EU,FR,FR-IDF,"Pommeuse, Seine-et-Marne",no,LFPK,,LFPK,,,https://en.wikipedia.org/wiki/Coulommiers_%E2%80%93_Voisins_Aerodrome,Aérodrome de Coulommiers - Voisins
+4192,LFQA,small_airport,Reims-Prunay Airfield,49.208698,4.15658,313,EU,FR,FR-GES,"Prunay, Marne",no,,,LFQA,,,https://en.wikipedia.org/wiki/Reims_%E2%80%93_Prunay_Aerodrome,"Aérodrome de Reims Prunay, Reims-Champagne, Reims"
+4204,LFQV,medium_airport,Charleville-Mézières Ardennes-Etienne Riché Airfield,49.783901,4.64708,492,EU,FR,FR-GES,Charleville-Mézières,no,LFQV,,LFQV,,,https://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Charleville-M%C3%A9zi%C3%A8res,
+4250,LGAL,medium_airport,Alexandroupoli Democritus Airport,40.8559,25.956301,24,EU,GR,GR-A,Alexandroupolis,yes,LGAL,AXD,LGAL,,,https://en.wikipedia.org/wiki/Alexandroupoli_Airport,
+4253,LGBL,medium_airport,Nea Anchialos National Airport,39.219601,22.7943,83,EU,GR,GR-E,Nea Anchialos,yes,LGBL,VOL,LGBL,,,https://en.wikipedia.org/wiki/Nea_Anchialos_National_Airport,"Volos Central Greece Airport, Volos Nea Anchialos Airport of Central Greece"
+4255,LGHI,medium_airport,Chios Island National Airport,38.34320068359375,26.140600204467773,15,EU,GR,GR-K,Chios Island,yes,LGHI,JKH,LGHI,,http://www.hcaa-eleng.gr/chios.htm,https://en.wikipedia.org/wiki/Chios_Island_National_Airport,
+4260,LGKC,small_airport,Kithira Airport,36.273978,23.016719,1045,EU,GR,GR-I,Kithira Island,yes,LGKC,KIT,LGKC,,,https://en.wikipedia.org/wiki/Kithira_Island_National_Airport,Alexandros Aristotelous Onassis
+4262,LGKL,medium_airport,Kalamata Airport,37.06829833984375,22.02549934387207,26,EU,GR,GR-J,Kalamata,yes,LGKL,KLX,LGKL,,,https://en.wikipedia.org/wiki/Kalamata_International_Airport,
+4267,LGKS,small_airport,Kasos Airport,35.4213981628,26.909999847399998,35,EU,GR,GR-L,Kasos Island,yes,LGKS,KSJ,LGKS,,,https://en.wikipedia.org/wiki/Kassos_Island_Public_Airport,
+4274,LGMK,medium_airport,Mykonos Island National Airport,37.435101,25.348101,405,EU,GR,GR-L,Mykonos,yes,LGMK,JMK,LGMK,,,https://en.wikipedia.org/wiki/Mykonos_Island_National_Airport,
+4337,LILN,medium_airport,Varese-Venegono Airport,45.742199,8.888233,1100,EU,IT,IT-25,Venegono Superiore (VA),no,LILN,,LILN,VA02,http://www.aeroclubvarese.it/,https://en.wikipedia.org/wiki/Varese-Venegono_Airport,QVA
+4353,LIPC,medium_airport,Cervia Air Base,44.224201,12.3072,18,EU,IT,IT-45,Cervia (RA),no,LIPC,,LIPC,RA08,,https://en.wikipedia.org/wiki/Cervia_Air_Base,"G Cenni, Pisignano"
+4371,LIRE,medium_airport,Pratica di Mare Air Base,41.654499,12.4452,41,EU,IT,IT-62,Pomezia (RM),no,LIRE,,LIRE,RM22,,https://en.wikipedia.org/wiki/Pratica_di_Mare_Air_Base,M de Bernardi
+4392,VCCS,small_airport,Sigiriya Air Force Base,7.95667,80.7285,630,AS,LK,LK-2,Sigiriya,no,VCCS,GIU,VCCS,,http://www.airforce.lk/pages.php?pages=sigiriya,https://en.wikipedia.org/wiki/Sigiriya_Airport,"VC15, SLAF Sigiriya"
+4410,LKVO,medium_airport,Vodochody Airport,50.216599,14.3958,919,EU,CZ,CZ-ST,Vodochody,no,LKVO,VOD,LKVO,,http://www.lkvo.cz,https://en.wikipedia.org/wiki/Vodochody_Airport,
+4422,LLNV,medium_airport,Nevatim Air Base,31.208299636799996,35.012298584,1330,AS,IL,IL-D,Beersheba,no,LLNV,VTM,LLNV,,,https://en.wikipedia.org/wiki/Nevatim_Airbase,"Malhata, Be'er Sheva"
+4429,LOLW,small_airport,Wels Airfield,48.182513,14.039283,1043,EU,AT,AT-4,Wels,no,LOLW,,LOLW,,https://www.wmw.at,https://en.wikipedia.org/wiki/Wels_Airport,
+4440,LPBG,medium_airport,Bragança Airport,41.8578,-6.70713,2241,EU,PT,PT-04,Bragança,yes,LPBG,BGC,LPBG,,,https://en.wikipedia.org/wiki/Bragan%C3%A7a_Airport,
+4465,LPVR,medium_airport,Vila Real Airport,41.2743,-7.72047,1805,EU,PT,PT-17,Vila Real,yes,LPVR,VRL,LPVR,,,https://en.wikipedia.org/wiki/Vila_Real_Airport,
+4467,LQBK,large_airport,Banja Luka International Airport,44.941399,17.297501,400,EU,BA,BA-SRP,Mahovljani,yes,LQBK,BNX,LQBK,,http://www.banjaluka-airport.com/,https://en.wikipedia.org/wiki/Banja_Luka_International_Airport,Mahovljani Airport
+4469,LQSA,large_airport,Sarajevo International Airport,43.8246,18.331499,1708,EU,BA,BA-BIH,Sarajevo,yes,LQSA,SJJ,LQSA,,http://www.sarajevo-airport.ba/,https://en.wikipedia.org/wiki/Sarajevo_International_Airport,
+4477,LRCS,medium_airport,Caransebeş Airport,45.420142,22.252507,866,EU,RO,RO-CS,Caransebeş,no,LRCS,CSB,LRCS,,,https://en.wikipedia.org/wiki/Caransebe%C5%9F_Airport,"Caransebes, Reşiţa"
+4498,LSMP,medium_airport,Payerne Air Base,46.8432,6.91506,1465,EU,CH,CH-FR,Payerne,no,LSMP,VIP,LSMP,,,https://en.wikipedia.org/wiki/Payerne_Airport,Payerne Airport
+4502,LSZA,medium_airport,Lugano Airport,46.004299,8.91058,915,EU,CH,CH-TI,Agno,yes,LSZA,LUG,LSZA,,https://www.luganoairport.ch/en/,https://en.wikipedia.org/wiki/Lugano_Airport,
+4521,LTAR,medium_airport,Sivas Nuri Demirağ Airport,39.813801,36.9035,5239,AS,TR,TR-58,Sivas,yes,LTAR,VAS,LTAR,,http://www.sivas.dhmi.gov.tr/havaalanlari/default.aspx?hv=35,https://en.wikipedia.org/wiki/Sivas_Airport,
+4531,LTBH,medium_airport,Çanakkale Airport,40.1376991272,26.4267997742,23,AS,TR,TR-17,Çanakkale,yes,LTBH,CKZ,LTBH,,,https://en.wikipedia.org/wiki/%C3%87anakkale_Airport,
+4538,LTBO,medium_airport,Uşak Airport,38.681499,29.471701,2897,AS,TR,TR-64,Uşak,no,LTBO,USQ,LTBO,,https://www.dhmi.gov.tr/Sayfalar/Havalimani/Usak/AnaSayfa.aspx,https://en.wikipedia.org/wiki/U%C5%9Fak_Airport,
+4547,LTBY,large_airport,Hasan Polatkan Airport,39.811644,30.519268,2588,AS,TR,TR-26,Eskişehir,yes,LTBY,AOE,LTBY,,https://hph.eskisehir.edu.tr/tr/,https://en.wikipedia.org/wiki/Anadolu_Airport,Anadolu Airport
+4555,LTCI,medium_airport,Van Ferit Melen Airport,38.46820068359375,43.332298278808594,5480,AS,TR,TR-65,Van,yes,LTCI,VAN,LTCI,,,https://en.wikipedia.org/wiki/Ferit_Melen_Airport,
+4567,LTFE,large_airport,Milas Bodrum International Airport,37.249314,27.66401,21,AS,TR,TR-48,Bodrum,yes,LTFE,BJV,LTFE,,,https://en.wikipedia.org/wiki/Milas-Bodrum_Airport,
+4573,LWSK,large_airport,Skopje International Airport,41.958087,21.622581,781,EU,MK,MK-008,Ilinden,yes,LWSK,SKP,LWSK,,http://skp.airports.com.mk/,https://en.wikipedia.org/wiki/Skopje_Airport,Petrovec
+4614,BKPR,large_airport,Priština Adem Jashari International Airport,42.5728,21.035801,1789,EU,XK,XK-01,Prishtina,yes,BKPR,PRN,BKPR,,http://www.airportpristina.com/,https://en.wikipedia.org/wiki/Pristina_International_Airport,"LYPR, Pristina, Slatina Air Base"
+4631,MDAB,small_airport,Arroyo Barril Airport,19.198524,-69.429815,57,NA,DO,DO-20,Arroyo Barril,no,MDAB,,MDAB,,,https://en.wikipedia.org/wiki/Arroyo_Barril_International_Airport,
+4648,MGSJ,medium_airport,San José Airport,13.9362,-90.8358,29,NA,GT,GT-ES,Puerto San José,no,MGSJ,GSJ,MGSJ,,,https://en.wikipedia.org/wiki/San_Jos%C3%A9_Airport,
+4659,Q51,small_airport,Kili Airport,5.64386,169.124586,5,OC,MH,MH-KIL,Kili Island,yes,,KIO,C51,C51,,https://en.wikipedia.org/wiki/Kili_Airport,Q51
+4679,MKBS,medium_airport,Ian Fleming International Airport,18.404079,-76.969754,90,NA,JM,JM-05,Boscobel,yes,MKBS,OCJ,MKBS,,http://www.aaj.com.jm/ourairports/index.php#boscobel,https://en.wikipedia.org/wiki/Ian_Fleming_International_Airport,Boscobel Aerodrome
+4682,MKKJ,medium_airport,Ken Jones Airport,18.1987991333,-76.53450012210001,20,NA,JM,JM-04,Ken Jones,no,MKKJ,POT,MKKJ,,,https://en.wikipedia.org/wiki/Ken_Jones_Aerodrome,
+4715,MMIM,small_airport,Isla Mujeres National Airport,21.245962,-86.740365,16,NA,MX,MX-ROO,Isla Mujeres,no,MMIM,ISJ,MMIM,,,https://en.wikipedia.org/wiki/Isla_Mujeres_National_Airport,Aeropuerto Nacional de Isla Mujeres
+4721,MMLM,medium_airport,Valle del Fuerte International Airport,25.685503,-109.081159,16,NA,MX,MX-SIN,Los Mochis,yes,MMLM,LMM,MMLM,,http://aeropuertosgap.com.mx/english/index-site.html,https://en.wikipedia.org/wiki/Federal_del_Valle_del_Fuerte_International_Airport,
+4726,MMMD,large_airport,Manuel Crescencio Rejón International Airport,20.930485,-89.645462,38,NA,MX,MX-YUC,Mérida,yes,MMMD,MID,MMMD,,,https://en.wikipedia.org/wiki/Manuel_Crescencio_Rej%C3%B3n_International_Airport,
+4810,MROC,large_airport,Juan Santamaría International Airport,9.99386,-84.208801,3021,NA,CR,CR-A,San José (Alajuela),yes,MROC,SJO,MROC,,https://www.sjoairport.com/,https://en.wikipedia.org/wiki/Juan_Santamar%C3%ADa_International_Airport,
+4824,MTJA,medium_airport,Jacmel Airport,18.2411,-72.518501,167,NA,HT,HT-SE,Jacmel,no,MTJA,JAK,MTJA,,,https://en.wikipedia.org/wiki/Jacmel_Airport,
+4913,MM72,small_airport,Aeródromo de Cupul,21.155716,-88.172918,56,NA,MX,MX-YUC,Tizimin,no,,TZM,MM72,MM72,,https://en.wikipedia.org/wiki/Cupul_National_Airport,MXA3
+4929,MYAP,medium_airport,Spring Point Airport,22.441799,-73.970901,11,NA,BS,BS-AK,Spring Point,yes,MYAP,AXP,MYAP,,,https://en.wikipedia.org/wiki/Spring_Point_Airport,
+4976,NSFA,large_airport,Faleolo International Airport,-13.83,-172.007996,58,OC,WS,WS-AA,Apia,yes,NSFA,APW,NSFA,,,https://en.wikipedia.org/wiki/Faleolo_International_Airport,
+4991,NTGM,medium_airport,Makemo Airport,-16.5839,-143.658005,3,OC,PF,PF-U-A,Makemo,yes,NTGM,MKP,NTGM,,,https://en.wikipedia.org/wiki/Makemo_Airport,
+4994,NTGU,medium_airport,Arutua Airport,-15.248299598693848,-146.61700439453125,9,OC,PF,PF-U-A,,yes,NTGU,AXR,NTGU,,,https://en.wikipedia.org/wiki/Arutua_Airport,
+5017,NWWM,medium_airport,Nouméa Magenta Airport,-22.257706,166.472822,10,OC,NC,NC-03,Nouméa,yes,NWWM,GEA,NWWM,,,https://en.wikipedia.org/wiki/Noum%C3%A9a_Magenta_Airport,l'Aéroport de Nouméa Magenta
+5044,NZNS,medium_airport,Nelson Airport,-41.296709,173.224323,17,OC,NZ,NZ-NSN,Nelson,yes,NZNS,NSN,NZNS,,http://www.nelsonairport.co.nz/,https://en.wikipedia.org/wiki/Nelson_Airport_(New_Zealand),
+5062,NZWK,medium_airport,Whakatāne Airport,-37.922224,176.91696,20,OC,NZ,NZ-BOP,Whakatāne,yes,NZWK,WHK,NZWK,,https://www.whakatane.govt.nz/services/airport,https://en.wikipedia.org/wiki/Whakatane_Airport,Whakatane
+5064,NZWO,medium_airport,Wairoa Airport,-39.011862,177.404401,42,OC,NZ,NZ-HKB,Wairoa,no,NZWO,WIR,NZWO,,,https://en.wikipedia.org/wiki/Wairoa_Aerodrome,
+5071,OAJL,medium_airport,Jalalabad Airport,34.399799,70.498596,1814,AS,AF,AF-NAN,Jalalabad,no,OAJL,JAA,OAJL,,,https://en.wikipedia.org/wiki/Jalalabad_Airport,
+5079,OBBI,large_airport,Bahrain International Airport,26.267295,50.63764,6,AS,BH,BH-15,Manama,yes,OBBI,BAH,OBBI,,https://www.bahrainairport.bh/,https://en.wikipedia.org/wiki/Bahrain_International_Airport,"مطار البحرين الدولي, EGYR, RAF Bahrain, RAF Muharraq"
+5082,OEAB,large_airport,Abha International Airport,18.2404,42.656601,6858,AS,SA,SA-14,Abha,yes,OEAB,AHB,OEAB,,https://abha-airport.com,https://en.wikipedia.org/wiki/Abha_International_Airport,Abha International Airport
+5083,OEAH,large_airport,Al-Ahsa International Airport,25.285299,49.485199,588,AS,SA,SA-04,Hofuf,yes,OEAH,HOF,OEAH,,,https://en.wikipedia.org/wiki/Al-Ahsa_International_Airport,
+5084,OEBA,medium_airport,King Saud Bin Abdulaziz (Al Baha) Airport,20.298506,41.636153,5486,AS,SA,SA-11,Al-Baha,yes,OEBA,ABT,OEBA,,,https://en.wikipedia.org/wiki/Al-Baha_Domestic_Airport,Al-Aqiq
+5089,OEDR,large_airport,King Abdulaziz Air Base,26.2654,50.152,84,AS,SA,SA-04,Dhahran,no,OEDR,DHA,OEDR,,,https://en.wikipedia.org/wiki/King_Abdulaziz_Air_Base,"Dhahran international Airport, Dhahran Air Base, Dhahran Airport, Dhahran Airfield"
+5109,OEPS,medium_airport,Prince Sultan Air Base,24.0627,47.580502,1651,AS,SA,SA-01,Al Kharj,no,OEPS,AKH,OEPS,,,https://en.wikipedia.org/wiki/Prince_Sultan_Air_Base,OEKH
+5113,OERM,medium_airport,Ras Mishab Airport,28.079599,48.611,13,AS,SA,SA-04,Al Mishab,no,OERM,,OERM,,,https://en.wikipedia.org/wiki/Ras_Mishab_Airport,
+5115,OERT,medium_airport,Ras Tanura Airport,26.723101,50.0308,6,AS,SA,SA-04,Ras Tanura,no,OERT,,OERT,,,https://en.wikipedia.org/wiki/Ras_Tanura_Airport,
+5125,OETR,medium_airport,Turaif Domestic Airport,31.692188,38.731544,2803,AS,SA,SA-08,Turaif,yes,OETR,TUI,OETR,,,https://en.wikipedia.org/wiki/Turaif_Domestic_Airport,
+5145,OIBP,medium_airport,Persian Gulf International Airport,27.379601,52.737701,27,AS,IR,IR-18,Khiyaroo,yes,OIBP,PGU,OIBP,,,https://en.wikipedia.org/wiki/Persian_Gulf_Airport,"Asalouyeh, Khalije Fars, PSEEZ, Bandar Asalouyeh, Pars-Special-Zone, عسلویه"
+5146,OIBQ,medium_airport,Khark Airport,29.260503,50.322193,17,AS,IR,IR-18,Khark,yes,OIBQ,KHK,OIBQ,,,https://en.wikipedia.org/wiki/Kharg_Airport,
+5169,OIIK,medium_airport,Qazvin Airport,36.240101,50.0471,4184,AS,IR,IR-26,Qazvin,no,OIIK,GZW,OIIK,,,https://en.wikipedia.org/wiki/Qazvin_Airport,Ghazvin
+5173,OIKJ,medium_airport,Jiroft Airport,28.723519,57.675037,2663,AS,IR,IR-08,Jiroft,no,OIKJ,JYR,OIKJ,,,https://en.wikipedia.org/wiki/Jiroft_Airport,Sabzevaran
+5183,OIMM,large_airport,Mashhad International Airport,36.234821,59.642949,3263,AS,IR,IR-09,Mashhad,yes,OIMM,MHD,OIMM,,https://mashhad.airport.ir/,https://en.wikipedia.org/wiki/Mashhad_International_Airport,"Shahid Hashemi Nejad Airport, Mashhad Shahid Hasheminejad International Airport"
+5188,OING,medium_airport,Gorgan Airport,36.909400939899996,54.4012985229,-24,AS,IR,IR-27,Gorgan,no,OING,GBT,OING,,,https://en.wikipedia.org/wiki/Gorgan_Airport,
+5197,OISS,large_airport,Shiraz Shahid Dastghaib International Airport,29.5392,52.589802,4927,AS,IR,IR-07,Shiraz,yes,OISS,SYZ,OISS,,http://shirazairport.ir/,https://en.wikipedia.org/wiki/Shiraz_International_Airport,
+5218,OJMF,small_airport,King Hussein Air College,32.3564,36.259201,2240,AS,JO,JO-MA,Mafraq,no,OJMF,OMF,OJMF,,,https://en.wikipedia.org/wiki/King_Hussein_Air_Base,
+5226,OMAA,large_airport,Zayed International Airport,24.440966,54.649237,88,AS,AE,AE-AZ,Abu Dhabi,yes,OMAA,AUH,OMAA,,https://www.zayedinternationalairport.ae/,https://en.wikipedia.org/wiki/Abu_Dhabi_International_Airport,Abu Dhabi International Airport
+5252,OPGW,small_airport,Gwadar International Airport (Old),25.23298,62.328735,36,AS,PK,PK-BA,Gwadar,no,OPGD,,OPGD,,,https://en.wikipedia.org/wiki/Gwadar_International_Airport,GWD
+5270,OPPS,large_airport,Bacha Khan International Airport,33.9939,71.514603,1158,AS,PK,PK-KP,Peshawar,yes,OPPS,PEW,OPPS,,http://www.peshawarairport.com.pk/,https://en.wikipedia.org/wiki/Peshawar_International_Airport,Peshawar International Airport
+5282,OPTH,small_airport,Talhar Airport,24.84149932861328,68.8384017944336,28,AS,PK,PK-SD,Badin,no,OPTH,BDN,OPTH,,,,
+5292,ORER,large_airport,Erbil International Airport,36.236047,43.946615,1341,AS,IQ,IQ-AR,Arbil,yes,ORER,EBL,ORER,,,https://en.wikipedia.org/wiki/Erbil_International_Airport,"Irbil, Kurdistan, فروکه‌خانه‌ی نيوده‌وله‌تی هه‌ولير"
+5307,OSPR,medium_airport,Palmyra Airport,34.5574,38.316898,1322,AS,SY,SY-HI,Tadmur,no,OSPR,PMS,OSPR,,,https://en.wikipedia.org/wiki/Palmyra_Airport,
+5343,PABT,small_airport,Bettles Airport,66.913902,-151.529007,647,NA,US,US-AK,Bettles,yes,PABT,BTT,PABT,BTT,,https://en.wikipedia.org/wiki/Bettles_Airport,
+5355,PAED,medium_airport,Elmendorf Air Force Base,61.251709,-149.807097,212,NA,US,US-AK,Anchorage,no,PAED,EDF,PAED,EDF,,https://en.wikipedia.org/wiki/Elmendorf_Air_Force_Base,
+5375,PAII,medium_airport,Egegik Airport,58.184386,-157.374873,92,NA,US,US-AK,Egegik,yes,PAII,EGX,PAII,EII,,https://en.wikipedia.org/wiki/Egegik_Airport,
+5390,PANN,medium_airport,Nenana Municipal Airport,64.548772,-149.074516,362,NA,US,US-AK,Nenana,no,PANN,ENN,PANN,ENN,,https://en.wikipedia.org/wiki/Nenana_Municipal_Airport,
+5420,PAWD,medium_airport,Seward Airport,60.130478,-149.418612,22,NA,US,US-AK,Seward,no,PAWD,SWD,PAWD,SWD,,https://en.wikipedia.org/wiki/Seward_Airport,
+5452,PHNG,medium_airport,Kaneohe Bay MCAS (Marion E. Carl Field) Airport,21.4505,-157.768005,24,OC,US,US-HI,Kaneohe,no,PHNG,NGF,PHNG,NGF,http://www.mcbhawaii.marines.mil/Units/SubordinateCommands/MarineCorpsAirStation.aspx,https://en.wikipedia.org/wiki/Marine_Corps_Air_Station_Kaneohe_Bay,
+5513,RCFG,medium_airport,Matsu Nangan Airport,26.159656,119.958376,232,AS,TW,TW-LIE,Matsu (Nangan),yes,RCFG,LZN,RCFG,,http://www.tsa.gov.tw/tsaLZN/zh/home.aspx,https://en.wikipedia.org/wiki/Matsu_Nangan_Airport,
+5518,RCKW,medium_airport,Hengchun Airport,22.0411,120.730003,46,AS,TW,TW-PIF,Hengchun,no,RCKW,HCN,RCKW,,,https://en.wikipedia.org/wiki/Hengchun_Airport,
+5536,RJBB,large_airport,Kansai International Airport,34.427299,135.244003,26,AS,JP,JP-27,Osaka,yes,RJBB,KIX,RJBB,,http://www.kansai-airport.or.jp/en/index.asp,https://en.wikipedia.org/wiki/Kansai_International_Airport,OSA
+5541,RJBT,medium_airport,Konotori Tajima Airport,35.512798,134.787003,584,AS,JP,JP-28,Toyooka,yes,RJBT,TJH,RJBT,,,https://en.wikipedia.org/wiki/Tajima_Airport,"tajima, toyooka"
+5542,RJCA,small_airport,JGSDF Camp Asahikawa Airfield,43.794734,142.365432,377,AS,JP,JP-01,Asahikawa,no,,,RJCA,,,https://en.wikipedia.org/wiki/Asahikawa_Air_Field,"Camp Asahikawa, RJCA"
+5546,RJCJ,medium_airport,JASDF Chitose Air Base,42.794498,141.666,87,AS,JP,JP-01,Chitose,no,,,RJCJ,,,https://en.wikipedia.org/wiki/Chitose_Air_Base,
+5567,RJFM,large_airport,Miyazaki Airport,31.877199,131.449005,20,AS,JP,JP-45,Miyazaki,yes,RJFM,KMI,RJFM,,https://miyazaki-airport.co.jp,https://en.wikipedia.org/wiki/Miyazaki_Airport,
+5611,RJSK,medium_airport,Akita Airport,39.615601,140.218994,313,AS,JP,JP-05,Akita,yes,RJSK,AXT,RJSK,,,https://en.wikipedia.org/wiki/Akita_Airport,
+5616,RJST,medium_airport,JASDF Matsushima Air Base,38.4049,141.220001,7,AS,JP,JP-04,Ishinomaki,no,,,RJST,,http://www.mod.go.jp/asdf/matsushima/,https://en.wikipedia.org/wiki/Matsushima_Air_Field,"松島飛行場, 松島基地"
+5623,RJTL,medium_airport,JMSDF Shimofusa Air Base,35.798901,140.011002,98,AS,JP,JP-12,Matsudo,no,,,RJTL,,,https://en.wikipedia.org/wiki/Shimofusa_Air_Base,
+5677,ROMY,medium_airport,Miyako Airport,24.782801,125.294998,150,AS,JP,JP-47,Miyakojima,yes,ROMY,MMY,ROMY,,,https://en.wikipedia.org/wiki/Miyako_Airport,
+5678,RORE,medium_airport,Iejima Airport,26.722537,127.786801,246,AS,JP,JP-47,Ie,no,RORE,IEJ,RORE,,,https://en.wikipedia.org/wiki/Iejima_Airport,
+5692,RPLU,medium_airport,Lubang Airport,13.8554,120.105003,43,AS,PH,PH-MDC,Lubang,no,RPLU,LBX,RPLU,,,https://en.wikipedia.org/wiki/Lubang_Airport,
+5694,RPMA,medium_airport,Allah Valley Airport,6.367903,124.752431,659,AS,PH,PH-SCO,Surallah,no,RPMA,AAV,RPMA,,,https://en.wikipedia.org/wiki/Allah_Valley_Airport,Alah Valley Airport
+5701,RPMH,medium_airport,Camiguin Airport,9.253894,124.709115,53,AS,PH,PH-CAM,Mambajao,yes,RPMH,CGM,RPMH,,,https://en.wikipedia.org/wiki/Camiguin_Airport,
+5711,RPMW,medium_airport,Tandag Airport,9.072002,126.17132,16,AS,PH,PH-SUR,Tandag,no,RPMW,TDG,RPMW,,,https://en.wikipedia.org/wiki/Tandag_Airport,
+5720,RPUL,small_airport,Basilio Fernando Air Base,13.955,121.125,1220,AS,PH,PH-BTG,Lipa,no,,,RPUL,,,https://en.wikipedia.org/wiki/Basilio_Fernando_Air_Base,
+5726,RPUS,medium_airport,San Fernando Airport,16.5956,120.303001,13,AS,PH,PH-LUN,San Fernando,no,RPUS,SFE,RPUS,,,https://en.wikipedia.org/wiki/San_Fernando_Airport,
+5751,UELL,medium_airport,Chulman Airport,56.913898468018,124.91400146484,2812,AS,RU,RU-SA,Neryungri,yes,UELL,NER,UELL,,,https://en.wikipedia.org/wiki/Chulman_Airport,"Neryungri Airport, Аэропорт Чульман, Аэропорт Нерюнгри, CNN"
+5782,SAHC,small_airport,Chos Malal Airport,-37.444698,-70.222504,2788,SA,AR,AR-Q,Chos Malal,no,SAHC,HOS,SAHC,CHM,,https://en.wikipedia.org/wiki/Chos_Malal_Airport,
+5809,SARP,medium_airport,Libertador Gral D Jose De San Martin Airport,-27.3858,-55.9707,430,SA,AR,AR-N,Posadas,yes,SARP,PSS,SARP,POS,,https://en.wikipedia.org/wiki/Libertador_General_Jos%C3%A9_de_San_Mart%C3%ADn_Airport,
+5854,SAZV,medium_airport,Villa Gesell Airport,-37.2354,-57.0292,32,SA,AR,AR-B,Villa Gesell,no,SAZV,VLG,SAZV,GES,,https://en.wikipedia.org/wiki/Villa_Gesell_Airport,
+5857,SBAA,medium_airport,Conceição do Araguaia Airport,-8.34835,-49.301498,653,SA,BR,BR-PA,Conceição do Araguaia,no,SBAA,CDJ,SBAA,PA0008,,https://en.wikipedia.org/wiki/Concei%C3%A7%C3%A3o_do_Araguaia_Airport,
+5861,SBAQ,medium_airport,Araraquara Airport,-21.812,-48.132999,2334,SA,BR,BR-SP,Araraquara,yes,SBAQ,AQA,SBAQ,SP0012,http://www.daesp.sp.gov.br/aeroporto-estadual-de-araraquara-bartolomeu-de-gusmao/,https://en.wikipedia.org/wiki/Araraquara_Airport,
+5870,SBBI,medium_airport,Bacacheri Airport,-25.4051,-49.231998,3057,SA,BR,BR-PR,Curitiba,no,SBBI,BFH,SBBI,PR0006,,https://en.wikipedia.org/wiki/Bacacheri_Airport,
+5886,SBCJ,medium_airport,Carajás Airport,-6.117841,-50.003372,2064,SA,BR,BR-PA,Parauapebas,yes,SBCJ,CKS,SBCJ,PA0006,http://www.infraero.gov.br/index.php/us/airports/para/carajas-airport.html,https://en.wikipedia.org/wiki/Caraj%C3%A1s_Airport,
+5895,SBCZ,medium_airport,Cruzeiro do Sul Airport,-7.59991,-72.769501,637,SA,BR,BR-AC,Cruzeiro Do Sul,yes,SBCZ,CZS,SBCZ,AC0002,http://www.infraero.gov.br/index.php/aeroportos/acre/aeroporto-cruzeiro-do-sul.html,https://en.wikipedia.org/wiki/Cruzeiro_do_Sul_International_Airport,
+5925,SBJV,medium_airport,Lauro Carneiro de Loyola Airport,-26.224501,-48.797401,15,SA,BR,BR-SC,Joinville,yes,SBJV,JOI,SBJV,SC0004,,https://en.wikipedia.org/wiki/Joinville-Lauro_Carneiro_de_Loyola_Airport,
+5933,SBLS,small_airport,Lagoa Santa Air Base,-19.661751,-43.897404,2795,SA,BR,BR-MG,Lagoa Santa,no,,,SBLS,MG9001,https://www.fab.mil.br/noticias/tag/Lagoa_Santa,https://pt.wikipedia.org/wiki/Base_Aérea_de_Lagoa_Santa,
+5942,SBMO,large_airport,Zumbi dos Palmares International Airport,-9.512559,-35.791839,387,SA,BR,BR-AL,Maceió,yes,SBMO,MCZ,SBMO,AL0001,https://www.aenabrasil.com.br/pt/aeroportos/aeroporto-internacional-de-maceio-zumbi-dos-palmares/index.html,https://en.wikipedia.org/wiki/Zumbi_dos_Palmares_International_Airport,
+5957,SBPL,medium_airport,Senador Nilo Coelho Airport,-9.362422,-40.569098,1263,SA,BR,BR-PE,Petrolina,yes,SBPL,PNZ,SBPL,PE0002,https://www4.infraero.gov.br/aeroportos/aeroporto-de-petrolina-senador-nilo-coelho/,https://en.wikipedia.org/wiki/Petrolina_Airport,
+5967,SBRJ,large_airport,Santos Dumont Airport,-22.910397,-43.16282,11,SA,BR,BR-RJ,Rio de Janeiro,yes,SBRJ,SDU,SBRJ,RJ0002,https://www4.infraero.gov.br/aeroporto-santos-dumont/,https://en.wikipedia.org/wiki/Santos_Dumont_Airport,RIO
+5974,SBSP,large_airport,Congonhas–Deputado Freitas Nobre Airport,-23.627657,-46.654601,2631,SA,BR,BR-SP,São Paulo,yes,SBSP,CGH,SBSP,SP0001,https://www.aenabrasil.com.br/en/airports/congonhas-airport/index.html,https://en.wikipedia.org/wiki/Congonhas-S%C3%A3o_Paulo_International_Airport,
+5979,SBTB,medium_airport,Trombetas Airport,-1.4896,-56.396801,167,SA,BR,BR-PA,Oriximiná,yes,SBTB,TMT,SBTB,PA0012,,https://en.wikipedia.org/wiki/Porto_Trombetas_Airport,Porto Trombetas
+5985,SBTL,medium_airport,Telêmaco Borba Airport,-24.317801,-50.6516,2610,SA,BR,BR-PR,Telêmaco Borba,no,,TEC,SSVL,PR0007,,https://en.wikipedia.org/wiki/Tel%C3%AAmaco_Borba_Airport,SBTL
+5992,SBUG,medium_airport,Rubem Berta Airport,-29.7822,-57.0382,256,SA,BR,BR-RS,Uruguaiana,yes,SBUG,URG,SBUG,RS0012,,https://en.wikipedia.org/wiki/Ruben_Berta_International_Airport,Ruben Berta
+6034,SCPE,small_airport,San Pedro de Atacama Airport,-22.9217,-68.158401,7960,SA,CL,CL-AN,San Pedro De Atacama,no,,,SCPE,,,https://en.wikipedia.org/wiki/San_Pedro_de_Atacama_Airport,
+6086,SETU,medium_airport,Lieutenant Colonel Luis A. Mantilla International Airport,0.809506,-77.708099,9649,SA,EC,EC-C,Tulcán,yes,SETU,TUA,SETU,,,https://en.wikipedia.org/wiki/Teniente_Coronel_Luis_a_Mantilla_International_Airport,Teniente Coronel Luis A. Mantilla
+6106,SKBS,medium_airport,José Celestino Mutis Airport,6.20292,-77.3947,80,SA,CO,CO-CHO,Bahía Solano,yes,SKBS,BSC,SKBS,BSC,,https://en.wikipedia.org/wiki/Jos%C3%A9_Celestino_Mutis_Airport,
+6151,SKPP,medium_airport,Guillermo León Valencia Airport,2.454359,-76.609253,5687,SA,CO,CO-CAU,Popayán,yes,SKPP,PPN,SKPP,PPN,,https://en.wikipedia.org/wiki/Guillermo_Leon_Valencia_Airport,
+6182,SLCO,medium_airport,Capitán Aníbal Arab Airport,-11.039109,-68.782774,889,SA,BO,BO-N,Cobija,yes,SLCO,CIJ,SLCO,,,https://en.wikipedia.org/wiki/Cap._Anibal_Arab_Airport,
+6184,SLLP,large_airport,El Alto International Airport,-16.510272,-68.189416,13355,SA,BO,BO-L,La Paz / El Alto,yes,SLLP,LPB,SLLP,,https://naabol.gob.bo/aeropuerto-internacional-el-alto/,https://en.wikipedia.org/wiki/El_Alto_International_Airport,
+6191,SLTR,medium_airport,Teniente Av. Jorge Henrich Arauz Airport,-14.8187,-64.917999,509,SA,BO,BO-B,Trinidad,yes,SLTR,TDD,SLTR,,,https://en.wikipedia.org/wiki/Tte._Av._Jorge_Henrich_Arauz_Airport,
+6221,SPJJ,medium_airport,Francisco Carle Airport,-11.7831001282,-75.47339630130001,11034,SA,PE,PE-JUN,Jauja,yes,SPJJ,JAU,SPJJ,,,https://en.wikipedia.org/wiki/Francisco_Carle_Airport,
+6231,SPPY,medium_airport,Chachapoyas Airport,-6.201911,-77.856195,8333,SA,PE,PE-AMA,Chachapoyas,yes,SPPY,CHH,SPPY,,,https://en.wikipedia.org/wiki/Chachapoyas_Airport,
+6244,SUAA,medium_airport,Ángel S. Adami International Airport,-34.7892,-56.264702,174,SA,UY,UY-MO,Montevideo,no,,,SUAA,,,https://en.wikipedia.org/wiki/%C3%81ngel_S._Adami_Airport,"Aeródromo de Melilla, Melilla Airport"
+6252,SVAS,small_airport,Armando Schwarck Airport,6.577504,-66.816564,266,SA,VE,VE-F,Guayabal,no,,LPJ,SVAS,,,https://es.wikipedia.org/wiki/Aeropuerto_Armando_Schwarck,Los Pijiguaos mine
+6256,SVBI,medium_airport,Barinas Airport,8.615,-70.214167,615,SA,VE,VE-E,Barinas,yes,SVBI,BNS,SVBI,,,https://en.wikipedia.org/wiki/Barinas_Airport,
+6259,SVBM,large_airport,Jacinto Lara International Airport,10.042747,-69.35862,2042,SA,VE,VE-K,Barquisimeto,yes,SVBM,BRM,SVBM,,,https://en.wikipedia.org/wiki/Jacinto_Lara_International_Airport,
+6262,SVCB,medium_airport,General Tomas de Heres Airport,8.122161,-63.536957,197,SA,VE,VE-F,Ciudad Bolivar,no,SVCB,CBL,SVCB,,,https://en.wikipedia.org/wiki/Tom%C3%A1s_de_Heres_Airport,Aeropuerto General Tomas de Heres
+6282,SVFM,medium_airport,Generalissimo Francisco de Miranda Air Base,10.485033,-66.843513,2739,SA,VE,VE-M,Caracas,no,,,SVFM,,,https://en.wikipedia.org/wiki/Generalissimo_Francisco_de_Miranda_Air_Base,"Caracas Francisco de Miranda, La Carlota"
+6423,UACC,large_airport,Nursultan Nazarbayev International Airport,51.027035,71.467094,1165,AS,KZ,KZ-AST,Astana,yes,UACC,NQZ,UACC,,https://www.nn-airport.kz,https://en.wikipedia.org/wiki/Nursultan_Nazarbayev_International_Airport,"TSE, Astana Airport"
+6431,UAKK,large_airport,Sary-Arka Airport,49.670799,73.334396,1765,AS,KZ,KZ-KAR,Karaganda,yes,UAKK,KGF,UAKK,,,https://en.wikipedia.org/wiki/Sary-Arka_Airport,
+6445,UDYE,medium_airport,Erebuni Airport,40.122100830099996,44.465000152600005,2948,AS,AM,AM-ER,Yerevan,no,,,UDYE,,,https://en.wikipedia.org/wiki/Erebuni_Airport,Аэропорт Эребуни
+6446,UDYZ,large_airport,Zvartnots International Airport,40.148941,44.397887,2838,AS,AM,AM-ER,Yerevan,yes,UDYZ,EVN,UDYZ,,http://www.aia-zvartnots.aero/,https://en.wikipedia.org/wiki/Zvartnots_International_Airport,"UGEE, Erevan Airport, Erivan Airport, Аэропорт Звартноц, Аэропорт Ереван"
+6449,UERR,medium_airport,Mirny Airport,62.534698486328125,114.03900146484375,1156,AS,RU,RU-SA,Mirny,yes,UERR,MJZ,UERR,,,https://en.wikipedia.org/wiki/Mirny_Airport,
+6457,UHMD,medium_airport,Provideniya Bay Airport,64.378098,-173.242996,72,AS,RU,RU-CHU,Chukotka,no,UHMD,PVS,UHMD,XHMD,,https://en.wikipedia.org/wiki/Provideniya_Bay_Airport,"УХМД, ЬХМД, Bukhta Provideniya Airport, Urelik Airport, Ureliki Airport, Аэропорт Бухта Провидения, Аэропорт Урелики"
+6461,UHSS,large_airport,Yuzhno-Sakhalinsk International Airport,46.885461,142.717466,59,AS,RU,RU-SAK,Yuzhno-Sakhalinsk,yes,UHSS,UUS,UHSS,,https://uusaero.ru/,https://en.wikipedia.org/wiki/Yuzhno-Sakhalinsk_Airport,"УХСС, Аэропорт Южно-Сахалинск, Khomutovo, Khomutovo International Airport"
+6476,UKHH,medium_airport,Kharkiv International Airport,49.926943,36.290814,508,EU,UA,UA-U-A,Kharkiv,no,UKHH,HRK,UKHH,,https://hrk.aero/,https://en.wikipedia.org/wiki/Kharkiv_International_Airport,"Osnova International Airport, Міжнародний аеропорт ""Харків"""
+6482,UKLN,medium_airport,Chernivtsi International Airport,48.2593,25.980801,826,EU,UA,UA-77,Chernivtsi,no,UKLN,CWC,UKLN,,,https://en.wikipedia.org/wiki/Chernivtsi_International_Airport,
+6485,UKLU,medium_airport,Uzhhorod International Airport,48.6343,22.263399,383,EU,UA,UA-21,Uzhhorod,no,UKLU,UDJ,UKLU,,,https://en.wikipedia.org/wiki/Uzhhorod_International_Airport,"Міжнародний аеропорт ""Ужгород"""
+6486,UKON,medium_airport,Mykolaiv International Airport [CLOSED],47.057899,31.9198,184,EU,UA,UA-48,Mykolaiv,no,UKON,NLV,UKON,,https://www.airport.nikolaev.ua/,https://en.wikipedia.org/wiki/Mykolaiv_Airport,"Nikolayev Airport, Nikolaev Airport, Аэропорт Николаев, Nikolayev, UKON, NLV"
+6506,UNKL,large_airport,Krasnoyarsk International Airport,56.175743,92.485788,942,AS,RU,RU-KYA,Krasnoyarsk,yes,UNKL,KJA,UNKL,,http://www.kja.aero,https://en.wikipedia.org/wiki/Krasnoyarsk_International_Airport,Yemelyanovo
+6520,URWA,large_airport,Astrakhan Narimanovo Boris M. Kustodiev International Airport,46.282843,48.010511,-65,AS,RU,RU-AST,Astrakhan,yes,URWA,ASF,URWA,,http://xn--80aaaa9dcahhdbllc1cxhc.xn--p1ai/,https://en.wikipedia.org/wiki/Narimanovo_Airport,"Astrahan Airport, Narimanovo Airport, Аэропорт Астрахань, Аэропорт Нариманово"
+9389,2FD7,heliport,Air Orlando Heliport,28.4356,-81.473099,120,NA,US,US-FL,Orlando,no,,,2FD7,2FD7,,,Air Florida Heliport
+11320,4AK,small_airport,Livengood Camp Airport,65.467,-148.6534,425,NA,US,US-AK,Livengood,no,,LIV,4AK,4AK,,,4AK2
+15766,PFKK,small_airport,Kokhanok Airport,59.433248,-154.80217,115,NA,US,US-AK,Kokhanok,yes,PFKK,KNK,PFKK,9K2,,https://en.wikipedia.org/wiki/Kokhanok_Airport,
+16711,PACK,small_airport,Chefornak Airport,60.136667,-164.279167,49,NA,US,US-AK,Chefornak,yes,PACK,CYF,PACK,CFK,,https://en.wikipedia.org/wiki/Chefornak_Airport,Z74
+18728,K3O9,small_airport,Grand Lake Regional Airport,36.577598571777,-94.86190032959,792,NA,US,US-OK,Afton,no,,NRI,3O9,3O9,http://www.thelandingsgrandlake.com/airport.htm,https://en.wikipedia.org/wiki/Grand_Lake_Regional_Airport,The Landings on Monkey Island
+18737,K3S8,small_airport,Grants Pass Airport,42.510101,-123.388,1126,NA,US,US-OR,Grants Pass,no,,GTP,,3S8,,https://en.wikipedia.org/wiki/Grants_Pass_Airport,Merlin
+18982,K6D9,small_airport,Iosco County Airport,44.312801,-83.422302,606,NA,US,US-MI,East Tawas,no,,ECA,,6D9,http://www.us23heritageroute.org/location.asp?ait=av&aid=839,https://en.wikipedia.org/wiki/Iosco_County_Airport,
+19224,KAAF,small_airport,Apalachicola Regional Airport,29.727501,-85.027496,20,NA,US,US-FL,Apalachicola,no,KAAF,AAF,KAAF,AAF,,https://en.wikipedia.org/wiki/Apalachicola_Municipal_Airport,"AQQ, KAQQ"
+19262,KAIO,small_airport,Atlantic Municipal Airport,41.40729904,-95.04689789,1165,NA,US,US-IA,Atlantic,no,KAIO,AIO,KAIO,AIO,,https://en.wikipedia.org/wiki/Atlantic_Municipal_Airport,
+19275,KALS,medium_airport,San Luis Valley Regional Airport/Bergman Field,37.434898,-105.866997,7539,NA,US,US-CO,Alamosa,yes,KALS,ALS,KALS,ALS,https://www.sanluisvalleyairport.org/,https://en.wikipedia.org/wiki/San_Luis_Valley_Regional_Airport,
+19397,KBNO,medium_airport,Burns Municipal Airport,43.590463,-118.955154,4148,NA,US,US-OR,Burns,no,KBNO,BNO,KBNO,BNO,http://www.ci.burns.or.us/airport.html,https://en.wikipedia.org/wiki/Burns_Municipal_Airport,
+19420,KBVS,small_airport,Skagit Regional Airport,48.470901,-122.420998,144,NA,US,US-WA,Burlington,no,KBVS,MVW,KBVS,BVS,http://www.portofskagit.com/skagit-regional-airport/,https://en.wikipedia.org/wiki/Skagit_Regional_Airport,75S
+19427,KBXK,small_airport,Buckeye Municipal Airport,33.422397,-112.686317,1033,NA,US,US-AZ,Buckeye,no,KBXK,BXK,KBXK,BXK,,https://en.wikipedia.org/wiki/Buckeye_Municipal_Airport,"buckeye, buckeye municipal"
+19475,KCDS,medium_airport,Childress Municipal Airport,34.4337997437,-100.288002014,1954,NA,US,US-TX,Childress,no,KCDS,CDS,KCDS,CDS,,https://en.wikipedia.org/wiki/Childress_Municipal_Airport,
+19489,KCGE,small_airport,Cambridge Dorchester Airport,38.53929901,-76.03040314,20,NA,US,US-MD,Cambridge,no,KCGE,CGE,KCGE,CGE,http://docogonet.com/index.php?page=airport_division,https://en.wikipedia.org/wiki/Cambridge%E2%80%93Dorchester_Airport,
+19534,KCON,medium_airport,Concord Municipal Airport,43.20270157,-71.50229645,342,NA,US,US-NH,Concord,no,KCON,CON,KCON,CON,http://www.concordnh.gov/facilities/facility/details/Concord-Municipal-Airport-31,https://en.wikipedia.org/wiki/Concord_Municipal_Airport,
+19606,KD60,small_airport,Tioga Municipal Airport,48.38050079,-102.8980026,2271,NA,US,US-ND,Tioga,no,,VEX,D60,D60,http://www.tiogand.net/index.asp?SEC=D996B72D-EE0E-4AA1-929E-1F5F0C5C46CE&Type=B_BASIC,,
+19676,KDXR,medium_airport,Danbury Municipal Airport,41.371656,-73.482227,458,NA,US,US-CT,Danbury,no,KDXR,DXR,KDXR,DXR,,https://en.wikipedia.org/wiki/Danbury_Municipal_Airport,
+19761,KEOK,small_airport,Keokuk Municipal Airport,40.459899902299995,-91.4284973145,671,NA,US,US-IA,Keokuk,no,KEOK,EOK,KEOK,EOK,http://www.cityofkeokuk.org/airport.html,https://en.wikipedia.org/wiki/Keokuk_Municipal_Airport,
+19770,KESC,medium_airport,Delta County Airport,45.723199,-87.088623,609,NA,US,US-MI,Escanaba,yes,KESC,ESC,KESC,ESC,,https://en.wikipedia.org/wiki/Delta_County_Airport,
+19829,KF70,small_airport,French Valley Airport,33.5742,-117.127998,1350,NA,US,US-CA,Murrieta,no,,RBK,KF70,F70,http://www.rcfva.com/,https://en.wikipedia.org/wiki/French_Valley_Airport,
+19891,PAKF,small_airport,False Pass Airport,54.84751,-163.407168,20,NA,US,US-AK,False Pass,yes,PAKF,KFP,PAKF,KFP,,https://en.wikipedia.org/wiki/False_Pass_Airport,
+19926,KGBG,small_airport,Galesburg Regional HW Timmons  Airport,40.938,-90.431099,764,NA,US,US-IL,Galesburg,no,KGBG,GBG,KGBG,GBG,http://www.ci.galesburg.il.us/services/airport/,https://en.wikipedia.org/wiki/Galesburg_Municipal_Airport,
+19963,KGMU,medium_airport,Greenville Downtown Airport,34.847903,-82.350217,1048,NA,US,US-SC,Greenville,no,KGMU,GMU,KGMU,GMU,http://www.greenvilledowntownairport.com/,https://en.wikipedia.org/wiki/Greenville_Downtown_Airport,
+19974,KGPZ,small_airport,Grand Rapids Itasca Co-Gordon Newstrom field,47.21110153,-93.50980377,1355,NA,US,US-MN,Grand Rapids,no,KGPZ,GPZ,KGPZ,GPZ,http://grandrapids.govoffice.com/vertical/Sites/%7B938C328A-AD1C-45AA-A862-764C60A37DEF%7D/uploads/%7B7E8C4920-D1DC-4696-9A43-FF,https://en.wikipedia.org/wiki/Grand_Rapids_%E2%80%93_Itasca_County_Airport,
+19996,KGYH,small_airport,Donaldson Field Airport,34.758301,-82.376404,955,NA,US,US-SC,Greenville,no,KGYH,GDC,KGYH,GYH,,https://en.wikipedia.org/wiki/Donaldson_Center_Airport,7A1
+19999,KGYR,small_airport,Phoenix Goodyear Airport,33.4225006104,-112.375999451,968,NA,US,US-AZ,Goodyear,no,KGYR,GYR,KGYR,GYR,http://goodyearairport.com/,https://en.wikipedia.org/wiki/Phoenix_Goodyear_Airport,NAS Litchfield Park
+20023,KHAF,small_airport,Half Moon Bay Airport,37.513401031499995,-122.500999451,66,NA,US,US-CA,Half Moon Bay,no,KHAF,HAF,KHAF,HAF,,https://en.wikipedia.org/wiki/Half_Moon_Bay_Airport,
+20053,KHII,medium_airport,Lake Havasu City Airport,34.570506,-114.357745,783,NA,US,US-AZ,Lake Havasu City,yes,KHII,HII,KHII,HII,https://www.lhcaz.gov/public-works/airport,https://en.wikipedia.org/wiki/Lake_Havasu_City_Airport,
+20054,KHIO,medium_airport,Portland Hillsboro Airport,45.540401,-122.949997,208,NA,US,US-OR,Portland,no,KHIO,HIO,KHIO,HIO,http://www.flypdx.com/Airports/Hillsboro/,https://en.wikipedia.org/wiki/Hillsboro_Airport,
+20117,KHZY,medium_airport,Northeast Ohio Regional Airport,41.778,-80.695503,924,NA,US,US-OH,Ashtabula,no,KHZY,JFN,KHZY,HZY,http://www.neohioregionalairport.com/,https://en.wikipedia.org/wiki/Ashtabula_County_Airport,Ashtabula County
+20170,KIKV,small_airport,Ankeny Regional Airport,41.691399,-93.566399,910,NA,US,US-IA,Ankeny,no,,,KIKV,IKV,,https://en.wikipedia.org/wiki/Ankeny_Regional_Airport,
+20173,KILN,medium_airport,Wilmington Airpark,39.427898407,-83.792098999,1077,NA,US,US-OH,Wilmington,no,KILN,ILN,KILN,ILN,http://www.wilmingtonairpark.com/,https://en.wikipedia.org/wiki/Airborne_Airpark,"Clinton Field, Clinton County AFB, Airborne Airpark"
+20212,KJGG,small_airport,Williamsburg Jamestown Airport,37.239201,-76.716103,49,NA,US,US-VA,Williamsburg,no,,,KJGG,JGG,https://williamsburgjamestownairport.com/,,
+20214,KJKA,small_airport,Jack Edwards National Airport,30.290501,-87.671799,17,NA,US,US-AL,Gulf Shores,no,KJKA,GUF,KJKA,JKA,https://www.flyjka.com/,https://en.wikipedia.org/wiki/Jack_Edwards_Airport,AL15
+20277,KKLS,medium_airport,Southwest Washington Regional Airport,46.11800003049999,-122.898002625,20,NA,US,US-WA,Kelso,no,KKLS,KLS,KKLS,KLS,http://www.kelso.gov/Departments%20%2526%20Services/Airport,https://en.wikipedia.org/wiki/Southwest_Washington_Regional_Airport,"Molt Taylor Field, Kelso-Longview Regional"
+20327,KLDJ,small_airport,Linden Airport,40.617401123,-74.2445983887,23,NA,US,US-NJ,Linden,no,KLDJ,LDJ,KLDJ,LDJ,http://www.lindenairportnj.com/,https://en.wikipedia.org/wiki/Linden_Airport,"Manhattan, New York City, NYC"
+20333,PALG,small_airport,Kalskag Airport,61.53630065917969,-160.34100341796875,55,NA,US,US-AK,Kalskag,yes,PALG,KLG,PALG,KLG,,https://en.wikipedia.org/wiki/Kalskag_Airport,
+20343,KLHX,small_airport,La Junta Municipal Airport,38.049702,-103.509003,4229,NA,US,US-CO,La Junta,no,,,KLHX,LHX,,https://en.wikipedia.org/wiki/La_Junta_Municipal_Airport,
+20401,KLZU,small_airport,Gwinnett County Briscoe Field,33.97809982,-83.96240234,1061,NA,US,US-GA,Lawrenceville,no,KLZU,LZU,KLZU,LZU,http://www.lzuairport.com/,https://en.wikipedia.org/wiki/Gwinnett_County_Airport,
+20402,KLZZ,small_airport,Lampasas Airport,31.106199,-98.1959,1215,NA,US,US-TX,Lampasas,no,,,KLZZ,LZZ,,,T28
+20481,KMCK,medium_airport,McCook Ben Nelson Regional Airport,40.207787,-100.592794,2583,NA,US,US-NE,McCook,yes,KMCK,MCK,KMCK,MCK,,https://en.wikipedia.org/wiki/McCook_Regional_Airport,
+20491,KMEB,small_airport,Laurinburg Maxton Airport,34.791901,-79.365799,216,NA,US,US-NC,Maxton,no,KMEB,MXE,KMEB,MEB,,https://en.wikipedia.org/wiki/Laurinburg-Maxton_Airport,
+20507,KMHV,medium_airport,Mojave Air &  Space Port,35.056391,-118.145342,2801,NA,US,US-CA,Mojave,no,KMHV,MHV,KMHV,MHV,https://www.mojaveairport.com/,https://en.wikipedia.org/wiki/Mojave_Air_and_Space_Port,Rutan Field
+20527,KMMH,medium_airport,Mammoth Yosemite Airport,37.625381,-118.84306,7135,NA,US,US-CA,Mammoth Lakes,yes,KMMH,MMH,KMMH,MMH,,https://en.wikipedia.org/wiki/Mammoth_Yosemite_Airport,
+20549,KMPO,small_airport,Pocono Mountains Municipal Airport,41.136025,-75.379572,1915,NA,US,US-PA,Mount Pocono,no,KMPO,MPO,KMPO,MPO,https://www.mpoairport.com/,https://en.wikipedia.org/wiki/Pocono_Mountains_Municipal_Airport,
+20562,KMRT,small_airport,Union County Airport,40.224701,-83.351601,1021,NA,US,US-OH,Marysville,no,,,KMRT,MRT,,https://en.wikipedia.org/wiki/Union_County_Airport_(Ohio),
+20570,KMUL,small_airport,Spence Airport,31.141569,-83.703718,292,NA,US,US-GA,Moultrie,no,KMUL,MUL,KMUL,MUL,,https://en.wikipedia.org/wiki/Spence_Airport,
+20591,KMYL,medium_airport,McCall Municipal Airport,44.888837,-116.101112,5024,NA,US,US-ID,McCall,yes,KMYL,MYL,KMYL,MYL,http://www.mccall.id.us/services/airport.html,https://en.wikipedia.org/wiki/McCall_Municipal_Airport,
+20632,KNBJ,small_airport,Naval Outlying Field Barin,30.389099121100003,-87.63529968259999,54,NA,US,US-AL,Foley,no,KNBJ,NHX,KNBJ,NBJ,,https://en.wikipedia.org/wiki/Naval_Outlying_Field_Barin,Barin NOLF
+20848,KPNA,medium_airport,Ralph Wenz Field,42.79550171,-109.8069992,7102,NA,US,US-WY,Pinedale,no,KPNA,PWY,KPNA,PNA,http://www.pinedaleonline.com/pinedaleairport.HTM,https://en.wikipedia.org/wiki/Ralph_Wenz_Field,
+20933,KRIW,medium_airport,Central Wyoming Regional Airport,43.064201,-108.459999,5525,NA,US,US-WY,Riverton,yes,KRIW,RIW,KRIW,RIW,https://centralwyomingairport.com/,https://en.wikipedia.org/wiki/Central_Wyoming_Regional_Airport,
+20974,KRWL,medium_airport,Rawlins Municipal Airport/Harvey Field,41.80559921,-107.1999969,6813,NA,US,US-WY,Rawlins,no,KRWL,RWL,KRWL,RWL,http://www.wyomingairports.org/index.php?/main/airports_detail/rawlins_municipal_airport/,https://en.wikipedia.org/wiki/Rawlins_Municipal_Airport,
+21031,KSAA,small_airport,Shively Field,41.444901,-106.823997,7012,NA,US,US-WY,Saratoga,no,KSAA,SAA,KSAA,SAA,,https://en.wikipedia.org/wiki/Shively_Field,
+21045,KSDL,small_airport,Scottsdale Airport,33.622898101807,-111.91100311279,1510,NA,US,US-AZ,Scottsdale,no,KSDL,SCF,KSDL,SDL,http://www.scottsdaleaz.gov/airport/,https://en.wikipedia.org/wiki/Scottsdale_Airport,Thunderbird Field #2
+21055,KSEZ,small_airport,Sedona Airport,34.848598480225,-111.78800201416,4830,NA,US,US-AZ,Sedona,no,KSEZ,SDX,KSEZ,SEZ,http://sedonaairport.org/,https://en.wikipedia.org/wiki/Sedona_Airport,
+21109,KSSF,medium_airport,Stinson Municipal Airport,29.336999893188,-98.471099853516,577,NA,US,US-TX,San Antonio,no,KSSF,SSF,KSSF,SSF,http://www.sanantonio.gov/SSF.aspx,https://en.wikipedia.org/wiki/Stinson_Municipal_Airport,
+21180,KTBR,small_airport,Statesboro Bulloch County Airport,32.4827003479,-81.73690032959999,187,NA,US,US-GA,Statesboro,no,KTBR,TBR,KTBR,TBR,,https://en.wikipedia.org/wiki/Statesboro-Bulloch_County_Airport,
+21209,KTOA,small_airport,Zamperini Field,33.803398132324,-118.33999633789,103,NA,US,US-CA,Torrance,no,KTOA,TOA,KTOA,TOA,http://www.torranceca.gov/487.htm,https://en.wikipedia.org/wiki/Zamperini_Field,
+21241,KTZR,small_airport,Bolton Field,39.901199,-83.136902,905,NA,US,US-OH,Columbus,no,,,KTZR,TZR,,https://en.wikipedia.org/wiki/Bolton_Field,
+21315,KVCV,small_airport,Southern California Logistics Airport,34.597499847399995,-117.383003235,2885,NA,US,US-CA,Victorville,no,KVCV,VCV,KVCV,VCV,http://www.logisticsairport.com/page.aspx?pgid=3,https://en.wikipedia.org/wiki/Southern_California_Logistics_Airport,"George AFB, Victorville Airport"
+21325,KVIS,medium_airport,Visalia Municipal Airport,36.318699,-119.392998,295,NA,US,US-CA,Visalia,no,KVIS,VIS,KVIS,VIS,,https://en.wikipedia.org/wiki/Visalia_Municipal_Airport,
+21327,KVKS,small_airport,Vicksburg Municipal Airport,32.23929977417,-90.928398132324,106,NA,US,US-MS,Vicksburg,no,KVKS,VKS,KVKS,VKS,http://www.vicksburg.org/departments/airport,,
+21344,KVYS,small_airport,Illinois Valley Regional Airport Walter A Duncan Field,41.351898,-89.153099,654,NA,US,US-IL,Peru,no,KVYS,VYS,KVYS,VYS,http://www.peru.il.us/airport,https://en.wikipedia.org/wiki/Illinois_Valley_Regional_Airport,
+21434,PAKY,small_airport,Karluk Airport,57.565919,-154.453762,137,NA,US,US-AK,Karluk,yes,PAKY,KYK,PAKY,KYK,,https://en.wikipedia.org/wiki/Karluk_Airport,
+24081,PAPE,small_airport,Perryville Airport,55.9065,-159.16091,29,NA,US,US-AK,Perryville,yes,PAPE,KPV,PAPE,PEV,,https://en.wikipedia.org/wiki/Perryville_Airport,"AK05, AK5"
+25239,PAKU,small_airport,Ugnu-Kuparuk Airport,70.33080291750001,-149.598007202,67,NA,US,US-AK,Kuparuk,no,PAKU,UUK,PAKU,UBW,,https://en.wikipedia.org/wiki/Ugnu-Kuparuk_Airport,
+25268,UT25,small_airport,Monument Valley Airport,37.015868,-110.202031,5192,NA,US,US-UT,Oljato-Monument Valley,no,,GMV,UT25,UT25,http://gouldings.com/new/wp-content/uploads/2010/09/Gouldings_Airport_Rules.pdf,,"71V, Tsé Biiʼ Ndzisgaii"
+25693,PAWB,small_airport,Beaver Airport,66.362198,-147.406998,359,NA,US,US-AK,Beaver,yes,PAWB,WBQ,PAWB,WBQ,,https://en.wikipedia.org/wiki/Beaver_Airport,
+26382,UTAM,medium_airport,Mary International Airport,37.62353,61.895668,728,AS,TM,TM-M,Mary,yes,UTAM,MYP,UTAM,,https://www.maryairport.gov.tm/,https://en.wikipedia.org/wiki/Mary_International_Airport,
+26397,UUEM,medium_airport,Migalovo Air Base,56.82469940185547,35.7577018737793,469,EU,RU,RU-TVE,Tver,no,UUEM,KLD,UUEM,,,https://en.wikipedia.org/wiki/Migalovo,
+26405,UWKE,medium_airport,Begishevo Airport,55.564701,52.092499,643,AS,RU,RU-TA,Nizhnekamsk,yes,UWKE,NBC,UWKE,,,https://en.wikipedia.org/wiki/Begishevo_Airport,"УВКЕ, Бегишево, Нижнекамск"
+26432,VAAK,medium_airport,Akola Airport,20.698931,77.056883,999,AS,IN,IN-MM,Akola,no,VAAK,AKD,VAAK,,,https://en.wikipedia.org/wiki/Akola_Airport,Shioni Airport
+26435,VEBU,medium_airport,Bilaspur Airport,21.9884,82.111,899,AS,IN,IN-CT,Bilaspur,yes,VEBU,PAB,VEBU,,,https://en.wikipedia.org/wiki/Bilaspur_Airport,VABI
+26443,VAGN,small_airport,Guna Airport,24.654699,77.347298,1600,AS,IN,IN-MP,,no,VAGN,GUX,VAGN,,,,
+26448,VAJM,medium_airport,Jamnagar Airport,22.465499877929688,70.01260375976562,69,AS,IN,IN-GJ,Jamnagar,yes,VAJM,JGA,VAJM,,,https://en.wikipedia.org/wiki/Jamnagar_Airport,Jamnagar Air Force Station
+26456,VAPR,medium_airport,Porbandar Airport,21.649524,69.656405,23,AS,IN,IN-GJ,Porbandar,yes,VAPR,PBD,VAPR,,http://www.airportsindia.org.in/allAirports/porbander.jsp,https://en.wikipedia.org/wiki/Porbandar_Airport,
+26471,VCCT,medium_airport,China Bay Airport,8.539159,81.18128,6,AS,LK,LK-5,Trincomalee,yes,VCCT,TRR,VCCT,,,https://en.wikipedia.org/wiki/China_Bay_Airport,"SLAF China Bay, RAF China Bay, Trincomalee Airport"
+26493,VEBK,small_airport,Bokaro Airport,23.643499,86.148903,715,AS,IN,IN-BR,,no,VEBK,,VEBK,,,https://en.wikipedia.org/wiki/Bokaro_Airport,
+26509,VEKU,medium_airport,Silchar Airport,24.9129009247,92.97869873050001,352,AS,IN,IN-AS,Silchar,yes,VEKU,IXS,VEKU,,http://aai.aero/allAirports/silchar_general.jsp,https://en.wikipedia.org/wiki/Silchar_Airport,Kumbhigram Air Force Station
+26512,VEMN,medium_airport,Dibrugarh Airport,27.4839000702,95.0168991089,362,AS,IN,IN-AS,Dibrugarh,yes,VEMN,DIB,VEMN,,,https://en.wikipedia.org/wiki/Dibrugarh_Airport,Mohanbari Air Force Station
+26522,VEUK,medium_airport,Utkela Airport,20.097778,83.183333,685,AS,IN,IN-OR,Bhawanipatna,yes,VEUK,UKE,VEUK,,,https://en.wikipedia.org/wiki/Utkela_Airport,
+26530,VGRJ,medium_airport,Shah Makhdum Airport,24.437201,88.616501,64,AS,BD,BD-E,Rajshahi,yes,VGRJ,RJH,VGRJ,,,https://en.wikipedia.org/wiki/Shah_Makhdum_Airport,
+26533,VGTJ,small_airport,Tejgaon Airport,23.778507,90.382719,24,AS,BD,BD-C,Dhaka,no,VGTJ,,VGTJ,,,https://en.wikipedia.org/wiki/Tejgaon_Airport,
+26552,VIDD,medium_airport,Safdarjung Airport,28.585453,77.203563,705,AS,IN,IN-DL,New Delhi,no,VIDD,,VIDD,,,https://en.wikipedia.org/wiki/Safdarjung_Airport,
+26602,VOAT,medium_airport,Agatti Airport,10.8237,72.176003,14,AS,IN,IN-LD,Agatti,yes,VOAT,AGX,VOAT,,,https://en.wikipedia.org/wiki/Agatti_Aerodrome,
+26607,VOCB,large_airport,Coimbatore International Airport,11.03,77.043404,1324,AS,IN,IN-TN,Coimbatore,yes,VOCB,CJB,VOCB,,http://www.airportsindia.org.in/allAirports/coimbatore_generalinfo.jsp,https://en.wikipedia.org/wiki/Coimbatore_Airport,
+26622,VOPN,medium_airport,Sri Sathya Sai Airport,14.1492996216,77.7910995483,1558,AS,IN,IN-AP,Puttaparthi,no,VOPN,PUT,VOPN,,,https://en.wikipedia.org/wiki/Sri_Sathya_Sai_Airport,
+26648,VTCH,medium_airport,Mae Hong Son Airport,19.3013,97.9758,929,AS,TH,TH-58,Mae Hong Son,yes,VTCH,HGN,VTCH,,,https://en.wikipedia.org/wiki/Mae_Hong_Son_Airport,
+26659,VTPN,small_airport,Nakhon Sawan Airport,15.673,100.137001,113,AS,TH,TH-60,,no,VTPN,,VTPN,,,https://en.wikipedia.org/wiki/Nakhon_Sawan_Airport,
+26663,VTPY,small_airport,Khunan Phumipol Airport,17.2342,99.057899,492,AS,TH,TH-63,,no,VTPY,,VTPY,,,,
+26664,VTSA,small_airport,Khoun Khan Airport,6.6614,100.080002,18,AS,TH,TH-91,,no,VTSA,,VTSA,,,,
+26671,VTSK,medium_airport,Pattani Airport,6.78546,101.153999,8,AS,TH,TH-94,,no,VTSK,PAN,VTSK,,,https://en.wikipedia.org/wiki/Pattani_Airport,
+26691,VVCA,small_airport,Chu Lai Airport,15.4033,108.706001,10,AS,VN,VN-SCC,Tam Nghĩa,yes,VVCA,VCL,VVCA,,,https://en.wikipedia.org/wiki/Chu_Lai_Airport,chu lai air base
+26712,VYBG,small_airport,Bagan Airport,21.178800582885742,94.9301986694336,312,AS,MM,MM-04,Nyaung U,yes,VYBG,NYU,VYBG,,,https://en.wikipedia.org/wiki/Nyaung_U_Airport,
+26738,VYPY,small_airport,Pyay Airport,18.824499130249023,95.26599884033203,120,AS,MM,MM-02,Pye,no,VYPY,PRU,VYPY,,,,
+26743,VYTO,small_airport,Taungoo Airport,19.031299591064453,96.40119934082031,160,AS,MM,MM-02,Taungoo,no,,,VYTO,,,,
+26772,WAEW,medium_airport,Pitu Airport,2.04599,128.324997,49,AS,ID,ID-MU,Gotalalamo-Morotai Island,no,,OTI,WAEW,,,https://en.wikipedia.org/wiki/Pitu_Airport,
+26788,WARQ,large_airport,Adisoemarmo International Airport,-7.516044,110.757492,421,AS,ID,ID-JT,Surakarta,yes,WAHQ,SOC,WAHQ,,https://adisumarmo-airport.com/en,https://en.wikipedia.org/wiki/Adisumarmo_Airport,"WRSQ, WARQ, Adi Soemarmo, Adi Sumarmo"
+26791,WASF,medium_airport,Fakfak Airport,-2.920508,132.267011,462,AS,ID,ID-PB,Fakfak,yes,WASF,FKQ,WASF,,,https://en.wikipedia.org/wiki/Fakfak_Airport,"Iboru, Torea, Fak Fak"
+26804,WAWS,small_airport,Soroako Airport,-2.530582,121.356096,1388,AS,ID,ID-SN,Soroako,no,WAWS,SQR,WAWS,,,https://en.wikipedia.org/wiki/Soroako_Airport,WAAS
+26807,WBGB,medium_airport,Bintulu Airport,3.12385010719,113.019996643,74,AS,MY,MY-13,Bintulu,yes,WBGB,BTU,WBGB,,,https://en.wikipedia.org/wiki/Bintulu_Airport,
+26811,WBGR,medium_airport,Miri Airport,4.32201,113.987,59,AS,MY,MY-13,Miri,yes,WBGR,MYY,WBGR,,,https://en.wikipedia.org/wiki/Miri_Airport,
+26857,WIBJ,medium_airport,Japura Airport,-0.352808,102.334999,62,AS,ID,ID-RI,Rengat-Sumatra Island,no,WIBJ,RGT,WIBJ,,,https://en.wikipedia.org/wiki/Japura_Airport,WIPR
+26869,WMKD,medium_airport,Kuantan Airport,3.7753899097442627,103.20899963378906,58,AS,MY,MY-06,Kuantan,yes,WMKD,KUA,WMKD,,,https://en.wikipedia.org/wiki/Sultan_Haji_Ahmad_Shah_Airport,
+26870,WMKE,medium_airport,Kerteh Airport,4.53722,103.427002,18,AS,MY,MY-11,Kerteh,no,WMKE,KTE,WMKE,,,https://en.wikipedia.org/wiki/Kerteh_Airport,
+26885,WSAT,medium_airport,Tengah Air Base,1.387561,103.708291,50,AS,SG,SG-03,Western Water Catchment,no,WSAT,TGA,WSAT,,,https://en.wikipedia.org/wiki/Tengah_Air_Base,RAF Tengah
+26918,YBSU,large_airport,Sunshine Coast Airport,-26.593324,153.08319,15,OC,AU,AU-QLD,Maroochydore,yes,YBSU,MCY,YBSU,,http://www.sunshinecoastairport.com.au/,https://en.wikipedia.org/wiki/Sunshine_Coast_Airport,YBMC
+26940,YBWX,small_airport,Barrow Island Airport,-20.864444,115.406111,26,OC,AU,AU-WA,,no,YBWX,BWB,YBWX,,,https://en.wikipedia.org/wiki/Barrow_Island_Airport,
+26949,YCDO,small_airport,Condobolin Airport,-33.06565,147.21316,650,OC,AU,AU-NSW,,no,YCDO,CBX,YCDO,,,https://en.wikipedia.org/wiki/Condobolin_Airport,
+26952,YCGO,small_airport,Chillagoe Airport,-17.138386,144.528494,1110,OC,AU,AU-QLD,Chillagoe,no,YCGO,LLG,YCGO,,,https://en.wikipedia.org/wiki/Chillagoe_Airport,
+26972,YDLQ,medium_airport,Deniliquin Airport,-35.5593986511,144.945999146,316,OC,AU,AU-NSW,Deniliquin,no,YDLQ,DNQ,YDLQ,,http://www.deniliquin.nsw.gov.au/index.php?option=com_content&view=article&id=46786:deniliquin-airport&catid=350&Itemid=1540,https://en.wikipedia.org/wiki/Deniliquin_Airport,
+27004,YHID,medium_airport,Horn Island Airport,-10.585636,142.29277,43,OC,AU,AU-QLD,Horn,yes,YHID,HID,YHID,,https://www.torres.qld.gov.au/Community/Council-Facilities/Horn-Island/Airport,https://en.wikipedia.org/wiki/Horn_Island_Airport,
+27008,YHOT,medium_airport,Mount Hotham Airport,-37.0475006104,147.333999634,4260,OC,AU,AU-VIC,Mount Hotham,yes,YHOT,MHU,YHOT,,,https://en.wikipedia.org/wiki/Mount_Hotham_Airport,
+27045,YMBA,medium_airport,Mareeba Airport,-17.070277,145.424228,1560,OC,AU,AU-QLD,Mareeba,no,YMBA,MRG,YMBA,,https://msc.qld.gov.au/region/mareeba-airport-aviation-industrial-park/,https://en.wikipedia.org/wiki/Mareeba_Airfield,
+27053,YMES,medium_airport,RAAF Base East Sale,-38.0989,147.149002,23,OC,AU,AU-VIC,,no,,,YMES,,http://www.defence.gov.au/raaf/bases/eastsale/index.htm,https://en.wikipedia.org/wiki/RAAF_Base_East_Sale,
+27063,YMLT,medium_airport,Launceston Airport,-41.544935,147.210785,562,OC,AU,AU-TAS,Launceston (Western Junction),yes,YMLT,LST,YMLT,,http://www.launcestonairport.com.au/,https://en.wikipedia.org/wiki/Launceston_Airport,
+27068,YMND,small_airport,Maitland Airport,-32.701265,151.492912,85,OC,AU,AU-NSW,,no,YMND,MTL,YMND,,http://rnac.com.au,https://en.wikipedia.org/wiki/Maitland_Airport,
+27077,YMTI,small_airport,Mornington Island Airport,-16.662500381469727,139.17799377441406,33,OC,AU,AU-QLD,,yes,YMTI,ONG,YMTI,,,https://en.wikipedia.org/wiki/Mornington_Island_Airport,
+27081,YNAR,medium_airport,Narrandera Airport,-34.7022018433,146.511993408,474,OC,AU,AU-NSW,Narrandera,yes,YNAR,NRA,YNAR,,,https://en.wikipedia.org/wiki/Narrandera_Airport,
+27108,YPKG,medium_airport,Kalgoorlie Boulder Airport,-30.791543,121.464586,1203,OC,AU,AU-WA,Broadwood,yes,YPKG,KGI,YPKG,,,https://en.wikipedia.org/wiki/Kalgoorlie-Boulder_Airport,
+27114,YPMP,small_airport,Pormpuraaw Airport,-14.896451,141.60908,10,OC,AU,AU-QLD,Pormpuraaw,yes,YPMP,EDR,YPMP,,,https://en.wikipedia.org/wiki/Edward_River_Airport,Edward River Airport
+27135,YSDU,medium_airport,Dubbo City Regional Airport,-32.2167015076,148.574996948,935,OC,AU,AU-NSW,Dubbo,yes,YSDU,DBO,YSDU,,http://www.dubbo.nsw.gov.au/BusinessandIndustry/DubboCityRegionalAirport.html,https://en.wikipedia.org/wiki/Dubbo_Airport,
+27144,YSRI,medium_airport,RAAF Base Richmond,-33.604652,150.783051,67,OC,AU,AU-NSW,Richmond,no,YSRI,XRH,YSRI,,,https://en.wikipedia.org/wiki/RAAF_Base_Richmond,military
+27170,YWHA,medium_airport,Whyalla Airport,-33.05889892578125,137.51400756835938,41,OC,AU,AU-SA,Whyalla,yes,YWHA,WYA,YWHA,,,https://en.wikipedia.org/wiki/Whyalla_Airport,
+27204,ZLLL,large_airport,Lanzhou Zhongchuan International Airport,36.515202,103.620003,6388,AS,CN,CN-62,Lanzhou (Yongdeng),yes,ZLLL,LHW,ZLLL,,http://lzzcairport.com/Home/Index,https://en.wikipedia.org/wiki/Lanzhou_Airport,"ZGC, Datong Air Base, 兰州中川国际机场"
+27205,ZLXY,large_airport,Xi'an Xianyang International Airport,34.442207,108.762385,1572,AS,CN,CN-61,Xi'an,yes,ZLXY,XIY,ZLXY,,https://www.xxia.com/,https://en.wikipedia.org/wiki/Xi'an_Xianyang_International_Airport,"西安咸阳国际机场, Xian, Xianyang, Xi'an"
+27206,ZMBH,medium_airport,Bayankhongor Airport,46.1633,100.704002,6085,AS,MN,MN-069,Bayankhongor,yes,ZMBH,BYN,ZMBH,,,https://en.wikipedia.org/wiki/Bayankhongor_Airport,
+27277,FAAN,small_airport,Aliwal North Airport,-30.681072,26.730141,4405,AF,ZA,ZA-EC,Aliwal North,no,FAAN,,FAAN,,,https://af.wikipedia.org/wiki/Aliwal-Noord-lughawe,
+27328,YAMT,small_airport,Amata Airport,-26.097363,131.202732,695,OC,AU,AU-SA,,no,YAMT,AMT,YAMT,,,https://en.wikipedia.org/wiki/Amata_Airport,
+27480,YCOO,small_airport,Cooinda Airport,-12.903300285339355,132.53199768066406,13,OC,AU,AU-NT,,no,YCOO,CDA,YCOO,,,,
+27535,YDVR,small_airport,Docker River Airport,-24.859533,129.122209,589,OC,AU,AU-NT,Kaltukatjara,no,YDVR,DKV,YDVR,,,,
+27566,YFRG,small_airport,Fregon Airport,-26.774999618530273,132.01699829101562,528,OC,AU,AU-SA,,no,,,YFRG,,,,
+27982,YTDR,small_airport,Theodore Airport,-24.986796,150.093076,171,OC,AU,AU-QLD,,no,YTDR,TDR,YTDR,,,,
+28486,FYGK,small_airport,Farm Whitwater East Landing Strip,-24.629999,15.9392,857,AF,NA,NA-HA,Desert Homestead,no,FYGK,,FYGK,,,,Geluk Kuala Lodge
+28546,EDBC,small_airport,Cochstedt Airport,51.8564,11.4203,599,EU,DE,DE-ST,Hecklingen,no,EDBC,CSO,EDBC,,https://cochstedt-airport.de/,https://en.wikipedia.org/wiki/Magdeburg-Cochstedt_Airport,
+28602,EDVI,small_airport,Höxter-Holzminden Airfield,51.806667,9.378333,934,EU,DE,DE-NW,Höxter,no,,,EDVI,,http://www.flugplatz-hx.de,https://de.wikipedia.org/wiki/Flugplatz_H%C3%B6xter-Holzminden,Flugplatz Höxter-Holzminden
+28678,EDLO,small_airport,Oerlinghausen Airfield,51.93222,8.661667,558,EU,DE,DE-NW,Oerlinghausen,no,,,EDLO,,https://flugplatz-oerlinghausen.de/en/home-english/,https://en.wikipedia.org/wiki/Oerlinghausen_Airfield,Flugplatz Oerlinghausen
+28700,EDFB,small_airport,Reichelsheim Airfield,50.337973,8.878984,397,EU,DE,DE-HE,Reichelsheim,no,,,EDFB,,,https://en.wikipedia.org/wiki/Reichelsheim_Airfield,
+28840,LFFE,small_airport,Enghien-Moisselles Airfield,49.046016,2.353976,335,EU,FR,FR-IDF,"Attainville, Val-d'Oise",no,LFFE,,LFFE,,,https://en.wikipedia.org/wiki/Enghien_Moisselles_Airfield,
+28975,LFPL,small_airport,Lognes Emerainville Airfield,48.821028,2.625967,359,EU,FR,FR-IDF,"Lognes, Seine-et-Marne",no,LFPL,,LFPL,,,https://fr.wikipedia.org/wiki/A%C3%A9rodrome_de_Lognes-%C3%89merainville,"XLG, Aérodrome Lognes-Emerainville"
+29137,EGHA,small_airport,Compton Abbas Aerodrome,50.967201,-2.15361,811,EU,GB,GB-ENG,"Shaftesbury, Dorset",no,,,EGHA,,http://www.abbasair.co.uk/,https://en.wikipedia.org/wiki/Compton_Abbas_Airfield,
+29143,EGHJ,small_airport,Bembridge Airport,50.678101,-1.10944,53,EU,GB,GB-ENG,"Bembridge, Isle of Wight",no,EGHJ,BBP,EGHJ,,http://www.eghj.com/,https://en.wikipedia.org/wiki/Bembridge_Airport,Britten Norman
+29159,EGLM,small_airport,White Waltham Airfield,51.500801,-0.774444,131,EU,GB,GB-ENG,"Maidenhead, Berkshire",no,,,EGLM,,http://www.wlac.co.uk/,https://en.wikipedia.org/wiki/White_Waltham_Airfield,West London Aero Club
+29196,EGTB,small_airport,Wycombe Air Park,51.61177,-0.808316,515,EU,GB,GB-ENG,"Marlow, Buckinghamshire",no,EGTB,HYC,EGTB,,,https://en.wikipedia.org/wiki/Wycombe_Air_Park,"RAF Booker, High Wycombe"
+29222,EIIR,small_airport,Inisheer Aerodrome,53.064701,-9.5109,40,EU,IE,IE-G,Inis Oírr,yes,EIIR,INQ,EIIR,,,https://en.wikipedia.org/wiki/Inisheer_Aerodrome,Aran Islands
+29267,ENNM,small_airport,Namsos Airport,64.472198,11.5786,7,EU,NO,NO-50,Namsos,yes,ENNM,OSY,ENNM,,https://avinor.no/en/airport/namsos-airport/,https://en.wikipedia.org/wiki/Namsos_Airport%2C_H%C3%B8knes%C3%B8ra,"Namsos lufthavn, Høknesøra"
+29369,ESSW,small_airport,Västervik Airport,57.779999,16.5236,118,EU,SE,SE-H,Västervik,no,ESSW,VVK,ESSW,,http://www.essw.se,https://sv.wikipedia.org/wiki/V%C3%A4sterviks_flygplats,"Vastervik, essw, Västervik"
+29458,LOIH,small_airport,Hohenems-Dornbirn Airfield,47.384477,9.699776,1352,EU,AT,AT-8,Hohenems,no,LOIH,HOH,LOIH,,http://www.loih.at/,http://de.wikipedia.org/wiki/Flugplatz_Hohenems-Dornbirn,
+29649,RJOE,small_airport,JGSDF Akeno Airfield,34.533298,136.671997,20,AS,JP,JP-24,Ise,no,,,RJOE,,,https://en.wikipedia.org/wiki/Akeno_Air_Field,
+29743,LTBE,small_airport,Bursa Yunuseli Airport,40.233243,29.005583,331,AS,TR,TR-16,Bursa,no,LTBE,,LTBE,,,https://tr.wikipedia.org/wiki/Bursa_Yunuseli_Havaliman%C4%B1,BTZ
+29774,SCHA,small_airport,Chamonate Airport,-27.2968997955,-70.4131011963,984,SA,CL,CL-AT,Copiapo,no,,,SCHA,,,https://en.wikipedia.org/wiki/Chamonate_Airport,CPO
+29799,MDCZ,small_airport,Constanza - Expedición 14 de Junio National Airport,18.907499,-70.721901,3952,NA,DO,DO-13,Costanza,no,MDCZ,COZ,MDCZ,,,https://en.wikipedia.org/wiki/Constanza_Airport,
+29891,FBGZ,small_airport,Ghanzi Airport,-21.692499,21.6581,3730,AF,BW,BW-GH,Ghanzi,no,FBGZ,GNZ,FBGZ,,,https://en.wikipedia.org/wiki/Ghanzi_Airport,
+30331,SLRY,small_airport,Reyes Airport,-14.3044,-67.353401,935,SA,BO,BO-B,Reyes,no,SLRY,REY,SLRY,,,https://en.wikipedia.org/wiki/Reyes_Airport,
+30398,LKSZ,small_airport,Sazená Airfield,50.324699,14.2589,761,EU,CZ,CZ-ST,Sazená,no,LKSZ,,LKSZ,,http://www.flyforfun.cz/en/,https://cs.wikipedia.org/wiki/Leti%C5%A1t%C4%9B_Sazen%C3%A1,"Sazena Kralupy Airport, Sazena Kralipy Airport"
+30465,NZTL,small_airport,Tekapo Aerodrome,-44.005299,170.444,2496,OC,NZ,NZ-CAN,,no,,,NZTL,,http://www.airsafaris.co.nz/flights/Tekapo/,https://en.wikipedia.org/wiki/Lake_Tekapo_Airport,
+30648,NTGD,small_airport,Apataki Airport,-15.5736,-146.414993,8,OC,PF,PF-U-A,Apataki,yes,NTGD,APK,NTGD,,,https://en.wikipedia.org/wiki/Apataki_Airport,
+30655,SUAG,small_airport,Artigas International Airport,-30.4007,-56.5079,410,SA,UY,UY-AR,Artigas,no,SUAG,ATI,SUAG,,,https://en.wikipedia.org/wiki/Artigas_Airport,
+30673,MDCY,medium_airport,Samaná El Catey International Airport,19.269259,-69.737405,30,NA,DO,DO-20,Samana,yes,MDCY,AZS,MDCY,,,https://en.wikipedia.org/wiki/Saman%C3%A1_El_Catey_International_Airport,
+30681,NGTU,small_airport,Butaritari Airport,3.08583,172.811005,5,OC,KI,KI-G,Butaritari,yes,NGTU,BBG,NGTU,,,https://en.wikipedia.org/wiki/Butaritari_Atoll_Airport,Makin
+30683,TFFB,small_airport,Basse-Terre Baillif Airport,16.013648,-61.742928,59,NA,GP,GP-U-A,Basse-Terre,yes,TFFB,BBR,TFFB,,,https://en.wikipedia.org/wiki/Baillif_Airport,
+30704,MHBL,small_airport,Brus Laguna Airport,15.7631,-84.543602,19,NA,HN,HN-GD,Brus Laguna,no,,BHG,MHBL,,,https://en.wikipedia.org/wiki/Brus_Laguna_Airport,
+30761,VNBR,small_airport,Bajura Airport,29.502001,81.668999,4300,AS,NP,NP-P7,Bajura,no,VNBR,BJU,VNBR,,,https://en.wikipedia.org/wiki/Bajura_Airport,
+30796,FZEN,small_airport,Basankusu Airport,1.224789,19.788097,1217,AF,CD,CD-EQ,Basankusu,no,FZEN,BSU,FZEN,,,https://en.wikipedia.org/wiki/Basankusu_Airport,
+30813,FNCT,medium_airport,Catumbela Airport,-12.4792,13.4869,23,AF,AO,AO-BGU,Catumbela,yes,FNCT,CBT,FNCT,,,https://en.wikipedia.org/wiki/Catumbela_Airport,
+30825,ZGCD,medium_airport,Changde Taohuayuan Airport,28.9189,111.639999,128,AS,CN,CN-43,Changde (Dingcheng),yes,ZGCD,CGD,ZGCD,,,https://en.wikipedia.org/wiki/Changde_Taohuayuan_Airport,
+30839,BGCO,medium_airport,Neerlerit Inaat Airport,70.743103,-22.650499,45,NA,GL,GL-SE,Neerlerit Inaat,yes,BGCO,CNP,BGCO,,,https://en.wikipedia.org/wiki/Nerlerit_Inaat_Airport,"Constable Point, Mittarfik Nerlerit Inaat, Constable Pynt Lufthavn"
+30848,BR-2235,small_airport,Cururupu Airport,-1.820006,-44.864065,39,SA,BR,BR-MA,Cururupu,no,,CPU,,MA0012,,https://pt.wikipedia.org/wiki/Aeroporto_de_Cururupu,SNCU
+30870,UESS,medium_airport,Cherskiy Airport,68.740601,161.337997,20,AS,RU,RU-SA,Cherskiy,yes,UESS,CYX,UESS,,,https://en.wikipedia.org/wiki/Chersky_Airport,"УЕСС, Chersky Airport, Аэропорт Черский"
+30990,HSGN,small_airport,Geneina Airport,13.481882,22.467119,2651,AF,SD,SD-12,Geneina,no,HSGN,EGN,HSGN,,,https://en.wikipedia.org/wiki/Geneina_Airport,
+31220,FVBM,small_airport,Bumi Hills Airport,-16.816485,28.344786,1650,AF,ZW,ZW-MW,Bumi,no,,BZH,FVBM,,,,
+31594,HKMS,medium_airport,Mara Serena Lodge Airstrip,-1.404588,35.008349,5200,AF,KE,KE-33,Serena,yes,HKMS,MRE,HKMS,,,https://en.wikipedia.org/wiki/Mara_Serena_Airport,6100
+31610,ZGHY,small_airport,Hengyang Nanyue Airport,26.72208,112.617958,,AS,CN,CN-43,Hengyang,yes,ZGHY,HNY,ZGHY,,,https://en.wikipedia.org/wiki/Hengyang_Nanyue_Airport,
+31658,ZSLQ,medium_airport,Taizhou Luqiao Airport,28.562201,121.429001,,AS,CN,CN-33,Taizhou (Luqiao),yes,ZSLQ,HYN,ZSLQ,,,https://en.wikipedia.org/wiki/Huangyan_Luqiao_Airport,
+31686,AGGK,small_airport,Ngorangora Airport,-10.449700355500001,161.897994995,54,OC,SB,SB-MK,Kirakira,yes,AGGK,IRA,AGGK,,,https://en.wikipedia.org/wiki/Kirakira_Airport,
+31730,WAOK,small_airport,Gusti Syamsir Alam Airport,-3.294796,116.163815,4,AS,ID,ID-KS,Stagen,yes,WAOK,KBU,WAOK,,,https://en.wikipedia.org/wiki/Gusti_Syamsir_Alam_Airport,"WRBK, Stagen Airport"
+31741,GFKE,medium_airport,Kenema Airport,7.896364,-11.174126,485,AF,SL,SL-E,Kenema,no,GFKE,KEN,GFKE,,,https://en.wikipedia.org/wiki/Kenema_Airport,
+31747,UKFK,small_airport,Kerch Airport,45.372501,36.401402,171,EU,UA,UA-43,Kerch,no,UKFK,KHC,UKFK,,,https://en.wikipedia.org/wiki/Kerch_Airport,
+31773,USUU,medium_airport,Kurgan Airport,55.4753,65.415604,240,AS,RU,RU-KGN,Kurgan,yes,USUU,KRO,USUU,,,https://en.wikipedia.org/wiki/Kurgan_Airport,
+31815,HAKL,small_airport,Kelafo East Airport,5.6570000648498535,44.349998474121094,1730,AF,ET,ET-SO,Kelafo,no,HAKL,LFO,HAKL,,,,
+31829,NFNK,small_airport,Lakeba Island Airport,-18.1991996765,-178.817001343,280,OC,FJ,FJ-E,Lakeba Island,yes,NFNK,LKB,NFNK,,,https://en.wikipedia.org/wiki/Lakeba_Airport,
+31842,HKLY,small_airport,Loiyangalani Airport,2.763605,36.718325,1195,AF,KE,KE-10,Loiyangalani,no,HKLY,LOY,HKLY,,,https://en.wikipedia.org/wiki/Loiyangalani_Airport,Loyengalani
+31892,VNMG,small_airport,Meghauli Airport,27.5774,84.22875,600,AS,NP,NP-P3,Meghauli,no,VNMG,MEY,VNMG,,,https://en.wikipedia.org/wiki/Meghauli_Airport,
+31894,FOOD,small_airport,Moanda Airport,-1.526558,13.251332,1877,AF,GA,GA-2,Moanda,no,FOOD,MFF,FOOD,,,https://en.wikipedia.org/wiki/Moanda_Airport,
+31895,NFMO,small_airport,Moala Airport,-18.566699981699998,179.951004028,13,OC,FJ,FJ-E,Moala,yes,NFMO,MFJ,NFMO,,,https://en.wikipedia.org/wiki/Moala_Airport,
+31988,HKML,medium_airport,Malindi International Airport,-3.22931,40.1017,80,AF,KE,KE-03,Malindi,yes,HKML,MYD,HKML,,http://www.kenyaairports.co.ke/kaa/airports/malindi/,https://en.wikipedia.org/wiki/Malindi_Airport,
+32005,NTGN,small_airport,Napuka Island Airport,-14.177397,-141.266112,7,OC,PF,PF-U-A,Napuka Island,yes,NTGN,NAU,NTGN,,,https://en.wikipedia.org/wiki/Napuka_Airport,
+32038,UTFN,large_airport,Namangan International Airport,40.984622,71.5578,1555,AS,UZ,UZ-NG,Namangan,yes,UZFN,NMA,UZFN,,,https://en.wikipedia.org/wiki/Namangan_Airport,"UTFN, UTKN"
+32044,BINF,small_airport,Norðfjörður Airport,65.131897,-13.7464,13,EU,IS,IS-7,Norðfjörður,no,BINF,NOR,BINF,,,https://en.wikipedia.org/wiki/Nor%C3%B0fj%C3%B6r%C3%B0ur_Airport,
+32056,NVSP,small_airport,Norsup Airport,-16.0797,167.401001,23,OC,VU,VU-MAP,Norsup,yes,NVSP,NUS,NVSP,,,https://en.wikipedia.org/wiki/Norsup_Airport,
+32185,FADQ,small_airport,Zulu Inyala Airport,-27.8494,32.3097,160,AF,ZA,ZA-NL,Phinda,no,FADQ,PZL,FADQ,,,,Phinda Airfield
+32186,SNKF,small_airport,Das Bandeirinhas Airport,-20.738585,-43.797444,3478,SA,BR,BR-MG,Conselheiro Lafaiete,no,,,SNKF,MG0071,,https://pt.wikipedia.org/wiki/Aeroporto_de_Conselheiro_Lafaiete,QDF
+32236,VNRK,small_airport,Rukum Chaurjahari Airport,28.627001,82.194021,2500,AS,NP,NP-P6,Rukumkot,no,,RUK,VNCJ,,,https://en.wikipedia.org/wiki/Rukumkot_Airport,"VNRK, Rukumkot Airport"
+32238,AGGU,small_airport,Marau Airport,-9.86167,160.824997,3,OC,SB,SB-GU,Marau,yes,AGGU,RUS,AGGU,,,https://en.wikipedia.org/wiki/Marau_Airport,
+32252,YSII,small_airport,Saibai Island Airport,-9.37833,142.625,15,OC,AU,AU-QLD,Saibai Island,yes,YSII,SBR,YSII,,,https://en.wikipedia.org/wiki/Saibai_Island_Airport,
+32290,OPSR,medium_airport,Mushaf Air Base,32.04859924316406,72.66500091552734,614,AS,PK,PK-PB,Sargodha,no,OPSR,SGI,OPSR,,,https://en.wikipedia.org/wiki/Mushaf_Airbase,BHW
+32306,SKAG,small_airport,Hacaritama Airport,8.247,-73.5814,545,SA,CO,CO-CES,Aguachica,no,SKAG,HAY,SKAG,AGH,,https://en.wikipedia.org/wiki/Hacaritama_Airport,
+32336,MUSJ,medium_airport,San Julián Air Base,22.100525,-84.157376,98,NA,CU,CU-01,Sandino,no,MUSJ,SNJ,MUSJ,,,https://en.wikipedia.org/wiki/San_Juli%C3%A1n_Air_Base,
+32447,MH-TIC,small_airport,Tinak Airport,7.121768,171.911584,4,OC,MH,MH-ARN,Arno Atoll,no,,TIC,N18,N18,,https://en.wikipedia.org/wiki/Tinak_Airport,
+32463,VNTR,small_airport,Tumling Tar Airport,27.315001,87.193298,1700,AS,NP,NP-P1,Tumling Tar,yes,VNTR,TMI,VNTR,,,https://en.wikipedia.org/wiki/Tumlingtar_Airport,
+32483,MMTU,small_airport,Base Aeronaval de Tulum,20.227301,-87.438203,7,NA,MX,MX-ROO,Tulum,no,MMTU,TUY,MMTU,TUY,,https://sv.wikipedia.org/wiki/Tulum_Naval_Air_Station,MM49
+32495,UACP,large_airport,Petropavl International Airport,54.775622,69.187415,453,AS,KZ,KZ-SEV,Petropavl,yes,UACP,PPK,UACP,,,https://en.wikipedia.org/wiki/Petropavl_Airport_(Kazakhstan),
+32509,UEMA,medium_airport,Moma Airport,66.450861,143.261551,656,AS,RU,RU-SA,Khonuu,yes,UEMA,MQJ,UEMA,,,https://en.wikipedia.org/wiki/Moma_Airport,Аэропорт Мома
+32522,MHUT,small_airport,Utila Airport,16.1131,-86.880302,29,NA,HN,HN-IB,Utila Island,yes,MHUT,UII,MHUT,,,https://en.wikipedia.org/wiki/%C3%9Atila_Airport,
+32532,UKHP,medium_airport,Suprunovka Airport,49.5686,34.397202,505,EU,UA,UA-53,Poltava,no,UKHP,PLV,UKHP,,,https://en.wikipedia.org/wiki/Poltava_International_Airport,
+32630,FMMZ,small_airport,Ambatondrazaka Airport,-17.795378,48.442583,2513,AF,MG,MG-A,Ambatondrazaka,no,FMMZ,WAM,FMMZ,,,https://en.wikipedia.org/wiki/Ambatondrazaka_Airport,
+32639,WBGL,small_airport,Long Akah Airport,3.310909,114.785553,289,AS,MY,MY-13,Long Akah,no,WBGL,LKH,WBGL,,,https://en.wikipedia.org/wiki/Long_Akah_Airport,
+35010,RU-9345,medium_airport,Krechevitsy Air Base,58.625,31.385,100,EU,RU,RU-NGR,Novgorod,no,ULLK,,ULLK,XLLK,,https://en.wikipedia.org/wiki/Krechevitsy_Airport,"УЛЛК, ЬЛЛК, Аэродром Кречевицы"
+35160,NVSZ,small_airport,North West Santo Airport,-14.881699562099998,166.557998657,50,OC,VU,VU-SAM,Olpoi,yes,NVSZ,OLJ,NVSZ,,,https://en.wikipedia.org/wiki/Olpoi_Airport,"Lajmoli Airport, Olpoi Airport"
+35178,RPVB,large_airport,Bacolod-Silay International Airport,10.776237,123.018879,82,AS,PH,PH-NEC,Bacolod City,yes,RPVB,BCD,RPVB,,https://www.bacolod-silayairport.com/,https://en.wikipedia.org/wiki/Bacolod%E2%80%93Silay_Airport,
+35184,AYKK,small_airport,Kikori Airport,-7.42438,144.250076,50,OC,PG,PG-GPK,Kikori,yes,AYKK,KRI,AYKK,,,https://en.wikipedia.org/wiki/Kikori_Airport,
+35286,BGAT,heliport,Attu Heliport,67.940663,-53.62187,32,NA,GL,GL-QK,Attu,yes,,QGQ,BGAT,,,https://en.wikipedia.org/wiki/Attu_Heliport,
+38318,YDGN,small_airport,Doongan Airport,-15.386429,126.302235,,OC,AU,AU-WA,Drysdale River,no,,DNG,YDGN,,,,"Doongan Station, King Edward River"
+39431,SLCR,small_airport,Comarapa Airport,-17.913601,-64.517799,6186,SA,BO,BO-S,M. Caballero,no,,,SLCR,,,https://en.wikipedia.org/wiki/Comarapa_Airport,
+40570,SKBM,small_airport,Barranco Minas Airport,3.490691,-69.808151,430,SA,CO,CO-GUA,Barranco Minas,no,SKBM,NBB,SKBM,,,,
+40596,SKIM,small_airport,La Primavera Airport,5.4776,-70.4212,390,SA,CO,CO-VID,La Primavera,no,SKIM,LPE,SKIM,PIM,,https://en.wikipedia.org/wiki/La_Primavera_Airport,
+41024,SK-348,small_airport,Solita Airport,3.016667,-71.75,652,SA,CO,CO-MET,Solita,no,,SOH,,SOH,,,
+41130,SEPT,small_airport,Putumayo Airport,0.115949,-75.85022,733,SA,EC,EC-U,Puerto Putumayo,no,SEPT,PYO,SEPT,,,https://en.wikipedia.org/wiki/Putumayo_Airport,
+41437,WAKT,medium_airport,Tanah Merah Airport,-6.09669,140.303521,57,AS,ID,ID-PS,Tanah Merah,yes,WAKT,TMH,WAKT,,,https://en.wikipedia.org/wiki/Tanah_Merah_Airport,
+41516,SYLP,small_airport,Lumid Pau Airport,2.3939299583399998,-59.4410018921,656,SA,GY,GY-UT,Lumid Pau,no,SYLP,LUB,SYLP,,,http://pl.wikipedia.org/wiki/Port_lotniczy_Lumid_Pau,
+41838,UHSN,small_airport,Nogliki Airport,51.783955,143.141785,109,AS,RU,RU-SAK,Nogliki,yes,,NGK,UHSN,,https://airportus.ru/board/?airport=nogliki,https://en.wikipedia.org/wiki/Nogliki_Airport,"УХСН, Ноглики"
+41868,UAAT,medium_airport,Taldykorgan Airport,45.12255,78.442758,1925,AS,KZ,KZ-JET,Taldykorgan,yes,UAAT,TDK,UAAT,,,https://en.wikipedia.org/wiki/Taldykorgan_Airport,"Taldy Kurgan Airport, Taldy Kurgan Northeast Airport, Аэропорт Талды-Курган"
+41994,MRST,small_airport,San Agustin Airport,10.064518,-84.876189,66,NA,CR,CR-P,Puntarenas,no,,,MRST,,,,
+42053,MHCU,small_airport,Cauquira Airport,15.316667,-83.591667,21,NA,HN,HN-GD,Cauquira,no,,CDD,MHCU,,,https://en.wikipedia.org/wiki/Cauquira_Airport,
+42226,MGHT,small_airport,Huehuetenango Airport,15.316667,-91.505556,6135,NA,GT,GT-HU,Huehuetenango,yes,MGHT,HUG,MGHT,,,https://en.wikipedia.org/wiki/Huehuetenango_Airport,
+42703,HKMK,small_airport,Mulika Lodge Airport,0.165083,38.195141,2230,AF,KE,KE-12,Meru-Kinna,yes,HKMK,JJM,HKMK,,,https://en.wikipedia.org/wiki/Mulika_Lodge_Airport,Meru National Park
+42946,UUYI,medium_airport,Inta Airport,66.055568,60.11088,184,AS,RU,RU-KO,Inta,no,,INA,UUYI,,,https://en.wikipedia.org/wiki/Inta_Airport,"УУЫИ, Аэропорт Инта"
+43074,TRPG,large_airport,John A. Osborne Airport,16.791835,-62.193204,550,NA,MS,MS-SP,Gerald's Park,yes,TRPG,MNI,TRPG,,,https://en.wikipedia.org/wiki/John_A._Osborne_Airport,"Gerald's Airport, Brades"
+43111,LSEZ,heliport,Zermatt  Heliport,46.02932,7.753366,5300,EU,CH,CH-VS,Zermatt,no,LSEZ,,LSEZ,,,,
+43217,BGKS,heliport,Kangersuatsiaq Heliport,72.381092,-55.536586,112,NA,GL,GL-AV,Kangersuatsiaq,yes,,KGQ,BGKS,KAQ,,https://en.wikipedia.org/wiki/Kangersuatsiaq_Heliport,"Kangerssuatsiaq, Prøven"
+43223,BGUT,heliport,Ukkusissat Heliport,71.049438,-51.890016,223,NA,GL,GL-AV,Ukkusissat,yes,BGUT,JUK,BGUT,UKK,,https://en.wikipedia.org/wiki/Ukkusissat_Heliport,
+43671,UWWB,medium_airport,Buguruslan Severny Airport,53.718399,52.371899,728,EU,RU,RU-ORE,Buguruslan,no,,,UWWB,,,,"УВВБ, Buguruslan North Airport, Аэропорт Бугуруслан Северный"
+44039,EKFA,heliport,Froðba Heliport,61.543701,-6.77442,77,EU,FO,FO-U-A,Froðba,yes,,,EKFA,,,,
+44058,BGSC,heliport,Ittoqqortoormiit Heliport,70.488229,-21.97168,238,NA,GL,GL-SE,Ittoqqortoormiit,yes,,OBY,BGSC,,,https://en.wikipedia.org/wiki/Ittoqqortoormiit_Heliport,Scoresbysund
+44146,ZGHZ,medium_airport,Huizhou Pingtan Airport,23.049999,114.599998,50,AS,CN,CN-44,Huizhou (Pingtan),yes,ZGHZ,HUZ,ZGHZ,,,https://en.wikipedia.org/wiki/Huizhou_Airport,"Huiyang Air Base, Pingtan Airport"
+44234,ZSLO,medium_airport,Liancheng Guanzhishan Airport,25.67592,116.745907,1225,AS,CN,CN-35,Longyan (Liancheng),yes,ZSLO,LCX,ZSLO,,,https://en.wikipedia.org/wiki/Liancheng_Guanzhishan_Airport,"ZBSZ, Liancheng Air Base"
+44362,IN-0012,small_airport,Pakyong Airport,27.2313,88.587196,4590,AS,IN,IN-SK,Pakyong,no,VEPY,PYG,VEPY,,,https://en.wikipedia.org/wiki/Pakyong_Airport,
+46492,LSZC,small_airport,Buochs Airport,46.974444,8.396944,1475,EU,CH,CH-NW,Buochs,no,LSZC,BXO,LSZC,,http://www.airportbuochs.ch/,https://en.wikipedia.org/wiki/Buochs_Airport,LSMU
+299747,OM-0004,medium_airport,Mussanah Airport,23.640556,57.4875,372,AS,OM,OM-BA,Al Masna'ah,no,,MNH,OOMN,,,https://en.wikipedia.org/wiki/Rustaq_Airport,"Musanaa, Wadi al Maawil, Al Muladdah, OORQ, Rustaq Airport"
+300513,ZBDS,large_airport,Ordos Ejin Horo International Airport,39.493514,109.8599,4557,AS,CN,CN-15,Ordos,yes,ZBDS,DSN,ZBDS,,,https://en.wikipedia.org/wiki/Ordos_Ejin_Horo_Airport,"Dongsheng, 鄂尔多斯"
+301254,PCQ,small_airport,Boun Neau Airport,21.6475,101.9,3050,AS,LA,LA-PH,Phongsaly,no,,PCQ,VLFL,,,https://fr.wikipedia.org/wiki/A%C3%A9roport_de_Boun_Neua,"Baun Neua, Bounneua, Bun Nua, Boun Nua"
+301695,AYAN,small_airport,Andakombe Airport,-7.13722222222,145.744722222,3600,OC,PG,PG-EHG,Andekombe,no,AYAN,ADC,AYAN,ADK,,https://en.wikipedia.org/wiki/Andakombe_Airport,
+302094,AYDB,small_airport,Debepare Airport,-6.30861111111,141.905555556,360,OC,PG,PG-WPD,Debepare,no,AYDB,DBP,AYDB,DBP,,,Debepari
+302292,AGGY,small_airport,Yandina Airport,-9.092816,159.21841,60,OC,SB,SB-CE,Yandina,yes,AGGY,XYA,AGGY,,,https://en.wikipedia.org/wiki/Yandina_Airport,
+302307,RPVY,small_airport,Catbalogan Airport,11.810647,124.828806,,AS,PH,PH-WSA,Catbalogan,no,,,RPVY,,,https://en.wikipedia.org/wiki/Catbalogan_Airport,
+306982,AYOV,small_airport,Olsobip Airport,-5.3897222222200005,141.515277778,1500,OC,PG,PG-WPD,Olsobip,no,AYOV,OLQ,AYOV,OLS,,,
+307366,EGAR,small_airport,Rothera Research Station,-67.5675,-68.127403,9,AN,AQ,AQ-U-A,Rothera Research Station,no,EGAR,,EGAR,,http://www.antarctica.ac.uk/living_and_working/research_stations/rothera/,https://en.wikipedia.org/wiki/Rothera_Research_Station,
+308005,AYGG,small_airport,Garasa Airport,-7.980713,147.213461,2539,OC,PG,PG-MPL,Au,no,AYGG,GRL,AYGG,GSA,,,
+308061,AYDR,small_airport,Dorobisoro Airport,-9.461855,147.920907,1767,OC,PG,PG-CPM,Dorobisoro,no,AYDR,DOO,AYDR,DOR,,,
+308149,RPSD,small_airport,Cesar Lim Rodriguez (Taytay-Sandoval) Airport,11.05065,119.519266,80,AS,PH,PH-PLW,Taytay,no,RPSD,RZP,RPSD,,,https://en.wikipedia.org/wiki/Taytay_Airport,
+308173,AYNE,small_airport,Negarbo(Negabo) Airport,-6.567778,144.703058,4500,OC,PG,PG-CPK,Negarbo,no,AYNE,GBF,AYNE,NBO,,,
+310474,ID-0084,small_airport,Kuala Kurun Airport,-1.128903,113.873075,115,AS,ID,ID-KT,Kuala Kurun,no,,GXM,WAGA,,,,WT81
+310609,UWOH,small_airport,Kvarkeno Airport,52.077797,59.686542,,AS,RU,RU-ORE,Kvarkeno,no,UWOH,,UWOH,,,,
+311028,ORNI,large_airport,Al Najaf International Airport,31.991116,44.405019,103,AS,IQ,IQ-NA,Najaf,yes,ORNI,NJF,ORNI,,http://www.alnajafairport.net/,https://en.wikipedia.org/wiki/Al_Najaf_International_Airport,
+311717,AYDL,small_airport,Kondobol Airport,-8.5336,142.5049,132,OC,PG,PG-WPD,Kondobol,no,AYDL,KPF,AYDL,KDB,,,"Kondubol, Kondobal"
+313726,UG-0001,small_airport,Kisoro Airport,-1.2837,29.7197,6200,AF,UG,UG-W,Kisoro,yes,HUKI,KXO,HUKI,,,https://en.wikipedia.org/wiki/Kisoro_Airport,
+313850,LTF,small_airport,Leitre Airport,-2.8337,141.6257,32,OC,PG,PG-SAN,Leitre,no,,LTF,,LRE,,,
+314139,MSB,seaplane_base,Marigot Seaplane Base,18.0696,-63.087,0,NA,MF,MF-U-A,Saint Martin,no,,MSB,,,,,
+314508,RLP,small_airport,Rosella Plains Airport,-18.4253,144.4587,1855,OC,AU,AU-QLD,Rosella Plains,no,,RLP,,,,,
+314557,RHT,small_airport,Alxa Right Banner Badanjilin Airport,39.225,101.546,4659,AS,CN,CN-15,Badanjilin,yes,ZBAR,RHT,ZBAR,,,https://en.wikipedia.org/wiki/Alxa_Right_Banner_Badanjilin_Airport,
+314558,AXF,medium_airport,Alxa Left Banner Bayanhot Airport,38.748317,105.58416,4560,AS,CN,CN-15,Bayanhot,yes,ZBAL,AXF,ZBAL,,,https://en.wikipedia.org/wiki/Alxa_Left_Banner_Bayanhot_Airport,
+315124,VNSB,small_airport,Syangboche Airport,27.8112,86.7124,12400,AS,NP,NP-P1,Namche Bazaar,no,VNSB,SYH,VNSB,,,https://en.wikipedia.org/wiki/Syangboche_Airport,Syanboche
+315702,UGMS,small_airport,Mestia Queen Tamar Airport,43.053597,42.749012,4778,AS,GE,GE-SZ,Mestia,yes,UGMS,,UGMS,,,https://en.wikipedia.org/wiki/Queen_Tamar_Airport,
+315898,LPCB,medium_airport,Aerodromo de Castelo Branco,39.844528,-7.439875,1300,EU,PT,PT-05,Castelo Branco,no,LPCB,,LPCB,,,https://pt.wikipedia.org/wiki/Aer%C3%B3dromo_de_Castelo_Branco,
+316546,LTCV,medium_airport,Şırnak Şerafettin Elçi Airport,37.3647,42.0582,2038,AS,TR,TR-73,Şırnak,yes,LTCV,NKT,LTCV,,,https://en.wikipedia.org/wiki/%C5%9E%C4%B1rnak_Airport,
+317584,FBVM,small_airport,Vumbura Airport,-18.955395,22.814533,3185,AF,BW,BW-NW,Vumbura,no,,,FBVM,,,,FB88
+317932,EDQA,medium_airport,Bamberg-Breitenau Airfield,49.920403,10.914233,811,EU,DE,DE-BY,Bamberg,no,EDQA,,EDQA,,https://www.aeroclub-bamberg.de/,https://de.wikipedia.org/wiki/Flugplatz_Bamberg-Breitenau,"Bamberg, Breitenau, ETEJ"
+323666,ZBZL,medium_airport,Zhalantun Genghis Khan Airport,47.865942,122.768662,928,AS,CN,CN-15,Zhalantun,yes,ZBZL,NZL,ZBZL,,,https://en.wikipedia.org/wiki/Zhalantun_Chengjisihan_Airport,Chengjisihan
+324008,ENEN,small_airport,Engeløy Airfield,67.967222,14.9925,10,EU,NO,NO-18,Engeløy,no,,,ENEN,,http://www.engeloyflyplass.no,"https://en.wikipedia.org/wiki/Engel%C3%B8y_Airport,_Gr%C3%A5dussan",
+327347,ZBCD,medium_airport,Chengde Puning Airport,41.1225,118.073889,,AS,CN,CN-13,Chengde,yes,ZBCD,CDE,ZBCD,,,https://en.wikipedia.org/wiki/Chengde_Puning_Airport,
+342092,OPGD,large_airport,New Gwadar International Airport,25.296733,62.498822,61,AS,PK,PK-BA,Gurandani,yes,OPGW,GWD,OPGW,,https://paa.gov.pk/airport/gwadar,https://en.wikipedia.org/wiki/New_Gwadar_International_Airport,Feroz Khan Noon
+347108,ZHEC,large_airport,Ezhou Huahu International Airport,30.341178,115.03926,86,AS,CN,CN-42,Ezhou,yes,ZHEC,EHU,ZHEC,,,https://en.wikipedia.org/wiki/Ezhou_Huahu_Airport,"EHU, ZHEC"
+353792,BTZ,medium_airport,Betong International Airport,5.79,101.15,785,AS,TH,TH-95,Betong,no,VTSY,BTZ,VTSY,,,https://en.wikipedia.org/wiki/Betong_Airport,
+429705,SKAT,small_airport,El Troncal Airport,7.02106,-71.388901,512,SA,CO,CO-ARA,Arauquita,no,SKAT,ARQ,SKAT,ARQ,,https://en.wikipedia.org/wiki/El_Troncal_Airport,
+509453,ZUSH,small_airport,Shannan Longzi Airport,28.422422,92.348082,12959,AS,CN,CN-54,Shannan,yes,ZUSH,LGZ,ZUSH,,,https://en.wikipedia.org/wiki/Shannan_Longzi_Airport,
+511665,CD-0037,small_airport,Kasongo-Lunda Airport,-6.468027,16.805012,1699,AF,CD,CD-KG,Kasongo-Lunda,no,,KGN,,,,https://en.wikipedia.org/wiki/Kasongo_Lunda_Airport,
+525151,CN-0413,small_airport,Bozhou Airport (under construction),33.560777,115.911859,,AS,CN,CN-34,Bozhou,no,ZSBO,BZJ,ZSBO,,,https://en.wikipedia.org/wiki/Bozhou_Airport,

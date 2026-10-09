@@ -1,0 +1,80 @@
+# OpenFlights vs OurAirports airports. OpenFlights imported most of its airports from OurAirports
+# years ago (every row's Source column says "OurAirports"), so this is a stale copy against the
+# live upstream: the differences are what changed since.
+
+group_by = "country" # per-country difference rates in the report
+# When all of these disagree, the key was reused for a different airport (an airport that was renamed
+# or moved still keeps its country, so 2 of 3 is not enough to call it a different airport).
+identity = ["name", "location", "country"]
+identity_min = 3
+
+[left]
+name = "OpenFlights"
+path = "{data}/openflights_airports.dat" # {data}: data/ when fetched, else the committed sample_data/
+header = false
+columns = ["id", "name", "city", "country", "iata", "icao", "lat", "lon", "alt", "tz", "dst", "tzdb", "type", "source"]
+null_values = ['\N'] # a TOML literal string: no escapes
+
+[right]
+name = "OurAirports"
+path = "{data}/ourairports_airports.csv"
+# OpenFlights only tracks airports with an airline-style code, so only those are in scope on this side.
+scope = "iata_code IS NOT NULL OR icao_code IS NOT NULL"
+derive = { icao = "coalesce(icao_code, ident)" }
+explain = ["type"] # for OpenFlights rows with no match: what OurAirports says about it out of scope
+
+# Keys are tried in order; each stage only sees rows the earlier ones left unmatched.
+[[keys]]
+left = "iata"
+right = "iata_code"
+
+[[keys]]
+left = "icao"
+right = "icao"
+
+[[fields]]
+name = "iata"
+left = "iata"
+right = "iata_code"
+compare = "code"
+
+[[fields]]
+name = "icao"
+left = "icao"
+right = "icao"
+compare = "code"
+
+[[fields]]
+name = "name"
+left = "name"
+right = "name"
+compare = "text"
+near = 0.85
+
+[[fields]]
+name = "city"
+left = "city"
+right = "municipality"
+compare = "text"
+
+[[fields]]
+name = "country" # "United Kingdom" on one side, "GB" on the other: learn the mapping from the data
+left = "country"
+right = "iso_country"
+compare = "crosswalk"
+min_support = 5
+min_share = 0.6
+
+[[fields]]
+name = "location"
+left = ["lat", "lon"]
+right = ["latitude_deg", "longitude_deg"]
+compare = "geo"
+tolerance_km = 0.5
+
+[[fields]]
+name = "elevation_ft"
+left = "alt"
+right = "elevation_ft"
+compare = "number"
+abs_tolerance = 5

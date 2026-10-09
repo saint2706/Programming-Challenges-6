@@ -1,0 +1,27 @@
+[project]
+name = "multi-source-data-reconciliation-tool"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.3",
+    "plotly>=7.1.0",
+    "polars>=1.44.2",
+    "rapidfuzz>=3.14.0",
+    "rich>=15.0.0",
+    "typer>=0.27.2",
+]
+
+[project.scripts]
+reconcile = "data_reconciler.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "data_reconciler"
