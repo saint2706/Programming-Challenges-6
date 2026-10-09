@@ -211,7 +211,7 @@ caption as new the moment the first digit differs. `novel_characters` uses
 regardless of position, so only the digits that actually changed are
 charged at the faster re-read rate -- see the docstring in `pacing.py` for
 the worked example. `MST_HOLD_SCALE=0 uv run manim -pql
-visualize.py KruskalScene` drops every hold for fast layout iteration.
+src/mst_visualizer/visualize.py KruskalScene` drops every hold for fast layout iteration.
 
 ## Files
 

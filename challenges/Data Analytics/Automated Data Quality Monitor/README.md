@@ -172,7 +172,7 @@ One column is added, `trip_id` (`TX-000001`...), since the source has no key
 and uniqueness/format checks need one.
 
 Days 1-21 train the baseline; days 22-31 are held out as clean incoming
-batches. Corruptions live in [`corruptions.py`](corruptions.py), each a pure
+batches. Corruptions live in [`corruptions.py`](src/data_quality/corruptions.py), each a pure
 function with the checks it should trigger, so the ground truth is planted and
 known rather than eyeballed.
 
