@@ -1,0 +1,30 @@
+[project]
+name = "sql-query-performance-profiler"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.4.0",
+    "numpy>=2.5.3",
+    "polars>=1.44.2",
+    "rich>=15.0.0",
+    "streamlit>=1.65.0",
+    "typer>=0.27.2",
+]
+
+[project.scripts]
+sqlprof = "sql_profiler.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+fetch = [
+    "fastexcel>=0.19.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "sql_profiler"

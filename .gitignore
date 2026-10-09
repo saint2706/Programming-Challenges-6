@@ -42,3 +42,4 @@ challenges/Practical ML/Active-Learning-Assisted Data Labeling Tool/*.log
 
 # Online Retail II: full download (the committed sample_data/ is enough for tests and demos)
 challenges/Data Analytics/Customer Segmentation Explorer (RFM Analysis)/data/
+challenges/Data Analytics/SQL Query Performance Profiler/data/
