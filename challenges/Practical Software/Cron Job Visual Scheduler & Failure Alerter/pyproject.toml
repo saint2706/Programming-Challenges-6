@@ -1,0 +1,25 @@
+[project]
+name = "cron-job-visual-scheduler-failure-alerter"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=15.0.0",
+    "textual>=8.2.8",
+    "typer>=0.27.2",
+]
+
+[project.scripts]
+cronwatch = "cronwatch.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "cronwatch"
