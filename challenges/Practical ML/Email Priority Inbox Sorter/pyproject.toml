@@ -11,7 +11,7 @@ dependencies = [
     "scipy>=1.18.1",
     "shap>=0.52.0",
     "streamlit>=1.64.0",
-    "typer>=0.27.2",
+    "typer>=0.27.3",
 ]
 
 [project.scripts]
