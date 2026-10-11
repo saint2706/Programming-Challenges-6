@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "pillow>=12.3.0",
     "rembg[cpu]>=2.0.85",
-    "typer>=0.27.2",
+    "typer>=0.27.3",
 ]
 
 [project.scripts]
