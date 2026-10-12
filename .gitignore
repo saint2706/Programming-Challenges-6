@@ -5,11 +5,19 @@ dist/
 target/
 .cache/
 *.egg-info/
+__pycache__/
+*.py[cod]
 .pytest_cache/
-*.pyc
+.ruff_cache/
 *venv/
+*.log
 .DS_Store
 Thumbs.db
+
+# Local tool state (Claude Code, session memory)
+.remember/
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # Runtime files created by challenge scripts (databases, encrypted journals, access logs)
 *.db
@@ -38,7 +46,6 @@ challenges/Data Analytics/*/out/
 challenges/Data Analytics/Web Traffic Funnel Analyzer/data_cache/
 challenges/Data Analytics/Automated Data Quality Monitor/sample_data/batches/
 challenges/Data Analytics/Geo-Spatial Sales Heatmap Builder/*.html
-challenges/Practical ML/Active-Learning-Assisted Data Labeling Tool/*.log
 
 # Online Retail II: full download (the committed sample_data/ is enough for tests and demos)
 challenges/Data Analytics/Customer Segmentation Explorer (RFM Analysis)/data/

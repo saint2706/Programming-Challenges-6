@@ -153,7 +153,7 @@ column is there to tune it.
 
 ## Sources
 
-- OpenFlights airports database, <https://openflights.org/data.html> (Open Database License); file
+- OpenFlights airports database, <https://openflights.org/data.php> (Open Database License); file
   `airports.dat` from <https://github.com/jpatokal/openflights>.
 - OurAirports, <https://ourairports.com/data/> (public domain); `airports.csv` from
   <https://davidmegginson.github.io/ourairports-data/>. Download SHA-256s are in
