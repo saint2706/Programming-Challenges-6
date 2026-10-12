@@ -51,3 +51,8 @@ challenges/Data Analytics/Geo-Spatial Sales Heatmap Builder/*.html
 challenges/Data Analytics/Customer Segmentation Explorer (RFM Analysis)/data/
 challenges/Data Analytics/SQL Query Performance Profiler/data/
 challenges/Data Analytics/Multi-Source Data Reconciliation Tool/data/
+
+# Claude Code config: local only, never commit
+.claude/
+.mcp.json
+CLAUDE.md
