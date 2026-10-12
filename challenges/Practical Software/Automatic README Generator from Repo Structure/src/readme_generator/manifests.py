@@ -177,7 +177,7 @@ def parse_cargo(path: str, text: str) -> Manifest:
     return manifest
 
 
-_GO_REQUIRE_LINE = re.compile(r"^\s*([^\s/]+(?:/[^\s]+)+)\s+v\S+")
+_GO_REQUIRE_LINE = re.compile(r"^\s*([^\s/]+(?:/[^\s/]+)+)\s+v\S+")
 
 
 def parse_go_mod(path: str, text: str) -> Manifest:
