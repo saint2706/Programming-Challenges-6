@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "folium>=0.20.0",
     "numpy>=2.5.3",
-    "polars>=1.44.2",
+    "polars>=2.0.0",
 ]
 
 [project.scripts]
