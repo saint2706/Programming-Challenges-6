@@ -17,14 +17,14 @@ import itertools
 import json
 import math
 import sys
+import tomllib
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated, Any
 
 import numpy as np
 import polars as pl
-import tomllib
 import typer
 from rich.console import Console
 from rich.table import Table
@@ -343,9 +343,7 @@ def _epoch_seconds(s: pl.Series) -> np.ndarray:
 
 def _iso(seconds: float) -> str:
     return (
-        datetime.fromtimestamp(seconds, tz=timezone.utc)
-        .replace(tzinfo=None)
-        .isoformat(sep=" ")
+        datetime.fromtimestamp(seconds, tz=UTC).replace(tzinfo=None).isoformat(sep=" ")
     )
 
 
@@ -1093,8 +1091,8 @@ def check_batch(
     as_of_s = None
     if as_of is not None:
         if as_of.tzinfo is not None:
-            as_of = as_of.astimezone(timezone.utc).replace(tzinfo=None)
-        as_of_s = as_of.replace(tzinfo=timezone.utc).timestamp()
+            as_of = as_of.astimezone(UTC).replace(tzinfo=None)
+        as_of_s = as_of.replace(tzinfo=UTC).timestamp()
 
     if df.height > 0:
         for spec in baseline["columns"]:

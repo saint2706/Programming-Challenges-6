@@ -1,5 +1,7 @@
 import os
+import sys
 
+import pytest
 from helpers import make_repo
 from readme_generator.scan import scan_repo
 
@@ -71,6 +73,9 @@ def test_no_source_files_means_no_languages(tmp_path):
     assert scan_repo(tmp_path).language_shares() == []
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="symlinks need Developer Mode or admin on Windows"
+)
 def test_symlink_cycle_does_not_hang_or_recurse(tmp_path):
     make_repo(tmp_path, {"real/a.py": "x"})
     os.symlink(tmp_path, tmp_path / "real" / "loop", target_is_directory=True)

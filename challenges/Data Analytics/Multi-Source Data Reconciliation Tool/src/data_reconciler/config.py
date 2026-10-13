@@ -6,10 +6,9 @@ See ``airports.toml`` for a complete, commented example.
 
 from __future__ import annotations
 
+import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
-
-import tomllib
 
 COMPARATORS = ("text", "code", "number", "geo", "crosswalk")
 SOURCE_KEYS = {

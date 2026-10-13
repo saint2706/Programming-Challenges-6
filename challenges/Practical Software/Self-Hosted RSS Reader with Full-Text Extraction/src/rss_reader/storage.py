@@ -1,6 +1,6 @@
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -59,7 +59,7 @@ class ArticleStore:
         with self._connection() as conn:
             cursor = conn.execute(
                 "INSERT INTO feeds (url, title, created_at) VALUES (?, ?, ?)",
-                (url, title, datetime.now(timezone.utc).isoformat()),
+                (url, title, datetime.now(UTC).isoformat()),
             )
             conn.commit()
             return cursor.lastrowid

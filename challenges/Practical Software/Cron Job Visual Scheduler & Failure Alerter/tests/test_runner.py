@@ -13,6 +13,11 @@ from cronwatch.store import ERROR, FAILED, OK, TIMEOUT, Store
 
 PY = sys.executable
 
+# shortcut: runner uses POSIX process groups (os.killpg, start_new_session); not portable to Windows
+pytestmark = pytest.mark.skipif(
+    sys.platform == "win32", reason="runner needs POSIX process groups"
+)
+
 
 class Recording:
     name = "recording"

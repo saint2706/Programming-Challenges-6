@@ -312,7 +312,7 @@ def session(tmp_path):
     backend = FileCrontab(tmp_path / "crontab")
     backend.write("0 0 * * * keep\n")
     ticks = iter(range(1000))
-    clock = lambda: datetime(2026, 1, 1, 0, 0, next(ticks) % 60, next(ticks))  # noqa: DTZ001
+    clock = lambda: datetime(2026, 1, 1, 0, 0, next(ticks) % 60, next(ticks))
     return Session(backend, tmp_path / "backups", clock)
 
 

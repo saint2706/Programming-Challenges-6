@@ -51,13 +51,13 @@ A snapshot holds names, keyed fingerprints and coarse flags, no values. It recor
 
 ### Other options
 
-| Option                                  | Effect                                                                                                                      |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `--format auto\|dotenv\|shell\|raw`     | Dialect (see below). `auto` picks `shell` for `declare -x` output or `*.sh`, else `dotenv`.                                |
-| `--all`                                 | Also list variables identical everywhere.                                                                                   |
-| `--fingerprints`                        | Show a short keyed fingerprint beside each group letter.                                                                    |
-| `--reveal KEY`                          | Print that variable's value (repeatable). The only way any value is ever shown; warns when the name looks secret.          |
-| `--lint / --no-lint`                    | Hygiene findings: placeholders, empty secrets, shared secrets, whitespace, parse problems.                                  |
+| Option                              | Effect                                                                                                            |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `--format auto\|dotenv\|shell\|raw` | Dialect (see below). `auto` picks `shell` for `declare -x` output or `*.sh`, else `dotenv`.                       |
+| `--all`                             | Also list variables identical everywhere.                                                                         |
+| `--fingerprints`                    | Show a short keyed fingerprint beside each group letter.                                                          |
+| `--reveal KEY`                      | Print that variable's value (repeatable). The only way any value is ever shown; warns when the name looks secret. |
+| `--lint / --no-lint`                | Hygiene findings: placeholders, empty secrets, shared secrets, whitespace, parse problems.                        |
 
 ## How "without leaking values" is enforced
 
@@ -77,46 +77,46 @@ The one place this is not absolute: for `user@host:path` sources the file travel
 
 Values are compared exactly, but each differing pair is also explained from four fingerprint variants (exact, trimmed, unquoted, case-folded), so the output can say *why* without showing anything:
 
-| Verdict                          | Meaning                                                                        |
-| -------------------------------- | ------------------------------------------------------------------------------ |
-| `only whitespace differs`        | The classic invisible bug: a trailing space or `\r`.                           |
-| `only quoting differs`           | `KEY="abc"` vs `KEY=abc` when read by a dialect that keeps quotes.            |
-| `only letter case differs`       | `FALSE` vs `false`.                                                            |
-| `one is empty`                   | Set in one place, blank in another.                                            |
-| `missing in X`                   | Defined elsewhere, absent here.                                                |
+| Verdict                    | Meaning                                                            |
+| -------------------------- | ------------------------------------------------------------------ |
+| `only whitespace differs`  | The classic invisible bug: a trailing space or `\r`.               |
+| `only quoting differs`     | `KEY="abc"` vs `KEY=abc` when read by a dialect that keeps quotes. |
+| `only letter case differs` | `FALSE` vs `false`.                                                |
+| `one is empty`             | Set in one place, blank in another.                                |
+| `missing in X`             | Defined elsewhere, absent here.                                    |
 
 ### Dialects
 
 The same line means different things to different loaders, and that is a frequent cause of "works on my machine":
 
-* `dotenv`: optional `export`, quotes with `\n \t \" \\ \$` escapes, multi-line quoted values, ` #` inline comments.
-* `shell`: `export -p` / `declare -x` output parsed as shell words, including `$'...'` and the `'\''` idiom. `$VAR` is left unexpanded.
-* `raw`: Docker `--env-file` and `env` output. Everything after the first `=` is the value, verbatim, so `KEY="x"` keeps its quote characters.
+- `dotenv`: optional `export`, quotes with `\n \t \" \\ \$` escapes, multi-line quoted values, ` #` inline comments.
+- `shell`: `export -p` / `declare -x` output parsed as shell words, including `$'...'` and the `'\''` idiom. `$VAR` is left unexpanded.
+- `raw`: Docker `--env-file` and `env` output. Everything after the first `=` is the value, verbatim, so `KEY="x"` keeps its quote characters.
 
 A bare `KEY` (no value) is a pass-through: it takes its value from the runtime environment, so it forms its own group and never equals an explicit value.
 
 ## Findings (lint)
 
-| Finding                         | Why it matters                                                                                       |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `shared-secret`                 | A secret-named variable identical in two sources. Environments that must be isolated should not share one. Reported only for non-empty, non-placeholder values. |
-| `empty-secret`, `placeholder`   | `API_TOKEN=` or `changeme` shipped to a real host.                                                   |
-| `edge-whitespace`               | Leading/trailing whitespace inside a value.                                                          |
-| `shape-mismatch` (info)         | `true` here, `maybe` there.                                                                          |
-| parse findings                  | Duplicate keys (last wins), skipped lines, unterminated quotes, trailing text after a quote, BOM, CRLF, unquoted whitespace. |
+| Finding                       | Why it matters                                                                                                                                                  |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `shared-secret`               | A secret-named variable identical in two sources. Environments that must be isolated should not share one. Reported only for non-empty, non-placeholder values. |
+| `empty-secret`, `placeholder` | `API_TOKEN=` or `changeme` shipped to a real host.                                                                                                              |
+| `edge-whitespace`             | Leading/trailing whitespace inside a value.                                                                                                                     |
+| `shape-mismatch` (info)       | `true` here, `maybe` there.                                                                                                                                     |
+| parse findings                | Duplicate keys (last wins), skipped lines, unterminated quotes, trailing text after a quote, BOM, CRLF, unquoted whitespace.                                    |
 
 ## Architecture
 
-| Module           | Responsibility                                                                                  |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| `parse.py`       | The three dialect parsers; issues carry line numbers, never content                             |
-| `fingerprint.py` | `Hasher` (HMAC, scrypt), variant fingerprints, secret-name and placeholder detection, shapes    |
-| `model.py`       | `Entry`/`Source`: what is kept after loading (fingerprints and flags only)                      |
-| `sources.py`     | Argument classification, ssh fetch, one shared hasher per run, snapshot key checks              |
-| `snapshot.py`    | Snapshot JSON read/write                                                                        |
-| `compare.py`     | Per-key grouping, pairwise explanations, lint findings                                          |
-| `report.py`      | Text (rich), JSON and Markdown renderers                                                        |
-| `cli.py`         | Typer commands `diff` and `snapshot`, atomic snapshot write                                     |
+| Module           | Responsibility                                                                               |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `parse.py`       | The three dialect parsers; issues carry line numbers, never content                          |
+| `fingerprint.py` | `Hasher` (HMAC, scrypt), variant fingerprints, secret-name and placeholder detection, shapes |
+| `model.py`       | `Entry`/`Source`: what is kept after loading (fingerprints and flags only)                   |
+| `sources.py`     | Argument classification, ssh fetch, one shared hasher per run, snapshot key checks           |
+| `snapshot.py`    | Snapshot JSON read/write                                                                     |
+| `compare.py`     | Per-key grouping, pairwise explanations, lint findings                                       |
+| `report.py`      | Text (rich), JSON and Markdown renderers                                                     |
+| `cli.py`         | Typer commands `diff` and `snapshot`, atomic snapshot write                                  |
 
 ### ssh details
 

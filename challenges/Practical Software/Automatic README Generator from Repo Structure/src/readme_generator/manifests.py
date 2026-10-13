@@ -2,12 +2,11 @@
 
 import json
 import re
+import tomllib
 import xml.etree.ElementTree as ET
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from posixpath import basename, dirname
-
-import tomllib
 
 from readme_generator.scan import RepoScan
 

@@ -1,37 +1,37 @@
 {
-  "n_train": 104573,
-  "n_test": 44817,
-  "bad_rate_train": 0.06699626098514913,
-  "bad_rate_test": 0.06700582368297744,
-  "scorecard_train": {
-    "auc": 0.8518069444017713,
-    "gini": 0.7036138888035426,
-    "ks": 0.5452104308151322
-  },
-  "scorecard_test": {
-    "auc": 0.8561687511321606,
-    "gini": 0.7123375022643212,
-    "ks": 0.5596016601182335
-  },
-  "scorecard_test_auc_ci95": [
-    0.8493124868312731,
-    0.8637216035299173
-  ],
-  "gbm_test": {
-    "auc": 0.8664993191467578,
-    "gini": 0.7329986382935156,
-    "ks": 0.5871030007921958
-  },
-  "score_psi_train_vs_test": 0.0003276309956321173,
-  "brier_test": 0.05027612831332791,
-  "mean_predicted_pd_test": 0.06883981820768299,
-  "features_used": [
-    "RevolvingUtilizationOfUnsecuredLines",
-    "NumberOfTimes90DaysLate",
-    "NumberOfTime30-59DaysPastDueNotWorse",
-    "NumberOfTime60-89DaysPastDueNotWorse",
-    "age",
-    "MonthlyIncome",
-    "NumberOfDependents"
-  ]
+    "n_train": 104573,
+    "n_test": 44817,
+    "bad_rate_train": 0.06699626098514913,
+    "bad_rate_test": 0.06700582368297744,
+    "scorecard_train": {
+        "auc": 0.8518069444017713,
+        "gini": 0.7036138888035426,
+        "ks": 0.5452104308151322
+    },
+    "scorecard_test": {
+        "auc": 0.8561687511321606,
+        "gini": 0.7123375022643212,
+        "ks": 0.5596016601182335
+    },
+    "scorecard_test_auc_ci95": [
+        0.8493124868312731,
+        0.8637216035299173
+    ],
+    "gbm_test": {
+        "auc": 0.8664993191467578,
+        "gini": 0.7329986382935156,
+        "ks": 0.5871030007921958
+    },
+    "score_psi_train_vs_test": 0.0003276309956321173,
+    "brier_test": 0.05027612831332791,
+    "mean_predicted_pd_test": 0.06883981820768299,
+    "features_used": [
+        "RevolvingUtilizationOfUnsecuredLines",
+        "NumberOfTimes90DaysLate",
+        "NumberOfTime30-59DaysPastDueNotWorse",
+        "NumberOfTime60-89DaysPastDueNotWorse",
+        "age",
+        "MonthlyIncome",
+        "NumberOfDependents"
+    ]
 }
