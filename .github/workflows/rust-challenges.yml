@@ -19,6 +19,7 @@ jobs:
         crate:
           - "challenges/Algorithmic Challenges/Order Statistics Tree"
           - "challenges/Algorithmic Challenges/Merkle Tree Builder & Proof-of-Inclusion Verifier"
+          - "challenges/Algorithmic Challenges/Heavy-Light Decomposition for Tree Path Queries"
     defaults:
       run:
         working-directory: ${{ matrix.crate }}

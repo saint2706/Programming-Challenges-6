@@ -1,4 +1,3 @@
-# ruff: noqa: DTZ001  (the module under test deliberately returns naive-UTC datetimes)
 from __future__ import annotations
 
 from datetime import datetime

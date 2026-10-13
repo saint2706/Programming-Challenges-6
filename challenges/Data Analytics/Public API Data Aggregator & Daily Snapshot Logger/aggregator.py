@@ -16,7 +16,7 @@ import json
 import sqlite3
 import sys
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -112,7 +112,7 @@ def parse_forecast_response(payload: dict[str, Any], location: str) -> Snapshot:
     return Snapshot(
         date=today,
         location=location,
-        fetched_at=datetime.now(timezone.utc).isoformat(),
+        fetched_at=datetime.now(UTC).isoformat(),
         temperature_c=current.get("temperature_2m"),
         humidity_pct=current.get("relative_humidity_2m"),
         wind_speed_kmh=current.get("wind_speed_10m"),

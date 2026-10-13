@@ -2,12 +2,11 @@
 
 import os
 import re
+import tomllib
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import timedelta
 from pathlib import Path
-
-import tomllib
 
 _DURATION = re.compile(r"^\s*(\d+)\s*([smhd])\s*$")
 _UNITS = {"s": 1, "m": 60, "h": 3600, "d": 86400}

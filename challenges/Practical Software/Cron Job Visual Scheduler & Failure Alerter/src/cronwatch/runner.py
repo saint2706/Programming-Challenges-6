@@ -30,7 +30,9 @@ EXIT_TIMEOUT, EXIT_NOT_EXECUTABLE, EXIT_NOT_FOUND = (
     127,
 )  # same codes as timeout(1) and the shell
 PRUNE_EVERY = 50
-_FORWARDED = (signal.SIGTERM, signal.SIGINT, signal.SIGHUP)
+_FORWARDED = (signal.SIGTERM, signal.SIGINT) + (
+    (signal.SIGHUP,) if hasattr(signal, "SIGHUP") else ()
+)  # no SIGHUP on Windows
 
 
 class TailBuffer:

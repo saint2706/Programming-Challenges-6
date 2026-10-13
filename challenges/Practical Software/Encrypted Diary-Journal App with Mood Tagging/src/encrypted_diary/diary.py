@@ -32,7 +32,7 @@ import os
 import tempfile
 from collections import Counter
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 from pathlib import Path
 from uuid import uuid4
@@ -240,7 +240,7 @@ class JournalStore:
     ) -> Entry:
         entry = Entry(
             id=str(uuid4()),
-            created_at=created_at or datetime.now(timezone.utc),
+            created_at=created_at or datetime.now(UTC),
             mood=mood,
             body=body,
         )
@@ -273,13 +273,13 @@ class JournalStore:
 
     def mood_trend(self, days: int = 30, now: datetime | None = None) -> MoodTrend:
         """Daily average mood score for the trailing `days` days, oldest first."""
-        now = now or datetime.now(timezone.utc)
+        now = now or datetime.now(UTC)
         today = now.date()
         by_day: dict[str, list[int]] = {}
         counts: Counter = Counter()
         window_start = today - timedelta(days=days - 1)
         for entry in self._entries.values():
-            day = entry.created_at.astimezone(timezone.utc).date()
+            day = entry.created_at.astimezone(UTC).date()
             if window_start <= day <= today:
                 key = day.isoformat()
                 by_day.setdefault(key, []).append(entry.mood.score)
