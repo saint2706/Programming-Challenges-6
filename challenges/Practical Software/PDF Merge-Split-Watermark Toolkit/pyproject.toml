@@ -1,0 +1,27 @@
+[project]
+name = "pdf-merge-split-watermark-toolkit"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "cryptography>=50.0.2",
+    "cyclopts>=5.2.0",
+    "pillow>=12.3.0",
+    "pypdf>=6.20.1",
+    "reportlab>=5.0.1",
+]
+
+[project.scripts]
+pdftool = "pdftoolkit.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "pdftoolkit"
+
+[dependency-groups]
+dev = [
+    "pypdfium2>=5.14.0",
+    "pytest>=9.1.1",
+]

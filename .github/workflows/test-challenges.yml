@@ -127,6 +127,18 @@ jobs:
               build-essential libcairo2-dev libpango1.0-dev ffmpeg pkg-config
           fi
 
+      - name: Install system dependencies for WeasyPrint challenges
+        working-directory: ${{ matrix.dir }}
+        run: |
+          # WeasyPrint loads Pango through cffi at import time, so the runtime
+          # libraries (no headers or compiler needed) must be present; fonts are
+          # needed for the rendered PDFs to contain readable text.
+          if grep -q '"weasyprint' pyproject.toml 2>/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends \
+              libpango-1.0-0 libpangoft2-1.0-0 fonts-dejavu-core
+          fi
+
       - name: Install uv
         uses: astral-sh/setup-uv@v10.2.0
         with:
