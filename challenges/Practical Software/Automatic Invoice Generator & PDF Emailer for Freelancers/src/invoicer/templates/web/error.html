@@ -1,0 +1,9 @@
+{% extends "web/base.html" %}
+{% block title %}Error {{ code }}{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>Error {{ code }}</h1>
+  {% include "web/_flash.html" %}
+  <p><a href="/invoices">Back to invoices</a></p>
+</section>
+{% endblock %}

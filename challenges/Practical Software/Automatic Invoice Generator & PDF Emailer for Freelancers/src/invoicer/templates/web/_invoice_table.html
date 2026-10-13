@@ -1,0 +1,38 @@
+<nav class="filters" aria-label="Filter by status">
+  {% for value, label in filters %}
+  {% set href = "/invoices?status=" ~ value if value else "/invoices" %}
+  <a href="{{ href }}" hx-get="{{ href }}" hx-target="#invoice-list" hx-push-url="true"
+     {% if (status or "") == value %}aria-current="page"{% endif %}>{{ label }}</a>
+  {% endfor %}
+</nav>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Invoice</th>
+        <th scope="col">Client</th>
+        <th scope="col">Issued</th>
+        <th scope="col">Due</th>
+        <th scope="col" class="num">Total</th>
+        <th scope="col" class="num">Balance</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in views %}
+      {% set inv = v.invoice %}
+      <tr>
+        <td><a href="/invoices/{{ inv.id }}">{{ inv.number or ("draft " ~ inv.id) }}</a></td>
+        <td>{{ v.client.name }}</td>
+        <td>{{ inv.issue_date or "" }}</td>
+        <td>{{ inv.due_date or "" }}</td>
+        <td class="num">{{ money(v.totals.total, inv.currency) }}</td>
+        <td class="num">{{ money(v.balance, inv.currency) }}</td>
+        <td><span class="badge badge-{{ v.status }}">{{ v.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="empty">No invoices here yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

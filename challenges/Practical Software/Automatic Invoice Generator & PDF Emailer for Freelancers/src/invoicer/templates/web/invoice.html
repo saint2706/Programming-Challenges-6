@@ -1,0 +1,5 @@
+{% extends "web/base.html" %}
+{% block title %}{{ view.invoice.number or "Draft" }}{% endblock %}
+{% block content %}
+{% include "web/_invoice_detail.html" %}
+{% endblock %}

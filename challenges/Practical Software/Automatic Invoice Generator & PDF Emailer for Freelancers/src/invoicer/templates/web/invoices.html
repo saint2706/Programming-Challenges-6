@@ -1,0 +1,23 @@
+{% extends "web/base.html" %}
+{% block title %}Invoices{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Invoices</h1>
+</div>
+<section class="stats" aria-label="Outstanding">
+  {% for currency, amount in outstanding.items() %}
+  <div class="stat">
+    <span class="stat-label">Outstanding {{ currency }}</span>
+    <strong class="num">{{ money(amount, currency) }}</strong>
+  </div>
+  {% else %}
+  <div class="stat">
+    <span class="stat-label">Outstanding</span>
+    <strong class="num">Nothing owed</strong>
+  </div>
+  {% endfor %}
+</section>
+<div id="invoice-list">
+  {% include "web/_invoice_table.html" %}
+</div>
+{% endblock %}

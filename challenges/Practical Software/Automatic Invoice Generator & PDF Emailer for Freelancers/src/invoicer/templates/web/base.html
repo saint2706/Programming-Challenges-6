@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="htmx-config" content='{"includeIndicatorStyles":false,"allowEval":false}'>
+  <title>{% block title %}{% endblock %} · Invoicer</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/htmx.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
+  <header class="topbar">
+    <a class="brand" href="/invoices">Invoicer</a>
+    <nav aria-label="Main">
+      <a href="/invoices">Invoices</a>
+      <a href="/clients">Clients</a>
+    </nav>
+  </header>
+  <main id="main" class="page">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

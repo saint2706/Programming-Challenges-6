@@ -1,0 +1,151 @@
+{% set inv = view.invoice %}
+<section id="invoice-detail" class="invoice">
+  {% if flash %}{% include "web/_flash.html" %}{% endif %}
+
+  <div class="page-head">
+    <h1>{{ inv.number or "Draft invoice" }}</h1>
+    <span class="badge badge-{{ view.status }}">{{ view.status }}</span>
+    <a class="button" href="/invoices/{{ inv.id }}/pdf" target="_blank" rel="noopener">Download PDF</a>
+  </div>
+
+  <div class="parties">
+    <div>
+      <h2>From</h2>
+      <p class="strong">{{ doc.seller.name }}</p>
+      <p class="multiline">{{ doc.seller.address }}</p>
+      {% if doc.seller.tax_id %}<p>VAT ID {{ doc.seller.tax_id }}</p>{% endif %}
+    </div>
+    <div>
+      <h2>Bill to</h2>
+      <p class="strong">{{ doc.buyer.name }}</p>
+      <p class="multiline">{{ doc.buyer.address }}</p>
+      {% if doc.buyer.tax_id %}<p>VAT ID {{ doc.buyer.tax_id }}</p>{% endif %}
+    </div>
+    <dl class="dates">
+      <dt>Issued</dt><dd>{{ doc.issue_date or "not issued" }}</dd>
+      <dt>Due</dt><dd>{{ doc.due_date or "-" }}</dd>
+      {% if inv.reference %}<dt>Reference</dt><dd>{{ inv.reference }}</dd>{% endif %}
+    </dl>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Description</th>
+          <th scope="col" class="num">Qty</th>
+          <th scope="col" class="num">Unit price</th>
+          <th scope="col" class="num">Tax</th>
+          <th scope="col" class="num">Net</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line in doc.lines %}
+        <tr>
+          <td class="prewrap">{{ line.description }}</td>
+          <td class="num">{{ line.qty }}</td>
+          <td class="num">{{ line.unit_price }}</td>
+          <td class="num">{{ line.tax }}</td>
+          <td class="num">{{ line.net }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <dl class="totals">
+    <dt>Subtotal</dt><dd class="num">{{ doc.totals.subtotal }}</dd>
+    {% if doc.totals.discount %}<dt>Discount</dt><dd class="num">{{ doc.totals.discount }}</dd>{% endif %}
+    <dt>Net</dt><dd class="num">{{ doc.totals.net }}</dd>
+    {% for group in doc.totals.tax_groups %}
+    <dt>Tax {{ group.rate }}</dt><dd class="num">{{ group.tax }}</dd>
+    {% endfor %}
+    <dt class="grand">Total</dt><dd class="num grand">{{ doc.totals.total }}</dd>
+    {% if doc.totals.paid %}<dt>Paid</dt><dd class="num">{{ doc.totals.paid }}</dd>{% endif %}
+    <dt class="grand">Balance due</dt><dd class="num grand">{{ doc.totals.balance }}</dd>
+  </dl>
+
+  {% if inv.notes %}
+  <h2>Notes</h2>
+  <p class="multiline">{{ inv.notes }}</p>
+  {% endif %}
+
+  <h2>Payments</h2>
+  {% if view.payments %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Date</th><th scope="col">Method</th><th scope="col" class="num">Amount</th></tr></thead>
+      <tbody>
+        {% for p in view.payments %}
+        <tr>
+          <td>{{ p.paid_on }}</td>
+          <td>{{ p.method }}</td>
+          <td class="num">{{ money(p.amount_minor, inv.currency) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted">No payments yet.</p>
+  {% endif %}
+
+  <h2>Email log</h2>
+  {% if emails %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">When</th><th scope="col">Kind</th><th scope="col">To</th><th scope="col">Status</th><th scope="col" class="num">Attempts</th><th scope="col">Error</th></tr></thead>
+      <tbody>
+        {% for e in emails %}
+        <tr>
+          <td>{{ e.at }}</td>
+          <td>{{ e.kind }}</td>
+          <td>{{ e.to }}</td>
+          <td><span class="badge badge-{{ e.status }}">{{ e.status }}</span></td>
+          <td class="num">{{ e.attempts }}</td>
+          <td class="prewrap">{{ e.error }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted">Not emailed yet.</p>
+  {% endif %}
+
+  <h2>Actions</h2>
+  <div class="actions">
+    {% if inv.status == "draft" %}
+    <form method="post" action="/invoices/{{ inv.id }}/issue" hx-post="/invoices/{{ inv.id }}/issue" hx-target="#invoice-detail" hx-swap="outerHTML" hx-disabled-elt="find button">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="primary">Issue invoice</button>
+    </form>
+    {% endif %}
+    {% if inv.status == "issued" %}
+    <form method="post" action="/invoices/{{ inv.id }}/send" hx-post="/invoices/{{ inv.id }}/send" hx-target="#invoice-detail" hx-swap="outerHTML" hx-disabled-elt="find button">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      {% if sent %}
+      <input type="hidden" name="resend" value="1">
+      <button type="submit" class="secondary" hx-confirm="This invoice was already emailed. Send it again?">Send again</button>
+      {% else %}
+      <button type="submit" class="primary">Email to client</button>
+      {% endif %}
+    </form>
+    {% endif %}
+    {% if inv.status == "issued" and view.balance > 0 %}
+    <form method="post" action="/invoices/{{ inv.id }}/pay" class="pay-form" hx-post="/invoices/{{ inv.id }}/pay" hx-target="#invoice-detail" hx-swap="outerHTML" hx-disabled-elt="find button">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <label>Amount <input name="amount" inputmode="decimal" required placeholder="0.00"></label>
+      <label>Paid on <input name="paid_on" type="date"></label>
+      <label>Method <input name="method" placeholder="bank transfer"></label>
+      <button type="submit" class="primary">Record payment</button>
+    </form>
+    {% endif %}
+    {% if inv.status == "issued" and not view.paid %}
+    <form method="post" action="/invoices/{{ inv.id }}/void" hx-post="/invoices/{{ inv.id }}/void" hx-target="#invoice-detail" hx-swap="outerHTML" hx-disabled-elt="find button">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="danger" hx-confirm="Void this invoice? Its number stays used.">Void</button>
+    </form>
+    {% endif %}
+  </div>
+</section>

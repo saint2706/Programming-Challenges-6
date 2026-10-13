@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<title>{{ title }}</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm; }
+  :root { --ink: #1c2330; --muted: #5d6675; --rule: #d9dde4; --accent: #1f4fd8; }
+  * { box-sizing: border-box; }
+  body { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; font-size: 10pt;
+         color: var(--ink); line-height: 1.4; margin: 0; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; }
+  .logo { max-height: 18mm; max-width: 60mm; }
+  h1 { font-size: 22pt; margin: 0; letter-spacing: -0.5pt; color: var(--accent); }
+  .meta { text-align: right; }
+  .meta table { margin-left: auto; border-collapse: collapse; }
+  .meta td { padding: 1pt 0 1pt 10pt; }
+  .meta td:first-child { color: var(--muted); }
+  .parties { display: flex; gap: 14mm; margin: 12mm 0 8mm; }
+  .party { flex: 1; }
+  .label { font-size: 8pt; text-transform: uppercase; letter-spacing: 0.6pt; color: var(--muted);
+           margin-bottom: 2pt; }
+  .party .name { font-weight: 600; }
+  .addr { white-space: pre-line; }
+  table.items { width: 100%; border-collapse: collapse; margin-top: 4mm; }
+  table.items th { text-align: left; font-size: 8pt; text-transform: uppercase;
+                   letter-spacing: 0.5pt; color: var(--muted); border-bottom: 1.5pt solid var(--ink);
+                   padding: 4pt 4pt; }
+  table.items td { padding: 5pt 4pt; border-bottom: 0.5pt solid var(--rule); vertical-align: top; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.items th.num { text-align: right; }
+  .totals { margin: 6mm 0 0 auto; width: 90mm; border-collapse: collapse; }
+  .totals td { padding: 2.5pt 4pt; }
+  .totals tr.grand td { border-top: 1.5pt solid var(--ink); font-size: 12pt; font-weight: 700;
+                        padding-top: 5pt; }
+  .totals tr.due td { color: var(--accent); font-weight: 700; }
+  .stamp { position: fixed; top: 80mm; left: 0; right: 0; text-align: center; font-size: 80pt;
+           font-weight: 800; letter-spacing: 6pt; color: rgba(31, 79, 216, 0.10);
+           transform: rotate(-20deg); }
+  .stamp.void, .stamp.draft { color: rgba(180, 30, 30, 0.12); }
+  .payment { margin-top: 10mm; padding-top: 4mm; border-top: 0.5pt solid var(--rule); }
+  .payment dl { display: grid; grid-template-columns: 28mm 1fr; margin: 2mm 0 0; gap: 1pt 4pt; }
+  .payment dt { color: var(--muted); }
+  .payment dd { margin: 0; }
+  .notes { margin-top: 5mm; white-space: pre-line; }
+  footer { position: fixed; bottom: 0; left: 0; right: 0; font-size: 8pt; color: var(--muted);
+           text-align: center; }
+</style>
+</head>
+<body>
+{% if stamp %}<div class="stamp {{ stamp_class }}">{{ stamp }}</div>{% endif %}
+<header>
+  <div>
+    {% if logo %}<img class="logo" src="{{ logo }}" alt="">{% endif %}
+    <h1>{{ heading }}</h1>
+  </div>
+  <div class="meta">
+    <table>
+      <tr><td>{{ labels.number }}</td><td><strong>{{ number }}</strong></td></tr>
+      {% if issue_date %}<tr><td>{{ labels.issued }}</td><td>{{ issue_date }}</td></tr>{% endif %}
+      {% if due_date %}<tr><td>{{ labels.due }}</td><td>{{ due_date }}</td></tr>{% endif %}
+      {% if reference %}<tr><td>{{ labels.reference }}</td><td>{{ reference }}</td></tr>{% endif %}
+    </table>
+  </div>
+</header>
+
+<section class="parties">
+  <div class="party">
+    <div class="label">{{ labels.from }}</div>
+    <div class="name">{{ seller.name }}</div>
+    <div class="addr">{{ seller.address }}</div>
+    {% if seller.email %}<div>{{ seller.email }}</div>{% endif %}
+    {% if seller.tax_id %}<div>{{ labels.tax_id }} {{ seller.tax_id }}</div>{% endif %}
+  </div>
+  <div class="party">
+    <div class="label">{{ labels.bill_to }}</div>
+    <div class="name">{{ buyer.name }}</div>
+    <div class="addr">{{ buyer.address }}</div>
+    {% if buyer.email %}<div>{{ buyer.email }}</div>{% endif %}
+    {% if buyer.tax_id %}<div>{{ labels.tax_id }} {{ buyer.tax_id }}</div>{% endif %}
+  </div>
+</section>
+
+<table class="items">
+  <thead>
+    <tr>
+      <th>{{ labels.description }}</th>
+      <th class="num">{{ labels.qty }}</th>
+      <th class="num">{{ labels.unit_price }}</th>
+      <th class="num">{{ labels.tax }}</th>
+      <th class="num">{{ labels.amount }}</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for line in lines %}
+    <tr>
+      <td>{{ line.description }}</td>
+      <td class="num">{{ line.qty }}</td>
+      <td class="num">{{ line.unit_price }}</td>
+      <td class="num">{{ line.tax }}</td>
+      <td class="num">{{ line.net }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<table class="totals">
+  <tr><td>{{ labels.subtotal }}</td><td class="num">{{ totals.subtotal }}</td></tr>
+  {% if totals.discount %}
+  <tr><td>{{ labels.discount }}{% if discount_label %} ({{ discount_label }}){% endif %}</td>
+      <td class="num">&minus;{{ totals.discount }}</td></tr>
+  <tr><td>{{ labels.net }}</td><td class="num">{{ totals.net }}</td></tr>
+  {% endif %}
+  {% for group in totals.tax_groups %}
+  <tr><td>{{ labels.tax }} {{ group.rate }}</td><td class="num">{{ group.tax }}</td></tr>
+  {% endfor %}
+  <tr class="grand"><td>{{ labels.total }}</td><td class="num">{{ totals.total }}</td></tr>
+  {% if totals.paid %}
+  <tr><td>{{ labels.paid }}</td><td class="num">&minus;{{ totals.paid }}</td></tr>
+  <tr class="due"><td>{{ labels.balance }}</td><td class="num">{{ totals.balance }}</td></tr>
+  {% endif %}
+</table>
+
+{% if notes %}<div class="notes">{{ notes }}</div>{% endif %}
+
+{% if seller.iban or seller.payment_note %}
+<section class="payment">
+  <div class="label">{{ labels.payment }}</div>
+  {% if seller.payment_note %}<div>{{ seller.payment_note }}</div>{% endif %}
+  <dl>
+    {% if seller.iban %}<dt>IBAN</dt><dd>{{ seller.iban }}</dd>{% endif %}
+    {% if seller.bic %}<dt>BIC</dt><dd>{{ seller.bic }}</dd>{% endif %}
+    <dt>{{ labels.reference }}</dt><dd>{{ number }}</dd>
+  </dl>
+</section>
+{% endif %}
+
+<footer>{{ seller.name }}{% if seller.tax_id %} · {{ labels.tax_id }} {{ seller.tax_id }}{% endif %}</footer>
+</body>
+</html>
