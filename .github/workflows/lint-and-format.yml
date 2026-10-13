@@ -40,22 +40,26 @@ jobs:
           python-version: "3.12"
 
       - name: Install ruff
-        run: pip install "ruff==0.16.7"
+        run: pip install "ruff==0.17.0"
 
-      - name: Format with dprint (markdown, JSON, and Python via ruff)
+      - name: Format markdown and JSON with dprint
         id: dprint
         run: |
           set +e
-          npx --yes dprint@0.57.4 fmt --config dprint.json > "$RUNNER_TEMP/dprint-output.log" 2>&1
+          npx --yes dprint@0.63.0 fmt --config dprint.json > "$RUNNER_TEMP/dprint-output.log" 2>&1
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/dprint-output.log"
 
-      - name: Check for remaining lint issues ruff couldn't auto-fix
+      - name: Fix and format Python with ruff, then check for leftovers
         id: ruff
         run: |
           set +e
-          ruff check . > "$RUNNER_TEMP/ruff-output.log" 2>&1
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          ruff check --fix --exit-zero . > "$RUNNER_TEMP/ruff-output.log" 2>&1
+          ruff format . >> "$RUNNER_TEMP/ruff-output.log" 2>&1
+          ruff check . >> "$RUNNER_TEMP/ruff-output.log" 2>&1
+          status=$?
+          ruff format --check . >> "$RUNNER_TEMP/ruff-output.log" 2>&1 || status=$?
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/ruff-output.log"
 
       - name: Check for file changes

@@ -93,7 +93,7 @@ def test_logical_type_and_merge():
     assert dq.logical_type(pl.Series([1.5])) == "float"
     assert dq.logical_type(pl.Series(["x"])) == "string"
     assert dq.logical_type(pl.Series([True])) == "bool"
-    assert dq.logical_type(pl.Series([datetime(2024, 1, 1)])) == "datetime"  # noqa: DTZ001 -- polars holds naive datetimes
+    assert dq.logical_type(pl.Series([datetime(2024, 1, 1)])) == "datetime"
     assert dq.logical_type(pl.Series([None, None], dtype=pl.String)) == "null"
     assert dq._merge_types(["int", "float"]) == "float"
     assert dq._merge_types(["int", "string"]) == "string"
@@ -117,7 +117,7 @@ def test_coerce_datetime_parses_mixed_layouts_and_flags_garbage():
     )
     out, failures = dq.coerce(s, "datetime")
     assert failures == 1 and out.null_count() == 1
-    assert out[2] == datetime(2024, 1, 2)  # noqa: DTZ001 -- polars holds naive datetimes
+    assert out[2] == datetime(2024, 1, 2)
 
 
 # ------------------------------------------------------------------ config

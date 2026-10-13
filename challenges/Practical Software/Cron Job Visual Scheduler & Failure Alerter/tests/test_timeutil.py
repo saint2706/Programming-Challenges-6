@@ -1,3 +1,4 @@
+import sys
 from datetime import UTC
 from zoneinfo import ZoneInfo
 
@@ -12,6 +13,9 @@ def test_tz_environment_variable_wins(tmp_path):
     )
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="needs POSIX symlinks and /usr/share/zoneinfo"
+)
 def test_etc_timezone_then_localtime_symlink_then_utc(tmp_path):
     assert system_zone({}, tmp_path) is UTC
     link = tmp_path / "localtime"

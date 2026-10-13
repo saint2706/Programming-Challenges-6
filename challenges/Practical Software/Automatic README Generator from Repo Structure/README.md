@@ -26,7 +26,7 @@ Exit codes: `0` success, `1` `--check` found drift, `2` usage error (not a direc
 
 Run against the sibling Multi-Timezone Meeting Scheduler:
 
-````markdown
+```markdown
 <!-- readme-gen:begin stack -->
 ## Tech stack
 
@@ -36,23 +36,23 @@ Run against the sibling Multi-Timezone Meeting Scheduler:
 - **Testing:** pytest
 - **Package manager:** uv
 <!-- readme-gen:end stack -->
-````
+```
 
 The same run also produces a Getting started section whose usage table lists `uv run meeting-scheduler` (from `[project.scripts]`) and `uv run uvicorn meeting_scheduler.web:app --reload` (found by locating the `app = FastAPI()` object in the source).
 
 ## What it infers, and from where
 
-| Section         | Source                                                                                                                                                                  |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header          | Manifest `name` and `description`; failing that, the first line of the top-level package docstring; failing that, a visible `_TODO_` (never an invented description).   |
-| Tech stack      | Byte share per language (programming languages only, so Markdown never outweighs the code), plus dependencies grouped by category from per-ecosystem lookup tables.      |
-| Getting started | Package manager from lockfiles (`uv.lock`, `poetry.lock`, `pnpm-lock.yaml`, `yarn.lock`, ...) or the `packageManager` field; entry points; test and lint tools.         |
-| Make targets    | Top-level `Makefile` targets, with `## doc` comments as descriptions.                                                                                                   |
-| Packages        | Manifests in subdirectories (monorepos), up to three levels deep.                                                                                                       |
-| Configuration   | `.env.example` / `.env.sample` / `.env.template`; comments directly above a variable become its description.                                                            |
-| Docker          | `Dockerfile` and compose files (service names read by indentation, so no YAML dependency).                                                                              |
-| Project tree    | The scan, with one-line annotations for well-known paths.                                                                                                               |
-| License         | Manifest field, else recognised from the `LICENSE` file text.                                                                                                           |
+| Section         | Source                                                                                                                                                                |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header          | Manifest `name` and `description`; failing that, the first line of the top-level package docstring; failing that, a visible `_TODO_` (never an invented description). |
+| Tech stack      | Byte share per language (programming languages only, so Markdown never outweighs the code), plus dependencies grouped by category from per-ecosystem lookup tables.   |
+| Getting started | Package manager from lockfiles (`uv.lock`, `poetry.lock`, `pnpm-lock.yaml`, `yarn.lock`, ...) or the `packageManager` field; entry points; test and lint tools.       |
+| Make targets    | Top-level `Makefile` targets, with `## doc` comments as descriptions.                                                                                                 |
+| Packages        | Manifests in subdirectories (monorepos), up to three levels deep.                                                                                                     |
+| Configuration   | `.env.example` / `.env.sample` / `.env.template`; comments directly above a variable become its description.                                                          |
+| Docker          | `Dockerfile` and compose files (service names read by indentation, so no YAML dependency).                                                                            |
+| Project tree    | The scan, with one-line annotations for well-known paths.                                                                                                             |
+| License         | Manifest field, else recognised from the `LICENSE` file text.                                                                                                         |
 
 Ecosystems: Python (`pyproject.toml` PEP 621 and Poetry, `requirements*.txt`), Node (`package.json`), Rust (`Cargo.toml`), Go (`go.mod`), Ruby (`Gemfile`), PHP (`composer.json`), Java (`pom.xml`, Gradle detection).
 
@@ -94,17 +94,17 @@ A malformed `package.json` becomes a `warning:` on stderr and the rest of the RE
 
 ## Architecture
 
-| Module         | Responsibility                                                                                           |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| `scan.py`      | gitignore-aware walk, language byte counts                                                               |
-| `manifests.py` | Seven manifest parsers into one `Manifest` shape                                                         |
-| `stack.py`     | Technology tables, package-manager detection, install/run/test commands, FastAPI/Flask/Streamlit hints   |
-| `signals.py`   | Env templates, Makefile, compose, CI, license, description fallback                                      |
-| `tree.py`      | Annotated tree rendering, per-directory truncation                                                       |
-| `render.py`    | Facts into `Section`s                                                                                    |
-| `document.py`  | Marker wrapping and the merge algorithm                                                                  |
-| `generate.py`  | Path in, sections out                                                                                    |
-| `cli.py`       | Typer command, atomic write (temp file + `os.replace`)                                                   |
+| Module         | Responsibility                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------ |
+| `scan.py`      | gitignore-aware walk, language byte counts                                                             |
+| `manifests.py` | Seven manifest parsers into one `Manifest` shape                                                       |
+| `stack.py`     | Technology tables, package-manager detection, install/run/test commands, FastAPI/Flask/Streamlit hints |
+| `signals.py`   | Env templates, Makefile, compose, CI, license, description fallback                                    |
+| `tree.py`      | Annotated tree rendering, per-directory truncation                                                     |
+| `render.py`    | Facts into `Section`s                                                                                  |
+| `document.py`  | Marker wrapping and the merge algorithm                                                                |
+| `generate.py`  | Path in, sections out                                                                                  |
+| `cli.py`       | Typer command, atomic write (temp file + `os.replace`)                                                 |
 
 Everything except `cli.py` is pure, so the whole pipeline is tested against throwaway repositories built in `tmp_path`.
 

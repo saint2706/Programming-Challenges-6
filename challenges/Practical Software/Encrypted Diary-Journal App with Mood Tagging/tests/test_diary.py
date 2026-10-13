@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from encrypted_diary.diary import (
@@ -166,7 +166,7 @@ def test_search_by_mood(tmp_path):
 
 def test_search_by_date_range(tmp_path):
     store = JournalStore(tmp_path / "journal.enc", "pw")
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     store.add_entry(Mood.HAPPY, "old entry", created_at=now - timedelta(days=10))
     store.add_entry(Mood.HAPPY, "recent entry", created_at=now)
     results = store.search(since=now - timedelta(days=1))
@@ -175,7 +175,7 @@ def test_search_by_date_range(tmp_path):
 
 def test_entries_sorted_newest_first(tmp_path):
     store = JournalStore(tmp_path / "journal.enc", "pw")
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     store.add_entry(Mood.HAPPY, "first", created_at=now - timedelta(days=2))
     store.add_entry(Mood.HAPPY, "second", created_at=now - timedelta(days=1))
     store.add_entry(Mood.HAPPY, "third", created_at=now)
@@ -187,7 +187,7 @@ def test_entries_sorted_newest_first(tmp_path):
 
 def test_mood_trend_averages_same_day_entries(tmp_path):
     store = JournalStore(tmp_path / "journal.enc", "pw")
-    now = datetime(2026, 1, 15, 10, tzinfo=timezone.utc)
+    now = datetime(2026, 1, 15, 10, tzinfo=UTC)
     store.add_entry(Mood.HAPPY, "a", created_at=now)  # score 7
     store.add_entry(Mood.SAD, "b", created_at=now.replace(hour=20))  # score 2
     trend = store.mood_trend(days=5, now=now)
@@ -197,7 +197,7 @@ def test_mood_trend_averages_same_day_entries(tmp_path):
 
 def test_mood_trend_fills_gaps_with_none(tmp_path):
     store = JournalStore(tmp_path / "journal.enc", "pw")
-    now = datetime(2026, 1, 15, tzinfo=timezone.utc)
+    now = datetime(2026, 1, 15, tzinfo=UTC)
     store.add_entry(Mood.HAPPY, "only entry", created_at=now)
     trend = store.mood_trend(days=3, now=now)
     assert len(trend.points) == 3
@@ -229,7 +229,7 @@ def test_sparkline_values_fills_none_with_zero(tmp_path):
 def test_entry_round_trips_through_dict():
     entry = Entry(
         id="abc123",
-        created_at=datetime(2026, 3, 1, 9, 30, tzinfo=timezone.utc),
+        created_at=datetime(2026, 3, 1, 9, 30, tzinfo=UTC),
         mood=Mood.EXCITED,
         body="line one\nline two",
     )

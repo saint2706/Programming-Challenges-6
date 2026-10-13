@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import calendar
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from sqlmodel import Field, Session, SQLModel, create_engine, select
@@ -57,7 +57,7 @@ class Subscription(SQLModel, table=True):
     notes: str | None = None
     cancel_url: str | None = None
     active: bool = True
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     @property
     def cost_display(self) -> str:
@@ -68,7 +68,7 @@ class NotificationLog(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     subscription_id: int = Field(foreign_key="subscription.id")
     renewal_date: date
-    sent_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    sent_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     message: str = ""
 
 

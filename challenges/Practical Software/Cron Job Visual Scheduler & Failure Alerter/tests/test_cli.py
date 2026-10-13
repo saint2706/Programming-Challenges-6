@@ -70,6 +70,9 @@ def test_options_after_the_command_belong_to_the_command_not_to_cronwatch(env):
     assert result.returncode == 0 and "--job inner" in result.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="timeout kills a POSIX process group"
+)
 def test_wrapper_timeout_and_ok_codes_options(env):
     slow = subprocess_run(
         env, "run", "--job", "s", "--timeout", "1", "--", "sleep", "30"

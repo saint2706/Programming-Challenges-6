@@ -125,9 +125,9 @@ def test_invalid_expressions_say_what_is_wrong(text, fragment):
 
 def test_matches_checks_one_wall_clock_minute():
     expr = parse("30 4 * * 1-5")
-    assert expr.matches(datetime(2026, 10, 9, 4, 30))  # noqa: DTZ001 - cron is wall-clock; a Friday
-    assert not expr.matches(datetime(2026, 10, 10, 4, 30))  # noqa: DTZ001 - Saturday
-    assert not expr.matches(datetime(2026, 10, 9, 4, 31))  # noqa: DTZ001
+    assert expr.matches(datetime(2026, 10, 9, 4, 30))
+    assert not expr.matches(datetime(2026, 10, 10, 4, 30))
+    assert not expr.matches(datetime(2026, 10, 9, 4, 31))
 
 
 def test_runs_between_is_half_open_and_limited():
@@ -180,7 +180,7 @@ def test_results_are_in_the_requested_zone_whatever_the_input_zone():
 
 
 def test_naive_input_is_read_as_wall_clock_in_the_given_zone():
-    got = parse("0 12 * * *").next_after(datetime(2026, 6, 1, 13, 0), NY)  # noqa: DTZ001 - naive on purpose
+    got = parse("0 12 * * *").next_after(datetime(2026, 6, 1, 13, 0), NY)
     assert got == datetime(2026, 6, 2, 12, 0, tzinfo=NY)
 
 
