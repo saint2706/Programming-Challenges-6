@@ -30,7 +30,7 @@ concurrency:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       dirs: ${{ steps.changes.outputs.dirs }}
     steps:
@@ -102,7 +102,7 @@ jobs:
   test:
     needs: detect-changes
     if: needs.detect-changes.outputs.dirs != '[]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -117,7 +117,7 @@ jobs:
         run: |
           # manimpango (a manim dependency) builds from source against
           # pangocairo via pkg-config; ffmpeg is needed at render time.
-          # Neither is preinstalled on ubuntu-latest, and the failure is a
+          # Neither is preinstalled on ubuntu-24.04, and the failure is a
           # confusing pkg-config/setuptools traceback rather than a clear
           # "apt-get install this" message, so only pay this cost for the
           # few challenges that actually declare manim as a dependency.
@@ -144,6 +144,8 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
+          # Default glob hashes every uv.lock, so matrix jobs race on one cache key.
+          cache-dependency-glob: ${{ matrix.dir }}/uv.lock
 
       - name: Run tests
         working-directory: ${{ matrix.dir }}
