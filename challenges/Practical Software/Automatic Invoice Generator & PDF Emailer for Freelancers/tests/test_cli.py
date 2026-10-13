@@ -416,7 +416,7 @@ def test_config_check(configured, capsys):
         .replace('security = "none"', 'security = "none"\nusername = "u"')
     )
     assert run("config-check") == 1
-    assert "INVOICER_SMTP_PASSWORD" in capsys.readouterr().out
+    assert "password_env" in capsys.readouterr().out
 
 
 def test_help_lists_every_command(capsys):
