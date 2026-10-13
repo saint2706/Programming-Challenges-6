@@ -1,0 +1,34 @@
+[package]
+name = "heavy-light-decomposition"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+publish = false
+description = "Tree path queries: classic HLD with a segment tree vs globally balanced HLD and a static top tree, all O(log n) or better than O(log^2 n)."
+
+[lib]
+name = "hld"
+path = "src/lib.rs"
+
+[[bench]]
+name = "queries"
+harness = false
+
+[[bin]]
+name = "hld"
+path = "src/bin/hld.rs"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.8.2"
+proptest = "1.12.0"
