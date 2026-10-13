@@ -56,3 +56,6 @@ challenges/Data Analytics/Multi-Source Data Reconciliation Tool/data/
 .claude/
 .mcp.json
 CLAUDE.md
+
+# Editor settings
+.vscode/
