@@ -1,0 +1,29 @@
+[project]
+name = "credit-risk-scorecard-builder"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "altair>=6.3.0",
+    "numpy>=2.5.4",
+    "openvino>=2026.4.1",
+    "polars>=2.0.0",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.18.1",
+    "streamlit>=1.65.0",
+    "vl-convert-python>=1.9.0.post1",
+]
+
+[project.scripts]
+scorecard = "credit_scorecard.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "credit_scorecard"

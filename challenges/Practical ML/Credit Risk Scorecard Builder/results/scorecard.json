@@ -1,0 +1,475 @@
+{
+  "binnings": {
+    "RevolvingUtilizationOfUnsecuredLines": {
+      "feature": "RevolvingUtilizationOfUnsecuredLines",
+      "edges": [
+        0.13702859332,
+        0.30039697048,
+        0.53150248096,
+        0.6933374768000001,
+        0.87983219448,
+        0.9327301214,
+        0.9999999
+      ],
+      "specials": [],
+      "bins": [
+        {
+          "label": "<= 0.137",
+          "kind": "range",
+          "good": 49264,
+          "bad": 931,
+          "woe": 1.3349202123974877
+        },
+        {
+          "label": "(0.137, 0.3004]",
+          "kind": "range",
+          "good": 14129,
+          "bad": 511,
+          "woe": 0.6854298868838261
+        },
+        {
+          "label": "(0.3004, 0.5315]",
+          "kind": "range",
+          "good": 11792,
+          "bad": 757,
+          "woe": 0.11195286070209094
+        },
+        {
+          "label": "(0.5315, 0.6933]",
+          "kind": "range",
+          "good": 5644,
+          "bad": 630,
+          "woe": -0.44131887377617407
+        },
+        {
+          "label": "(0.6933, 0.8798]",
+          "kind": "range",
+          "good": 5355,
+          "bad": 919,
+          "woe": -0.8711933119124927
+        },
+        {
+          "label": "(0.8798, 0.9327]",
+          "kind": "range",
+          "good": 1719,
+          "bad": 373,
+          "woe": -1.1063717917733527
+        },
+        {
+          "label": "(0.9327, 1]",
+          "kind": "range",
+          "good": 8175,
+          "bad": 2041,
+          "woe": -1.2457855718577906
+        },
+        {
+          "label": "> 1",
+          "kind": "range",
+          "good": 1489,
+          "bad": 844,
+          "woe": -2.065791581167319
+        }
+      ],
+      "direction": "ascending"
+    },
+    "NumberOfTimes90DaysLate": {
+      "feature": "NumberOfTimes90DaysLate",
+      "edges": [
+        0.0
+      ],
+      "specials": [
+        96.0,
+        98.0
+      ],
+      "bins": [
+        {
+          "label": "<= 0",
+          "kind": "range",
+          "good": 94213,
+          "bad": 4581,
+          "woe": 0.38996333662596533
+        },
+        {
+          "label": "> 0",
+          "kind": "range",
+          "good": 3294,
+          "bad": 2334,
+          "woe": -2.289117015424051
+        },
+        {
+          "label": "special [96, 98]",
+          "kind": "special",
+          "good": 60,
+          "bad": 91,
+          "woe": -3.0472692986116137
+        }
+      ],
+      "direction": "ascending"
+    },
+    "NumberOfTime30-59DaysPastDueNotWorse": {
+      "feature": "NumberOfTime30-59DaysPastDueNotWorse",
+      "edges": [
+        0.0,
+        1.0,
+        2.0
+      ],
+      "specials": [
+        96.0,
+        98.0
+      ],
+      "bins": [
+        {
+          "label": "<= 0",
+          "kind": "range",
+          "good": 84218,
+          "bad": 3579,
+          "woe": 0.5247502397649797
+        },
+        {
+          "label": "(0, 1]",
+          "kind": "range",
+          "good": 9622,
+          "bad": 1665,
+          "woe": -0.8794625189356047
+        },
+        {
+          "label": "(1, 2]",
+          "kind": "range",
+          "good": 2356,
+          "bad": 838,
+          "woe": -1.6001230813592495
+        },
+        {
+          "label": "> 2",
+          "kind": "range",
+          "good": 1311,
+          "bad": 833,
+          "woe": -2.1801481493436916
+        },
+        {
+          "label": "special [96, 98]",
+          "kind": "special",
+          "good": 60,
+          "bad": 91,
+          "woe": -3.047136853704451
+        }
+      ],
+      "direction": "ascending"
+    },
+    "NumberOfTime60-89DaysPastDueNotWorse": {
+      "feature": "NumberOfTime60-89DaysPastDueNotWorse",
+      "edges": [
+        0.0
+      ],
+      "specials": [
+        96.0,
+        98.0
+      ],
+      "bins": [
+        {
+          "label": "<= 0",
+          "kind": "range",
+          "good": 94204,
+          "bad": 5097,
+          "woe": 0.2831440363085639
+        },
+        {
+          "label": "> 0",
+          "kind": "range",
+          "good": 3303,
+          "bad": 1818,
+          "woe": -2.036603164324037
+        },
+        {
+          "label": "special [96, 98]",
+          "kind": "special",
+          "good": 60,
+          "bad": 91,
+          "woe": -3.0472692986116137
+        }
+      ],
+      "direction": "ascending"
+    },
+    "age": {
+      "feature": "age",
+      "edges": [
+        28.0,
+        36.0,
+        43.0,
+        54.0,
+        57.0,
+        62.0,
+        67.0
+      ],
+      "specials": [],
+      "bins": [
+        {
+          "label": "<= 28",
+          "kind": "range",
+          "good": 4269,
+          "bad": 590,
+          "woe": -0.6549602493625576
+        },
+        {
+          "label": "(28, 36]",
+          "kind": "range",
+          "good": 10662,
+          "bad": 1231,
+          "woe": -0.4747426428334597
+        },
+        {
+          "label": "(36, 43]",
+          "kind": "range",
+          "good": 13066,
+          "bad": 1329,
+          "woe": -0.3479938458288194
+        },
+        {
+          "label": "(43, 54]",
+          "kind": "range",
+          "good": 25684,
+          "bad": 2179,
+          "woe": -0.1664504126541132
+        },
+        {
+          "label": "(54, 57]",
+          "kind": "range",
+          "good": 6728,
+          "bad": 414,
+          "woe": 0.153791923533445
+        },
+        {
+          "label": "(57, 62]",
+          "kind": "range",
+          "good": 11390,
+          "bad": 553,
+          "woe": 0.39103058441251626
+        },
+        {
+          "label": "(62, 67]",
+          "kind": "range",
+          "good": 9681,
+          "bad": 342,
+          "woe": 0.7084578521683713
+        },
+        {
+          "label": "> 67",
+          "kind": "range",
+          "good": 16087,
+          "bad": 368,
+          "woe": 1.1431145232021893
+        }
+      ],
+      "direction": "descending"
+    },
+    "MonthlyIncome": {
+      "feature": "MonthlyIncome",
+      "edges": [
+        3327.84,
+        3800.0,
+        4743.0,
+        5541.32,
+        6549.0,
+        7500.0,
+        10000.0
+      ],
+      "specials": [],
+      "bins": [
+        {
+          "label": "<= 3328",
+          "kind": "range",
+          "good": 18349,
+          "bad": 1833,
+          "woe": -0.32980079975688137
+        },
+        {
+          "label": "(3328, 3800]",
+          "kind": "range",
+          "good": 4755,
+          "bad": 449,
+          "woe": -0.27425514938981593
+        },
+        {
+          "label": "(3800, 4743]",
+          "kind": "range",
+          "good": 9120,
+          "bad": 815,
+          "woe": -0.21869793333468063
+        },
+        {
+          "label": "(4743, 5541]",
+          "kind": "range",
+          "good": 7793,
+          "bad": 614,
+          "woe": -0.09294001447756503
+        },
+        {
+          "label": "(5541, 6549]",
+          "kind": "range",
+          "good": 7857,
+          "bad": 554,
+          "woe": 0.01798054448071972
+        },
+        {
+          "label": "(6549, 7500]",
+          "kind": "range",
+          "good": 6498,
+          "bad": 420,
+          "woe": 0.10470576320805908
+        },
+        {
+          "label": "(7500, 1e+04]",
+          "kind": "range",
+          "good": 11581,
+          "bad": 622,
+          "woe": 0.29024423067753635
+        },
+        {
+          "label": "> 1e+04",
+          "kind": "range",
+          "good": 12264,
+          "bad": 568,
+          "woe": 0.4382864588619656
+        },
+        {
+          "label": "missing",
+          "kind": "missing",
+          "good": 19350,
+          "bad": 1131,
+          "woe": 0.20599765544319432
+        }
+      ],
+      "direction": "descending"
+    },
+    "NumberOfDependents": {
+      "feature": "NumberOfDependents",
+      "edges": [
+        0.0,
+        1.0,
+        2.0,
+        3.0
+      ],
+      "specials": [],
+      "bins": [
+        {
+          "label": "<= 0",
+          "kind": "range",
+          "good": 57035,
+          "bad": 3526,
+          "woe": 0.14999297172052467
+        },
+        {
+          "label": "(0, 1]",
+          "kind": "range",
+          "good": 17051,
+          "bad": 1390,
+          "woe": -0.12680024989414707
+        },
+        {
+          "label": "(1, 2]",
+          "kind": "range",
+          "good": 12490,
+          "bad": 1093,
+          "woe": -0.19779023737450976
+        },
+        {
+          "label": "(2, 3]",
+          "kind": "range",
+          "good": 6018,
+          "bad": 599,
+          "woe": -0.32687766824945047
+        },
+        {
+          "label": "> 3",
+          "kind": "range",
+          "good": 2432,
+          "bad": 275,
+          "woe": -0.4552878461344801
+        },
+        {
+          "label": "missing",
+          "kind": "missing",
+          "good": 2541,
+          "bad": 123,
+          "woe": 0.39089354921725417
+        }
+      ],
+      "direction": "ascending"
+    }
+  },
+  "coefs": {
+    "RevolvingUtilizationOfUnsecuredLines": 0.6367871851718679,
+    "NumberOfTimes90DaysLate": 0.5257811263562658,
+    "NumberOfTime30-59DaysPastDueNotWorse": 0.5041525397455549,
+    "NumberOfTime60-89DaysPastDueNotWorse": 0.38325560034815415,
+    "age": 0.4275274829144459,
+    "MonthlyIncome": 0.263981179079024,
+    "NumberOfDependents": 0.2506377456508606
+  },
+  "intercept": 2.5939992249182864,
+  "base_score": 600,
+  "base_odds": 50,
+  "pdo": 20,
+  "selection": [
+    {
+      "feature": "RevolvingUtilizationOfUnsecuredLines",
+      "iv": 1.1431,
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "feature": "age",
+      "iv": 0.2657,
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "feature": "NumberOfTime30-59DaysPastDueNotWorse",
+      "iv": 0.7279,
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "feature": "DebtRatio",
+      "iv": 0.0188,
+      "status": "dropped",
+      "reason": "IV 0.019 < 0.02"
+    },
+    {
+      "feature": "MonthlyIncome",
+      "iv": 0.0707,
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "feature": "NumberOfOpenCreditLinesAndLoans",
+      "iv": 0.1034,
+      "status": "dropped",
+      "reason": "negative coefficient (-0.03)"
+    },
+    {
+      "feature": "NumberOfTimes90DaysLate",
+      "iv": 0.8448,
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "feature": "NumberRealEstateLoansOrLines",
+      "iv": 0.0429,
+      "status": "dropped",
+      "reason": "negative coefficient (-0.08)"
+    },
+    {
+      "feature": "NumberOfTime60-89DaysPastDueNotWorse",
+      "iv": 0.5649,
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "feature": "NumberOfDependents",
+      "iv": 0.0384,
+      "status": "kept",
+      "reason": ""
+    }
+  ]
+}
