@@ -84,7 +84,9 @@ def config_check() -> None:
     if not e.host:
         problems.append("email.host is not set; sending will fail")
     elif e.username and not e.password:
-        problems.append(f"environment variable {e.password_env} is not set")
+        problems.append(
+            "the SMTP credentials environment variable (email.password_env) is not set"
+        )
     if e.username and e.security == "none" and e.host not in ("127.0.0.1", "localhost"):
         problems.append(
             "email.security = 'none' with a username sends the password unencrypted"
