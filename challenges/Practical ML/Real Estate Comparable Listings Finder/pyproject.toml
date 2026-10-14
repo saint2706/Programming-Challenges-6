@@ -1,0 +1,30 @@
+[project]
+name = "real-estate-comparable-listings-finder"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "altair>=6.3.0",
+    "lightgbm>=4.7.0",
+    "numpy>=2.5.4",
+    "polars>=2.0.0",
+    "pydeck>=0.9.3",
+    "scipy>=1.18.1",
+    "streamlit>=1.65.0",
+    "typer>=0.27.3",
+    "vl-convert-python>=1.9.0.post1",
+]
+
+[project.scripts]
+comps = "comp_finder.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "comp_finder"
