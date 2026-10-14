@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FAQ · Palette Notes</title>
+    <meta name="description" content="Short answers: no JavaScript, stored history, index size and page text.">
+    <meta name="keywords" content="questions help troubleshooting">
+    <script>try{var t=localStorage.getItem('palette:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="./src/site.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="bar">
+        <a class="brand" href="index.html">Palette Notes</a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="keyboard.html">Keyboard</a></li>
+          <li><a href="matching.html">Matching</a></li>
+          <li><a href="accessibility.html">Accessibility</a></li>
+          <li><a href="faq.html" aria-current="page">FAQ</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="palette-trigger" data-palette-open hidden aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+          <span>Search</span> <kbd data-palette-hint>Ctrl K</kbd>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">On this page</h2>
+        <ul>
+        <li><a href="#without-javascript">Does it work without JavaScript?</a></li>
+        <li><a href="#recent-items">Where are recent items stored?</a></li>
+        <li><a href="#body-text">Can it search page text?</a></li>
+        <li><a href="#why-not-a-library">Why not use a fuzzy-search library?</a></li>
+        </ul>
+      </nav>
+      <h1>FAQ</h1>
+
+      <h2 id="without-javascript">Does it work without JavaScript?</h2>
+      <p>The site does: every page is plain HTML linked from the header menu, and the search button is not shown. Only the palette needs JavaScript.</p>
+
+      <h2 id="recent-items">Where are recent items stored?</h2>
+      <p>In your browser's <code>localStorage</code> under <code>palette:recent</code>, the last five things you picked. If storage is blocked or holds something unexpected, the palette ignores it and keeps recents in memory for the life of the page. <em>Clear recent items</em> in the palette wipes them.</p>
+
+      <h2 id="body-text">Can it search page text?</h2>
+      <p>No. It searches titles, headings and keywords only. Searching body text is a different problem (stemming, snippets, an inverted index) and a tool such as Pagefind does it well.</p>
+
+      <h2 id="why-not-a-library">Why not use a fuzzy-search library?</h2>
+      <p>The matcher here is hand-written so that the ranking can be explained and tested. The project's benchmark compares it with Fuse.js and uFuzzy on ranking quality and speed.</p>
+    </main>
+    <footer class="site-footer">
+      <p>Palette Notes: a demo site for a hand-built command palette.
+        <noscript>Search needs JavaScript; every page is in the menu above.</noscript></p>
+    </footer>
+  </body>
+</html>

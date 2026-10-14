@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Keyboard shortcuts · Palette Notes</title>
+    <meta name="description" content="Every key the command palette answers to.">
+    <meta name="keywords" content="keys hotkeys bindings shortcuts">
+    <script>try{var t=localStorage.getItem('palette:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="./src/site.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="bar">
+        <a class="brand" href="index.html">Palette Notes</a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="keyboard.html" aria-current="page">Keyboard</a></li>
+          <li><a href="matching.html">Matching</a></li>
+          <li><a href="accessibility.html">Accessibility</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="palette-trigger" data-palette-open hidden aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+          <span>Search</span> <kbd data-palette-hint>Ctrl K</kbd>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">On this page</h2>
+        <ul>
+        <li><a href="#opening">Opening</a></li>
+        <li><a href="#moving">Moving</a></li>
+        <li><a href="#choosing">Choosing</a></li>
+        <li><a href="#closing">Closing</a></li>
+        <li><a href="#platform-notes">Platform notes</a></li>
+        </ul>
+      </nav>
+      <h1>Keyboard shortcuts</h1>
+      <p class="lede">The palette is meant to be used without leaving the keyboard.</p>
+
+      <h2 id="opening">Opening</h2>
+      <table>
+        <thead><tr><th scope="col">Keys</th><th scope="col">Does</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Ctrl</kbd> <kbd>K</kbd> / <kbd>⌘</kbd> <kbd>K</kbd></td><td>Open from anywhere, even from a text field. Pressed again, it closes.</td></tr>
+          <tr><td><kbd>/</kbd></td><td>Open, unless you are typing in a field.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="moving">Moving</h2>
+      <table>
+        <thead><tr><th scope="col">Keys</th><th scope="col">Does</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>↓</kbd> <kbd>↑</kbd></td><td>Next and previous result, wrapping at the ends.</td></tr>
+          <tr><td><kbd>Ctrl</kbd> <kbd>N</kbd> <kbd>Ctrl</kbd> <kbd>P</kbd></td><td>The same, for people who keep their hands on the home row. <kbd>Ctrl</kbd> <kbd>J</kbd> and <kbd>Ctrl</kbd> <kbd>K</kbd> are aliases.</td></tr>
+          <tr><td><kbd>Page Up</kbd> <kbd>Page Down</kbd></td><td>Five results at a time.</td></tr>
+          <tr><td><kbd>Home</kbd> <kbd>End</kbd></td><td>First and last result while the box is empty; with text in it they move the caret as usual. Add <kbd>Ctrl</kbd> to move the list regardless.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="choosing">Choosing</h2>
+      <table>
+        <thead><tr><th scope="col">Keys</th><th scope="col">Does</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Enter</kbd></td><td>Open the page or heading, or run the command.</td></tr>
+          <tr><td><kbd>Ctrl</kbd> <kbd>Enter</kbd> / <kbd>⌘</kbd> <kbd>Enter</kbd> / <kbd>Shift</kbd> <kbd>Enter</kbd></td><td>Open a page or heading in a new tab and keep the palette open.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="closing">Closing</h2>
+      <p><kbd>Esc</kbd>, a click on the dimmed area, or the Close button. Focus goes back to whatever had it before you opened the palette.</p>
+
+      <h2 id="platform-notes">Platform notes</h2>
+      <p>Browsers reserve a few shortcuts that a page cannot take over. On Windows and Linux, Chrome keeps <kbd>Ctrl</kbd> <kbd>N</kbd> for a new window, so use the arrow keys or <kbd>Ctrl</kbd> <kbd>J</kbd> there. On a Mac, <kbd>Ctrl</kbd> <kbd>N</kbd> is not reserved and works as written.</p>
+    </main>
+    <footer class="site-footer">
+      <p>Palette Notes: a demo site for a hand-built command palette.
+        <noscript>Search needs JavaScript; every page is in the menu above.</noscript></p>
+    </footer>
+  </body>
+</html>

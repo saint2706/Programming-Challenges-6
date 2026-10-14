@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Getting started · Palette Notes</title>
+    <meta name="description" content="Build the page index, wire up the trigger and add your own commands.">
+    <meta name="keywords" content="setup tutorial quickstart build">
+    <script>try{var t=localStorage.getItem('palette:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="./src/site.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="bar">
+        <a class="brand" href="index.html">Palette Notes</a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="getting-started.html" aria-current="page">Getting started</a></li>
+          <li><a href="keyboard.html">Keyboard</a></li>
+          <li><a href="matching.html">Matching</a></li>
+          <li><a href="accessibility.html">Accessibility</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="palette-trigger" data-palette-open hidden aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+          <span>Search</span> <kbd data-palette-hint>Ctrl K</kbd>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">On this page</h2>
+        <ul>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#generate-index">Generate the index</a></li>
+        <li><a href="#wire-trigger">Wire up the trigger</a></li>
+        <li><a href="#custom-actions">Add your own command</a></li>
+        </ul>
+      </nav>
+      <h1>Getting started</h1>
+      <p class="lede">Four steps from a folder of HTML pages to a working palette.</p>
+
+      <h2 id="install">Install</h2>
+      <p>The palette has no runtime dependencies. Copy <code>src/</code> next to your pages and link the stylesheet and the script in each page's <code>&lt;head&gt;</code>. Vite bundles them; any bundler that understands ES modules and JSON imports will do.</p>
+<pre><code>npm install
+npm run dev</code></pre>
+
+      <h2 id="generate-index">Generate the index</h2>
+      <p>The index is made by a script, not by hand. <code>npm run index</code> reads every <code>.html</code> file in the project root and records the page title, its description and every <code>h2</code> and <code>h3</code> that has an <code>id</code>. A heading without an <code>id</code> stops the build with a message naming the page, because there would be nothing to link to.</p>
+      <h3 id="index-shape">What an entry looks like</h3>
+<pre><code>{ "id": "h:matching.html#gaps", "type": "heading",
+  "title": "Gaps", "hint": "How matching works",
+  "url": "matching.html#gaps" }</code></pre>
+      <p>Pages may add <code>&lt;meta name="keywords"&gt;</code> to be found by words that are not in their title.</p>
+
+      <h2 id="wire-trigger">Wire up the trigger</h2>
+      <p>Any element with <code>data-palette-open</code> opens the palette. Ship it with the <code>hidden</code> attribute: the script reveals it, so a visitor without JavaScript never sees a button that does nothing. A <code>[data-palette-hint]</code> inside it is filled with <kbd>⌘K</kbd> or <kbd>Ctrl K</kbd> for the visitor's platform.</p>
+
+      <h2 id="custom-actions">Add your own command</h2>
+      <p>Commands live in <code>src/actions.js</code>. Each one is a search item plus a <code>run</code> function that receives the theme, recents, toast and window.</p>
+<pre><code>{
+  id: 'a:top', type: 'action',
+  title: 'Scroll to top', keywords: ['start'],
+  run: ({ win }) =&gt; win.scrollTo({ top: 0 }),
+}</code></pre>
+      <p>Choosing a command closes the palette first, then runs it, so it acts on the page and not on the dialog.</p>
+    </main>
+    <footer class="site-footer">
+      <p>Palette Notes: a demo site for a hand-built command palette.
+        <noscript>Search needs JavaScript; every page is in the menu above.</noscript></p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Accessibility notes · Palette Notes</title>
+    <meta name="description" content="Roles, focus handling, announcements, reduced motion and IME for the palette.">
+    <meta name="keywords" content="a11y aria screen reader wcag">
+    <script>try{var t=localStorage.getItem('palette:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="./src/site.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="bar">
+        <a class="brand" href="index.html">Palette Notes</a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="keyboard.html">Keyboard</a></li>
+          <li><a href="matching.html">Matching</a></li>
+          <li><a href="accessibility.html" aria-current="page">Accessibility</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="palette-trigger" data-palette-open hidden aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+          <span>Search</span> <kbd data-palette-hint>Ctrl K</kbd>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">On this page</h2>
+        <ul>
+        <li><a href="#combobox-pattern">Combobox and listbox</a></li>
+        <li><a href="#focus-management">Focus</a></li>
+        <li><a href="#announcements">Announcements</a></li>
+        <li><a href="#reduced-motion">Reduced motion</a></li>
+        <li><a href="#ime">IME composition</a></li>
+        <li><a href="#touch">Touch screens</a></li>
+        </ul>
+      </nav>
+      <h1>Accessibility notes</h1>
+      <p class="lede">What the palette exposes to assistive technology, and the decisions behind it.</p>
+
+      <h2 id="combobox-pattern">Combobox and listbox</h2>
+      <p>The search field is an ARIA combobox that controls a listbox. Results are grouped (Recent, Actions, Pages, Headings) with <code>role="group"</code> and a label. Real focus stays in the field the whole time; the highlighted result is announced through <code>aria-activedescendant</code> and marked <code>aria-selected</code>.</p>
+
+      <h2 id="focus-management">Focus</h2>
+      <p>The palette is a native <code>dialog</code> opened with <code>showModal()</code>, so the browser makes the rest of the page inert, traps <kbd>Tab</kbd> inside and handles <kbd>Esc</kbd>. When it closes, focus returns to the element that had it before.</p>
+
+      <h2 id="announcements">Announcements</h2>
+      <p>A polite live region says how many results there are, after a short pause so it does not speak on every keystroke. Commands that change something silently, such as copying the link, report through another live region.</p>
+
+      <h2 id="reduced-motion">Reduced motion</h2>
+      <p>The open animation and the toast fade only run when the visitor has not asked for reduced motion. The flash on a heading you jump to is switched off the same way.</p>
+
+      <h2 id="ime">IME composition</h2>
+      <p>While an input method is composing text (Japanese, Chinese, Korean), <kbd>Enter</kbd> confirms the composition and the arrow keys pick candidates. The palette ignores both until the composition ends, so confirming a word never opens a result by accident.</p>
+
+      <h2 id="touch">Touch screens</h2>
+      <p>The header button opens the palette without a keyboard. On narrow screens the palette fills the viewport and rows are tall enough to tap. The keyboard hints are hidden on devices that cannot hover.</p>
+    </main>
+    <footer class="site-footer">
+      <p>Palette Notes: a demo site for a hand-built command palette.
+        <noscript>Search needs JavaScript; every page is in the menu above.</noscript></p>
+    </footer>
+  </body>
+</html>

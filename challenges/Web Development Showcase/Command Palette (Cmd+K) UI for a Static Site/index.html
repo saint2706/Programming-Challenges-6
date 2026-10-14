@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home · Palette Notes</title>
+    <meta name="description" content="A small static site about command palettes, and the palette that searches it.">
+    <meta name="keywords" content="start overview welcome">
+    <script>try{var t=localStorage.getItem('palette:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="./src/site.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="bar">
+        <a class="brand" href="index.html">Palette Notes</a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="keyboard.html">Keyboard</a></li>
+          <li><a href="matching.html">Matching</a></li>
+          <li><a href="accessibility.html">Accessibility</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="palette-trigger" data-palette-open hidden aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+          <span>Search</span> <kbd data-palette-hint>Ctrl K</kbd>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <h1>Palette Notes</h1>
+      <p class="lede">Notes on building a keyboard-first command palette for a static site, written on a static site that has one.</p>
+
+      <h2 id="try-it">Try it</h2>
+      <p>Press <kbd>Ctrl</kbd> <kbd>K</kbd> (<kbd>⌘</kbd> <kbd>K</kbd> on a Mac) or <kbd>/</kbd> anywhere on this page, or use the Search button in the header. Type a few letters of anything: a page, a heading, a command. <code>gs</code> finds Getting started, <code>ime</code> finds the composition notes, <code>theme</code> switches colours.</p>
+
+      <h2 id="whats-inside">What is in here</h2>
+      <ul class="cards">
+        <li><a href="getting-started.html"><strong>Getting started</strong><span>Generate the index, wire the trigger, add a command.</span></a></li>
+        <li><a href="keyboard.html"><strong>Keyboard shortcuts</strong><span>Every key the palette answers to.</span></a></li>
+        <li><a href="matching.html"><strong>How matching works</strong><span>The scorer behind the fuzzy search.</span></a></li>
+        <li><a href="accessibility.html"><strong>Accessibility notes</strong><span>Roles, focus, announcements, motion, IME.</span></a></li>
+        <li><a href="faq.html"><strong>FAQ</strong><span>No JavaScript, history, index size.</span></a></li>
+      </ul>
+
+      <h2 id="why-a-palette">Why a palette on a static site</h2>
+      <p>A static site has no search server and usually no search box. A palette gives readers one place to jump to any page or section by typing a fragment of its name, and the same box can run small commands such as switching the theme or copying the link. The page index is built once, at build time, from the headings that already exist in the HTML.</p>
+    </main>
+    <footer class="site-footer">
+      <p>Palette Notes: a demo site for a hand-built command palette.
+        <noscript>Search needs JavaScript; every page is in the menu above.</noscript></p>
+    </footer>
+  </body>
+</html>

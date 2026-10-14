@@ -1,0 +1,303 @@
+/* Theme tokens. `data-theme` (set by the theme action) overrides the system preference. */
+:root {
+    color-scheme: light dark;
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --text: #1d1c1a;
+    --muted: #5d5a54;
+    --line: #dedad1;
+    --accent: #1f5fbf;
+    --accent-soft: #e4edfb;
+    --accent-text: #174a96;
+    --match: #b3380d;
+    --code-bg: #efece5;
+    --shadow: 0 24px 60px -12px rgb(30 25 15 / 35%);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --bg: #14130f;
+        --surface: #1d1b17;
+        --text: #ece9e1;
+        --muted: #a9a59a;
+        --line: #38352d;
+        --accent: #7fb0ff;
+        --accent-soft: #1f2b40;
+        --accent-text: #a9c9ff;
+        --match: #ff9a6b;
+        --code-bg: #26241e;
+        --shadow: 0 24px 60px -12px rgb(0 0 0 / 70%);
+    }
+}
+:root[data-theme='light'] {
+    color-scheme: light;
+}
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --bg: #14130f;
+    --surface: #1d1b17;
+    --text: #ece9e1;
+    --muted: #a9a59a;
+    --line: #38352d;
+    --accent: #7fb0ff;
+    --accent-soft: #1f2b40;
+    --accent-text: #a9c9ff;
+    --match: #ff9a6b;
+    --code-bg: #26241e;
+    --shadow: 0 24px 60px -12px rgb(0 0 0 / 70%);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+html {
+    scroll-padding-top: 5rem;
+}
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 1rem/1.65 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+a {
+    color: var(--accent-text);
+    text-underline-offset: 0.18em;
+}
+:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+.skip {
+    position: absolute;
+    left: 0.5rem;
+    top: -4rem;
+    background: var(--surface);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--line);
+    z-index: 20;
+}
+.skip:focus {
+    top: 0.5rem;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+}
+.bar {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.brand {
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    margin-right: auto;
+}
+.site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.site-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.2rem 0;
+}
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+    color: var(--text);
+    text-decoration: underline;
+}
+
+.palette-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    padding: 0.4rem 0.7rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+}
+.palette-trigger[hidden] {
+    display: none;
+}
+.palette-trigger:hover {
+    border-color: var(--accent);
+    color: var(--text);
+}
+.palette-trigger kbd,
+.cp-foot kbd {
+    font: 0.75rem ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 0.3rem;
+    padding: 0.05rem 0.35rem;
+}
+@media (max-width: 40rem) {
+    .palette-trigger kbd {
+        display: none;
+    }
+}
+
+main {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+}
+h1 {
+    font-size: 2.1rem;
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+}
+h2 {
+    font-size: 1.45rem;
+    margin: 2.5rem 0 0.5rem;
+}
+h3 {
+    font-size: 1.1rem;
+    margin: 1.75rem 0 0.25rem;
+}
+.lede {
+    font-size: 1.15rem;
+    color: var(--muted);
+}
+code,
+kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+}
+code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 0.3em;
+}
+pre {
+    background: var(--code-bg);
+    padding: 0.9rem 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+pre code {
+    background: none;
+    padding: 0;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+th,
+td {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+}
+th {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+td kbd {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 0.3rem;
+    padding: 0.05rem 0.35rem;
+    white-space: nowrap;
+}
+.toc {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    padding: 0.75rem 1rem;
+    margin: 1.5rem 0;
+}
+.toc h2 {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0 0 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.toc ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+}
+.cards a {
+    display: block;
+    height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    padding: 0.8rem 1rem;
+    color: var(--text);
+    text-decoration: none;
+}
+.cards a:hover {
+    border-color: var(--accent);
+}
+.cards strong {
+    display: block;
+    color: var(--accent-text);
+}
+.cards span {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+:target {
+    animation: flash 1.6s ease-out;
+}
+@keyframes flash {
+    from {
+        background: var(--accent-soft);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    :target {
+        animation: none;
+    }
+}
+footer.site-footer {
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+@media print {
+    .site-header,
+    .skip,
+    .toast,
+    dialog {
+        display: none;
+    }
+}

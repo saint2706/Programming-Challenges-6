@@ -1,0 +1,24 @@
+{
+    "name": "command-palette-static-site",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "index": "node scripts/build-index.mjs",
+        "dev": "npm run index && vite",
+        "build": "npm run index && vite build",
+        "preview": "vite preview",
+        "test": "npm run index && vitest run",
+        "test:e2e": "npm run build && vitest run --config vitest.e2e.config.js",
+        "bench": "npm run index && node bench/bench.mjs"
+    },
+    "devDependencies": {
+        "@leeoniya/ufuzzy": "^1.0.19",
+        "axe-core": "^4.10.0",
+        "fast-check": "^4.0.0",
+        "fuse.js": "^7.1.0",
+        "jsdom": "^26.0.0",
+        "puppeteer-core": "^25.12.0",
+        "vite": "^6.0.0",
+        "vitest": "^5.0.2"
+    }
+}

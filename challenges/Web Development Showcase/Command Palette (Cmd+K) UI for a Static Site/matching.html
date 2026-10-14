@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How matching works · Palette Notes</title>
+    <meta name="description" content="The fuzzy scorer behind the palette: subsequences, bonuses and gap penalties.">
+    <meta name="keywords" content="fuzzy search scoring algorithm fzf ranking">
+    <script>try{var t=localStorage.getItem('palette:theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="stylesheet" href="./src/site.css">
+    <script type="module" src="./src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="bar">
+        <a class="brand" href="index.html">Palette Notes</a>
+        <nav class="site-nav" aria-label="Site">
+          <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="keyboard.html">Keyboard</a></li>
+          <li><a href="matching.html" aria-current="page">Matching</a></li>
+          <li><a href="accessibility.html">Accessibility</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </nav>
+        <button type="button" class="palette-trigger" data-palette-open hidden aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+          <span>Search</span> <kbd data-palette-hint>Ctrl K</kbd>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <nav class="toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">On this page</h2>
+        <ul>
+        <li><a href="#subsequence">Subsequence matching</a></li>
+        <li><a href="#bonuses">Bonuses</a></li>
+        <li><a href="#gaps">Gaps</a></li>
+        <li><a href="#multiple-words">Multiple words</a></li>
+        <li><a href="#diacritics">Case and diacritics</a></li>
+        <li><a href="#limits">Limits</a></li>
+        </ul>
+      </nav>
+      <h1>How matching works</h1>
+      <p class="lede">A query matches when its letters appear in the title in order, not necessarily next to each other. What makes it useful is the ranking.</p>
+
+      <h2 id="subsequence">Subsequence matching</h2>
+      <p><code>plt</code> matches <em>Palette</em>: a p, then an l, then a t, in that order. <code>ptl</code> does not, because no l follows a t. Order matters, adjacency does not.</p>
+
+      <h2 id="bonuses">Bonuses</h2>
+      <p>Every matched character scores a base amount, plus a bonus for where it sits. The best alignment of the query across the title wins, found with a small dynamic program rather than a left-to-right scan.</p>
+      <h3 id="word-starts">Word starts</h3>
+      <p>A character at the start of a word, after a space, slash, dash or dot, scores most. That is why <code>gs</code> finds <em>Getting started</em> ahead of a title that merely contains a g and an s.</p>
+      <h3 id="camel-case">Camel case and digits</h3>
+      <p>A capital after a lower-case letter, and the first digit of a number, count as word starts too, so <code>usa</code> finds <code>useAuthSession</code>.</p>
+      <h3 id="runs">Runs</h3>
+      <p>Characters that follow each other inherit the bonus of the first one in the run. Typing the first few letters of a word scores like a word start for each letter.</p>
+
+      <h2 id="gaps">Gaps</h2>
+      <p>Skipping characters between two matches costs a little for the first skipped character and a little less for each further one, so a tight match beats a scattered one. The first query character counts double, which favours matches that begin where the title does.</p>
+
+      <h2 id="multiple-words">Multiple words</h2>
+      <p>A query with spaces is several queries that must all match. <code>match gaps</code> finds the Gaps heading on this page: one word hits the title, the other hits the page it lives on. A match in the title counts in full, a match in a keyword or in the page name counts for less.</p>
+
+      <h2 id="diacritics">Case and diacritics</h2>
+      <p>Matching ignores case and accents: <code>cafe</code> finds <em>Café</em>. Matched characters are reported as positions in the title, which the palette wraps in a styled span using text nodes, never by building HTML from the title.</p>
+
+      <h2 id="limits">Limits</h2>
+      <p>Queries are cut to 32 characters per word and six words. Titles longer than 256 characters are matched with a cheaper left-to-right scan. The matcher does not forgive typos: <code>mathcing</code> finds nothing, because the letters are not in order.</p>
+    </main>
+    <footer class="site-footer">
+      <p>Palette Notes: a demo site for a hand-built command palette.
+        <noscript>Search needs JavaScript; every page is in the menu above.</noscript></p>
+    </footer>
+  </body>
+</html>
