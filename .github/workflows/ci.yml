@@ -142,6 +142,9 @@ jobs:
     if: needs.changes.outputs.python != '[]'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
+    # The newest Python is a canary, not a gate: some pinned dependencies (numba, paddlepaddle)
+    # have no release for it yet. A red 3.14 leg is visible on the run but does not fail CI.
+    continue-on-error: ${{ matrix.python == '3.14' }}
     strategy:
       fail-fast: false
       matrix:
@@ -223,6 +226,16 @@ jobs:
       - name: Install
         working-directory: ${{ matrix.dir }}
         run: npm ci --ignore-scripts
+
+      # Browser suites print PDFs and compare their text with the page. The runner image has no
+      # CJK font, so Japanese glyphs would come out as missing-glyph boxes.
+      - name: Install fonts for browser tests
+        working-directory: ${{ matrix.dir }}
+        run: |
+          if jq -e '.scripts["test:e2e"]' package.json > /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fi
 
       - name: Unit tests
         working-directory: ${{ matrix.dir }}
