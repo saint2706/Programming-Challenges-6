@@ -1,0 +1,42 @@
+{
+    "name": "@programming-challenges-6/img-compare",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Zero-dependency <img-compare> web component: a draggable, keyboard-accessible before/after image slider, built as an ESM/CJS/IIFE package.",
+    "sideEffects": true,
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "test": "vitest run",
+        "test:e2e": "tsup && vitest run --config vitest.e2e.config.js",
+        "bench": "tsup && node e2e/bench.mjs",
+        "images": "node scripts/prepare-images.mjs",
+        "screenshots": "tsup && node e2e/screenshots.mjs",
+        "demo": "tsup && node e2e/serve.mjs"
+    },
+    "overrides": {
+        "esbuild": "^0.28.1"
+    },
+    "devDependencies": {
+        "axe-core": "^4.10.0",
+        "jsdom": "^30.1.1",
+        "puppeteer-core": "^25.12.0",
+        "sharp": "^0.35.5",
+        "tsup": "^8.3.0",
+        "typescript": "^5.9.3",
+        "vitest": "^5.0.2"
+    }
+}

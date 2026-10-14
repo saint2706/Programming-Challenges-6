@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>img-compare: before/after slider</title>
+  <style>
+    :root { color-scheme: light dark; --bg: #f6f5f2; --fg: #1d1d1f; --muted: #5d5d63; --card: #fff; --line: #d9d7d0; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #141416; --fg: #ececef; --muted: #a0a0a8; --card: #1d1d21; --line: #36363c; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, sans-serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+    h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin: 0 0 4px; }
+    h2 { font-size: 1.15rem; margin: 0 0 4px; }
+    p { margin: 0 0 12px; color: var(--muted); }
+    code { font-size: 0.9em; }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; }
+    .row { display: grid; gap: 18px; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .row { grid-template-columns: 1fr 1fr; } }
+    .readout { font: 13px/1.4 ui-monospace, monospace; color: var(--muted); margin-top: 8px; min-height: 1.4em; }
+    .tools { display: flex; flex-wrap: wrap; gap: 16px; margin: 10px 0 0; }
+    label { font-size: 14px; }
+    img-compare { border-radius: 10px; overflow: hidden; }
+    /* Theming goes through custom properties and ::part, no component edits. */
+    img-compare.warm { --ic-accent: #ffb703; --ic-knob-bg: #1d1d21; --ic-knob-color: #ffb703; --ic-label-bg: #ffb703; --ic-label-color: #1d1d21; --ic-line-width: 3px; }
+    img-compare.warm::part(label) { font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+    img-compare.square::part(knob) { border-radius: 8px; }
+    .credits { font-size: 13px; }
+    .credits a { color: inherit; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>&lt;img-compare&gt;</h1>
+  <p>A zero-dependency before/after slider. Drag, click, hover, or focus the handle and use the arrow keys, Home/End and PageUp/PageDown.</p>
+
+  <section>
+    <h2>Drag or keys: lifting the shadows</h2>
+    <p>The same storm photo, before and after a brightness/gamma edit.</p>
+    <img-compare id="main" before-src="img/lightning-before.webp" after-src="img/lightning-after.webp"
+      before-alt="Lightning over dark mountain peaks, unedited and very dark"
+      after-alt="The same scene with the shadows lifted so the ridgeline shows"
+      label="Shadows lifted comparison" ratio="16/9" position="40"></img-compare>
+    <div class="readout" id="main-out" aria-live="off"></div>
+    <div class="tools">
+      <label><input type="checkbox" id="rtl"> Right-to-left page</label>
+      <label><input type="checkbox" id="fit"> <code>fit="contain"</code></label>
+    </div>
+  </section>
+
+  <div class="row">
+    <section>
+      <h2>Hover mode</h2>
+      <p><code>hover</code>: the divider follows the mouse; touch still drags.</p>
+      <img-compare class="warm" hover before-src="img/butterfly-before.webp" after-src="img/butterfly-after.webp"
+        before-alt="Painted lady butterfly in grayscale" after-alt="The same butterfly in colour"
+        before-label="Gray" after-label="Color" label="Grayscale to colour comparison" ratio="4/3"></img-compare>
+    </section>
+    <section>
+      <h2>Vertical</h2>
+      <p><code>orientation="vertical"</code> on a portrait photo.</p>
+      <img-compare class="square" orientation="vertical" before-src="img/stack-before.webp" after-src="img/stack-after.webp"
+        before-alt="Sea stack at Shark Fin Cove, dim and washed out" after-alt="The same sea stack, full colour"
+        before-label="Dim" after-label="Full" label="Dim to full colour comparison" ratio="4/5" position="35"
+        style="max-width: 360px"></img-compare>
+    </section>
+  </div>
+
+  <section>
+    <h2>Mismatched sizes</h2>
+    <p>The "before" file is only 96 px wide. Both layers fill the same box, so the pair still lines up.</p>
+    <img-compare before-src="img/falls-before.webp" after-src="img/falls-after.webp"
+      before-alt="Whangarei Falls footbridge at 96 pixels wide, blocky" after-alt="The same footbridge at 800 pixels wide, sharp"
+      before-label="96 px" after-label="800 px" label="Resolution comparison" ratio="3/2" step="2"></img-compare>
+  </section>
+
+  <section class="credits">
+    <h2>Photo credits</h2>
+    <p>All photos are from <a href="https://unsplash.com">Unsplash</a> (<a href="https://unsplash.com/license">Unsplash License</a>) and the "before"/"after" variants are edits made for this demo:
+      <a href="https://unsplash.com/photos/d-p06WttJJE">Marek Piwnicki</a> (lightning),
+      <a href="https://unsplash.com/photos/R0PjjzRWWf8">Dmytro Koplyk</a> (butterfly),
+      <a href="https://unsplash.com/photos/eOpewngf68w">Tim Swaan</a> (footbridge),
+      <a href="https://unsplash.com/photos/shn9z-172sM">Karla Hernandez</a> (sea stack).</p>
+  </section>
+</main>
+
+<script type="module">
+  import '../dist/index.js';
+
+  const main = document.getElementById('main');
+  const out = document.getElementById('main-out');
+  const show = (type, e) => { out.textContent = `${type}: position ${e.detail.position.toFixed(1)}% (status: ${main.status})`; };
+  main.addEventListener('input', (e) => show('input', e));
+  main.addEventListener('change', (e) => show('change', e));
+  document.getElementById('rtl').addEventListener('change', (e) => { document.documentElement.dir = e.target.checked ? 'rtl' : 'ltr'; });
+  document.getElementById('fit').addEventListener('change', (e) => { main.fit = e.target.checked ? 'contain' : 'cover'; });
+</script>
+</body>
+</html>

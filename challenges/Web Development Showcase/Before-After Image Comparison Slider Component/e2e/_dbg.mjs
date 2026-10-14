@@ -1,0 +1,15 @@
+import { launchChrome } from './chrome.mjs';
+import { startServer } from './server.mjs';
+import { SLIDER, openWith } from './fixtures.mjs';
+const server = await startServer();
+const browser = await launchChrome();
+const t = (label, p) => Promise.race([p.then((v) => console.log(label, 'ok', v)), new Promise((r) => setTimeout(() => { console.log(label, 'HANG'); r(); }, 4000))]);
+let page = await openWith(browser, server.url, SLIDER('position="0"'));
+await t('eval', page.evaluate(() => (document.querySelector('#s').position = 100)));
+await t('shot', page.screenshot({ clip: { x: 20, y: 20, width: 100, height: 50 } }));
+page = await openWith(browser, server.url, `<div style="height:2500px"></div>${SLIDER()}<div style="height:2500px"></div>`, { height: 500 });
+await t('focus', page.evaluate(() => document.querySelector('#s').shadowRoot.querySelector('.handle').focus()));
+await t('key', page.keyboard.press('ArrowDown'));
+await t('pagedown', page.keyboard.press('PageDown'));
+await t('home', page.keyboard.press('Home'));
+await browser.close(); await server.close();
