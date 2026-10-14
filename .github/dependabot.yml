@@ -1,16 +1,47 @@
 version: 2
+
+# Every challenge under challenges/<Category>/<Challenge Name>/ is an independent project (its own
+# manifest and lockfile, no shared workspace). The "directories" globs let Dependabot discover each
+# one without listing ~90 entries by hand; folders without the manifest are skipped.
+#
+# Two settings cut the noise of that many projects:
+#   groups    one PR per project per week for all minor/patch bumps, instead of one PR per package.
+#             Majors stay separate so they get a human look. Security updates are never grouped.
+#   cooldown  wait a week after a release before proposing it, which sidesteps the window in
+#             which a compromised or yanked release is typically caught.
+# Patch and minor PRs are auto-merged by dependabot-automerge.yml once "CI gate" passes.
 updates:
-  # Each challenge folder under challenges/<Category>/<Challenge Name>/ is an
-  # independent, self-contained uv project (its own pyproject.toml + uv.lock,
-  # no shared workspace). The "directories" glob lets Dependabot discover
-  # every challenge that has adopted this pattern without listing 40 entries
-  # by hand; folders that don't have a pyproject.toml yet are skipped.
   - package-ecosystem: "uv"
     directories:
       - "/challenges/*/*"
+      - "/.github/ci-tools"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+    groups:
+      python-minor-patch:
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "chore(deps)"
+
+  # Web Development Showcase demos (vanilla JS + vite/vitest/tsup) and the pinned dprint in
+  # .github/ci-tools. None of these were covered before.
+  - package-ecosystem: "npm"
+    directories:
+      - "/challenges/*/*"
+      - "/.github/ci-tools"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+    groups:
+      npm-minor-patch:
+        update-types: ["minor", "patch"]
     commit-message:
       prefix: "chore(deps)"
 
@@ -21,13 +52,27 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+    groups:
+      cargo-minor-patch:
+        update-types: ["minor", "patch"]
     commit-message:
       prefix: "chore(deps)"
 
-  # Keep the versions of actions used in .github/workflows/ up to date.
+  # Keeps the SHA-pinned actions (and their "# vX.Y.Z" comments) in the workflows and in the
+  # local composite action current.
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
+      - "/.github/actions/*"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      actions-minor-patch:
+        update-types: ["minor", "patch"]
     commit-message:
       prefix: "chore(ci)"

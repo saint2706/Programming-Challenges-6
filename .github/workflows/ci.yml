@@ -1,0 +1,345 @@
+name: CI
+
+# One workflow for everything that has to pass before code is trusted. It replaces the separate
+# Test Challenges and Rust Challenges workflows so there is a single `CI gate` check that is
+# always reported, even when path filtering skips every language job (a skipped job cannot be
+# marked required, which is why the gate exists).
+#
+# Pushes and PRs test only the challenge directories that changed. The weekly schedule (and a
+# manual dispatch) runs everything, on the oldest and newest supported Python, so upstream drift
+# is found on a quiet Sunday instead of inside an unrelated PR.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 2 * * 0"
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: "Test only this challenge directory, e.g. 'challenges/Algorithmic Challenges/Josephus Problem Solver'"
+        required: false
+        type: string
+      base:
+        description: "Test only challenges changed relative to this ref (e.g. 'main'); empty tests everything"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+# Cancel superseded runs on PRs only. Every push to main gets its own group: a push is diffed
+# against the previous tip, so cancelling (or replacing a pending) run would leave that commit's
+# challenges untested.
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      python: ${{ steps.python.outputs.dirs }}
+      web: ${{ steps.web.outputs.dirs }}
+      rust: ${{ steps.rust.outputs.dirs }}
+      pythons: ${{ steps.pythons.outputs.versions }}
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout (full history for diffing)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Python challenges
+        id: python
+        uses: ./.github/actions/detect-changes
+        with:
+          manifest: pyproject.toml
+          directory: ${{ inputs.directory }}
+          base: ${{ inputs.base }}
+
+      - name: Web challenges
+        id: web
+        uses: ./.github/actions/detect-changes
+        with:
+          manifest: package.json
+          directory: ${{ inputs.directory }}
+          base: ${{ inputs.base }}
+
+      - name: Rust challenges
+        id: rust
+        uses: ./.github/actions/detect-changes
+        with:
+          manifest: Cargo.toml
+          directory: ${{ inputs.directory }}
+          base: ${{ inputs.base }}
+
+      - name: Pick Python versions
+        id: pythons
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_BASE: ${{ inputs.base }}
+        run: |
+          # requires-python is ">=3.12": PRs cover the floor, full runs add the newest release.
+          if [ "$EVENT_NAME" = "schedule" ] || { [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -z "$INPUT_BASE" ]; }; then
+            echo 'versions=["3.12","3.14"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'versions=["3.12"]' >> "$GITHUB_OUTPUT"
+          fi
+
+  lint:
+    name: Lint and format check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: .github/ci-tools/uv.lock
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: .github/ci-tools/package-lock.json
+
+      # ruff and dprint are pinned in .github/ci-tools (locked, Dependabot-managed), so CI,
+      # the scheduled auto-fix and a local `uv run --project .github/ci-tools ruff` all agree.
+      - name: Ruff lint
+        run: uv run --project .github/ci-tools --locked ruff check --output-format=github .
+
+      - name: Ruff format
+        run: uv run --project .github/ci-tools --locked ruff format --check --diff .
+
+      - name: dprint (markdown and JSON)
+        run: |
+          npm ci --prefix .github/ci-tools --ignore-scripts
+          .github/ci-tools/node_modules/.bin/dprint check --config dprint.json
+
+  python:
+    name: Python ${{ matrix.python }} / ${{ matrix.dir }}
+    needs: changes
+    if: needs.changes.outputs.python != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    # The newest Python is a canary, not a gate: some pinned dependencies (numba, paddlepaddle)
+    # have no release for it yet. A red 3.14 leg is visible on the run but does not fail CI.
+    continue-on-error: ${{ matrix.python == '3.14' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        dir: ${{ fromJson(needs.changes.outputs.python) }}
+        python: ${{ fromJson(needs.changes.outputs.pythons) }}
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Only pay for system packages the challenge actually declares. Their absence shows up as a
+      # confusing pkg-config or cffi traceback rather than an obvious "apt-get install this".
+      - name: Install system dependencies
+        working-directory: ${{ matrix.dir }}
+        run: |
+          packages=""
+          if grep -q '"manim' pyproject.toml; then
+            # manimpango builds from source against pangocairo; ffmpeg is needed at render time.
+            packages="$packages build-essential libcairo2-dev libpango1.0-dev ffmpeg pkg-config"
+          fi
+          if grep -q '"weasyprint' pyproject.toml; then
+            # WeasyPrint loads Pango via cffi at import time; fonts make PDFs contain real text.
+            packages="$packages libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core"
+          fi
+          if [ -n "$packages" ]; then
+            sudo apt-get update
+            # shellcheck disable=SC2086
+            sudo apt-get install -y --no-install-recommends $packages
+          fi
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+          # The default glob hashes every uv.lock, so matrix jobs would race on one cache key.
+          cache-dependency-glob: ${{ matrix.dir }}/uv.lock
+
+      # --locked fails when uv.lock no longer matches pyproject.toml. A bare `uv run` would
+      # silently re-resolve and pass with dependencies nobody reviewed.
+      - name: Run tests
+        working-directory: ${{ matrix.dir }}
+        run: uv run --locked pytest -q
+
+  web:
+    name: Web / ${{ matrix.dir }}
+    needs: changes
+    if: needs.changes.outputs.web != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        dir: ${{ fromJson(needs.changes.outputs.web) }}
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: ${{ matrix.dir }}/package-lock.json
+
+      - name: Install
+        working-directory: ${{ matrix.dir }}
+        run: npm ci --ignore-scripts
+
+      # Browser suites print PDFs and compare their text with the page. The runner image has no
+      # CJK font, so Japanese glyphs would come out as missing-glyph boxes.
+      - name: Install fonts for browser tests
+        working-directory: ${{ matrix.dir }}
+        run: |
+          if jq -e '.scripts["test:e2e"]' package.json > /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fi
+
+      - name: Unit tests
+        working-directory: ${{ matrix.dir }}
+        run: npm test
+
+      # Projects with a browser suite run it against the production build (the runner image ships
+      # Google Chrome at /usr/bin/google-chrome, which the e2e helpers look for); the rest at
+      # least have to build.
+      - name: Build and end-to-end tests
+        working-directory: ${{ matrix.dir }}
+        run: |
+          if jq -e '.scripts["test:e2e"]' package.json > /dev/null; then
+            npm run test:e2e
+          else
+            npm run build --if-present
+          fi
+
+  rust:
+    name: Rust / ${{ matrix.dir }}
+    needs: changes
+    if: needs.changes.outputs.rust != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        dir: ${{ fromJson(needs.changes.outputs.rust) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: ${{ matrix.dir }}
+
+      - name: Install nextest
+        uses: taiki-e/install-action@1168f6810a3cb30a3514bf5756a3b7f0422c6df8 # v2.87.28
+        with:
+          tool: nextest
+
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      - run: cargo nextest run --release --locked
+      - run: cargo test --doc --release --locked
+
+  gate:
+    name: CI gate
+    needs: [changes, lint, python, web, rust]
+    # always(): a skipped or failed dependency must still produce a verdict, not skip this job.
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every job to succeed or be skipped
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "$NEEDS" | jq -e 'all(.[]; .result == "success" or .result == "skipped")' > /dev/null
+
+  notify:
+    name: Report scheduled failure
+    needs: gate
+    if: always() && github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Open, update or close the regression issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          GATE_RESULT: ${{ needs.gate.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create ci-regression --description "Opened by the weekly full CI run" \
+            --color "d73a4a" --force
+          existing=$(gh issue list --label ci-regression --state open --json number --jq '.[0].number // empty')
+          if [ "$GATE_RESULT" = "success" ]; then
+            [ -z "$existing" ] || gh issue close "$existing" --comment "Weekly full run is green again: $RUN_URL"
+            exit 0
+          fi
+          body="The weekly full CI run failed: $RUN_URL"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --label ci-regression \
+              --title "Weekly full CI run failed" --body "$body"
+          fi

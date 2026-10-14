@@ -1,0 +1,4 @@
+rules:
+  # `./.github/actions/...` is the long-standing, documented way to call a local composite action.
+  self-repository:
+    disable: true

@@ -1,10 +1,12 @@
 name: CodeQL
 
-# GitHub's semantic code scanner, results appear under the repo's Security
-# tab. build-mode: none is correct for Python and JavaScript/TypeScript --
-# both are analyzed from source without a compile step (autobuild is only
-# needed for compiled languages like C++/Java/Go, none of which are used
-# here).
+# GitHub's semantic code scanner; results appear under the repo's Security tab. Every language
+# here is analysed from source (build-mode: none), so no compile step is needed.
+#   python                 the Python challenges
+#   javascript-typescript  the Web Development Showcase
+#   rust                   the Rust crates under Algorithmic Challenges
+#   actions                the workflows themselves (script injection, unsafe triggers, ...)
+# security-extended adds the lower-precision security queries on top of the default suite.
 on:
   push:
     branches: [main]
@@ -16,35 +18,44 @@ on:
 
 permissions:
   contents: read
-  security-events: write
-  actions: read
 
+# As in ci.yml: only PR runs are cancelled when superseded, so no commit on main goes unscanned.
 concurrency:
-  group: codeql-${{ github.ref }}
-  cancel-in-progress: true
+  group: codeql-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     strategy:
       fail-fast: false
       matrix:
-        # python covers all 39 pyproject.toml-managed challenges;
-        # javascript-typescript covers the Web Development Showcase category
-        # (currently one JS challenge, more planned).
-        language: [python, javascript-typescript]
+        language: [python, javascript-typescript, rust, actions]
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
           languages: ${{ matrix.language }}
           build-mode: none
+          queries: security-extended
 
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
           category: "/language:${{ matrix.language }}"

@@ -1,14 +1,17 @@
-name: Lint and Format
+name: Auto-fix Lint and Format
 
-# Scheduled maintenance only: never runs on pushes or pull requests, so it
-# never blocks or comments on a PR. `workflow_dispatch` allows running it
-# on demand from the Actions tab or `gh workflow run`, but only the
-# `schedule` trigger is allowed to open an issue (see the last job step) --
-# a manual run just formats and commits, silently.
+# Twice a month this applies ruff and dprint fixes and opens ONE pull request (a fixed branch that
+# is force-updated, so reruns never pile up PRs). It no longer pushes to main: bot commits made
+# with GITHUB_TOKEN never trigger CI, so they used to land completely untested.
 #
-# GitHub Actions cron has no native "every 14 days"; the 1st and 15th of
-# each month is the common approximation for "twice a month" and is what's
-# used here instead of exactly-14-day spacing.
+# Checks do not start on a PR opened with GITHUB_TOKEN either, so after pushing the branch this
+# workflow dispatches CI itself (workflow_dispatch is the one trigger GITHUB_TOKEN may fire); the
+# run attaches to the branch's head commit and shows on the PR.
+#
+# Pushes and PRs are checked by the "Lint and format check" job in ci.yml. This workflow is the
+# fixer, plus an issue for anything that cannot be fixed automatically.
+#
+# GitHub cron has no "every 14 days"; the 1st and 15th approximate "twice a month".
 on:
   schedule:
     - cron: "0 3 1,15 * *"
@@ -16,106 +19,121 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
   issues: write
+  actions: write
 
 concurrency:
   group: lint-and-format
   cancel-in-progress: false
 
+env:
+  FIX_BRANCH: automation/lint-format
+
 jobs:
-  lint-and-format:
+  fix:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      # Credentials stay persisted on purpose: this job pushes the fix branch.
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked]
 
-      - name: Set up Node.js (for dprint via npx)
-        uses: actions/setup-node@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          node-version: "20"
+          enable-cache: true
+          cache-dependency-glob: .github/ci-tools/uv.lock
 
-      - name: Set up Python (for ruff)
-        uses: actions/setup-python@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          python-version: "3.12"
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: .github/ci-tools/package-lock.json
 
-      - name: Install ruff
-        run: pip install "ruff==0.17.0"
+      - name: Install pinned tools
+        run: npm ci --prefix .github/ci-tools --ignore-scripts
 
-      - name: Format markdown and JSON with dprint
-        id: dprint
+      - name: Apply fixes
         run: |
-          set +e
-          npx --yes dprint@0.63.0 fmt --config dprint.json > "$RUNNER_TEMP/dprint-output.log" 2>&1
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
-          cat "$RUNNER_TEMP/dprint-output.log"
+          ruff() { uv run --project .github/ci-tools --locked ruff "$@"; }
+          ruff check --fix --exit-zero .
+          ruff format .
+          .github/ci-tools/node_modules/.bin/dprint fmt --config dprint.json
 
-      - name: Fix and format Python with ruff, then check for leftovers
-        id: ruff
+      - name: Check for leftovers that need a human
+        id: leftovers
         run: |
-          set +e
-          ruff check --fix --exit-zero . > "$RUNNER_TEMP/ruff-output.log" 2>&1
-          ruff format . >> "$RUNNER_TEMP/ruff-output.log" 2>&1
-          ruff check . >> "$RUNNER_TEMP/ruff-output.log" 2>&1
-          status=$?
-          ruff format --check . >> "$RUNNER_TEMP/ruff-output.log" 2>&1 || status=$?
-          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
-          cat "$RUNNER_TEMP/ruff-output.log"
+          ruff() { uv run --project .github/ci-tools --locked ruff "$@"; }
+          status=0
+          {
+            echo "## ruff"
+            ruff check . || status=1
+            echo "## dprint"
+            .github/ci-tools/node_modules/.bin/dprint check --config dprint.json || status=1
+          } > "$RUNNER_TEMP/leftovers.log" 2>&1
+          cat "$RUNNER_TEMP/leftovers.log"
+          echo "failed=$status" >> "$GITHUB_OUTPUT"
 
-      - name: Check for file changes
-        id: git-check
-        run: |
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Commit and push formatting changes
-        if: steps.git-check.outputs.changed == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "chore: automated lint and format"
-          git push
-
-      - name: Open or update an issue for unfixable errors (scheduled runs only)
-        if: github.event_name == 'schedule' && (steps.dprint.outputs.exit_code != '0' || steps.ruff.outputs.exit_code != '0')
+      - name: Open or update the fix pull request
+        id: pr
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$FIX_BRANCH"
+          git add -A
+          git commit -m "chore: automated lint and format"
+          git push --force origin "$FIX_BRANCH"
+          if [ -z "$(gh pr list --head "$FIX_BRANCH" --state open --json number --jq '.[0].number // empty')" ]; then
+            gh pr create --head "$FIX_BRANCH" --base main \
+              --title "chore: automated lint and format" \
+              --body "Opened by the scheduled Auto-fix Lint and Format workflow. CI is dispatched on this branch because pull requests created with GITHUB_TOKEN do not start checks on their own."
+          fi
+          gh workflow run ci.yml --ref "$FIX_BRANCH" -f base=main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
+      - name: Open or update an issue for unfixable errors
+        if: github.event_name == 'schedule' && steps.leftovers.outputs.failed != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
           gh label create automated-lint-format \
-            --description "Opened by the scheduled Lint and Format workflow" \
-            --color "d73a4a" \
-            --force
-
+            --description "Opened by the scheduled Auto-fix Lint and Format workflow" \
+            --color "d73a4a" --force
           {
-            echo "Automated lint/format run on $(date -u +%Y-%m-%dT%H:%M:%SZ) found issues that could not be fixed automatically."
+            echo "The scheduled lint/format run on $(date -u +%Y-%m-%dT%H:%M:%SZ) found issues that cannot be fixed automatically ($RUN_URL)."
             echo
-            if [ "${{ steps.dprint.outputs.exit_code }}" != "0" ]; then
-              echo "## dprint (exit code ${{ steps.dprint.outputs.exit_code }})"
-              echo '```'
-              tail -c 30000 "$RUNNER_TEMP/dprint-output.log"
-              echo '```'
-              echo
-            fi
-            if [ "${{ steps.ruff.outputs.exit_code }}" != "0" ]; then
-              echo "## ruff check (exit code ${{ steps.ruff.outputs.exit_code }})"
-              echo '```'
-              tail -c 30000 "$RUNNER_TEMP/ruff-output.log"
-              echo '```'
-            fi
+            echo '```'
+            tail -c 30000 "$RUNNER_TEMP/leftovers.log"
+            echo '```'
           } > "$RUNNER_TEMP/issue-body.md"
-
           existing=$(gh issue list --label automated-lint-format --state open --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file "$RUNNER_TEMP/issue-body.md"
+            # Replace the body instead of stacking a new comment every fortnight.
+            gh issue edit "$existing" --body-file "$RUNNER_TEMP/issue-body.md"
           else
-            gh issue create \
+            gh issue create --label automated-lint-format \
               --title "Scheduled lint/format run found issues needing manual attention" \
-              --label automated-lint-format \
               --body-file "$RUNNER_TEMP/issue-body.md"
           fi
+
+      - name: Close the unfixable-errors issue once clean
+        if: github.event_name == 'schedule' && steps.leftovers.outputs.failed == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --label automated-lint-format --state open --json number --jq '.[0].number // empty')
+          [ -z "$existing" ] || gh issue close "$existing" --comment "Lint and format are clean again."
