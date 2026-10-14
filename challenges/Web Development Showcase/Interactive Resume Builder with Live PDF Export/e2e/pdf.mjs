@@ -1,7 +1,11 @@
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-/** Remove every whitespace character: PDF text runs and DOM text differ only in spacing. */
-export const squash = (text) => text.replace(/\s+/g, '');
+/**
+ * Remove every whitespace character: PDF text runs and DOM text differ only in spacing. NFKC folds
+ * compatibility forms too: Noto CJK (the Linux CI font) maps 日 to the look-alike Kangxi radical
+ * U+2F47 in the PDF's text layer, which is visually identical.
+ */
+export const squash = (text) => text.normalize('NFKC').replace(/\s+/g, '');
 
 /**
  * Read a PDF the way an applicant tracking system would: page sizes, the text of each page with
