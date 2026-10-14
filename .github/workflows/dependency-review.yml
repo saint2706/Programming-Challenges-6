@@ -1,16 +1,17 @@
 name: Dependency Review
 
-# Flags newly introduced known-vulnerable or license-incompatible
-# dependencies before merge. Only fires on pull_request (mainly Dependabot's
-# own dependency-bump PRs, opened against the /challenges/*/* directories
-# via .github/dependabot.yml's uv-ecosystem config).
+# Blocks pull requests that add a dependency with a known vulnerability. Fires on every PR to
+# main, mostly Dependabot's bumps across the uv, npm and cargo challenge projects.
+#
+# fail-on-scopes includes "development": every Web Showcase dependency is a devDependency, and the
+# action's default (runtime only) would wave all of them through. No license policy is configured,
+# so licenses are not checked.
 on:
   pull_request:
     branches: [main]
 
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
   group: dependency-review-${{ github.event.pull_request.number }}
@@ -19,11 +20,25 @@ concurrency:
 jobs:
   dependency-review:
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Dependency Review
-        uses: actions/dependency-review-action@v5
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
-          comment-summary-in-pr: always
+          fail-on-severity: moderate
+          fail-on-scopes: runtime, development
+          # A comment on every green PR is noise; the job summary always has the table.
+          comment-summary-in-pr: on-failure

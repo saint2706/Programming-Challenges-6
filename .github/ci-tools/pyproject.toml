@@ -1,0 +1,6 @@
+[project]
+name = "ci-tools"
+version = "0.0.0"
+description = "Pinned lint tooling for CI; kept as a real uv project so Dependabot can update it."
+requires-python = ">=3.12"
+dependencies = ["ruff==0.17.0"]

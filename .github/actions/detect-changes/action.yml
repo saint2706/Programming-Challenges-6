@@ -1,0 +1,90 @@
+name: Detect changed challenges
+description: >-
+  Emits a JSON array of challenge directories (challenges/<Category>/<Name>) that own a given
+  manifest file and need testing. Needs a checkout with fetch-depth 0.
+
+inputs:
+  manifest:
+    description: Manifest file that marks a challenge of this kind (pyproject.toml, package.json, Cargo.toml).
+    required: true
+  directory:
+    description: Test only this one challenge directory.
+    required: false
+    default: ""
+  base:
+    description: Diff against origin/<base> instead of the triggering event's range (dispatch runs).
+    required: false
+    default: ""
+
+outputs:
+  dirs:
+    description: JSON array of challenge directories to test.
+    value: ${{ steps.detect.outputs.dirs }}
+
+runs:
+  using: composite
+  steps:
+    - name: Detect
+      id: detect
+      shell: bash
+      # Every ${{ }} value goes through env: and is never spliced into the script. The directory
+      # input is free text from whoever can trigger workflow_dispatch, and template substitution
+      # happens before the shell parses the script.
+      env:
+        MANIFEST: ${{ inputs.manifest }}
+        INPUT_DIRECTORY: ${{ inputs.directory }}
+        INPUT_BASE: ${{ inputs.base }}
+        EVENT_NAME: ${{ github.event_name }}
+        PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PUSH_BEFORE_SHA: ${{ github.event.before }}
+        PUSH_HEAD_SHA: ${{ github.sha }}
+      run: |
+        set -euo pipefail
+
+        all_dirs() {
+          # NUL-delimited because several directory names contain an apostrophe.
+          git ls-files -z ":(glob)challenges/*/*/$MANIFEST" | xargs -0 -r -n1 dirname | sort -u
+        }
+
+        changed_dirs() {
+          # $1 = base, $2 = head, $3 = ".." or "..." diff style
+          local base="$1" head="$2" style="$3" changed
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ] \
+            || ! git cat-file -e "$base" 2>/dev/null; then
+            # New branch or a force-push whose old tip is gone: treat the whole head as changed.
+            changed=$(git ls-tree -r --name-only "$head" -- challenges/)
+          else
+            changed=$(git diff --name-only "${base}${style}${head}" -- challenges/)
+          fi
+          printf '%s\n' "$changed" | awk -F/ 'NF>=4 {print $1"/"$2"/"$3}' | sort -u |
+            while IFS= read -r d; do
+              if [ -n "$d" ] && [ -f "$d/$MANIFEST" ]; then printf '%s\n' "$d"; fi
+            done
+        }
+
+        if [ -n "$INPUT_DIRECTORY" ]; then
+          # Scoped run. The value becomes a working-directory, so pin it to the expected shape.
+          if [[ ! "$INPUT_DIRECTORY" =~ ^challenges/[^/]+/[^/]+$ ]] || [[ "$INPUT_DIRECTORY" == *..* ]]; then
+            echo "::error::directory must look like 'challenges/<Category>/<Name>'"
+            exit 1
+          fi
+          if [ -f "$INPUT_DIRECTORY/$MANIFEST" ]; then DIRS="$INPUT_DIRECTORY"; else DIRS=""; fi
+        elif [ -n "$INPUT_BASE" ]; then
+          git fetch --no-tags origin "$INPUT_BASE"
+          DIRS=$(changed_dirs "origin/$INPUT_BASE" "$PUSH_HEAD_SHA" "...")
+        elif [ "$EVENT_NAME" = "pull_request" ]; then
+          DIRS=$(changed_dirs "$PR_BASE_SHA" "$PR_HEAD_SHA" "...")
+        elif [ "$EVENT_NAME" = "push" ]; then
+          DIRS=$(changed_dirs "$PUSH_BEFORE_SHA" "$PUSH_HEAD_SHA" "..")
+        else
+          # schedule / workflow_dispatch: full regression.
+          DIRS=$(all_dirs)
+        fi
+
+        JSON=$(printf '%s\n' "$DIRS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+        echo "dirs=$JSON" >> "$GITHUB_OUTPUT"
+        {
+          echo "### $MANIFEST challenges to test"
+          echo "$JSON" | jq -r 'if length == 0 then "_none_" else .[] | "- `" + . + "`" end'
+        } >> "$GITHUB_STEP_SUMMARY"
