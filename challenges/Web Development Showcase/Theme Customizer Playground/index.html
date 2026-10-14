@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Theme Customizer Playground</title>
+    <link rel="icon" href="data:," />
+    <meta
+      name="description"
+      content="Edit a theme's typed CSS custom properties and watch every derived token, computed in CSS, update live. Contrast checks, and export as CSS, design tokens or Tailwind."
+    />
+  </head>
+  <body>
+    <a class="skip" href="#preview-heading">Skip to the preview</a>
+
+    <header class="top">
+      <div>
+        <h1>Theme Customizer Playground</h1>
+        <p class="lede">
+          A theme is a handful of typed CSS custom properties. Everything else (the palette, surfaces, labels, type scale) is computed in
+          CSS from them.
+        </p>
+      </div>
+      <div class="toolbar" role="group" aria-label="Presets and actions">
+        <span id="presets" class="presets"></span>
+        <button type="button" id="reset">Reset</button>
+      </div>
+    </header>
+
+    <p id="notice" class="notice" role="status"></p>
+    <p id="fallback-banner" class="banner" hidden>
+      This browser cannot compute OKLCH relative colours or <code>light-dark()</code> in CSS, so the colours are computed in JavaScript
+      instead. The result is the same, to within one colour step.
+    </p>
+
+    <div class="layout">
+      <form id="controls" class="controls" aria-label="Theme inputs" autocomplete="off"></form>
+
+      <main id="main">
+        <section aria-labelledby="preview-heading">
+          <div class="section-head">
+            <h2 id="preview-heading">Preview</h2>
+            <fieldset class="seg">
+              <legend class="sr-only">Preview mode</legend>
+              <label><input type="radio" name="view" value="both" checked /> <span>Both</span></label>
+              <label><input type="radio" name="view" value="light" /> <span>Light</span></label>
+              <label><input type="radio" name="view" value="dark" /> <span>Dark</span></label>
+            </fieldset>
+          </div>
+          <div id="panes" class="panes" data-view="both"></div>
+        </section>
+
+        <section aria-labelledby="contrast-heading">
+          <div class="section-head">
+            <h2 id="contrast-heading">Contrast</h2>
+            <div class="inline-field">
+              <label for="target">Fix target</label>
+              <select id="target"></select>
+            </div>
+          </div>
+          <p class="hint">
+            Measured on the colours as painted (clipped to sRGB, 8 bits per channel). WCAG 2 ratio and APCA lightness contrast (Lc), for both
+            modes.
+          </p>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Contrast results" id="contrast-region">
+            <table id="contrast">
+              <thead>
+                <tr>
+                  <th scope="col">Mode</th>
+                  <th scope="col">Pair</th>
+                  <th scope="col">Sample</th>
+                  <th scope="col">WCAG 2</th>
+                  <th scope="col">APCA</th>
+                  <th scope="col">Fix</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-labelledby="export-heading">
+          <h2 id="export-heading">Export and import</h2>
+          <fieldset class="seg">
+            <legend>Format</legend>
+            <span id="formats"></span>
+          </fieldset>
+          <label class="block-label" for="export-text">Theme file</label>
+          <textarea id="export-text" readonly rows="14" spellcheck="false"></textarea>
+          <div class="row">
+            <button type="button" id="copy">Copy</button>
+            <button type="button" id="download">Download</button>
+          </div>
+
+          <h3>Import a theme</h3>
+          <p class="hint">
+            A CSS file with the inputs, or a design-tokens JSON file. Only the values of known inputs are read; anything else in the file is
+            ignored, and a file with a bad value changes nothing.
+          </p>
+          <label class="block-label" for="import-file">Theme file</label>
+          <input type="file" id="import-file" accept=".css,.json,text/css,application/json" />
+          <label class="block-label" for="import-text">Or paste a theme</label>
+          <textarea id="import-text" rows="5" spellcheck="false"></textarea>
+          <div class="row"><button type="button" id="import-apply">Apply pasted theme</button></div>
+          <div id="import-result" class="import-result" role="alert"></div>
+
+          <h3>Share</h3>
+          <label class="block-label" for="share-url">Link to this theme</label>
+          <div class="row">
+            <input type="text" id="share-url" readonly />
+            <button type="button" id="copy-link">Copy link</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="sample">
+      <div class="s-card">
+        <p class="s-eyebrow">Quarterly report</p>
+        <h3>Revenue grew 18% year over year</h3>
+        <p>Body text sits on the card surface. <a href="#preview-heading" class="s-link">A brand link</a> and <span class="s-muted">muted secondary text</span>.</p>
+        <div class="s-row">
+          <button type="button" class="s-btn">Primary</button>
+          <button type="button" class="s-btn s-ghost">Secondary</button>
+          <span class="s-chip">New</span>
+        </div>
+        <label class="s-field"><span>Email</span><input type="email" placeholder="you@example.com" /></label>
+      </div>
+      <p class="s-alert">An alert on the tinted brand surface, with an accent edge.</p>
+      <div class="s-type">
+        <p class="t-3xl">Aa Heading</p>
+        <p class="t-xl">Aa Subheading</p>
+        <p class="t-base">Aa Body text at the base size</p>
+        <p class="t-sm s-muted">Aa Small print</p>
+      </div>
+      <div class="s-ramp" aria-hidden="true">
+        <span style="background: var(--brand-50)"></span><span style="background: var(--brand-100)"></span>
+        <span style="background: var(--brand-200)"></span><span style="background: var(--brand-300)"></span>
+        <span style="background: var(--brand-400)"></span><span style="background: var(--brand-500)"></span>
+        <span style="background: var(--brand-600)"></span><span style="background: var(--brand-700)"></span>
+        <span style="background: var(--brand-800)"></span><span style="background: var(--brand-900)"></span>
+      </div>
+      <div class="s-space" aria-hidden="true">
+        <span style="width: var(--space-1)"></span><span style="width: var(--space-2)"></span><span style="width: var(--space-3)"></span>
+        <span style="width: var(--space-4)"></span><span style="width: var(--space-6)"></span><span style="width: var(--space-8)"></span>
+      </div>
+    </template>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

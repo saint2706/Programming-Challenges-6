@@ -1,0 +1,80 @@
+/*
+ * The theme engine. A theme is the typed inputs below; every other token is computed here, in CSS,
+ * from them: OKLCH colours, relative colour syntax, color-mix() and light-dark(). Registering the
+ * inputs with @property makes them typed, so a change of theme can animate (see `.animating`).
+ * `.theme-scope` is where a theme applies; the exported CSS file swaps it for `:root`.
+ */
+@property --brand-l { syntax: "<number>"; inherits: true; initial-value: 0.55; }
+@property --brand-l-dark { syntax: "<number>"; inherits: true; initial-value: 0.7; }
+@property --brand-c { syntax: "<number>"; inherits: true; initial-value: 0.15; }
+@property --brand-h { syntax: "<number>"; inherits: true; initial-value: 264; }
+@property --accent-shift { syntax: "<number>"; inherits: true; initial-value: 150; }
+@property --neutral-h { syntax: "<number>"; inherits: true; initial-value: 264; }
+@property --neutral-c { syntax: "<number>"; inherits: true; initial-value: 0.012; }
+@property --radius { syntax: "<length>"; inherits: true; initial-value: 10px; }
+@property --space { syntax: "<length>"; inherits: true; initial-value: 4px; }
+@property --shadow-y { syntax: "<length>"; inherits: true; initial-value: 6px; }
+@property --shadow-blur { syntax: "<length>"; inherits: true; initial-value: 18px; }
+@property --shadow-alpha { syntax: "<number>"; inherits: true; initial-value: 0.12; }
+@property --type-base { syntax: "<length>"; inherits: true; initial-value: 16px; }
+@property --type-ratio { syntax: "<number>"; inherits: true; initial-value: 1.25; }
+@property --heading-weight { syntax: "<number>"; inherits: true; initial-value: 700; }
+
+.theme-scope {
+  color-scheme: light dark;
+
+  /* colour: brand, then everything computed from it */
+  --brand: light-dark(
+    oklch(var(--brand-l) var(--brand-c) var(--brand-h)),
+    oklch(var(--brand-l-dark) var(--brand-c) var(--brand-h))
+  );
+  --brand-hover: color-mix(in oklch, var(--brand), black 14%);
+  --brand-subtle: light-dark(
+    oklch(from var(--brand) 0.97 calc(c * 0.2) h),
+    oklch(from var(--brand) 0.28 calc(c * 0.4) h)
+  );
+  /* white on dark brands, near-black on light ones: l < 0.62 clamps to 1, anything above to 0.18 */
+  --on-brand: oklch(from var(--brand) clamp(0.18, calc((0.62 - l) * 1000), 1) 0 h);
+  --accent: oklch(from var(--brand) l c calc(h + var(--accent-shift)));
+
+  /* neutrals tinted toward one hue */
+  --bg: light-dark(oklch(0.975 var(--neutral-c) var(--neutral-h)), oklch(0.17 var(--neutral-c) var(--neutral-h)));
+  --surface: light-dark(oklch(1 var(--neutral-c) var(--neutral-h)), oklch(0.22 var(--neutral-c) var(--neutral-h)));
+  --text: light-dark(oklch(0.22 var(--neutral-c) var(--neutral-h)), oklch(0.95 var(--neutral-c) var(--neutral-h)));
+  --muted: light-dark(oklch(0.5 var(--neutral-c) var(--neutral-h)), oklch(0.72 var(--neutral-c) var(--neutral-h)));
+  --border: light-dark(oklch(0.9 var(--neutral-c) var(--neutral-h)), oklch(0.32 var(--neutral-c) var(--neutral-h)));
+
+  /* a ramp that follows the brand hue and chroma */
+  --brand-50: oklch(0.97 calc(var(--brand-c) * 0.12) var(--brand-h));
+  --brand-100: oklch(0.935 calc(var(--brand-c) * 0.25) var(--brand-h));
+  --brand-200: oklch(0.87 calc(var(--brand-c) * 0.45) var(--brand-h));
+  --brand-300: oklch(0.79 calc(var(--brand-c) * 0.7) var(--brand-h));
+  --brand-400: oklch(0.7 calc(var(--brand-c) * 0.95) var(--brand-h));
+  --brand-500: oklch(0.62 var(--brand-c) var(--brand-h));
+  --brand-600: oklch(0.54 var(--brand-c) var(--brand-h));
+  --brand-700: oklch(0.46 calc(var(--brand-c) * 0.9) var(--brand-h));
+  --brand-800: oklch(0.38 calc(var(--brand-c) * 0.75) var(--brand-h));
+  --brand-900: oklch(0.3 calc(var(--brand-c) * 0.6) var(--brand-h));
+
+  /* shape, space, type and shadow */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --space-1: var(--space);
+  --space-2: calc(var(--space) * 2);
+  --space-3: calc(var(--space) * 3);
+  --space-4: calc(var(--space) * 4);
+  --space-6: calc(var(--space) * 6);
+  --space-8: calc(var(--space) * 8);
+  --text-base: var(--type-base);
+  --text-sm: calc(var(--text-base) / var(--type-ratio));
+  --text-lg: calc(var(--text-base) * var(--type-ratio));
+  --text-xl: calc(var(--text-lg) * var(--type-ratio));
+  --text-2xl: calc(var(--text-xl) * var(--type-ratio));
+  --text-3xl: calc(var(--text-2xl) * var(--type-ratio));
+  --text-4xl: calc(var(--text-3xl) * var(--type-ratio));
+  --shadow: 0 var(--shadow-y) var(--shadow-blur) oklch(0 0 0 / var(--shadow-alpha));
+}
+
+.theme-scope[data-scheme="light"] { color-scheme: light; }
+.theme-scope[data-scheme="dark"] { color-scheme: dark; }
