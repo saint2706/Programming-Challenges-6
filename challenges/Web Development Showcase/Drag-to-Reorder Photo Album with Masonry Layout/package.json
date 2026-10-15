@@ -10,13 +10,13 @@
         "photos": "node scripts/prepare-photos.mjs"
     },
     "dependencies": {
-        "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
-        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3"
+        "@atlaskit/pragmatic-drag-and-drop": "^4.0.0",
+        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^3.0.0"
     },
     "devDependencies": {
-        "jsdom": "^26.0.0",
+        "jsdom": "^30.1.1",
         "sharp": "^0.35.5",
         "vite": "^6.0.0",
-        "vitest": "^5.0.2"
+        "vitest": "^5.0.3"
     }
 }

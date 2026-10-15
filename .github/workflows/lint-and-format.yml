@@ -17,11 +17,7 @@ on:
     - cron: "0 3 1,15 * *"
   workflow_dispatch: {}
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  actions: write
+permissions: {}
 
 concurrency:
   group: lint-and-format
@@ -34,6 +30,11 @@ jobs:
   fix:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: write # push the fix branch
+      pull-requests: write # open the PR
+      issues: write # report what cannot be auto-fixed
+      actions: write # dispatch ci.yml on the branch
     steps:
       - name: Harden runner
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1

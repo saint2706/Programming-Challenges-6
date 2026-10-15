@@ -14,7 +14,7 @@ import math
 import folium
 import numpy as np
 from branca.element import Element, MacroElement
-from jinja2 import Template
+from jinja2 import Environment
 
 from sales_heatmap.classify import SCHEME_LABELS, SCHEMES
 from sales_heatmap.geo_heatmap import (
@@ -424,7 +424,8 @@ table.gh th { background: #eef1f4; }
 class _Controls(MacroElement):
     """Adds the view selector, legend, tooltips, insets and initial extent to the map."""
 
-    _template = Template(
+    # Autoescape on: the only expression is `this.js`, already script-safe and marked `|safe`.
+    _template = Environment(autoescape=True).from_string(
         "{% macro script(this, kwargs) %}{{ this.js|safe }}{% endmacro %}"
     )
 
