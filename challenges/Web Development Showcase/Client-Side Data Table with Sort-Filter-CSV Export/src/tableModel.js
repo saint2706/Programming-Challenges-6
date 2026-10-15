@@ -1,6 +1,21 @@
-import { createTable, getCoreRowModel } from '@tanstack/table-core';
+import {
+  columnFilteringFeature,
+  constructTable,
+  globalFilteringFeature,
+  rowSortingFeature,
+  tableFeatures,
+} from '@tanstack/table-core';
+import { storeReactivityBindings } from '@tanstack/table-core/store-reactivity-bindings';
 import { COLUMNS } from './columns.js';
 import { createEngine } from './engine.js';
+
+// Sorting + filter *state* only; no row-model slots, because rows are computed by the engine.
+const features = tableFeatures({
+  coreReactivityFeature: storeReactivityBindings(),
+  rowSortingFeature,
+  columnFilteringFeature,
+  globalFilteringFeature,
+});
 
 /**
  * Headless, DOM-free table model.
@@ -12,10 +27,10 @@ import { createEngine } from './engine.js';
  */
 export function createTableModel({ rows, columns = COLUMNS, onChange = () => {} }) {
   const engine = createEngine(rows, columns);
-  let state;
   let view = null;
 
-  const table = createTable({
+  const table = constructTable({
+    features,
     data: [], // rows live in the engine; table-core never materializes them
     columns: columns.map((c) => ({
       id: c.id,
@@ -24,7 +39,6 @@ export function createTableModel({ rows, columns = COLUMNS, onChange = () => {} 
       filterFn: () => true,
       meta: c,
     })),
-    getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     manualFiltering: true,
     enableMultiSort: true,
@@ -32,29 +46,19 @@ export function createTableModel({ rows, columns = COLUMNS, onChange = () => {} 
     sortDescFirst: false, // first click is always ascending, for every type
     autoResetAll: false,
     renderFallbackValue: null,
-    state: {},
-    onStateChange() {},
   });
-  state = table.initialState;
-  const sync = () =>
-    table.setOptions((prev) => ({
-      ...prev,
-      state,
-      onStateChange: (updater) => {
-        state = typeof updater === 'function' ? updater(state) : updater;
-        view = null;
-        sync();
-        onChange(model);
-      },
-    }));
-  sync();
+  // Any sorting / filter state change invalidates the cached view.
+  table.store.subscribe(() => {
+    view = null;
+    onChange(model);
+  });
 
   const model = {
     table,
     total: rows.length,
     /** Row indices (Int32Array) of the current filtered + sorted view. */
     get order() {
-      view ??= engine.query(table.getState());
+      view ??= engine.query(table.store.state);
       return view;
     },
     get count() {
@@ -71,7 +75,7 @@ export function createTableModel({ rows, columns = COLUMNS, onChange = () => {} 
       return out;
     },
     get sorting() {
-      return table.getState().sorting;
+      return table.store.state.sorting;
     },
     setGlobalFilter(text) {
       table.setGlobalFilter(text ? text : undefined);

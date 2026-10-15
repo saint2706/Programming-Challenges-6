@@ -19,14 +19,16 @@ Keyboard, with the grid focused: arrows move the active cell; <kbd>PgUp</kbd>/<k
 
 ## Design notes
 
-**table-core owns the state, a flat engine owns the rows.** `@tanstack/table-core` is headless and gives exactly the right *state machine*: the asc → desc → off cycle, shift multi-sort, and column/global filter state. But its row models wrap every row in `Row`/`Cell` closures, which is the wrong shape for 100k rows. Measured on this machine at 100k rows (`npm run bench:baseline`):
+**table-core owns the state, a flat engine owns the rows.** `@tanstack/table-core` is headless and gives exactly the right *state machine*: the asc → desc → off cycle, shift multi-sort, and column/global filter state. But its row models wrap every row in `Row`/`Cell` closures, which is the wrong shape for 100k rows. Measured on this machine at 100k rows (`npm run bench:baseline`, table-core 9.2):
 
-| table-core row model                       |     time |    heap |
-| ------------------------------------------ | -------: | ------: |
-| `getCoreRowModel` (wrap every row)         |   512 ms | +559 MB |
-| `getSortedRowModel`, salary                |   546 ms |  +54 MB |
-| `getSortedRowModel`, name                  | 1,309 ms |  +53 MB |
-| `getFilteredRowModel`, city contains "ber" |   115 ms |   +3 MB |
+| table-core 9 row model                     |   time |    heap |
+| ------------------------------------------ | -----: | ------: |
+| `getCoreRowModel` (wrap every row)         | 111 ms | +101 MB |
+| `getSortedRowModel`, salary                | 618 ms |  +54 MB |
+| `getSortedRowModel`, name                  | 541 ms |   ~0 MB |
+| `getFilteredRowModel`, city contains "ber" | 153 ms |  +45 MB |
+
+(Heap deltas are single-run and noisy. On table-core 8 the same core row model cost +559 MB, and the name sort took 1.3 s.)
 
 So the table model runs table-core with `manualSorting`/`manualFiltering` and `data: []`, and `src/engine.js` computes the view as an **`Int32Array` of indices into the raw row array**. Rows are never copied or wrapped, and the view of 100k rows is 400 KB.
 
@@ -59,7 +61,7 @@ Measured on this machine (Node, Windows, 100,000 rows, `npm run bench`; "cold" i
 | + department filter, then sort the result |               6 ms, 3 ms |
 | CSV of all 100k rows (10.5 MB)            |                  ~170 ms |
 
-Against table-core's own row models above, the engine is ~10x faster on the sorts, and it removes the 559 MB row-wrapping cost entirely.
+Against table-core's own row models above, the engine is ~10x faster on the sorts, and it removes the ~100 MB row-wrapping cost entirely.
 
 In a real browser (Chrome, DPR 2, via the DevTools MCP): at **100k rows** a header sort, a multi-sort and a global search each finish, including rendering, in under ~100 ms; scrolling 200 steps of 5,000 px stays at frame rate. At **500k rows**, mounting takes ~440 ms, sorting the 500k-distinct-ish email column ~1.7 s, and a cold search ~0.5 s.
 
@@ -79,7 +81,7 @@ cd "challenges/Web Development Showcase/Client-Side Data Table with Sort-Filter-
 
 npm install
 npm run dev       # dev server (Vite); pick 1k / 10k / 100k / 250k rows in the page
-npm run build     # production bundle in dist/ (~89 kB JS, ~27 kB gzipped)
+npm run build     # production bundle in dist/ (~77 kB JS, ~25 kB gzipped)
 npm test          # 130 tests
 npm run bench     # engine benchmark, optional row count: npm run bench -- 250000
 npm run bench:baseline   # table-core's own row models, for comparison
