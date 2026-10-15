@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
-        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3"
+        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^3.0.0"
     },
     "devDependencies": {
         "jsdom": "^26.0.0",
