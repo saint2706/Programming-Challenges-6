@@ -22,7 +22,8 @@ export async function startServer(port = 0) {
     const url = new URL(req.url, 'http://x');
     requests.push(url.pathname + url.search);
     if (url.pathname === '/slow.svg') {
-      const ms = Number(url.searchParams.get('ms') ?? 300);
+      // Clamp: the delay comes from the query string, so it must not set an unbounded timer.
+      const ms = Math.min(Math.max(Number(url.searchParams.get('ms') ?? 300) || 0, 0), 10_000);
       const [w, h] = [Number(url.searchParams.get('w') ?? 400), Number(url.searchParams.get('h') ?? 200)];
       setTimeout(() => {
         res.writeHead(200, { 'content-type': TYPES['.svg'] });

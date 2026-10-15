@@ -11,8 +11,8 @@
         "bench": "vite build && node e2e/bench.mjs"
     },
     "dependencies": {
-        "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
-        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
+        "@atlaskit/pragmatic-drag-and-drop": "^4.0.0",
+        "@atlaskit/pragmatic-drag-and-drop-hitbox": "^3.0.0",
         "@fontsource/ibm-plex-sans": "^5.0.0",
         "@fontsource/inter": "^5.0.0",
         "@fontsource/source-serif-4": "^5.0.0",
