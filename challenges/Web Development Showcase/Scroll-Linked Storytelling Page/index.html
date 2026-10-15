@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="color-scheme" content="light dark" />
+        <title>Scroll-Linked Storytelling: global temperature, 1880 to 2025</title>
+        <meta
+            name="description"
+            content="A scrollytelling page on NASA GISS annual global temperature, with pinned sections, a switchable CSS or GSAP engine, and no JavaScript needed to read it."
+        />
+        <script>
+            document.documentElement.classList.add('js');
+        </script>
+        <link rel="stylesheet" href="./src/style.css" />
+    </head>
+    <body id="top">
+        <a class="skip" href="#end">Skip to the end</a>
+        <div class="progress-bar" aria-hidden="true"></div>
+
+        <header class="site-head">
+            <p class="kicker">Scroll-linked story &middot; NASA GISS data</p>
+            <button id="engine-toggle" class="engine-toggle" type="button" hidden>
+                Engine: native CSS
+            </button>
+        </header>
+
+        <main>
+            <section class="hero" aria-labelledby="hero-title">
+                <h1 id="hero-title">The world has warmed, and not evenly in time</h1>
+                <p>
+                    Every number on this page comes from one public file: NASA's annual global
+                    temperature record, 1880 to 2025. Scroll at your own pace. The chart and the
+                    text stay in step, and nothing needs a click.
+                </p>
+                <p class="cue"><a href="#chart-story">Start the chart</a></p>
+            </section>
+
+            <section id="chart-story" class="scrolly" aria-labelledby="chart-title" style="--steps: 5">
+                <div id="chart-stage" class="chart-stage">
+                    <h2 id="chart-title">Annual mean, 1880 to 2025</h2>
+                    <figure class="chart">
+                        <!--chart-svg-->
+                        <figcaption>
+                            Anomaly in degrees Celsius against the 1951 to 1980 average. Source: NASA
+                            GISS, GISTEMP v4.
+                        </figcaption>
+                    </figure>
+                    <nav class="jump" aria-label="Jump to a step">
+                        <a href="#step-1" data-jump="step-1">1880&ndash;1910</a>
+                        <a href="#step-2" data-jump="step-2">1910&ndash;1940</a>
+                        <a href="#step-3" data-jump="step-3">1940&ndash;1975</a>
+                        <a href="#step-4" data-jump="step-4">1976&ndash;2000</a>
+                        <a href="#step-5" data-jump="step-5">2001&ndash;2025</a>
+                    </nav>
+                </div>
+
+                <div class="steps">
+                    <section id="step-1" class="step" data-step data-from="1880" data-to="1910">
+                        <h3>The cool start</h3>
+                        <p>
+                            No year from 1880 to 1910 is above zero. The average for those 31 years
+                            is &minus;0.26 &deg;C.
+                        </p>
+                    </section>
+                    <section id="step-2" class="step" data-step data-from="1910" data-to="1940">
+                        <h3>The first climb</h3>
+                        <p>
+                            The anomaly rose from &minus;0.44 &deg;C in 1910 to +0.12 &deg;C in 1940.
+                           
+                        </p>
+                    </section>
+                    <section id="step-3" class="step" data-step data-from="1940" data-to="1975">
+                        <h3>The flat middle</h3>
+                        <p>
+                            From 1940 to 1975 the yearly values swing around zero. Their average is
+                            &minus;0.01 &deg;C. Scientists attribute this stretch to a mix of
+                            aerosol pollution and natural variation; the temperature record alone
+                            cannot separate the two.
+                        </p>
+                    </section>
+                    <section id="step-4" class="step" data-step data-from="1976" data-to="2000">
+                        <h3>The steady rise</h3>
+                        <p>
+                            The anomaly went from &minus;0.10 &deg;C in 1976 to +0.39 &deg;C in 2000.
+                        </p>
+                    </section>
+                    <section id="step-5" class="step" data-step data-from="2001" data-to="2025">
+                        <h3>The record decades</h3>
+                        <p>
+                            The average for 2001 to 2025 is +0.80 &deg;C. Five years are above
+                            +1.0 &deg;C: 2016, 2020, 2023, 2024 and 2025. The warmest year in the
+                            record is 2024, at +1.28 &deg;C.
+                        </p>
+                    </section>
+                </div>
+            </section>
+
+            <section id="stripes-story" class="stripes-story" aria-labelledby="stripes-title">
+                <div id="stripes-stage" class="stripes-stage">
+                    <h2 id="stripes-title">Every year as one stripe</h2>
+                    <div
+                        class="stripes"
+                        role="img"
+                        aria-label="Warming stripes: one stripe per year from 1880 on the left to 2025 on the right. Blue years were cooler than the 1951 to 1980 average, red years warmer."
+                    >
+                        <!--stripes-->
+                    </div>
+                    <p class="stripes-note">
+                        Blue is cooler than the 1951 to 1980 average, red is warmer. The strip moves
+                        as you scroll through the years.
+                    </p>
+                </div>
+            </section>
+
+            <section id="end" class="ending" aria-labelledby="end-title">
+                <h2 id="end-title">Where the line stops</h2>
+                <p>
+                    The line ends at +1.18 &deg;C in 2025. The 2026 row in the source is only partly
+                    filled in, so it is left out. Each value is an annual mean of monthly values,
+                    relative to the 1951 to 1980 average.
+                </p>
+                <details class="table-wrap">
+                    <summary>The chart data as a table</summary>
+                    <!--data-table-->
+                </details>
+                <p class="credit">
+                    Data: NASA Goddard Institute for Space Studies, GISTEMP v4, Land-Ocean
+                    Temperature Index, Global Means. Public domain.
+                    <a href="https://data.giss.nasa.gov/gistemp/">data.giss.nasa.gov/gistemp</a>.
+                    A copy is committed with this page so it works offline.
+                </p>
+                <p><a href="#top">Back to the top</a></p>
+            </section>
+        </main>
+
+        <script type="module" src="./src/main.js"></script>
+    </body>
+</html>

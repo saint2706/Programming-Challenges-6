@@ -1,0 +1,486 @@
+/* Layout and tokens. Three states of the page:
+   - no JavaScript (or reduced motion): plain flowing sections, the chart and stripes are fully visible;
+   - JavaScript + motion allowed: the story is pinned (sticky with the CSS engine, GSAP pins with its own);
+   - the native engine (data-engine="css") adds scroll-driven animations inside @supports. */
+
+:root {
+    color-scheme: light dark;
+    --bg: #fbfaf7;
+    --fg: #1d1d1b;
+    --muted: #55554f;
+    --accent: #b2182b;
+    --cool: #2166ac;
+    --rule: #d9d6cf;
+    --line: #1d1d1b;
+    --band: rgba(33, 102, 172, 0.12);
+    --panel: rgba(251, 250, 247, 0.94);
+    --gutter: 16px;
+    --stripe-w: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --bg: #161614;
+        --fg: #ecebe6;
+        --muted: #aaa9a2;
+        --accent: #ef8a7a;
+        --cool: #7fb3e6;
+        --rule: #3a3935;
+        --line: #ecebe6;
+        --band: rgba(127, 179, 230, 0.16);
+        --panel: rgba(22, 22, 20, 0.94);
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 1.0625rem/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    overflow-wrap: anywhere;
+}
+
+main {
+    display: block;
+}
+
+a {
+    color: var(--cool);
+}
+
+:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -100px;
+    z-index: 10;
+    padding: 0.5rem 0.875rem;
+    background: var(--fg);
+    color: var(--bg);
+}
+
+.skip:focus {
+    top: var(--gutter);
+}
+
+.progress-bar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 4px;
+    z-index: 5;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+}
+
+.site-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem var(--gutter);
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.kicker {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.engine-toggle {
+    font: inherit;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--fg);
+    cursor: pointer;
+    max-width: 100%;
+}
+
+.engine-toggle:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.hero,
+.ending {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 4rem var(--gutter);
+}
+
+.hero {
+    min-height: 80svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1.1;
+    margin: 0 0 1rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    margin: 0 0 0.75rem;
+}
+
+h3 {
+    font-size: 1.375rem;
+    margin: 0 0 0.5rem;
+}
+
+.cue a {
+    font-weight: 600;
+}
+
+/* ---- The chart story ------------------------------------------------------------------------- */
+
+.scrolly {
+    position: relative;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+}
+
+.chart-stage {
+    padding: 1rem 0;
+}
+
+.chart {
+    margin: 0;
+}
+
+.chart-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.chart-svg .tick {
+    font-size: 24px;
+    fill: var(--muted);
+}
+
+.chart-svg .grid {
+    stroke: var(--rule);
+    stroke-width: 1;
+}
+
+.chart-svg .zero {
+    stroke: var(--fg);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 6;
+}
+
+.chart-svg .band {
+    fill: var(--band);
+}
+
+.chart-svg .chart-line {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.chart-svg .chart-end {
+    fill: var(--accent);
+}
+
+.chart-svg .chart-note {
+    font-size: 26px;
+    fill: var(--fg);
+}
+
+figcaption {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.jump a {
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    color: var(--fg);
+}
+
+.jump a[aria-current='step'] {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+}
+
+.step {
+    padding: 1.25rem 0;
+}
+
+.stripes-story {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 2rem var(--gutter) 3rem;
+}
+
+.stripes {
+    overflow-x: auto;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 0 var(--gutter);
+}
+
+.strip {
+    display: flex;
+    width: calc(var(--stripes) * var(--stripe-w));
+    height: 14rem;
+}
+
+.stripe {
+    flex: 0 0 var(--stripe-w);
+    height: 100%;
+}
+
+.stripes-note,
+.credit {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.table-wrap {
+    margin: 1rem 0;
+}
+
+.table-wrap summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+}
+
+.data-table caption {
+    text-align: left;
+    padding: 0.5rem 0;
+    color: var(--muted);
+}
+
+.data-table th,
+.data-table td {
+    padding: 0.2rem 0.5rem;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+}
+
+.data-table td {
+    text-align: right;
+}
+
+/* ---- Pinned layout: JavaScript on and motion allowed ----------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    html[data-engine] .scrolly {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    html[data-engine] .chart-stage {
+        grid-area: 1 / 1;
+        align-self: start;
+        height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* on phones the chart sits above the step text; desktop centres it */
+        padding: 1rem 0;
+        overflow: hidden;
+        position: sticky;
+        top: 0;
+        z-index: 2; /* above the step panels' fades on phones; they must not swallow taps meant for steps */
+        pointer-events: none;
+    }
+
+    html[data-engine] .jump a {
+        pointer-events: auto;
+    }
+
+    html[data-engine] .steps {
+        grid-area: 1 / 1;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    html[data-engine] .step {
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 0 0 6svh;
+        background: linear-gradient(to top, var(--bg) 45%, transparent 62%);
+    }
+
+    html[data-engine] .step > * {
+        pointer-events: auto;
+    }
+
+    html[data-engine] .stripes-story {
+        height: calc(3 * 100svh);
+        padding: 0 var(--gutter);
+    }
+
+    html[data-engine] .stripes-stage {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    html[data-engine] .stripes {
+        overflow: visible;
+        margin: 0;
+        padding: 0;
+    }
+
+    html[data-engine] .strip {
+        will-change: transform;
+    }
+
+    /* GSAP pins these itself, so the browser must not also stick them. */
+    html[data-engine='gsap'] .chart-stage,
+    html[data-engine='gsap'] .stripes-stage {
+        position: relative;
+    }
+}
+
+@media (min-width: 900px) {
+    @media (prefers-reduced-motion: no-preference) {
+        html[data-engine] .scrolly {
+            grid-template-columns: 1fr 1fr;
+            column-gap: 2rem;
+        }
+
+        html[data-engine] .chart-stage {
+            grid-column: 1;
+            justify-content: center;
+        }
+
+        html[data-engine] .steps {
+            grid-column: 2;
+            pointer-events: auto;
+        }
+
+        html[data-engine] .step {
+            justify-content: center;
+            padding: 0 1rem;
+            background: none;
+        }
+    }
+}
+
+/* ---- Native CSS engine: scroll-driven animations --------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        html[data-engine='css'] .progress-bar {
+            animation: grow linear both;
+            animation-timeline: scroll(root block);
+        }
+
+        /* The chart's view timeline covers the whole track: the stage is pinned for the middle
+           stretch, which is 1/6 to 5/6 of the cover range for a track of five viewports. */
+        html[data-engine='css'] .scrolly {
+            view-timeline: --chart block;
+        }
+
+        html[data-engine='css'] .chart-line {
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            animation: draw linear both;
+            animation-timeline: --chart;
+            animation-range: cover 16.6667% cover 83.3333%;
+        }
+
+        html[data-engine='css'] .stripes-story {
+            view-timeline: --stripes block;
+        }
+
+        html[data-engine='css'] .strip {
+            animation: slide linear both;
+            animation-timeline: --stripes;
+            animation-range: cover 25% cover 75%;
+        }
+    }
+}
+
+@keyframes grow {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes draw {
+    from {
+        stroke-dashoffset: 1;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes slide {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(calc(100vw - var(--stripes) * var(--stripe-w)));
+    }
+}
+
+@media (min-width: 900px) {
+    :root {
+        --stripe-w: 14px;
+    }
+}
