@@ -268,3 +268,7 @@ Previous iterations of this project: [Pro-g-rammingChallenges4](https://github.c
 - [Project Euler](https://www.projecteuler.net)
 - [Advent of Code](https://adventofcode.com)
 - [Kaggle](https://www.kaggle.com)
+
+## License
+
+[The Unlicense](LICENSE): public domain. Security issues: see [SECURITY.md](SECURITY.md).
