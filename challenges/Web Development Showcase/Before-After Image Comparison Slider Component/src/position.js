@@ -58,7 +58,8 @@ export function valueText(position, beforeLabel, afterLabel) {
 
 /** "16/9", "16 / 9" or "1.5" -> a CSS aspect-ratio value; `null` for anything else. */
 export function parseRatio(value) {
-  const m = /^\s*(\d+(?:\.\d+)?)\s*(?:\/\s*(\d+(?:\.\d+)?))?\s*$/.exec(value ?? '');
+  // Trim first: leading/trailing `\s*` inside the regex overlap and backtrack polynomially.
+  const m = /^(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?$/.exec(String(value ?? '').trim());
   if (!m) return null;
   const [w, h] = [Number(m[1]), Number(m[2] ?? 1)];
   return w > 0 && h > 0 ? `${w} / ${h}` : null;
