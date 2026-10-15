@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="A real-time collaborative whiteboard: draw together on an infinite canvas, synced over WebSocket.">
+    <title>Collaborative Whiteboard</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230969da'/%3E%3Cpath d='M7 22c4-9 7 1 10-6s5-3 8-6' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+    <a class="skip" href="#top">Skip to the board</a>
+    <header class="topbar">
+        <h1 class="brand">Whiteboard</h1>
+        <div id="actions" class="group" role="group" aria-label="Share and export"></div>
+        <div id="viewbar" class="group" role="group" aria-label="View"></div>
+        <label class="name">
+            <span>Your name</span>
+            <input id="name" type="text" autocomplete="off" spellcheck="false">
+        </label>
+        <ul id="people" class="people" aria-label="People on this board"></ul>
+        <p id="status" class="status" aria-live="off">Connecting…</p>
+    </header>
+    <main id="stage">
+        <canvas id="base" aria-hidden="true"></canvas>
+        <canvas id="top" tabindex="0" role="application" aria-roledescription="drawing surface" aria-label="Whiteboard drawing surface"></canvas>
+        <textarea id="editor" hidden spellcheck="false"></textarea>
+        <ul id="notes" class="sr-only" aria-label="Text on the board"></ul>
+    </main>
+    <nav id="toolbar" class="toolbar" aria-label="Drawing tools"></nav>
+    <div id="toasts" role="status" aria-live="polite"></div>
+    <div id="announcer" class="sr-only" role="status" aria-live="polite"></div>
+    <noscript><p class="noscript">This whiteboard needs JavaScript.</p></noscript>
+</body>
+</html>

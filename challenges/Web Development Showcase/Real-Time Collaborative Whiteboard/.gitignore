@@ -1,0 +1,4 @@
+node_modules/
+dist/
+# Saved boards written by the server
+data/
