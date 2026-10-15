@@ -10,7 +10,7 @@
         "photos": "node scripts/prepare-photos.mjs"
     },
     "dependencies": {
-        "@atlaskit/pragmatic-drag-and-drop": "^1.4.0",
+        "@atlaskit/pragmatic-drag-and-drop": "^4.0.0",
         "@atlaskit/pragmatic-drag-and-drop-hitbox": "^3.0.0"
     },
     "devDependencies": {
