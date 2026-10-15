@@ -2,11 +2,16 @@
 // the index-permutation engine in src/engine.js. Run: `npm run bench:baseline [rows]`.
 import { performance } from 'node:perf_hooks';
 import {
-  createTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
+  columnFilteringFeature,
+  constructTable,
+  createFilteredRowModel,
+  createSortedRowModel,
+  filterFns,
+  rowSortingFeature,
+  sortFns,
+  tableFeatures,
 } from '@tanstack/table-core';
+import { storeReactivityBindings } from '@tanstack/table-core/store-reactivity-bindings';
 import { COLUMNS } from '../src/columns.js';
 import { generateRows } from '../src/data.js';
 
@@ -21,27 +26,31 @@ const time = (label, fn) => {
   console.log(`${label.padEnd(46)} ${ms.toFixed(0).padStart(7)} ms   heap +${(heap() - h0).toFixed(0)} MB   (${out})`);
 };
 
-let state = { sorting: [], columnFilters: [], globalFilter: undefined };
-const table = createTable({
+const features = tableFeatures({
+  coreReactivityFeature: storeReactivityBindings(),
+  rowSortingFeature,
+  columnFilteringFeature,
+  sortedRowModel: createSortedRowModel(),
+  filteredRowModel: createFilteredRowModel(),
+  sortFns,
+  filterFns,
+});
+const table = constructTable({
+  features,
   data: rows,
   columns: COLUMNS.map((c) => ({
     id: c.id,
     accessorKey: c.id,
     header: c.header,
     sortUndefined: 'last',
-    sortingFn: c.type === 'text' || c.type === 'enum' ? 'alphanumeric' : 'auto',
+    sortFn: c.type === 'text' || c.type === 'enum' ? 'alphanumeric' : 'auto',
   })),
-  getCoreRowModel: getCoreRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  state,
-  onStateChange() {},
   renderFallbackValue: null,
   autoResetAll: false,
 });
-const set = (patch) => {
-  state = { ...state, ...patch };
-  table.setOptions((o) => ({ ...o, state }));
+const set = ({ sorting = [], columnFilters = [] }) => {
+  table.setSorting(sorting);
+  table.setColumnFilters(columnFilters);
 };
 
 global.gc?.();
