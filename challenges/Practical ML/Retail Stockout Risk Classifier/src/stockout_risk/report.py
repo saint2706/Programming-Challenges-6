@@ -46,7 +46,10 @@ def reliability_chart(result: dict) -> alt.Chart:
     line = (
         alt.Chart(diag)
         .mark_line(color="#999", strokeDash=[4, 4])
-        .encode(x=alt.X("x:Q", title=None), y=alt.Y("y:Q", title=None))
+        .encode(
+            x=alt.X("x:Q", title="mean predicted risk"),
+            y=alt.Y("y:Q", title="observed stockout rate"),
+        )
     )
     pts = (
         alt.Chart(df)
@@ -66,29 +69,42 @@ def reliability_chart(result: dict) -> alt.Chart:
     )
 
 
+def pr_points(
+    y: np.ndarray, p: np.ndarray, n: int = 600
+) -> tuple[np.ndarray, np.ndarray]:
+    """The precision-recall curve thinned to about ``n`` points spaced evenly in *recall*.
+
+    ``precision_recall_curve`` returns a point per distinct score (hundreds of thousands here).
+    Thinning them evenly by position drops the few hundred at the top-left, where the curve is
+    steepest, so the grid is on recall instead.
+    """
+    precision, recall, _ = precision_recall_curve(y, p)
+    # recall falls as the index rises, so -recall is increasing and searchsorted applies
+    idx = np.searchsorted(-recall, -np.linspace(0, 1, n))
+    idx = np.unique(np.clip(idx, 0, len(recall) - 1))
+    return recall[idx], precision[idx]
+
+
 def pr_chart(y: np.ndarray, probs: dict[str, np.ndarray]) -> alt.Chart:
     frames = []
     for name, p in probs.items():
-        precision, recall, _ = precision_recall_curve(y, p)
-        idx = np.unique(np.linspace(0, len(recall) - 1, 400).astype(int))
+        recall, precision = pr_points(y, p)
         frames.append(
-            pl.DataFrame(
-                {"recall": recall[idx], "precision": precision[idx], "model": name}
-            )
+            pl.DataFrame({"recall": recall, "precision": precision, "model": name})
         )
     df = pl.concat(frames)
     base = pl.DataFrame({"x": [0.0, 1.0], "y": [float(y.mean())] * 2})
     line = (
         alt.Chart(base)
         .mark_line(color="#999", strokeDash=[4, 4])
-        .encode(x=alt.X("x:Q", title=None), y=alt.Y("y:Q", title=None))
+        .encode(x=alt.X("x:Q", title="recall"), y=alt.Y("y:Q", title="precision"))
     )
     curves = (
         alt.Chart(df)
         .mark_line()
         .encode(
-            x=alt.X("recall:Q", scale=alt.Scale(domain=[0, 1])),
-            y=alt.Y("precision:Q", scale=alt.Scale(domain=[0, 1])),
+            x=alt.X("recall:Q", title="recall", scale=alt.Scale(domain=[0, 1])),
+            y=alt.Y("precision:Q", title="precision", scale=alt.Scale(domain=[0, 1])),
             color=alt.Color(
                 "model:N",
                 title=None,

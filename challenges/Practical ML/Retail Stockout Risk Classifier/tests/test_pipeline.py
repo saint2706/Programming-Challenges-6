@@ -143,3 +143,17 @@ def test_load_features_caches_next_to_the_data(home, monkeypatch, feat):
     pipeline.load_features(refresh=True)
     assert calls == [1, 1]
     assert isinstance(first, pl.DataFrame)
+
+
+def test_pr_points_are_spaced_in_recall_and_span_the_curve():
+    import numpy as np
+
+    rng = np.random.default_rng(0)
+    y = (rng.random(100_000) < 0.3).astype(int)
+    s = rng.normal(np.where(y == 1, 1.0, 0.0), 1.0)
+    recall, precision = report.pr_points(y, s, n=200)
+    assert len(recall) <= 201 and recall.max() == 1.0 and recall.min() == 0.0
+    assert np.all(
+        np.diff(np.sort(recall)) < 0.02
+    )  # no gaps: the top of the curve is there
+    assert precision[recall.argmin()] == 1.0  # sklearn's closing point

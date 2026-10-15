@@ -88,7 +88,10 @@ def main() -> None:
     diag = (
         alt.Chart(pl.DataFrame({"x": [0, 1], "y": [0, 1]}))
         .mark_line(strokeDash=[4, 4])
-        .encode(x=alt.X("x:Q", title=None), y=alt.Y("y:Q", title=None))
+        .encode(
+            x=alt.X("x:Q", title="mean predicted risk"),
+            y=alt.Y("y:Q", title="observed rate"),
+        )
     )
     points = (
         alt.Chart(rel)
