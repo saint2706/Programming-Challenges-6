@@ -1,0 +1,48 @@
+{
+    "name": "browser-based-code-playground",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "test:e2e": "pnpm run build && vitest run --config vitest.e2e.config.ts",
+        "bench": "pnpm run build && node bench/bench.ts",
+        "screenshots": "pnpm run build && node e2e/screenshots.ts"
+    },
+    "dependencies": {
+        "@codemirror/commands": "^6.11.1",
+        "@codemirror/lang-css": "^6.3.1",
+        "@codemirror/lang-html": "^6.4.12",
+        "@codemirror/lang-javascript": "^6.2.5",
+        "@codemirror/language": "^6.13.1",
+        "@codemirror/lint": "^6.9.7",
+        "@codemirror/state": "^6.7.6",
+        "@codemirror/view": "^6.43.14",
+        "@jridgewell/remapping": "^2.3.5",
+        "@jridgewell/trace-mapping": "^0.3.31",
+        "@lezer/highlight": "^1.2.5",
+        "@preact/signals": "^2.11.3",
+        "@preact/signals-core": "^1.14.4",
+        "acorn": "^8.19.0",
+        "codemirror": "^6.0.2",
+        "esbuild-wasm": "^0.28.2",
+        "magic-string": "^1.4.3",
+        "preact": "^11.0.1"
+    },
+    "devDependencies": {
+        "@types/jsdom": "^30.0.0",
+        "@types/node": "^26.6.5",
+        "axe-core": "^4.14.0",
+        "esbuild": "^0.28.2",
+        "fast-check": "^4.10.2",
+        "jsdom": "^30.1.2",
+        "puppeteer-core": "^25.14.0",
+        "typescript": "^7.0.2",
+        "vite": "^8.3.4",
+        "vitest": "^5.0.4"
+    },
+    "packageManager": "pnpm@11.5.0"
+}

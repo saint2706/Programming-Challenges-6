@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <!-- 'wasm-unsafe-eval' lets esbuild's WebAssembly compile; blob: workers host that compiler. The preview is a
+         separate sandboxed document with its own, stricter policy (public/sandbox.html). -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src blob:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta name="description" content="A browser-based code playground: edit HTML, CSS, JavaScript, TypeScript and JSX and see the result live in a sandboxed preview.">
+    <title>Code Playground</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230969da'/%3E%3Cpath d='M12 10l-6 6 6 6M20 10l6 6-6 6' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+    <a class="skip" href="#editor-host">Skip to the editor</a>
+    <header class="bar">
+        <h1>Code playground</h1>
+        <div id="controls" class="controls"></div>
+        <p id="status" class="status" aria-live="off"></p>
+    </header>
+    <section class="notices" aria-label="Messages">
+        <p id="message" class="message" hidden></p>
+        <p id="notice" class="notice" hidden></p>
+    </section>
+    <div id="announce" class="sr-only" role="status" aria-live="polite"></div>
+
+    <main id="app" class="workspace" data-pane="code">
+        <section class="pane editor-pane" aria-label="Editor">
+            <div class="tabbar">
+                <div id="tabs" class="tabs" role="tablist" aria-label="Files"></div>
+                <div id="tab-actions" class="tab-actions"></div>
+            </div>
+            <div id="file-form-host"></div>
+            <div id="editor-host" class="editor-host"></div>
+            <p class="hint">Ctrl+Enter runs. Tab indents; press Esc and then Tab (or Ctrl+M) to move focus out of the editor.</p>
+        </section>
+
+        <div id="splitter" class="splitter" role="separator" aria-orientation="vertical" aria-label="Resize the editor and the preview" aria-valuemin="20" aria-valuemax="80" aria-valuenow="50" tabindex="0"></div>
+
+        <section class="pane output-pane" aria-label="Output">
+            <div id="pane-preview" class="preview-pane">
+                <div class="pane-title">
+                    <h2>Preview</h2>
+                    <button id="reload" type="button" class="mini">Restart</button>
+                </div>
+                <div id="preview-host" class="preview-host"></div>
+            </div>
+            <div id="pane-console" class="console-pane">
+                <div class="pane-title">
+                    <h2>Console <span id="console-count" class="count"></span></h2>
+                    <label class="filter"><span class="sr-only">Show</span>
+                        <select id="console-filter">
+                            <option value="all">All</option>
+                            <option value="warn">Warnings and errors</option>
+                            <option value="error">Errors only</option>
+                        </select>
+                    </label>
+                    <button id="console-clear" type="button" class="mini">Clear</button>
+                </div>
+                <div id="console-log" class="console-log" role="log" aria-live="off" aria-label="Console output" tabindex="0"></div>
+            </div>
+        </section>
+    </main>
+
+    <nav id="panes-nav" class="panes-nav" aria-label="Show"></nav>
+    <noscript><p class="notice">This playground needs JavaScript.</p></noscript>
+</body>
+</html>

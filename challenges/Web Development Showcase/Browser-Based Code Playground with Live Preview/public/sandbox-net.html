@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- The same sandbox with the network allowed, used only when the person turns "Allow network" on:
+         https images, fonts and fetch, and packages from esm.sh. Still no inline scripts or handlers. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' blob: https://esm.sh; style-src 'unsafe-inline' https:; img-src data: blob: https:; font-src data: https:; media-src data: blob: https:; worker-src blob:; connect-src https:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta name="referrer" content="no-referrer">
+    <title>Preview</title>
+    <script src="sandbox-format.js"></script>
+    <script src="sandbox.js"></script>
+</head>
+<body></body>
+</html>
