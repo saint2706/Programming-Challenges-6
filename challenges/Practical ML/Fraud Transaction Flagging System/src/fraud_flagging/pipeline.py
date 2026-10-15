@@ -440,7 +440,7 @@ def save(out: dict, *, directory=None) -> None:
     target = directory or results_dir()
     target.mkdir(parents=True, exist_ok=True)
     (target / "metrics.json").write_text(
-        json.dumps(out["result"], indent=2), encoding="utf-8"
+        json.dumps(out["result"], indent=4) + "\n", encoding="utf-8", newline="\n"
     )
     models.save_model(data_dir() / "model", out["booster"], out["meta"])
     out["predictions"].write_parquet(data_dir() / "predictions.parquet")

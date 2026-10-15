@@ -19,12 +19,19 @@ PALETTE = {
 
 
 def _table(headers: list[str], rows: list[list]) -> str:
-    lines = [
-        "| " + " | ".join(headers) + " |",
-        "|" + "|".join("---" for _ in headers) + "|",
-    ]
-    lines += ["| " + " | ".join(str(c) for c in row) + " |" for row in rows]
-    return "\n".join(lines)
+    """A markdown table with padded columns, laid out the way the repo's formatter (dprint) does."""
+    cells = [[str(c) for c in headers], *[[str(c) for c in row] for row in rows]]
+    widths = [max(3, *(len(r[i]) for r in cells)) for i in range(len(headers))]
+
+    def line(row: list[str]) -> str:
+        return (
+            "| "
+            + " | ".join(c.ljust(w) for c, w in zip(row, widths, strict=True))
+            + " |"
+        )
+
+    sep = "| " + " | ".join("-" * w for w in widths) + " |"
+    return "\n".join([line(cells[0]), sep, *[line(r) for r in cells[1:]]])
 
 
 def _f(x: float, digits: int = 3) -> str:
@@ -397,7 +404,9 @@ def markdown(result: dict) -> str:
 
 def write(out: dict, directory: Path) -> None:
     result, arrays = out["result"], out["arrays"]
-    (directory / "report.md").write_text(markdown(result), encoding="utf-8")
+    (directory / "report.md").write_text(
+        markdown(result).rstrip() + "\n", encoding="utf-8", newline="\n"
+    )
     charts = {
         "reliability.png": reliability_chart(result),
         "pr_curve.png": pr_chart(arrays["y_test"], arrays["p"]),
