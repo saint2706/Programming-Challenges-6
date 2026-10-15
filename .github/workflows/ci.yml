@@ -216,16 +216,35 @@ jobs:
         with:
           persist-credentials: false
 
+      # Newer projects use pnpm (pnpm-lock.yaml); older ones still use npm (package-lock.json).
+      - name: Detect package manager
+        id: pm
+        working-directory: ${{ matrix.dir }}
+        run: |
+          if [ -f pnpm-lock.yaml ]; then echo "name=pnpm" >> "$GITHUB_OUTPUT"
+          else echo "name=npm" >> "$GITHUB_OUTPUT"; fi
+
+      # Reads the version from the project's "packageManager" field.
+      - name: Set up pnpm
+        if: steps.pm.outputs.name == 'pnpm'
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: ${{ matrix.dir }}/package.json
+
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
-          cache: npm
-          cache-dependency-path: ${{ matrix.dir }}/package-lock.json
+          cache: ${{ steps.pm.outputs.name }}
+          cache-dependency-path: ${{ matrix.dir }}/${{ steps.pm.outputs.name == 'pnpm' && 'pnpm-lock.yaml' || 'package-lock.json' }}
 
       - name: Install
         working-directory: ${{ matrix.dir }}
-        run: npm ci --ignore-scripts
+        env:
+          PM: ${{ steps.pm.outputs.name }}
+        run: |
+          if [ "$PM" = pnpm ]; then pnpm install --frozen-lockfile --ignore-scripts
+          else npm ci --ignore-scripts; fi
 
       # Browser suites print PDFs and compare their text with the page. The runner image has no
       # CJK font, so Japanese glyphs would come out as missing-glyph boxes.
@@ -239,18 +258,22 @@ jobs:
 
       - name: Unit tests
         working-directory: ${{ matrix.dir }}
-        run: npm test
+        env:
+          PM: ${{ steps.pm.outputs.name }}
+        run: '"$PM" test'
 
       # Projects with a browser suite run it against the production build (the runner image ships
       # Google Chrome at /usr/bin/google-chrome, which the e2e helpers look for); the rest at
       # least have to build.
       - name: Build and end-to-end tests
         working-directory: ${{ matrix.dir }}
+        env:
+          PM: ${{ steps.pm.outputs.name }}
         run: |
           if jq -e '.scripts["test:e2e"]' package.json > /dev/null; then
-            npm run test:e2e
-          else
-            npm run build --if-present
+            "$PM" run test:e2e
+          elif jq -e '.scripts.build' package.json > /dev/null; then
+            "$PM" run build
           fi
 
   rust:
