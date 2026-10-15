@@ -4,6 +4,7 @@ import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = normalize(fileURLToPath(new URL('..', import.meta.url))).replace(/[\\/]$/, '');
+const MAX_DELAY_MS = 10_000;
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -22,8 +23,12 @@ export async function startServer(port = 0) {
     const url = new URL(req.url, 'http://x');
     requests.push(url.pathname + url.search);
     if (url.pathname === '/slow.svg') {
-      // Clamp: the delay comes from the query string, so it must not set an unbounded timer.
-      const ms = Math.min(Math.max(Number(url.searchParams.get('ms') ?? 300) || 0, 0), 10_000);
+      // The delay comes from the query string, so reject anything that would set a huge timer.
+      const ms = Number(url.searchParams.get('ms') ?? 300);
+      if (!(ms >= 0 && ms <= MAX_DELAY_MS)) {
+        res.writeHead(400).end('ms must be between 0 and ' + MAX_DELAY_MS);
+        return;
+      }
       const [w, h] = [Number(url.searchParams.get('w') ?? 400), Number(url.searchParams.get('h') ?? 200)];
       setTimeout(() => {
         res.writeHead(200, { 'content-type': TYPES['.svg'] });
