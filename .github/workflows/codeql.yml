@@ -7,6 +7,11 @@ name: CodeQL
 #   rust                   the Rust crates under Algorithmic Challenges
 #   actions                the workflows themselves (script injection, unsafe triggers, ...)
 # security-extended adds the lower-precision security queries on top of the default suite.
+#
+# Pull requests scan only the languages whose source files they touch (a lockfile-only or
+# docs-only PR runs no CodeQL at all). Pushes to main, the weekly schedule and manual dispatch
+# scan every language. None of these jobs is a required check (only `CI gate` is), so a skipped
+# language never blocks a merge.
 on:
   push:
     branches: [main]
@@ -25,8 +30,57 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  changes:
+    name: Detect changed languages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      languages: ${{ steps.pick.outputs.languages }}
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout (full history for diffing)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Pick languages
+        id: pick
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          all='["python","javascript-typescript","rust","actions"]'
+          if [ "$EVENT_NAME" != "pull_request" ]; then
+            echo "languages=$all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(git diff --name-only "$BASE_SHA"..."$HEAD_SHA")
+          echo "Changed files:"; echo "$files"
+          # Editing this workflow can change what every language scans, so it rescans everything.
+          if grep -qxF '.github/workflows/codeql.yml' <<< "$files"; then
+            echo "languages=$all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Here-strings, not `echo | grep -q`: with pipefail a large diff would SIGPIPE echo.
+          langs=()
+          grep -qE '\.pyi?$' <<< "$files" && langs+=(python)
+          grep -qE '\.(js|jsx|mjs|cjs|ts|tsx|mts|cts|vue|html)$' <<< "$files" && langs+=(javascript-typescript)
+          grep -qE '\.rs$' <<< "$files" && langs+=(rust)
+          grep -qE '^\.github/(workflows|actions)/.*\.ya?ml$' <<< "$files" && langs+=(actions)
+          json=$(jq -cn '$ARGS.positional' --args "${langs[@]}")
+          echo "Languages to scan: $json"
+          echo "languages=$json" >> "$GITHUB_OUTPUT"
+
   analyze:
     name: Analyze (${{ matrix.language }})
+    needs: changes
+    if: needs.changes.outputs.languages != '[]'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -36,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [python, javascript-typescript, rust, actions]
+        language: ${{ fromJSON(needs.changes.outputs.languages) }}
     steps:
       - name: Harden runner
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
