@@ -85,7 +85,7 @@
         </button>
         <label class="show-toggle">
           <input type="checkbox" checked={!hidden.includes(id)} onchange={(e) => toggleHidden(id, e.currentTarget.checked)} />
-          <span>Show</span><span class="sr-only"> {title(id)} on the resume</span>
+          <span>Show</span> <span class="sr-only">{title(id)} on the resume</span>
         </label>
         <button type="button" class="icon-button" disabled={i === 0} aria-label="Move {title(id)} up" onclick={() => shift(id, -1)}>↑</button>
         <button type="button" class="icon-button" disabled={i === order.length - 1} aria-label="Move {title(id)} down" onclick={() => shift(id, 1)}>↓</button>
