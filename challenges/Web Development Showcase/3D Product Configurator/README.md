@@ -34,6 +34,8 @@ pnpm run assets         # rebuilds public/models from the Khronos sample (needs 
 pnpm run screenshots    # rewrites docs/*.png
 ```
 
+With `CI=true` the browser tests run as a GPU-less CI runner does (`--disable-gpu`, so the page takes its WebGL 2 path in software, and every result printed as it finishes); `E2E_CHROME_ARGS` adds Chrome flags.
+
 Add `?renderer=webgl` to force the WebGL 2 path, `?mode=window` to open the window preview. The
 camera needs `https` or `localhost`, and only starts when you press **Use my camera**.
 
