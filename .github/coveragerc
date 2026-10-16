@@ -1,0 +1,19 @@
+# Coverage settings for the CI coverage run (see the "Run tests" step in workflows/ci.yml).
+# Passed with --cov-config so it applies to every challenge, whatever its own pytest setup.
+[run]
+# Paths in the XML are relative to the challenge directory; CI prefixes the directory afterwards
+# so Codecov can match them to files in the repository.
+relative_files = true
+omit =
+    */tests/*
+    */conftest.py
+    */test_*.py
+    */*_test.py
+    */.venv/*
+
+[report]
+exclude_also =
+    if TYPE_CHECKING:
+    if __name__ == .__main__.:
+    raise NotImplementedError
+    \.\.\.

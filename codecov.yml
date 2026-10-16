@@ -1,0 +1,32 @@
+# Codecov settings. Coverage comes from the Python challenges only; the "Upload coverage" job in
+# .github/workflows/ci.yml uploads one report per challenge on pull requests and on full runs.
+codecov:
+  # The upload job is not part of the "CI gate", so do not hold Codecov's statuses for it.
+  require_ci_to_pass: false
+
+coverage:
+  precision: 1
+  round: down
+  range: "60...90"
+  status:
+    # A pull request only runs the challenges it touched, so its project figure would be compared
+    # with the full-repository figure on main and always look like a collapse. Only the coverage of
+    # the changed lines means anything there. Neither status is a required check.
+    project: off
+    patch:
+      default:
+        informational: true
+
+comment:
+  layout: "condensed_header, condensed_files, condensed_footer"
+  require_changes: true
+
+github_checks:
+  annotations: false
+
+ignore:
+  - "**/tests/**"
+  - "**/conftest.py"
+  - "**/test_*.py"
+  - "**/*_test.py"
+  - "**/docs/**"

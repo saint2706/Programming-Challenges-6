@@ -46,6 +46,7 @@ jobs:
       web: ${{ steps.web.outputs.dirs }}
       rust: ${{ steps.rust.outputs.dirs }}
       pythons: ${{ steps.pythons.outputs.versions }}
+      coverage: ${{ steps.coverage.outputs.collect }}
     steps:
       - name: Harden runner
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
@@ -94,6 +95,28 @@ jobs:
           else
             echo 'versions=["3.12"]' >> "$GITHUB_OUTPUT"
           fi
+
+      # Codecov numbers are only meaningful for pull requests (patch coverage) and for full runs
+      # (the figure for main). A push to main tests just the changed challenges, so its partial
+      # report would replace the full one. Dependabot pull requests are skipped: nobody reads them
+      # and Dependabot runs get no OIDC token anyway.
+      - name: Decide whether to collect coverage
+        id: coverage
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ACTOR: ${{ github.actor }}
+          INPUT_BASE: ${{ inputs.base }}
+          INPUT_DIRECTORY: ${{ inputs.directory }}
+        run: |
+          collect=false
+          if [ "$ACTOR" != "dependabot[bot]" ]; then
+            if [ "$EVENT_NAME" = "pull_request" ] || [ "$EVENT_NAME" = "schedule" ]; then
+              collect=true
+            elif [ "$EVENT_NAME" = "workflow_dispatch" ] && [ -z "$INPUT_BASE$INPUT_DIRECTORY" ]; then
+              collect=true
+            fi
+          fi
+          echo "collect=$collect" >> "$GITHUB_OUTPUT"
 
   lint:
     name: Lint and format check
@@ -150,6 +173,9 @@ jobs:
       matrix:
         dir: ${{ fromJson(needs.changes.outputs.python) }}
         python: ${{ fromJson(needs.changes.outputs.pythons) }}
+    env:
+      # The floor Python only: one report per challenge is enough.
+      COLLECT_COVERAGE: ${{ needs.changes.outputs.coverage == 'true' && matrix.python == '3.12' }}
     steps:
       - name: Harden runner
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
@@ -191,9 +217,40 @@ jobs:
 
       # --locked fails when uv.lock no longer matches pyproject.toml. A bare `uv run` would
       # silently re-resolve and pass with dependencies nobody reviewed.
+      # A coverage run adds pytest-cov for this one command with --with, an overlay that leaves
+      # uv.lock and the challenge's own dependencies alone. Both versions are pinned here by hand.
       - name: Run tests
         working-directory: ${{ matrix.dir }}
-        run: uv run --locked pytest -q
+        run: |
+          if [ "$COLLECT_COVERAGE" = true ]; then
+            uv run --locked --with pytest-cov==7.1.0 --with coverage==7.16.2 pytest -q \
+              --cov --cov-config="$GITHUB_WORKSPACE/.github/coveragerc" --cov-report=xml:coverage.xml
+          else
+            uv run --locked pytest -q
+          fi
+
+      # Best effort: a missing or odd report must not fail a challenge whose tests passed.
+      - name: Prepare coverage report
+        id: report
+        if: env.COLLECT_COVERAGE == 'true'
+        continue-on-error: true
+        env:
+          CHALLENGE_DIR: ${{ matrix.dir }}
+          REPORT: ${{ runner.temp }}/coverage-${{ strategy.job-index }}.xml
+        run: python3 .github/scripts/coverage_prefix.py "$CHALLENGE_DIR/coverage.xml" "$CHALLENGE_DIR" "$REPORT"
+
+      # Best effort too, and it may replace an artifact: "Re-run all jobs" reuses the run, so the
+      # names from the first attempt already exist, and a same-named upload fails without overwrite.
+      # A storage hiccup must not fail a challenge whose tests passed either; `python` is in the gate.
+      - name: Upload coverage report
+        if: steps.report.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage-${{ strategy.job-index }}
+          path: ${{ runner.temp }}/coverage-${{ strategy.job-index }}.xml
+          retention-days: 1
+          overwrite: true
 
   web:
     name: Web / ${{ matrix.dir }}
@@ -301,7 +358,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
         with:
           toolchain: stable
           components: clippy, rustfmt
@@ -320,6 +377,47 @@ jobs:
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo nextest run --release --locked
       - run: cargo test --doc --release --locked
+
+  # One Codecov upload for all the per-challenge reports. It is its own job so that only this job
+  # gets the OIDC token (id-token: write, no upload secret needed); the jobs that run challenge
+  # code never see it. Deliberately not in the gate: a Codecov outage must not block a merge.
+  coverage:
+    name: Upload coverage
+    needs: [changes, python]
+    if: ${{ !cancelled() && needs.changes.outputs.coverage == 'true' && needs.python.result != 'skipped' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    continue-on-error: true
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: coverage-*
+          path: coverage
+          merge-multiple: true
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          use_oidc: true
+          directory: coverage
+          fail_ci_if_error: false
+          # The CLI's default plugins (xcode, gcov, pycoverage) scan the workspace. The downloaded
+          # reports come from jobs that ran test code, so only upload them as they are.
+          plugins: noop
 
   gate:
     name: CI gate

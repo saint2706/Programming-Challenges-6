@@ -1,0 +1,49 @@
+name: TODO to issue
+
+# Replaces the archived "todo" GitHub App (source repo archived in January 2022). A TODO or
+# FIXME comment that is newly added by a push to main opens an issue; existing comments are never
+# back-filled, because the action only reads the diff of the pushed commits.
+#
+# Push to main only. A second trigger (pull_request) would open every issue twice.
+# INSERT_ISSUE_URLS stays off: it writes the issue link back into the source file, which needs a
+# commit to main, and the main ruleset (required "CI gate") would reject a bot push.
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+# One group per commit, as in ci.yml: a shared group keeps only one pending run, so a burst of
+# pushes would drop the middle push's TODOs. The action reads only its own push's diff, so
+# concurrent runs do not collide.
+concurrency:
+  group: todo-to-issue-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  todo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # IGNORE is a comma-separated list of regexes, each applied with re.match, so it is anchored
+      # at the start of the path and needs a leading ".*". Locks, build output and fetched or
+      # generated data are not hand-written code, and workflow files mention the identifiers in
+      # prose.
+      - name: TODO to issue
+        uses: alstr/todo-to-issue-action@37bb7b56e58569ef273b60678048030a7f0c261a # v5.1.15
+        with:
+          IDENTIFIERS: '[{"name": "TODO", "labels": ["todo"]}, {"name": "FIXME", "labels": ["bug"]}]'
+          IGNORE: '\.github/.*, .*/(node_modules|\.venv|dist|target|results|data|sample_data)/.*, .*(uv\.lock|package-lock\.json|pnpm-lock\.yaml|Cargo\.lock)$'

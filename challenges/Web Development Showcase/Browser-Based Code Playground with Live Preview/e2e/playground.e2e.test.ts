@@ -507,6 +507,8 @@ describe('TypeScript, JSX, imports and packages', () => {
         page.on('request', (r) => !r.url().startsWith(base()) && !r.url().startsWith('blob:') && !r.url().startsWith('data:') && !r.url().startsWith('about:') && external.push(r.url()));
         await choose(page, 'preact');
         const frame = await previewFrame(page);
+        // The frame exists before the compiled template has rendered; on a slower runner `$eval` ran first.
+        await frame.waitForSelector('h1');
         expect(await frame.$eval('h1', (el) => el.textContent)).toBe('Hello from Preact');
         await frame.click('button');
         await frame.click('button');

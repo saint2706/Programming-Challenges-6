@@ -9,6 +9,9 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
 *venv/
 *.log
 .DS_Store
