@@ -1,8 +1,9 @@
 name: Auto-fix Lint and Format
 
-# Twice a month this applies ruff and dprint fixes and opens ONE pull request (a fixed branch that
-# is force-updated, so reruns never pile up PRs). It no longer pushes to main: bot commits made
-# with GITHUB_TOKEN never trigger CI, so they used to land completely untested.
+# Twice a month this applies ruff and dprint fixes, regenerates the GitBook table of contents, and
+# opens ONE pull request (a fixed branch that is force-updated, so reruns never pile up PRs). It no
+# longer pushes to main: bot commits made with GITHUB_TOKEN never trigger CI, so they used to land
+# completely untested.
 #
 # Checks do not start on a PR opened with GITHUB_TOKEN either, so after pushing the branch this
 # workflow dispatches CI itself (workflow_dispatch is the one trigger GITHUB_TOKEN may fire); the
@@ -66,6 +67,8 @@ jobs:
           ruff() { uv run --project .github/ci-tools --locked ruff "$@"; }
           ruff check --fix --exit-zero .
           ruff format .
+          # Keeps the GitBook table of contents (challenges/SUMMARY.md) in step with the challenges.
+          python3 .github/scripts/gitbook_summary.py
           .github/ci-tools/node_modules/.bin/dprint fmt --config dprint.json
 
       - name: Check for leftovers that need a human

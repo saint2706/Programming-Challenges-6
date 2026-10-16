@@ -3,6 +3,7 @@
 [![CI](https://github.com/saint2706/Programming-Challenges-6/actions/workflows/ci.yml/badge.svg)](https://github.com/saint2706/Programming-Challenges-6/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/saint2706/Programming-Challenges-6/actions/workflows/codeql.yml/badge.svg)](https://github.com/saint2706/Programming-Challenges-6/actions/workflows/codeql.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/saint2706/Programming-Challenges-6/badge)](https://scorecard.dev/viewer/?uri=github.com/saint2706/Programming-Challenges-6)
+[![codecov](https://codecov.io/gh/saint2706/Programming-Challenges-6/graph/badge.svg)](https://codecov.io/gh/saint2706/Programming-Challenges-6)
 
 The sixth iteration of my programming challenges repository. Same mission as before — learn new languages, explore paradigms, and build a portfolio one solved problem at a time — but a fresh challenge list, so nothing here duplicates [Pro-g-rammingChallenges4](https://github.com/saint2706/Pro-g-rammingChallenges4) or [Programming Challenges 5](https://github.com/saint2706/Programming-Challenges-5).
 
