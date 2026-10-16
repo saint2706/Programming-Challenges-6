@@ -1,0 +1,127 @@
+:root {
+    color-scheme: light dark;
+    --bg: #f3f4f7;
+    --stage-a: #fcfcfe;
+    --stage-b: #dfe3ea;
+    --panel: #ffffff;
+    --ink: #14161a;
+    --muted: #596070;
+    --line: #d5d9e1;
+    --accent: #c2410c;
+    --accent-ink: #ffffff;
+    --focus: #1d4ed8;
+    --danger: #b42318;
+    --radius: 12px;
+    --gap: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --bg: #101216;
+        --stage-a: #2b2f38;
+        --stage-b: #14161b;
+        --panel: #1a1d23;
+        --ink: #eef0f4;
+        --muted: #a3abba;
+        --line: #343a46;
+        --accent: #fb923c;
+        --accent-ink: #1a0f05;
+        --focus: #93b4ff;
+        --danger: #ff9b92;
+    }
+}
+
+:root[data-theme='dark'] {
+    --bg: #101216;
+    --stage-a: #2b2f38;
+    --stage-b: #14161b;
+    --panel: #1a1d23;
+    --ink: #eef0f4;
+    --muted: #a3abba;
+    --line: #343a46;
+    --accent: #fb923c;
+    --accent-ink: #1a0f05;
+    --focus: #93b4ff;
+    --danger: #ff9b92;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.btn {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 999px;
+    padding: 8px 16px;
+    min-height: 40px;
+}
+
+.btn:hover {
+    border-color: var(--muted);
+}
+
+.btn[aria-pressed='true'],
+.btn[aria-checked='true'],
+.btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* The camera feed is mirrored, like a mirror, so moving left looks like moving left. */
+.head-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: scaleX(-1);
+    background: #111;
+}

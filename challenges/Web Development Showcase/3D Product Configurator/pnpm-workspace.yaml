@@ -1,0 +1,3 @@
+allowBuilds:
+  # sharp ships its binaries as per-platform packages; its install script is only a fallback.
+  sharp: false

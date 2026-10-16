@@ -1,0 +1,42 @@
+{
+    "name": "three-d-product-configurator",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "typecheck": "svelte-check --tsgo --tsconfig ./tsconfig.json",
+        "test": "vitest run",
+        "test:e2e": "pnpm run build && vitest run --config vitest.e2e.config.ts",
+        "assets": "node scripts/prepare-shoe.ts",
+        "bench": "pnpm run build && node bench/bench.ts",
+        "screenshots": "pnpm run build && node e2e/screenshots.ts"
+    },
+    "dependencies": {
+        "@mediapipe/tasks-vision": "^1.1.1",
+        "@threlte/core": "^8.6.1",
+        "three": "^0.186.1"
+    },
+    "devDependencies": {
+        "@gltf-transform/core": "^4.5.1",
+        "@gltf-transform/extensions": "^4.5.1",
+        "@gltf-transform/functions": "^4.5.1",
+        "@sveltejs/vite-plugin-svelte": "^7.3.1",
+        "@types/node": "^26.6.5",
+        "@types/three": "^0.186.0",
+        "@typescript/native": "npm:typescript@^7.0.2",
+        "axe-core": "^4.14.0",
+        "fast-check": "^4.10.2",
+        "jsdom": "^30.1.2",
+        "meshoptimizer": "^1.3.0",
+        "puppeteer-core": "^25.14.0",
+        "sharp": "^0.35.5",
+        "svelte": "^5.57.2",
+        "svelte-check": "^4.7.6",
+        "typescript": "^6.0.3",
+        "vite": "^8.3.4",
+        "vitest": "^5.0.4"
+    },
+    "packageManager": "pnpm@11.5.0"
+}
