@@ -47,6 +47,9 @@ export interface Tab {
 
 const contexts: BrowserContext[] = [];
 
+/** What a browser without a GPU says about itself: the renderer's own notice that it is using WebGL 2, Chrome's note that there is no WebGPU adapter, and software GL's performance remarks. */
+const BENIGN = /WebGPU is not available, running under WebGL2|No available adapters|GL Driver Message/;
+
 /** A browser context that is closed by `closeContexts`: every open page holds a graphics device, and a long run of tests runs out of them. */
 export async function newContext(browser: Browser): Promise<BrowserContext> {
     const context = await browser.createBrowserContext();
@@ -65,7 +68,8 @@ export async function openStudio(browser: Browser, base: string, options: { quer
     await page.setViewport({ width: options.width ?? 1280, height: options.height ?? 800, deviceScaleFactor: 1 });
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(String(e)));
-    page.on('console', (m) => (m.type() === 'error' || m.type() === 'warn') && errors.push(`${m.type()}: ${m.text()}`));
+    // Where there is no GPU the renderer says so, once, and carries on in WebGL 2: that is the designed fallback, not a fault.
+    page.on('console', (m) => (m.type() === 'error' || m.type() === 'warn') && !BENIGN.test(m.text()) && errors.push(`${m.type()}: ${m.text()}`));
     if (options.storage) {
         await page.evaluateOnNewDocument((entries: Record<string, string>) => {
             for (const [k, v] of Object.entries(entries)) if (!localStorage.getItem(k)) localStorage.setItem(k, v);

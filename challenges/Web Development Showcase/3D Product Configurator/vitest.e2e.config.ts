@@ -8,5 +8,8 @@ export default defineConfig({
         testTimeout: 90_000,
         hookTimeout: 90_000,
         fileParallelism: false,
+        // On CI, list each test as it finishes, and stop early: a hung browser would otherwise cost the whole job's time with nothing to read.
+        reporters: process.env.CI ? ['verbose'] : ['default'],
+        bail: process.env.CI ? 4 : 0,
     },
 });

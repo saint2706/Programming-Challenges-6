@@ -33,6 +33,9 @@ export function launchChrome(extraArgs: string[] = []): Promise<Browser> {
             '--no-default-browser-check',
             // Without a GPU (CI) WebGL runs in software, which Chrome now has to be told to allow.
             '--enable-unsafe-swiftshader',
+            // A CI runner has no GPU: say so, rather than let Chrome look for one (WebGPU on a software adapter is very slow).
+            ...(process.env.CI ? ['--disable-gpu'] : []),
+            ...(process.env.E2E_CHROME_ARGS?.split(' ').filter(Boolean) ?? []),
             ...extraArgs,
         ],
     });
