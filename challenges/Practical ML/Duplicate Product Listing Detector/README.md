@@ -78,6 +78,28 @@ even when `A~C` scored low.
 all-zero vector (cosine 0, never NaN), are skipped as search queries, and are
 listed in the embedding result; the listing still matches on text.
 
+## Where this is actually used
+
+**The cluster metric comes from a real competition.** The cluster F1 used here, the mean per-listing
+F1 between a listing's predicted cluster and its true group, is the metric of Kaggle's "Shopee -
+Price Match Guarantee" (2021). That competition asked whether two product listings show the same
+item, using images, and scored each listing's F1 before averaging across listings. The README's
+per-listing metric follows that scoring.
+
+**Candidate retrieval, then a scored decision.** The pipeline first asks LanceDB for each listing's
+nearest neighbours in text space and in image space, then applies a fused score to the candidate
+pairs. Retrieval is where recall is lost, so the report measures candidate recall separately from
+pair scoring. The same split, a cheap search that proposes candidates followed by a stricter test,
+is how large-scale matching is usually structured.
+
+**Why both modalities are tuned together.** The fusion weight and threshold are chosen on the
+validation groups and frozen for test. Text-only and image-only scoring are tuned the same way, so
+the fused result has to beat each single modality on the same protocol to count.
+
+**Gap.** The pipeline runs over a fixed snapshot of the catalog. A live catalog needs the index
+refreshed as listings arrive, and duplicate groups re-checked when a seller edits a
+listing.
+
 ## Usage
 
 ```bash

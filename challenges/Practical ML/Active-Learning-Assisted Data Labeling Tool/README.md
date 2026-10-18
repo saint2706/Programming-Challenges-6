@@ -11,6 +11,30 @@ Source modules live in `src/active_labeling/`; the tests are in `tests/`.
 
 A labeling tool for text classification. Given a pool of unlabeled messages it suggests which ones to label next and says why, retrains as labels come in, and shows how much labeling effort that saves. It is also a benchmark: a simulated annotator with hidden gold labels measures eight query strategies against random sampling, with paired confidence intervals over seeds. The pool is Banking77 (77 customer-service intents).
 
+## Where this is actually used
+
+**Pool-based active learning is what labeling tools run.** The loop here (score an unlabeled
+pool with the current model, send the most useful items to an annotator, retrain, repeat) is the
+pool-based setting the active-learning literature studies. The `margin`, `entropy` and
+`least-confidence` strategies are its uncertainty-sampling members; `k-center` and `qbc` cover
+diversity and committees.
+
+**BADGE is the deep-batch method.** The `badge` strategy follows Ash et al. (ICLR 2020), "Deep
+Batch Active Learning by Diverse, Uncertain Gradient Lower Bounds". It picks a batch with
+k-means++ over gradient embeddings, so a candidate's gradient magnitude (uncertainty) and its
+distance from the batch so far (diversity) both count. The paper takes those embeddings from a
+network's last layer. Here the head is a linear model on frozen embeddings, so the same
+construction applies to a smaller model, and the Kronecker identity gives the distances without
+building the full embedding matrix.
+
+**Intent classification in support queues.** Banking77 (Casanueva et al., 2020, from PolyAI) is a
+set of banking customer messages labeled with 77 intents. Intent classifiers of this kind route
+support messages, and labeling those messages is the cost an active learner tries to reduce. The
+benchmark's annotator is simulated and perfect, so it measures the selection rule alone.
+
+**What a production labeling service adds.** Several annotators per item, a model of label noise,
+disagreement tracking and task assignment. The Limits section lists the gaps this build leaves open.
+
 ## Run it
 
 ```bash

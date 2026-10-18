@@ -173,6 +173,30 @@ The three highest-scored frauds in the test window are all exactly 1.00. The hig
 - **The costs are illustrative.** The currency is unknown, the review cost is swept rather than known, and a flagged fraud is assumed stopped in full; real losses also include friction for false alarms (the code takes a `friction` parameter; the tables use 0).
 - **Single seed, small grids.** One training seed per model and no search beyond early stopping and the logistic regularisation grid.
 
+## Where this is actually used
+
+**Cost-based thresholds.** Elkan (IJCAI 2001) gives the cost-sensitive decision rule: with
+calibrated probabilities, the right action depends on the cost ratio, not on a fixed 0.5. The
+`cost` policy here is that rule with a missed fraud costed at its amount, so a flag is worth a
+review only when the expected loss of letting it through exceeds the review cost.
+
+**Calibration after resampling.** Undersampling or class weighting shifts a classifier's
+probabilities. Dal Pozzolo et al. (2015) study that shift on card-transaction data and propose a
+correction that uses the undersampling ratio. Platt scaling (Platt, 1999), a two-parameter sigmoid
+fitted on held-out scores, is the simpler fix this project uses, fitted on validation only.
+
+**An unsupervised baseline.** The isolation forest is Liu, Ting and Zhou (ICDM 2008). It isolates
+points with random splits and scores each point by how few splits it needs. It never sees a label,
+so it shows whether the supervised models learn more than outliers.
+
+**Which metric.** Saito and Rehmsmeier (PLOS ONE, 2015) argue that precision-recall plots are more
+informative than ROC plots on strongly imbalanced data. That is why the data section compares
+PR-AUC against the base rate, and why the operating points are reported as precision and recall.
+
+**Gap.** Production card-fraud scoring runs in real time over many signals, including activity
+across merchants and time windows. This build scores a two-day snapshot of 28 anonymized components
+plus amount and time, so it cannot show those effects.
+
 ## Layout
 
 `data.py` (download, checks, duplicates), `features.py` (the three feature groups, input validation), `models.py` (split, models, imbalance strategies, Platt scaling, saving), `evaluate.py` (metrics, threshold rules, cost, capacity, bootstrap and stability), `pipeline.py` (the experiment), `policy.py` (scoring and the four policies), `report.py` (report and charts), `cli.py`, `app.py`. Tests run offline on a synthetic table in the published schema (`tests/helpers.py`), never the 70 MB download.

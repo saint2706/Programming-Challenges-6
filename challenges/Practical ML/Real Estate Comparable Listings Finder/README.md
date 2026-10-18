@@ -123,3 +123,19 @@ The full tables (adjustments, k sweep, comp quality, pool, extrapolation, bracke
 - Leaf proximity compares trees fit on a time-adjusted log price; its similarity depends on that model and its seed (`seed: 0`, deterministic mode). Exact digits can differ slightly across platforms.
 
 CI downloads the dataset from OpenML on the first test run; no other special setup is needed.
+
+## Where this is actually used
+
+**The sales comparison approach is an appraisal method.** Appraisers pick recent sales similar to
+the subject property and adjust each price for differences in size, condition and location. The IAAO
+Standard on Automated Valuation Models (2018) describes automated versions of that process, and the
+adjustment in this challenge's method is a linear, automated form of the same step.
+
+**Leaf co-membership has a random-forest origin.** Random-forest proximity, a measure usually
+credited to Breiman, counts how often two cases share a leaf across trees. This challenge applies
+the same counting to a boosted model, which the README treats as its own design rather than a
+published method.
+
+**Where the gap is.** Commercial valuation models draw on far more sales, property records and
+market-time data than a single county extract. The comp list is best read as an explanation for a
+person, with the model carrying the estimate.

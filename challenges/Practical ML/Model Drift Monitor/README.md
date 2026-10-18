@@ -159,6 +159,24 @@ plan and are deliberate:
 - **Chi-square is reported as a statistic** (which scales with the window) rather than a p-value
   (which saturates), and its threshold is calibrated like the others.
 
+## Where this is actually used
+
+**PSI comes from credit scoring.** The Population Stability Index compares a live distribution with
+a reference sample and became standard in credit scorecard monitoring. The 0.1 and 0.25 bands
+practitioners quote are usually attributed to Lewis (1994) through secondary sources, and they are
+conventions rather than derived cutoffs. This challenge sets its own thresholds from calibrated
+reference windows instead of borrowing them.
+
+**Adaptive windowing is an established streaming detector.** ADWIN (Bifet and Gavaldà, SIAM SDM
+2007) grows and shrinks its window to fit the data and comes with formal false-alarm bounds. Its
+detection delay is the price of those bounds, which matters when labels arrive late.
+
+**Where the gap is.** A live monitor computes these statistics incrementally on logged traffic and
+joins labels as they arrive. A per-feature test at a fixed level alarms often when many features are
+checked at once, so a production monitor needs a multiple-comparison correction before it pages
+anyone. The Evidently comparison in this challenge checks the numbers against an established
+library.
+
 ## Run it
 
 ```bash

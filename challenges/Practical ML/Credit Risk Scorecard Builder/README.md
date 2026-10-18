@@ -123,3 +123,25 @@ Timings depend on the machine and are not asserted in tests; parity is.
 - Gradient boosting is untuned; it is a reference point, not a tuned ceiling.
 - Default bin settings (8 bins, 2% minimum, IV 0.02, correlation 0.7) were picked on this data's
   training split, with no separate tuning set.
+
+## Where this is actually used
+
+**Points scorecards are a standard form in consumer lending.** Weight-of-evidence binning, a
+logistic regression on the WOE columns and linear points scaling are the method in Siddiqi's
+*Credit Risk Scorecards* (2012). The scaling defaults used here (600 points at 50:1 good-to-bad
+odds, 20 points to double the odds) are that book's defaults, and the PDtoolkit R package documents
+them the same way. Because every WOE column is on the same log-odds scale, a healthy coefficient is
+positive, which is the check the screening step applies.
+
+**Validation is a regulatory expectation.** The Federal Reserve and OCC issued SR 11-7 in April 2011
+for banking organizations. It covers quantitative models in general, including regression
+scorecards, and asks for independent validation, outcome analysis against actual results, documented
+limitations and ongoing monitoring. The Limitations section lists what this build would still need,
+starting with an out-of-time split, which this data does not allow.
+
+**Special codes keep their signal.** Application and bureau data often mix sentinel codes and
+missing values into numeric columns. This build gives each its own bin with its own WOE instead of
+imputing it away, so the points table shows the effect.
+
+**Gap.** Production scorecards add reject inference, because the data here holds only borrowers who
+were approved, and out-of-time validation. The Limitations section covers both.

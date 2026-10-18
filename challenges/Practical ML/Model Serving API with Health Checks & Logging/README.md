@@ -98,6 +98,22 @@ tampers with a *temp copy*, never the real vendored file.
   structured log file is append-only from one process, which is enough to
   demonstrate the logging story without building a log-aggregation pipeline.
 
+## Where this is actually used
+
+**Probes are a Kubernetes contract.** The Kubernetes documentation defines a liveness probe as the
+signal that restarts a container and a readiness probe as the signal that decides whether a pod
+receives Service traffic. A model server should keep the two apart. A liveness check that calls the
+model can restart a healthy pod during a slow inference, and a readiness check should pass only
+after the model has actually loaded.
+
+**The file is the artifact.** ONNX Runtime runs a model file without the training framework, so
+pinning the `.onnx` file by sha256 pins exactly what is served. ONNX Runtime's documentation covers
+static and dynamic int8 quantization. This service serves the float32 graph as exported.
+
+**Where the gap is.** A production deployment runs several replicas behind a gateway, batches
+concurrent requests and ships logs to a central store. This service is one process writing
+structured logs locally. That shows the logging contract, not the operations around it.
+
 ## Usage
 
 ```bash

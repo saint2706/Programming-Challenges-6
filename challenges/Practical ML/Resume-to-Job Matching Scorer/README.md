@@ -220,6 +220,21 @@ shapes (so every input is fixed), OpenVINO renames `attention_mask` to `'11'`,
 and the model's input order differs from the tokenizer's -- feeding by tokenizer
 order silently gives cosine ~0.5 even on CPU.
 
+## Where this is actually used
+
+**BM25 is the default lexical scorer.** Elasticsearch moved its default similarity from TF-IDF to
+Okapi BM25 in version 5.0, and its documentation describes BM25 as the default. The lexical scorer
+here follows the same formula family.
+
+**Reciprocal rank fusion merges rankings.** Cormack, Clarke and Büttcher (SIGIR 2009) combine ranked
+lists by summing 1/(k + rank) across the lists, which needs no score calibration. The `rrf` row in
+the results is that reference, and the tuned z-score fusion is the score-aware alternative. Hybrid
+retrieval systems merge a lexical ranking and an embedding ranking in the same way.
+
+**Where the gap is.** Production matchers use learned rerankers over structured fields and are
+judged on hiring outcomes or clicks. This scorer is judged on a category proxy, so the leakage
+result matters: a resume's own title can carry most of the signal.
+
 ## Usage
 
 ```bash

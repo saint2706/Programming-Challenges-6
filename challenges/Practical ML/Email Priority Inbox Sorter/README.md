@@ -206,6 +206,27 @@ wrote in this thread (0.041). (This is `lgbm_meta_text`, the model the CLI and
 page serve by default; `lgbm_meta` is selectable and scores a little higher on
 this test set.)
 
+## Where this is actually used
+
+**Gmail's Priority Inbox is the closest public system.** Google launched Priority Inbox in August
+2010 as an experiment in ranking mail by predicted importance. Gmail's signals include who the user
+writes to most and which messages they open and reply to. This project learns a similar behavioral
+label, whether the owner replied to or forwarded a message, and ranks by its predicted probability.
+The difference is the signal set: Gmail sees per-user activity that the Enron dump does not carry.
+
+**The corpus is a published research dataset.** The Enron emails were collected during the Federal
+Energy Regulatory Commission's investigation and were later released for historical and academic
+use. Klimt and Yang (2004) introduced the set as a research corpus for email classification, with
+folder prediction as an early benchmark. That is why the project commits aggregate results and no
+message text.
+
+**The leakage controls are the part that transfers.** Time-based splits, history features that see
+only events known at receipt time, and fitting the vectorizer and calibrator on training data only
+are the checks any mail-ranking model needs before its offline numbers mean much.
+
+**Gap.** Gmail trains on a much larger, continuously updated stream. This build uses six mailboxes
+from one dataset snapshot, and the Limitations section says how far that goes.
+
 ## Usage
 
 ```bash

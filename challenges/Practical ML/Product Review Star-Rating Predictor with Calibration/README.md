@@ -9,6 +9,22 @@ Predict the 1-5 star rating of an Amazon product review, and say how far the con
 
 Three ways of predicting a review's 1-5 stars from frozen gte-modernbert-base embeddings (classification, heteroscedastic Gaussian regression, ordinal) are compared on Amazon Appliances reviews, with Software reviews as out-of-domain data and every split a time window. The classification head is the best probability model (ensemble accuracy 0.822, NLL 0.492, ECE 0.011) and needs almost no calibration; the regression framing is the one that needs it, and only isotonic regression repairs it (ECE 0.045 to 0.013). On Software, accuracy falls to 0.733 and conformal coverage to 0.889, and about 500 labelled Software reviews bring its Software ECE from 0.026 to 0.016.
 
+## Where this is actually used
+
+**Temperature scaling is the standard post-hoc fix.** Guo et al. (ICML 2017) showed that modern
+neural networks are often miscalibrated and that a single temperature fitted on held-out data
+corrects much of it. This challenge applies that step to each framing and compares it with isotonic
+regression, which Zadrozny and Elkan (KDD 2002) used to map classifier scores to probabilities.
+
+**Conformal sets have a published method.** Angelopoulos et al. (arXiv 2009.14193) introduced RAPS,
+which wraps a pretrained classifier and returns label sets with a finite-sample coverage guarantee.
+That guarantee is marginal: it holds on average across inputs, not for each review. Coverage can
+fall when the test domain differs from the calibration data, which the cross-domain results in this
+challenge illustrate.
+
+**Where the gap is.** A deployed predictor would be recalibrated on fresh labelled reviews as the
+catalogue changes, not calibrated once.
+
 ## Run it
 
 ```bash

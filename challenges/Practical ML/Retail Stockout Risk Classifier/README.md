@@ -154,6 +154,21 @@ Sales alone make a deeply stocked-out product look slow. That is part of why the
 - **Single seed, no hyper-parameter search.** Beyond early stopping, nothing was tuned, and results come from one training run each.
 - **Validation numbers are optimistic.** The model is early-stopped and calibrated on that window (validation PR-AUC 0.598 against 0.544 on test).
 
+## Where this is actually used
+
+**Censored demand is an old inventory problem.** When a product sells out, the sales figure is only
+a lower bound on demand. Nahmias (1994) treated demand estimation for lost-sales inventory systems
+on that basis. The censoring-corrected demand feature here belongs to that line of work.
+
+**The dataset targets this question.** FreshRetailNet-50K (arXiv 2505.16319) is a retail dataset
+with sales and stockout records, built around recovering latent demand during stockouts. This
+challenge uses the stockout flags as a classification target, which is the classification side of
+the split the brief asks for.
+
+**Where the gap is.** A deployed worklist would use the planner's own promotion and weather inputs,
+and it would be refitted as the base rate drifts. The README records the base rate moving within its
+own training period.
+
 ## Layout
 
 `data.py` (download, parsing, hourly lists to daily features), `features.py` (the feature groups and their leakage rules), `models.py` (split, models, calibrator, saving), `evaluate.py` (ranking, calibration, worklist and cost metrics), `pipeline.py` (the experiment), `report.py` (report and charts), `predict.py` (scoring with reasons), `cli.py`, `app.py`. Tests run offline on a synthetic table in the real schema (`tests/helpers.py`), never the 100 MB download.

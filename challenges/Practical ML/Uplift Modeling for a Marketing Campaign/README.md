@@ -197,6 +197,25 @@ slightly optimistic.
   11/54), and the inverse-propensity weights by a dataset with a known effect of 0.02 where the plain difference
   in means reads above 0.05.
 
+## Where this is actually used
+
+**Uplift is a causal quantity.** The effect of a campaign on one customer is never observed
+directly, because that customer was either treated or not. The X-learner (Künzel et al., PNAS 2019)
+estimates it by modelling each arm separately and then imputing the missing outcomes. It is one of
+the learners compared here.
+
+**Uplift curves are scored with Qini and AUUC.** Radcliffe's Qini curve ranks customers by predicted
+uplift and tracks the incremental gain as each segment is targeted. The area under that curve is the
+usual single summary.
+
+**Public data and tooling.** The Criteo Uplift dataset (Diemert et al., AdKDD 2018) is a large
+public ad-targeting set used for benchmarking uplift models. CausalML (Uber, arXiv 2002.11631)
+implements meta-learners of the same family in one library.
+
+**Where the gap is.** Real campaigns need randomised holdouts to validate an uplift model, because a
+model fitted on logged targeting reports what the logging policy implies. The Cross-checks section
+compares this implementation against a library for that reason.
+
 ## Usage
 
 ```bash

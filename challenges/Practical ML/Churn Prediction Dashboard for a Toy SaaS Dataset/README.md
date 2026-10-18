@@ -159,6 +159,28 @@ verbatim during training -- `data.clean_features` drops exact duplicates
   threshold, and the per-customer drill-down works over real held-out
   customers rather than a synthetic composite one.
 
+## Where this is actually used
+
+**SHAP is the per-customer attribution method.** Lundberg and Lee (NeurIPS 2017) define SHAP as an
+additive attribution: the contributions sum to the model output minus a base value. The
+dashboard's drill-down applies that definition to a churn model. The additivity holds on the raw
+model output, which for both models here is the log-odds, which is why `explain.py` checks the
+invariant in logit space rather than after the sigmoid.
+
+**Threshold choice on imbalanced targets.** Lipton, Elkan and Narayanaswamy (ECML PKDD 2014) show
+that the F1-optimal threshold depends on the classifier's probabilities, and that for
+well-calibrated probabilities it equals half the optimal F1. The slider starts at the threshold the
+model's own probabilities give. A retention team sets the operating point from the cost of an
+outreach offer against the revenue at risk, so the F1 optimum is a starting point, not the answer.
+
+**Telecom data as a stand-in.** The Telco Customer Churn data comes from a telecom subscription
+business. The README maps its contract, charge and tenure columns onto a SaaS story and says where
+the mapping is loose. The churn problem has the same shape in both businesses; the products differ.
+
+**Gap.** A production churn model retrains on fresh data, scores the whole customer base on a
+schedule and is monitored for drift. This build trains once and caches the test-set probabilities,
+so the dashboard shows one snapshot.
+
 ## Usage
 
 ```bash

@@ -134,6 +134,25 @@ and `test_category_schema_maps_unseen_category_to_missing_not_a_wrong_code`.
   log-target model). The log-space values, which SHAP does guarantee
   are exactly additive, are what the correctness tests check.
 
+## Where this is actually used
+
+**Ames as a benchmark dataset.** De Cock (2011, Journal of Statistics Education) proposed the Ames,
+Iowa sales data as an alternative to the Boston housing data for an end-of-semester regression
+project. The full set has 2,930 sales from 2006 to 2010 and far more variables than the 1,460-row
+Kaggle subset used here.
+
+**Attribution on a log-price target.** Lundberg and Lee (NeurIPS 2017) define SHAP's additive
+decomposition. Trained on log(SalePrice), the decomposition is exact in log space, and the dollar
+figures are counterfactuals, as the README explains. The same reasoning applies to any model that
+predicts a transformed price.
+
+**Comparing a linear model with a tree model.** A linear model with one-hot features and a
+gradient-boosted tree explain price in different units of columns. Putting both on the same
+per-column grain, as the aggregation step does here, is what makes their explanations comparable.
+
+**Gap.** Production valuation models use far more data and time-based validation. This build uses a
+single snapshot of about 1,460 houses with a random split.
+
 ## Usage
 
 ```bash

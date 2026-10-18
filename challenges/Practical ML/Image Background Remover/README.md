@@ -130,6 +130,20 @@ break. It's marked `@pytest.mark.network` and calls `pytest.skip(...)`
   mostly contend for the same CPU cores rather than genuinely speed things
   up, and isn't worth the added complexity for a Beginner-tier tool.
 
+## Where this is actually used
+
+**The model family has a published lineage.** The masks come from the U2-Net family of
+salient-object networks. rembg, the library this challenge wraps, ships `u2net`, `u2netp`,
+`u2net_human_seg`, `u2net_cloth_seg` and `silueta` as selectable models, so this CLI is a batch
+wrapper over published work. The newer IS-Net architecture (Qin et al., ECCV 2022, "Highly Accurate
+Dichotomous Image Segmentation") targets fine structure, which is where a coarse mask fails.
+
+**What production adds.** Background removal at volume runs on accelerators and refines edges with a
+matting pass for hair and similar boundaries. This CLI does neither. What carries over is the
+failure policy: one bad input should cost one output, not the whole batch, and an output file is
+written only after the image has decoded and segmented cleanly. That is the rule `process_one`
+implements.
+
 ## Usage
 
 ```bash
