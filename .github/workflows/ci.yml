@@ -201,6 +201,11 @@ jobs:
             # WeasyPrint loads Pango via cffi at import time; fonts make PDFs contain real text.
             packages="$packages libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core"
           fi
+          if grep -q '"redis' pyproject.toml; then
+            # The stream tests start their own redis-server on a free port; fakeredis alone cannot
+            # run the separate-process and CLI tests.
+            packages="$packages redis-server"
+          fi
           if [ -n "$packages" ]; then
             sudo apt-get update
             # shellcheck disable=SC2086

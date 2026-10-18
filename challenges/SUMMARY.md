@@ -42,6 +42,7 @@
 - [Multi-Source Data Reconciliation Tool](Data%20Analytics/Multi-Source%20Data%20Reconciliation%20Tool/README.md)
 - [Personal Spending Categorizer & Monthly Trend Report](Data%20Analytics/Personal%20Spending%20Categorizer%20%26%20Monthly%20Trend%20Report/README.md)
 - [Public API Data Aggregator & Daily Snapshot Logger](Data%20Analytics/Public%20API%20Data%20Aggregator%20%26%20Daily%20Snapshot%20Logger/README.md)
+- [Real-Time Event Stream Dashboard](Data%20Analytics/Real-Time%20Event%20Stream%20Dashboard/README.md)
 - [SQL Query Performance Profiler](Data%20Analytics/SQL%20Query%20Performance%20Profiler/README.md)
 - [Statistical Anomaly Detector for Time Series](Data%20Analytics/Statistical%20Anomaly%20Detector%20for%20Time%20Series/README.md)
 - [Survey Results Visualizer](Data%20Analytics/Survey%20Results%20Visualizer/README.md)
