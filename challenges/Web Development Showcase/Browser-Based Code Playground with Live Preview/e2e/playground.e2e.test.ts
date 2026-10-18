@@ -104,8 +104,19 @@ describe('it runs, and edits show up', () => {
         const page = await openPlayground(browser, base());
         await edit(page, 'index.html', '<!doctype html><html><body style="margin:0"><div style="height:4000px">tall</div></body></html>');
         let frame = await previewFrame(page);
+        // The page reports its scroll position a moment after it settles; wait for that report, not a guess.
+        const reported = page.evaluate(
+            () =>
+                new Promise<void>((resolve) => {
+                    addEventListener('message', function seen(e) {
+                        if (e.data?.t !== 'scroll' || e.data.y !== 900) return;
+                        removeEventListener('message', seen);
+                        resolve();
+                    });
+                }),
+        );
         await frame.evaluate(() => window.scrollTo(0, 900));
-        await sleep(400); // the page reports its scroll position a moment after it settles
+        await reported;
         await edit(page, 'main.js', 'console.log("again");');
         frame = await previewFrame(page);
         await frame.waitForFunction(() => Math.round(window.scrollY) === 900, { timeout: 10_000 });
@@ -563,11 +574,11 @@ describe('TypeScript, JSX, imports and packages', () => {
         await edit(page, 'index.html', '<!doctype html><html><head><script src="https://evil.example/x.js"></script></head><body></body></html>');
         await waitForConsole(page, (e) => e.some((x) => x.level === 'system'));
         await sleep(400);
-        expect(seen.some((u) => u.startsWith('https://evil.example'))).toBe(false);
+        expect(seen.some((u) => new URL(u).hostname === 'evil.example')).toBe(false);
         await setCode(page, 'main.js', `import x from 'https://evil.example/mod.js';\nconsole.log(x);`);
         const entries = await waitForConsole(page, (e) => e.some((x) => x.level === 'error' && /Only https:\/\/esm\.sh/.test(x.text)));
         expect(entries.length).toBeGreaterThan(0);
-        expect(seen.some((u) => u.startsWith('https://evil.example'))).toBe(false);
+        expect(seen.some((u) => new URL(u).hostname === 'evil.example')).toBe(false);
     });
 });
 

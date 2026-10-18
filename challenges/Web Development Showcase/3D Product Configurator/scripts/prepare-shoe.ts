@@ -17,7 +17,7 @@
 // Prints the average colour each part has in each of the three variants (the configurator's
 // "Beach", "Midnight" and "Street" presets are those numbers).
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync,readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Document, NodeIO, type Texture } from '@gltf-transform/core';
@@ -64,7 +64,11 @@ function check(bytes: Uint8Array, what: string): void {
 }
 
 async function source(): Promise<Uint8Array> {
-    if (!existsSync(cache)) {
+    let cached: Uint8Array;
+    try {
+        cached = readFileSync(cache);
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
         console.log('downloading', SOURCE_URL);
         const response = await fetch(SOURCE_URL);
         if (!response.ok) throw new Error(`download failed: ${response.status}`);
@@ -73,10 +77,10 @@ async function source(): Promise<Uint8Array> {
         check(body, 'the download');
         mkdirSync(dirname(cache), { recursive: true });
         writeFileSync(cache, body);
+        return body;
     }
-    const bytes = readFileSync(cache);
-    check(bytes, cache);
-    return bytes;
+    check(cached, cache);
+    return cached;
 }
 
 /** Connected pieces of an indexed triangle mesh, numbered in order of their first triangle. */

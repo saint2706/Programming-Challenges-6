@@ -3,7 +3,7 @@
  * compiler takes to arrive, how fast an edit becomes pixels, and what the loop guard costs.
  */
 import { gzipSync } from 'node:zlib';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findChrome, launchChrome } from '../e2e/chrome.ts';
@@ -21,8 +21,9 @@ console.log('| file | size | gzipped | loaded |\n| --- | ---: | ---: | --- |');
 const when = (name: string) => (name.endsWith('.wasm') ? 'on the first run that has a script' : name.startsWith('bundle-') || name.startsWith('browser-') || name.startsWith('_virtual_vendor') ? 'on the first run that has a script' : name.endsWith('.css') ? 'at start' : 'at start');
 for (const name of readdirSync(assets).sort()) {
     const path = join(assets, name);
-    if (!/\.(js|css|wasm)$/.test(name) || statSync(path).size < 1000) continue;
+    if (!/\.(js|css|wasm)$/.test(name)) continue;
     const bytes = readFileSync(path);
+    if (bytes.length < 1000) continue;
     console.log(`| ${name.replace(/-[A-Za-z0-9_-]{8}\./, '.')} | ${fmt(bytes.length / 1000)} kB | ${fmt(gzipSync(bytes).length / 1000)} kB | ${when(name)} |`);
 }
 
