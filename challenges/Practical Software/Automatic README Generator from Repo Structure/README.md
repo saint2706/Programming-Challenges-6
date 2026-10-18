@@ -8,6 +8,28 @@ Source modules live in `src/readme_generator/`; the tests are in `tests/`.
 
 `readme-gen` walks a repository, reads its manifests, and drafts a README from what is actually there: tech stack, install/run/test commands, environment variables, Docker, CI, project tree, license. It is deterministic and offline, with no LLM and no network, so the same repo always yields the same README and the output can be checked in CI.
 
+## Where this is actually used
+
+Generating a README from project metadata is an established pattern. The two parts here with real
+counterparts are the marker-bounded merge and the `--check` drift mode.
+
+**Marker-bounded regions.** terraform-docs rewrites only the text between `<!-- BEGIN_TF_DOCS -->`
+and `<!-- END_TF_DOCS -->` in a module's README and leaves hand-written text above and below alone.
+Its common CI setup regenerates the file and fails the build on a diff. all-contributors uses start
+and end comments the same way for its contributor table. The `<!-- readme-gen:begin stack -->`
+blocks and the exit code of `--check` follow that design.
+
+**Generation from source.** cargo-readme builds a Rust crate's README from the doc comments in
+`lib.rs` or `main.rs`. cargo-reedme does the same but writes only into a marked region of an
+existing README. Those tools take their source of truth from doc comments. This project takes it
+from manifests, lockfiles and entry points, across Python, Node, Rust, Go, Ruby, PHP and Java.
+
+**Where it is less than those tools.** The real generators are mature and ecosystem-specific, and
+they do not guess. This project's inference is limited: the install and test commands come from
+lockfile and manifest conventions, and a repository with no usable description gets a visible
+`_TODO_` rather than an invented one. It is deterministic and offline by design, with no LLM, so it
+cannot write the prose a maintainer would.
+
 ## Usage
 
 ```bash

@@ -74,6 +74,27 @@ by exactly one.
   near a DST boundary if that matters to you; that's exactly what the DST
   tests do.
 
+## Where this is actually used
+
+**Zone names are IANA identifiers, and the offsets come from the database.** Each participant is
+stored as a zone name such as `Asia/Kolkata`, not as a fixed offset. The IANA time zone database
+holds the rules for each zone, including the dates its clocks change, and Python's `zoneinfo`
+module (PEP 615) reads it. A fixed `UTC+1` is right for part of the year and wrong for the rest.
+Windows ships without that database, which is why `tzdata` is a required dependency here.
+
+**Resolving a local working day to UTC, per date.** Turning a local 09:00 on one specific date into
+a UTC instant for each person is the step where scheduling code usually breaks around DST
+transitions. The two 2026 US transitions in the test suite exercise exactly that case.
+
+**Where the literal problem shows up.** The conversion done here is the core of meeting-finding
+features in calendar software, where every attendee's availability has to be placed on one shared
+timeline before an overlap can be shown.
+
+**What production would add.** This tool reads working hours from the command line. A calendar
+product reads busy blocks from each person's calendar, handles holidays, and supports overnight
+shifts, which this implementation rejects on purpose. The segment-splitting sweep is the small,
+testable core. Getting the calendar data in is most of the real work.
+
 ## Usage
 
 ```bash

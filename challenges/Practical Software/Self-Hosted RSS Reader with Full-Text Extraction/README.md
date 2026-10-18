@@ -75,6 +75,22 @@ duplicate-insertion tests.
 - **No proxy/SOCKS support in the HTTP client.** Not needed for a home tool
   behind your own network.
 
+## Where this is actually used
+
+**Mozilla Readability is the reference for article extraction.** It is the JavaScript library behind
+Firefox's Reader View. It scores DOM nodes with heuristics about semantic HTML, and its
+`isProbablyReaderable` check decides whether a page is worth parsing at all. It does not fetch pages
+or run their JavaScript. This extractor uses trafilatura instead, but the job is the same: keep the
+article body and drop navigation and ads.
+
+**SQLite FTS5 is the search index.** FTS5 is SQLite's full-text search extension. It is queried with
+`MATCH` and supports phrase, prefix and boolean operators, which is the syntax `search` exposes. The
+index lives in the same database file, so there is no separate search server to run.
+
+**Where the gap is.** Readability works on the DOM it is given, and this reader works on the HTML it
+fetched. Neither runs page scripts, so a site that renders its article client-side, or that serves it
+behind a login, returns little to extract. The README lists both cases as limits.
+
 ## Usage
 
 ```bash

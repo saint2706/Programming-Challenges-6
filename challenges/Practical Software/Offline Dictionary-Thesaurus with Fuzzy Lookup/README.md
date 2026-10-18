@@ -95,6 +95,24 @@ above other substring hits, and shorter words above longer ones within each
 tier, so `happy` (a 5-letter prefix match) outranks `chapped` (a longer,
 non-prefix contains-match). See `_search_relevance()` in `lexicon.py`.
 
+## Where this is actually used
+
+**WordNet-family lexicons are the standard source for thesaurus data.** This tool reads Open English
+WordNet, a community-maintained fork of Princeton WordNet released under CC-BY 4.0. Princeton's
+maintenance stopped at release 3.1 in 2011, which is part of why the fork exists. Sense-aware
+synonym and antonym lookup over a graph like this is what WordNet is built for.
+
+**Spelling suggestions in everyday software.** Hunspell is the spell checker library behind
+LibreOffice, and it is used by Firefox and Chrome. Its dictionaries are a pair of files, an affix
+file and a word file, so a base word list stretches to inflected forms through rules rather than
+full enumeration. This project does not implement affix rules. It ranks lemmas by whole-string
+similarity, which is the same "did you mean" job in a smaller form.
+
+**Where the gap is.** A production checker weights candidates by word frequency and by context.
+This one has no frequency data, so an uncommon lemma can outrank a common one at the same edit
+distance. The whole-string scorer fixes the substring noise described above. It is not a ranking
+model.
+
 ## Usage
 
 ```bash

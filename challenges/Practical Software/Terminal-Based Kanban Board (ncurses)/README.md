@@ -68,6 +68,22 @@ corrupted — a binary magic-byte preamble would defeat that.
 | `n`                       | Create a new column                              |
 | `q`                       | Quit (board persists automatically)              |
 
+## Where this is actually used
+
+**Textual is a real Python TUI framework.** It is built on Rich, runs in a terminal, and other
+terminal apps depend on it. The Elia chat client is one, per its packaging. This project uses it for
+the reason the README gives: the standard `curses` module is missing on Windows.
+
+**Atomic save by write-then-replace.** `save_board` writes a temp file beside the board and calls
+`os.replace` over it. Python documents that rename as atomic on POSIX when source and destination are
+on the same filesystem. CPython's own bytecode writer in importlib uses the same pattern, which is
+why the temp file lives in the board's directory.
+
+**Where the gap is.** On Windows the guarantee is weaker. A CPython bug thread says the
+`MoveFileEx` replace path is not atomic when a move falls back to copy and delete. The same-filesystem
+condition still matters. This project is built for Windows, so the tests showing safe saves do not
+prove crash safety on that platform. `fsync` flushes the data but does not settle the rename question.
+
 ## Usage
 
 ```bash

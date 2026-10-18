@@ -59,6 +59,27 @@ anything, undo verifies every renamed file is still where the batch left it
 and refuses with a clear message listing what's missing (e.g. the user
 already renamed or deleted it since).
 
+## Where this is actually used
+
+Bulk renaming is an old Unix job, and the established tools already face the collision and swap
+cases this one handles.
+
+**Editor-based renaming.** vidir, from moreutils, opens a directory listing in your editor, numbers
+each line, and applies the edits when you save. Swapping two numbered lines exchanges two filenames,
+which is the same two-file swap that this tool solves with a temporary name. The edit buffer is the
+plan. This tool prints the plan first and records each batch so it can be undone.
+
+**Pattern renames with collision checks.** mmv moves, copies or links many files from a wildcard
+pattern, with `#1`-style references to the text each wildcard matched, and it checks for target-name
+collisions before it acts. This tool uses the same model with Python regular expressions in place of
+globs, and it refuses to run a plan that would collide.
+
+**Where the history is a warning.** mmv's man page says an older interactive mode broke on filenames
+with spaces and points to renameutils' `qmv` as its replacement. Name handling is where bulk renamers
+tend to fail. This project's tests cover spaces, chains and swaps, but a tool used on real trees
+will still meet names no test anticipated. This tool also renames files only, never directories,
+which is a deliberate limit.
+
 ## Usage
 
 ```bash

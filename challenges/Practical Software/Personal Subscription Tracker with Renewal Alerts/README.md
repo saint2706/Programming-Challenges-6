@@ -83,6 +83,26 @@ notifiable again later. Covered by
 - No historical spend chart across past months — the summary is a live
   snapshot of currently-active subscriptions, not a time series.
 
+## Where this is actually used
+
+**Monthly charges dated from a start day.** A subscription billed on the 31st has to resolve to the
+last day of shorter months. Any schedule stored as "bill day plus cycle" hits this. The clamp in
+`add_months` takes the last valid day rather than spilling into the next month. The catch-up loop in
+`roll_forward` is the other standard pattern: advance a stale date until it is in the future, so a
+machine that was off for three months still shows the right next renewal.
+
+**Money as integer cents.** Storing amounts as integer minor units is the usual practice for money
+in software, because binary floats cannot represent most decimal amounts exactly. That is why the
+`cost_cents` field is an integer and the summary sums integers.
+
+**The ORM choice.** SQLModel was created by Sebastián Ramírez, who also wrote FastAPI. It sits on
+SQLAlchemy and Pydantic, so one model class serves as both the table and the validator. The date and
+money logic lives in plain functions that do not depend on it.
+
+**Where the gap is.** Real renewals come from the payment provider, not from a date typed in by
+hand. This tracker only knows what it was told, so a price change or a cancelled card stays invisible
+until the record is edited. Desktop alerts also need a running desktop session to appear.
+
 ## Usage
 
 ```bash

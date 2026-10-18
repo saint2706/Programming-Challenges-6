@@ -56,6 +56,24 @@ asserts exactly one of them ever sees the content.
   it. `/pastes` (POST) returns a "here's your link" confirmation page;
   opening the link is the view.
 
+## Where this is actually used
+
+**PrivateBin is the closest real project.** It is an open-source pastebin where the server holds no
+readable data. Encryption and decryption run in the browser, using AES-256 in GCM mode. This project
+stores pastes as plaintext in SQLite, so anyone who can read the database file can read every paste.
+That is the largest difference between the two, and it is deliberate here, because the brief asked
+for expiry and burn-after-read rather than end-to-end encryption.
+
+**Burn-after-read is a read-then-delete race.** The concurrency section above describes it. SQLite's
+transaction documentation says `BEGIN IMMEDIATE` takes the RESERVED lock at the start, so no other
+connection can write or begin another immediate transaction, while readers keep working. A deferred
+transaction takes its write lock only at the first write, which is the window a second request can
+slip through.
+
+**Where the gap is.** There is no authentication, no rate limiting and no size limit, and the README
+says to run exactly one worker. Behind a TLS proxy it is a small self-hosted tool. It is not a public
+pastebin.
+
 ## Usage
 
 ```bash

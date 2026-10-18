@@ -135,6 +135,31 @@ The first version was reviewed by an independent read-only pass. It found no Hig
 
 Two real bugs were found by the author's own tests: a `LIKE` wildcard in client-name matching (`%` matched everything), and SQLAlchemy not ordering deletes by foreign key.
 
+## Where this is actually used
+
+The money rules and the e-invoice container are the two parts with real counterparts.
+
+**Hybrid e-invoices.** The PDF/A-3 with an attached CII XML that this project writes is the
+Factur-X and ZUGFeRD format, both built on the EN 16931 semantic model. Factur-X is what the French
+public sector accepts through Chorus Pro, and German B2B invoicing commonly uses ZUGFeRD. This
+project implements only the BASIC WL profile: totals and the VAT breakdown, with no line items. A
+production sender also runs the Schematron business rules, which this project does not run. The
+XML is schema-valid, and that is all that is claimed for it.
+
+**PDF/A validation.** veraPDF is the free, open source PDF/A validator maintained by the Open
+Preservation Foundation. The tests here run it when it is installed and skip otherwise. The
+pass count in this README is from this project's own run.
+
+**Integer money.** Stripe's API takes amounts in the smallest currency unit, and it lists JPY among
+its zero-decimal currencies, so a 500 yen charge is `500`, not `50000`. This project does the same
+thing with ISO 4217 exponents from `babel`, and rounds half-up on a `Decimal` at a fixed precision.
+Payment processors and accounting ledgers are where a float rounding error becomes a real discrepancy
+in someone's books.
+
+**Where this is less than a production system.** There is no bank reconciliation, no tax
+jurisdiction logic beyond per-rate totals, and one SQLite file instead of a database with
+concurrent multi-user writes. The race tests cover the single-machine case.
+
 ## Layout
 
 | File                                                    | Role                                               |

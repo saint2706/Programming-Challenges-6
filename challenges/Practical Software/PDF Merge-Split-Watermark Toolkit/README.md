@@ -95,6 +95,23 @@ user_password_env = "PACK_PASSWORD"     # read from the environment; never put s
 
 Any option of the command is a key (`every`, `ranges`, `degrees`, `text`, ...); `password`, `user_password` and `owner_password` must be given as `password_env = "VAR"` etc., which reads that environment variable; `_env` is refused for every other option, so a job cannot copy an arbitrary variable into a watermark or a title. Unknown keys and unknown ops are job failures, so a typo like `pagez` cannot silently do nothing. Jobs run in order and a failure does not stop the rest (`--fail-fast` does); `--dry-run` plans every job, including overwrite and input-equals-output checks, without writing anything. The CLI commands and batch jobs go through the same `run_op`, so they cannot drift apart.
 
+## Where this is actually used
+
+**Bates numbering is the legal version of a per-page stamp.** A Bates number is a unique sequential
+identifier printed on each page, and the sequence runs across several files in one production.
+Acrobat has Bates numbering built in, and court filing guidance sets the format, which differs by
+court and firm. The toolkit does not stamp numbers. Its watermark path, which overlays one mark on
+each page of a batch, is the structure a Bates stamper would reuse.
+
+**Watermarks on drafts and approvals.** A tiled DRAFT or CONFIDENTIAL mark on every page is a
+routine step before a document leaves an office. An APPROVED stamp is a page from another PDF laid
+over each page, which the `--stamp` option covers.
+
+**Where the gap is.** Archival and court systems often require PDF/A conformance, embedded fonts and
+clean form handling. This toolkit checks none of that, and its README lists forms and annotations as
+untested. Its permission flags are advisory, because the reader decides whether to honour them. Use
+it for documents you control, not as a compliance tool.
+
 ## Layout
 
 | File           | Role                                                                                                      |

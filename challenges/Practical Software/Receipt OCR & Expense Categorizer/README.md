@@ -81,6 +81,24 @@ part is making parsing robust to garbage input, not the OCR itself.
 ecategorize <id> <category> (manual override), delete <id> (remove a
 receipt). Default SQLite path is ~/.expense_tracker/receipts.db.
 
+## Where this is actually used
+
+**PaddleOCR is a production-grade open-source OCR toolkit.** It comes from Baidu's PaddlePaddle team
+under the Apache 2.0 license, and it covers text detection, recognition, orientation classification
+and layout analysis. `ocr.py` calls that pipeline. Whatever text it returns is the input to every
+parsing heuristic, so OCR quality sets the ceiling for everything downstream.
+
+**Receipt parsing is information extraction from text that has lost its layout.** The first-line
+merchant rule, the regex date parsing and the keyword-anchored total are the usual baseline. A
+stronger parser uses each text box's coordinates to decide which number is the total, because
+position often says more than the line order does. This project's `ocr.py` returns plain lines, so
+that positional information is thrown away before parsing begins.
+
+**Where the gap is.** The categorizer is a keyword table plus fuzzy matching against known merchant
+names. That is fine for a personal ledger, but it does not generalize to a merchant the table has
+never seen. The OCR model weights are about 500 MB on first use. A product that handles many users
+would need a review step for OCR errors before totals reach an accounts system.
+
 ## Usage
 
 ```bash

@@ -99,6 +99,29 @@ self-hosted tool, not a general-purpose path library.
   token is given either way, one is generated and printed once — the same
   pattern Jupyter uses for its own token auth.
 
+## Where this is actually used
+
+- **Path containment in web servers.** OWASP's path traversal material lists `../` and its
+  encoded forms (`%2e%2e%2f`, `%252e%252e%255c`), and notes that web containers decode a URL
+  once. That is why this server decodes twice: a double-encoded input must not reach the
+  filesystem as a traversal. OWASP advises normalizing input before file APIs. The code goes
+  further by resolving symlinks and checking containment on the result, because a string-level
+  check cannot see a link that points outside the root.
+- **Access logs with attacker-chosen fields.** nginx's `log_format` `escape` parameter defaults
+  to a mode that writes `"`, `\` and any byte below 32 or above 126 as `\xXX`. A crafted request
+  path therefore cannot forge extra log lines or carry quotes that break a parser. The nginx
+  documentation describes this as the default, so production log pipelines get it without
+  asking. The admin log page here applies `html.escape()` to the same kind of field for the same
+  reason: a logged path is an attacker's input the moment someone reads it in a browser.
+- **Constant-time token checks.** Python's `hmac.compare_digest` is documented to avoid
+  content-based short-circuiting, which is what makes it suitable for secret comparison. The
+  same documentation warns that unequal lengths can leak length. The `verify_token` docstring
+  accepts that, since generated tokens have a fixed, public length.
+- **Where the literal problem shows up.** Internal file shares, dev servers and one-off
+  LAN transfers. Production deployments usually hand static files to a dedicated web server or
+  reverse proxy with years of traversal hardening behind it. This implementation has one test
+  suite and no independent review.
+
 ## Usage
 
 ```bash

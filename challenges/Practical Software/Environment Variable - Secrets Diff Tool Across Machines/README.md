@@ -8,6 +8,32 @@ Source modules live in `src/envdiff/`; the tests are in `tests/`.
 
 `envdiff` compares `.env` files, `export -p` dumps and Docker env-files across hosts and answers "which variables differ?" without ever printing a value. Whether two values are equal is computed with keyed fingerprints; the output shows only a group letter per cell (same letter, same value), so a screenshot, a CI log, or a pasted PR comment cannot leak a secret.
 
+## Where this is actually used
+
+Keyed fingerprints that let two parties test equality without seeing the values are a pattern
+with a few established uses.
+
+- **Hashed `known_hosts` entries.** `ssh-keygen -H` replaces every hostname and address in an
+  OpenSSH `known_hosts` file with a hashed form. The man page says the hashes "do not reveal
+  identifying information should the file's contents be disclosed", and the original file is
+  moved aside with a `.old` suffix. The man page does not name the hashing method, so this
+  section does not claim anything about it. The point of the comparison: a host list can be
+  shared without exposing its names, which is what this tool needs for secret values.
+- **Keying matters.** An unkeyed hash of a short value can be checked against a dictionary of
+  likely values, which is why `envdiff` mixes a key into every fingerprint and binds the
+  variable name in too. A per-run random key makes a printed fingerprint useless outside that
+  run. The shared-snapshot mode derives its key from a passphrase with scrypt (RFC 7914), so a
+  weak passphrase still costs an offline attacker time per guess.
+- **Where the literal problem shows up.** Drift detection between staging and production
+  configuration, and audits of which hosts carry which credentials, where the people comparing
+  must not see the values.
+
+**Where it falls short of production.** Snapshot mode uses scrypt with `n=2**14`, lower than the
+diary's `2**15`, so a weak shared passphrase is cheaper to attack here. The four-variant scheme
+(exact, stripped, unquoted, case-folded) is this project's own design, not an established
+standard, and a real deployment would more likely compare against a secrets manager or an
+attested inventory than against exported snapshots.
+
 ## Usage
 
 ```bash

@@ -81,6 +81,32 @@ this before it became a real "why is today missing" confusion in daily use.
   from "this file is garbage" without actually being able to decrypt it,
   which needs the correct passphrase anyway.
 
+## Where this is actually used
+
+The three pieces here (a memory-hard KDF, an AEAD cipher and an atomic replace) are standard
+building blocks. What differs is scale and where the key lives.
+
+- **Memory-hard key derivation.** RFC 7914 specifies scrypt as a memory-hard function that
+  "offer[s] added protection against attacks using custom hardware". The `N` parameter sets how
+  much memory each derivation touches. Any tool that turns a passphrase into a key faces this
+  trade-off: the user waits a fraction of a second per unlock, and an attacker pays that cost on
+  every guess against a stolen file.
+- **AEAD with the header as associated data.** RFC 5116 defines AEAD as a primitive that gives
+  confidentiality and integrity together. Passing the magic bytes as associated data means a
+  tampered header fails the same way a wrong passphrase does. The nonce rule is where real
+  systems go wrong: the `cryptography` package's AESGCM documentation says reusing a nonce with
+  a key "compromises the security" of messages under that pair. This code draws a fresh random
+  nonce on every save for that reason. A system that encrypts many records under one key has
+  to track nonce uniqueness across every writer, not only within one process.
+- **Atomic replacement.** The Python `os.replace` documentation says a successful rename is
+  atomic on POSIX and that an existing file is replaced silently. Writing a temp file, fsyncing
+  it, then replacing the original means a crash leaves the old journal intact.
+
+**Where it falls short of production.** Whole-file re-encryption suits a personal journal but
+not a large store, which would encrypt per record or per page. The key sits in process memory
+here. A real tool would keep it in an OS keyring or hardware token and would manage how long it
+lives in memory, which Python does not let you control well.
+
 ## Usage
 
 ```bash

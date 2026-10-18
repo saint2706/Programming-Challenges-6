@@ -176,3 +176,30 @@ uv run pytest -q # 240 tests, ~25 s
 - **Desktop notifications from cron** usually have no session bus to talk to; webhook and email are the dependable channels.
 - **A killed wrapper leaves a run stuck as `running`** (a power cut mid-job); the row is shown as such rather than guessed at.
 - `%` in a command is only handled by refusing to wrap it, not by rewriting it.
+
+## Where this is actually used
+
+Wrapping a job to record its exit status, and matching cron's day-field rule exactly, are both
+established practices, and this project does each of them.
+
+**Dead man's switch monitoring.** Healthchecks.io gives each scheduled job a unique ping URL and
+alerts when an expected ping does not arrive, which catches a job that never starts as well as one
+that fails. Its documented signals include start, success and failure pings, and a grace period
+before an alert. This project's `cronwatch run --job` wrapper takes the same position, recording
+what ran and its exit status locally rather than sending it to a hosted service. A wrapper cannot
+see a crashed host or a cron daemon that never fires, so an external dead man's switch still has
+a job that this tool cannot do alone.
+
+**Day-of-month and day-of-week rule.** The crontab(5) and POSIX crontab rules say that when both
+day fields are restricted, a job runs when either one matches. Schedules like `0 0 1-7 * 1` run on
+every Monday as well as on days 1 to 7, which is the most common surprise in cron. The
+`cronexpr.py` module implements that rule, and the editor previews the next runs as you type, which
+is the check that catches this before it reaches cron.
+
+**Editing a live crontab.** Tools that edit the user's crontab in place have to preserve comments,
+`MAILTO=` lines and unrecognised lines. Regenerating the file from a parsed model loses them. This
+project keeps every line verbatim and re-reads the backend before each write.
+
+**Where it stops short of production.** Real schedulers such as systemd timers, Kubernetes CronJobs
+and cloud schedulers add retries, concurrency policies and cross-host state, none of which a
+single-user crontab tool provides. This project is for the crontab on one machine.
