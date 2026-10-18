@@ -65,6 +65,27 @@ validation (`src/validate.js`) independently rejects malformed email
 addresses, over-length fields, and out-of-range guest counts regardless of
 what the client-side `required`/`maxlength` attributes allow through.
 
+## Where this is actually used
+
+**Hosted form services.** Google Forms and Typeform are the usual choice for an RSVP page.
+They run the validation, storage and guest list on their servers. This page runs the same
+three steps in one handler, which is the piece a hosted service would otherwise own.
+
+**Web-standard handlers.** Hono's app exposes a `fetch` function that takes a `Request` and
+returns a `Response`. That is the shape Cloudflare Workers calls, and Hono runs on several
+other runtimes too. The handler here is written to that shape, so the same code could move
+to an edge runtime. Check hono.dev for the current adapters before relying on that.
+
+**Atomic writes.** Writing a complete file to a temporary name and renaming it over the
+target means a reader never sees half a JSON document. On POSIX systems the rename within one
+filesystem is atomic. Windows replaces files differently, so the store's behavior there
+should be tested, not assumed.
+
+**Where a demo falls short.** A JSON file with atomic rename prevents torn writes, but two
+processes that each read, change and write the whole file can still lose one update. A
+real RSVP service with several server instances needs a database with transactions, and a
+rate limit on the POST endpoint so one page cannot be flooded.
+
 ## Run it
 
 ```bash

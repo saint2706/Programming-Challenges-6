@@ -131,6 +131,26 @@ Typing in a bullet on page 1 repaints in about one frame (p50 14.1 ms at 3 pages
 - **Test hook.** Opening the app with `?e2e` exposes a small read-only `window.__resume` used by the
   browser tests and the benchmark.
 
+## Where this is actually used
+
+**Browser print as the PDF engine.** Export calls the browser's own print dialog, so no PDF library
+is bundled. Paged.js is a JavaScript library that describes itself as transforming HTML into
+print-ready PDF, and it is the nearest named system that takes the same route.
+
+**Pagination decided before print.** Paged.js is a general HTML-to-print library. This build makes
+the page-break decision in a separate pure function, after measuring each block, and renders
+fixed-size page boxes so the printed result matches the preview. The difference is who owns the
+break decision: a library that works on the document as-is, or this build's own paginator.
+
+**JSON Resume.** The data follows JSON Resume, an open-source initiative to standardize resume data
+as JSON. I could not confirm any named site or tool that adopts it, so none is named here. The
+reason to follow the standard is interchange, not adoption.
+
+**Where the literal problem shows up.** Any app that outputs a formal document from a form:
+invoices, reports, letters. The gap: this build covers one resume at A4 or Letter. Running headers
+and page numbers are not described in its README, so a document generator would need that work on
+top.
+
 ## Layout
 
 ```

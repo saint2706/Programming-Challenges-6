@@ -74,6 +74,29 @@ In a real browser (Chrome, DPR 2, via the DevTools MCP): at **100k rows** a head
 - **CSV formulas are prefixed with `'`**, so a re-import of an export shows the apostrophe for those cells.
 - The dataset is generated (deterministic, seeded), not fetched: the challenge is about the table, not the data.
 
+## Where this is actually used
+
+**CSV injection in spreadsheets.** The formula guard answers a real attack. OWASP's CSV injection
+write-up lists `=`, `+`, `-` and `@` (plus tab and carriage return) as characters that start a
+formula, and names Microsoft Excel and LibreOffice Calc as affected. Prefixing the cell with a
+single quote is one of the mitigations that page recommends. The same page warns that Excel can
+strip quotes when a file is saved and reopened, which can reactivate a formula, so the guard
+protects the export only until someone re-saves it.
+
+**The CSV dialect.** `src/csv.js` follows RFC 4180: records end in CRLF, and fields that contain
+commas, double quotes or line breaks are wrapped in double quotes with inner quotes doubled. The RFC
+says those fields "should" be quoted, so this is the common convention rather than a hard
+requirement, but it is the form spreadsheets and parsers read back.
+
+**Grid keyboard model.** The arrow, Page Up/Down, Home/End and Ctrl+Home/End bindings follow the
+WAI-ARIA Authoring Practices grid pattern, which describes how a `role="grid"` widget should respond
+to keys and move focus between cells.
+
+**Where the literal problem shows up.** Internal reporting tools and admin consoles show sortable,
+filterable tables like this one. The gap with production: those tables usually add column resizing,
+pinning, and server-side paging once a dataset outgrows browser memory. This build stops at 250,000
+rows because of the scroll-height limit it documents, and it has no server behind it.
+
 ## Run it
 
 ```bash

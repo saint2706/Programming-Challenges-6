@@ -72,6 +72,24 @@ DOM-wiring layer around that math — this is what actually gets unit tested;
 GSAP's own animation behavior and real mouse events are out of scope for a
 unit test and aren't mocked.
 
+## Where this is actually used
+
+**Damped pointer followers.** GSAP's `gsap.quickTo()` is documented as the optimized way to animate
+one numeric property on every `mousemove`. Each call restarts the tween toward the new value, and
+the function skips the unit conversion and parsing that a plain `gsap.to()` does. The GSAP docs give
+exactly this pattern for a cursor-following element, which is the interaction the dot here
+implements.
+
+**Hover effects on marketing and portfolio sites.** Magnetic buttons, tilt cards and spotlight
+highlights are pointer-driven effects of this kind. They are decoration, so they belong behind the
+same checks the playground applies: a fine pointer, and no continuous motion when reduced motion is
+requested.
+
+**Where the literal problem shows up.** A custom cursor on a production site has to deal with things
+a demo can skip: screenshots and screen sharing that hide or duplicate the pointer, touch and pen
+input, and users who expect the native cursor for text selection. The demo is a gallery of separate
+effects, not a full replacement for the system cursor.
+
 ## Run it
 
 ```bash

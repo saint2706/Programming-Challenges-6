@@ -96,6 +96,28 @@ boundary. Every other piece of user-visible text (`icon.name`, the
 "View source" `<pre><code>` block, button labels) is set via `textContent`,
 not `innerHTML`, specifically to avoid needing manual HTML-escaping.
 
+## Where this is actually used
+
+Hover-animated SVG icons are everywhere on the web, usually as CSS transitions on a single icon. The
+part this library copies from the wider practice is the split between CSS and native SMIL, and the
+reduced-motion handling that comes with it.
+
+- **Icons as inline SVG.** An icon drawn with `stroke="currentColor"` takes the colour of the text
+  around it, so one icon works on light and dark backgrounds without a second file. That is the
+  reason for the `currentColor` stroke here.
+- **SMIL for path animation.** SVG's native animation (SMIL, defined by the W3C SVG 2 animation chapter)
+  has `animateMotion` with an `mpath` child, which moves an element along an existing path. That is the
+  mechanism behind the commit dot on the git-branch icon. CSS has no direct equivalent for following an
+  arbitrary path, which is why that icon uses SMIL.
+- **Reduced motion on SVG.** Browsers have had bugs where animated SVG ignored the user's
+  reduced-motion setting, and CSS cannot cleanly pause a SMIL animation. The fix here strips SMIL
+  animation elements from the markup string before insertion, so the animation never starts. The page
+  does not rely on a media query inside the SVG.
+
+The gap to production is testing and reach. A production icon library would add a build step that
+optimises the markup and would test the animations in each target browser. This library is hand-drawn,
+has no build step, and tests only the pure data and string logic; the DOM wiring is checked by eye.
+
 ## Run it
 
 ```bash

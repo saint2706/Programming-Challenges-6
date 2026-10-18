@@ -17,6 +17,30 @@ a face model in the page, and nothing it sees leaves your machine.
 
 ![Phone: the shoe above its controls](docs/design-phone.png)
 
+## Where this is actually used
+
+The window preview is head-coupled perspective: the picture is drawn for where the eye is, so a flat
+screen reads as a window onto a room. The construction is the off-axis frustum in Robert Kooima's
+"Generalized Perspective Projection", which is written for projection-based VR displays and does not
+assume the viewer sits centred in front of the screen. The page rebuilds that frustum every frame from
+the eye position and the canvas rectangle.
+
+- **Head-tracked VR displays.** Projection-based VR rigs compute one off-axis frustum per eye from the
+  tracked head and the physical screen corners. Here the screen is a laptop canvas, and the eye position
+  comes from a webcam instead of a headset tracker.
+- **Face tracking in the browser.** The head position comes from MediaPipe's face model, which returns
+  478 3D landmarks; the last ten are the irises. The page uses the iris spacing to measure pupil distance
+  through a pinhole camera model. A production tracker would add camera calibration, sensor fusion and
+  far more failure handling than this one.
+- **Smoothing noisy input.** The head position is smoothed with the 1 euro filter (Casiez, Roussel and
+  Vogel, CHI 2012), a low-pass filter whose cutoff rises with speed. That keeps the room still when the
+  head is still and lets it follow fast movement without much lag.
+
+The gap is scale and robustness rather than the maths. Real head-tracked displays use calibrated
+hardware, measured screen geometry and per-user calibration. This page guesses the field of view and
+screen size and lets the user correct them with a slider, because a wrong guess only changes how strong
+the depth effect looks.
+
 ## Run it
 
 Built and tested with Node v26.11.1 and pnpm 11.5.0 (the `packageManager` field pins it). The browser

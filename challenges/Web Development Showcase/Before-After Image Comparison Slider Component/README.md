@@ -235,3 +235,22 @@ npm run bench          # build, then print the numbers above
 npm run screenshots    # rewrite docs/*.webp from the demo
 npm run images         # regenerate demo/img from raw/
 ```
+
+## Where this is actually used
+
+A before/after slider shows an edit: a retouched photo over the original, with a divider the viewer
+drags. This component builds that one control on the platform rather than on a library.
+
+- **Clip-path over two stacked images.** The divider is a CSS `clip-path: inset(...)` on the before
+  layer, driven by one custom property. The browser does the clipping, so a drag runs no layout code.
+- **The ARIA slider pattern.** The divider is a `role="slider"` with `aria-valuenow`, `aria-valuetext`
+  and keyboard steps, following the WAI-ARIA Authoring Practices slider pattern. A screen reader hears
+  "40% Before, 60% After" rather than a raw number.
+- **Touch and scroll.** A divider drag sits on a box with `touch-action: pan-y`, so a vertical swipe
+  scrolls the page while a horizontal drag moves the divider. MDN documents `pan-x` and `pan-y` as the
+  values that leave single-finger panning on one axis to the browser.
+
+The gap to a production widget is browser coverage and load handling. Only Chrome was driven here, and
+the mirrored clip depends on `:dir()`, which this README does not test in Firefox or Safari. A
+production version would also load images with a progressive or responsive strategy rather than the
+two full files used here.

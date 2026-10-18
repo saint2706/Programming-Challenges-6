@@ -176,3 +176,25 @@ or a wheel.
   trigger count). It is not part of the page's behaviour.
 - The temperature data is annual means only. It shows nothing about regional change, uncertainty
   ranges, or the 2026 partial year.
+
+## Where this is actually used
+
+**Scrollytelling.** The New York Times' "Snow Fall: The Avalanche at Tunnel Creek" (December
+2012) is the piece usually credited with popularizing scrollytelling, where graphics and
+media advance as the reader scrolls. It won the 2013 Pulitzer Prize for Feature Writing.
+The pattern here, a pinned chart with text steps that highlight parts of it, is the same
+layout.
+
+**Climate data.** The chart's data comes from NASA GISS's GISTEMP, currently version 4. It
+combines NOAA's GHCN v4 station records with ERSST v5 ocean data and reports anomalies
+against a 1951 to 1980 baseline. Anomalies are the right quantity for a trend chart because
+absolute temperatures depend on station placement.
+
+**Two engines for the same page.** The page can use native CSS scroll-driven animations
+(`animation-timeline`) or GSAP's ScrollTrigger. Chromium has shipped the CSS version since
+2023, and other browsers have followed more slowly. A page that picks one engine at build time
+has to check support for the other, which is why the switch exists.
+
+**Where a real story goes further.** Published scrollytelling is usually authored by a
+newsroom with a CMS and a graphics team. The step text, data and timing live in content,
+not in the page's code.

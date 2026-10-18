@@ -185,6 +185,30 @@ not the experience), validating the token file with another tool, and a test of 
   CSS derivation.
 - **Out-of-gamut colours are clipped, not mapped**, to match what Chrome paints (measured).
 
+## Where this is actually used
+
+**OKLCH and relative colour.** The engine derives every token from one brand colour with
+relative colour syntax, `oklch(from var(--brand) ...)`. web.dev's guide to Baseline colour
+themes uses the same pattern to make lighter and darker variants of a base colour. MDN lists
+`color-mix()` as widely available since May 2023.
+
+**Design tokens.** The W3C Design Tokens Community Group published its format as a stable
+2025.10 report. The group's report says it is not a W3C Standard. The JSON export here
+follows that format, so other tools can read the palette without parsing CSS.
+
+**Tailwind v4.** Tailwind v4 defines theme variables with `@theme` in CSS rather than in
+`tailwind.config.js`. The Tailwind export here writes that form, so the theme drops into a
+Tailwind v4 project as is.
+
+**Light and dark in one declaration.** `light-dark()` pairs with the `color-scheme` property,
+so one declaration sets both modes. A 2024 CSS working group issue reported that browsers did
+not accept `light-dark()` inside relative colour syntax. The playground's JavaScript fallback, which
+computes the same tokens for browsers without these features, is one way to cover that.
+
+**Where a real system goes further.** Design systems at scale generate tokens in a build step
+from a single source file, and test contrast for every pairing in the product, not for a
+fixed table of tokens like this one.
+
 ## Layout
 
 ```

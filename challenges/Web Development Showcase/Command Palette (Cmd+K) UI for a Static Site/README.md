@@ -214,6 +214,23 @@ documented on the Keyboard page as reserved by Chrome on Windows and Linux, whic
 documented behaviour, not something tested here (the test browser sends the keys over DevTools,
 where it works); `Ctrl+J`/`Ctrl+K` are the alternates.
 
+## Where this is actually used
+
+**Fuzzy finders in the terminal and editor.** Matching query letters in order and scoring where they
+land is the model fzf uses. fzf describes itself as a fuzzy finder with integrations for Bash, Zsh,
+Fish, Nushell, Vim and Neovim, and its default search is fuzzy. This palette applies the same idea
+to page titles and headings. I did not check fzf's scorer against this one, so the alignment-quality
+claims in this README are this project's own measurements, not a comparison with fzf.
+
+**Command palettes in editors and docs.** Keyboard-first command launchers of this kind are common
+in code editors and in documentation sites, where a reader wants a page or heading without a sidebar
+hunt. That is the use this build targets.
+
+**Where the literal problem shows up.** Large documentation sites with thousands of pages and API
+symbols. This build indexes six pages and 32 headings at build time and loads the index lazily. A
+site of that size needs a sharded or worker-based index and a matcher tuned against real query logs,
+and the README's benchmark only covers this small corpus.
+
 ## Layout
 
 ```

@@ -93,6 +93,30 @@ a rejected hash is rewritten to the step you actually landed on.
 Svelte's text interpolation and input `value`, never `{@html}`, so the review
 summary and the confirmation message cannot inject markup from user input.
 
+## Where this is actually used
+
+**Checkout and onboarding.** Multi-step sign-up and checkout flows are the common production
+case. Secondary summaries of Baymard Institute's checkout research name forced account
+creation and late-revealed costs among the common reasons shoppers abandon a flow. This
+rule that a step must validate before the next one opens is the same constraint a checkout
+enforces.
+
+**The card-number check.** The Luhn check on the card field is the mod-10 algorithm from US
+patent 2,950,048, filed by IBM's Hans Peter Luhn and specified for card numbers in ISO/IEC
+7812-1. It catches typing errors. It says nothing about whether the card is real or the
+account is in good standing, so the demo's check is validation practice, not payment
+handling. A production form sends the card to a payment processor and keeps the number out
+of its own state.
+
+**Accessible progress and errors.** The progress bar uses the WAI-ARIA `progressbar` role
+with a text value, and each invalid control is tied to its message with `aria-invalid` and
+`aria-describedby`. These are the standard hooks screen readers use, and the step list
+marks the current step with `aria-current`.
+
+**Where the literal problem shows up.** Insurance quotes, tax filings, loan applications,
+and clinic intake forms all have the same shape: a long form, cross-field rules, and a
+review step before submit.
+
 ## Run it
 
 ```bash

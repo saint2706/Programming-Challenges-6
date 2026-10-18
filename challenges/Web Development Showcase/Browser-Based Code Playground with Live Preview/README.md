@@ -17,6 +17,28 @@ tab. A whole project fits in a link.
 
 ![360px phone: one pane at a time](docs/playground-phone.png)
 
+## Where this is actually used
+
+The compiler and the sandbox are the two parts that matter. Both have real counterparts, and the README
+is explicit that this one differs from them in what it can stop.
+
+- **esbuild in the browser.** The build step is esbuild compiled to WebAssembly, which the project
+  publishes as `esbuild-wasm`. That package has to be initialised with a URL to its `.wasm` file, and it
+  runs in a web worker by default so the build does not block the UI. Here the same idea builds the
+  user's TypeScript and JSX in the page with no server round trip.
+- **Stopping a runaway loop.** The page-level infinite-loop problem has a real fix on the platform:
+  `Worker.terminate()` stops a worker at once, with no chance for it to finish. This playground can't
+  use that for its preview, because the preview runs in an iframe that shares the parent's thread, so
+  a loop there freezes the parent too. The README's measurements show why a heartbeat from the parent
+  cannot rescue it.
+- **Untrusted code in a sandbox.** The preview is an iframe with a sandbox attribute and a strict content
+  security policy, so the user's code gets an opaque origin and no access to the playground's storage.
+  The gap is that the iframe can still navigate itself, which the README handles by detecting and
+  removing the frame rather than blocking the request.
+
+The gap to a production playground is isolation hardening. This preview is served from the same site as
+the editor, and its navigation watchdog is a workaround for a browser gap, not a platform guarantee.
+
 ## Run it
 
 Built and tested with Node v26.11.1 and pnpm 11.5.0 (the `packageManager` field pins it). There is no

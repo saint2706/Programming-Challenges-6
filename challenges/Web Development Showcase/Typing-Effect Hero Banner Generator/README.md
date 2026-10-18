@@ -90,6 +90,24 @@ bundler to usefully do to it — it's exposed via the `"./style.css"` export
 subpath and listed directly in `package.json`'s `files`, the same way many
 real npm packages ship an unbundled companion stylesheet.
 
+## Where this is actually used
+
+**Hero banners.** A typing effect on a landing page is a common way to show several short
+value statements in one slot. Typed.js is a published typing-effect library on npm that does
+the same job, with a constructor that takes a selector and a list of strings. Check its
+license file before copying code from it, since listings disagree on the license.
+
+**A timer-driven state machine.** The engine is a small loop of states: type a character,
+hold a finished phrase, delete, pause, move to the next phrase. Each state sets one timer.
+Packaging it as ESM, CJS and UMD bundles is what lets the same file work in an npm project
+and in a plain script tag.
+
+**Where a demo falls short.** Screen readers can announce the typed text one character at a
+time if the text sits in a live region. A common fix is to keep the full phrase in an
+`aria-label` or a visually hidden element and mark the animated span `aria-hidden`. This
+generator does not do that yet, and it also needs a reduced-motion path that shows the
+final phrase with no animation.
+
 ## Run it
 
 ```bash

@@ -73,6 +73,29 @@ from `vitest/config`, with the Svelte plugin) rather than a separate
 compile step — unlike the framework-free challenges in this folder, there's
 no reason to keep them apart.
 
+## Where this is actually used
+
+**Table layout with inline styles.** Most marketing and transactional email is HTML built
+from nested tables with inline styles, because email clients use older rendering engines
+that handle modern CSS unevenly. This builder emits that shape. Outlook for Windows, from
+2007 through 2019, renders email with Microsoft Word's engine, and that is where the
+bulletproof-button pattern comes from. It puts color on a table cell and wraps the link in
+VML, a Microsoft vector markup used only for Outlook. VML is proprietary, so it appears
+only inside Outlook-only conditional comments.
+
+**Testing across clients.** Email testing services such as Litmus and Email on Acid render
+the same HTML in many clients and show screenshots. This builder's two-width preview is a
+sketch of that: it shows the layout at 600 px and 375 px in one frame. It does not stand in
+for real client rendering.
+
+**Sandboxed preview.** The preview is an iframe with `srcdoc` and an empty `sandbox`
+attribute, so scripts in the generated markup do not run and styles from the builder do not
+leak in. The same care applies to user text: anything typed into a block is escaped before
+it becomes markup, since the output is a string.
+
+**Where a real builder goes further.** Production builders keep a per-client support table
+and warn when a block uses a property a common client ignores. This one does not.
+
 ## Run it
 
 ```bash

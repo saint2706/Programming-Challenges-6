@@ -126,6 +126,28 @@ committed and are all the app needs).
 | Crescent moon              | Xx M                      | [1o5hFRQ77l0](https://unsplash.com/photos/1o5hFRQ77l0) |
 | Northern cardinal          | Dmytro Koplyk             | [TXmLf1NSTVs](https://unsplash.com/photos/TXmLf1NSTVs) |
 
+## Where this is actually used
+
+**Pragmatic drag and drop.** The library this album uses describes itself as a low-level drag and
+drop toolchain built on the browser's own drag and drop, with a core of about 4.7 kB. Its README
+says it powers Trello, Jira and Confluence. That is the library's own claim, which I read on its
+README and did not check any further. The album uses it only to deliver drop events; the order logic
+is in pure functions.
+
+**FLIP animation.** Displaced tiles slide with FLIP: record the First and Last positions, Invert
+with a transform, then Play the transition. The article that describes the technique calls it "a
+principle, and not a framework or a library", which is why the album calls the Web Animations API
+directly. Reduced motion skips the animation, in line with WCAG 2.3.3.
+
+**Saved order is merged, not trusted.** Stored ids are reconciled with the current photo set on
+load: unknown ids are dropped, new photos are appended. Any sortable list that persists its order
+runs into the same problem when items are added or removed elsewhere.
+
+**Where the literal problem shows up.** Photo managers and sortable galleries. The gap: the masonry
+here computes row spans from declared sizes, so it never waits on images. Production galleries
+usually measure images and pack columns shortest-first. This layout keeps DOM order equal to visual
+order, which is the trade the README describes.
+
 ## Limitations
 
 - **Touch dragging.** Pragmatic drag and drop sits on native HTML5 drag events, which mobile browsers support unevenly (Safari on iOS supports them; some Android browsers need a long press). The keyboard path works everywhere, but there are no on-screen move buttons for touch-only users.

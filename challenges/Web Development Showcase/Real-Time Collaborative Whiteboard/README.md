@@ -241,6 +241,30 @@ which brought it to 2.4 ms. 20,000 is also the server's cap on items per room.
   internally consistent, but two machines with different fonts will wrap a note slightly differently.
 - The board is always light paper; the interface around it follows the system colour scheme.
 
+## Where this is actually used
+
+**Figma's multiplayer design.** Figma's engineering write-up "How Figma's multiplayer
+technology works" describes the same core decision: clients send changes to a server that
+orders them and fans them out, rather than merging peer edits directly. Figma also explains
+it chose this over operational transformation because a design canvas is not a text editor.
+This board's op log, ack and nack messages, and per-person undo are the same family of
+ideas, at a much smaller scale.
+
+**Google Docs.** Google's 2010 relaunch of Docs used operational transformation, with a
+server that transforms concurrent operations against each other. OT is the design
+for character-level text, which is why the whiteboard's object-level ops, where moves add
+offsets instead of overwriting positions, avoid most of its complexity.
+
+**Yjs and CRDTs.** Yjs is an open-source CRDT library with shared types, offline editing,
+undo and shared cursors, and it has bindings for ProseMirror and other editors. A CRDT
+merges concurrent edits without a central sequencer, at the cost of larger state and more
+work to delete things. A whiteboard that wants no server ordering would reach for it.
+
+**Where this board falls short.** This runs one server process with a saved log. Figma runs
+a process per document across a cluster, and the production path adds authentication, quotas
+and persistence beyond a single file. The convergence fuzzer checks the protocol, not the
+deployment.
+
 ## Layout
 
 ```

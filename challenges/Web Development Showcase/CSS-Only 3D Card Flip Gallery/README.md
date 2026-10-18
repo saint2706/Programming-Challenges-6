@@ -67,6 +67,24 @@ manipulation. The flip, focus styles, and responsive layout are purely CSS.
 This makes the page instantly interactive, cacheable, and trivial to serve
 over plain HTTP or `file://`.
 
+## Where this is actually used
+
+**The flip is a documented recipe.** MDN's flip-card pattern is the structure used here: a container
+with `transform-style: preserve-3d`, two faces, and the back face pre-rotated 180 degrees.
+`backface-visibility` is not inherited, so it has to be set on each face, not only on the container.
+Leaving it off is the usual bug, because both faces show through each other during the rotation.
+
+**Reduced motion is a requirement, not a nicety.** WCAG 2.3.3, Animation from Interactions (Level
+AAA), says motion triggered by interaction can be turned off unless the motion is essential. The
+Understanding page lists the `prefers-reduced-motion` media query as a way to meet it, which is why
+this build swaps the rotation for an opacity fade.
+
+**Where the literal problem shows up.** Flip cards are decorative on most marketing and portfolio
+pages. The gap: hover does not exist on touch screens, so a flip that runs only on hover leaves the
+back face unreachable for touch users. A production version would add a tap or keyboard toggle and
+keep the back content in the DOM for screen readers, instead of relying on the visual flip to show
+it.
+
 ## Run it
 
 ```bash
