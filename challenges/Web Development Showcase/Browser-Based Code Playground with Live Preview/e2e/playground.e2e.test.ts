@@ -109,7 +109,7 @@ describe('it runs, and edits show up', () => {
             () =>
                 new Promise<void>((resolve) => {
                     addEventListener('message', function seen(e) {
-                        if (e.data?.t !== 'scroll' || e.data.y !== 900) return;
+                        if (e.origin !== 'null' || e.data?.t !== 'scroll' || e.data.y !== 900) return; // the sandbox has an opaque origin
                         removeEventListener('message', seen);
                         resolve();
                     });
