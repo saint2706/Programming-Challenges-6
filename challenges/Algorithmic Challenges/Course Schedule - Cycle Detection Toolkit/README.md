@@ -167,7 +167,7 @@ uv run python benchmark.py           # Kahn vs DFS, and incremental vs recompute
 uv run pytest -q # 222 tests
 ```
 
-## Where this is used
+## Where this is actually used
 
 **Build systems and task runners.** Make, Bazel, and CI pipeline DAGs are
 literally this problem: a target depends on its inputs being built first,

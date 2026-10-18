@@ -213,7 +213,7 @@ uv run python benchmark.py # chromatic-count + runtime tables
 uv run pytest -q # 76 tests
 ```
 
-## Where this is used
+## Where this is actually used
 
 **Register allocation in compilers.** The classic Chaitin-Briggs approach
 models variables as vertices, "live at the same time" as edges, and finds a

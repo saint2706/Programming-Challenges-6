@@ -174,7 +174,7 @@ uv run python benchmark.py
 uv run pytest -q # 407 tests
 ```
 
-## Where this is used
+## Where this is actually used
 
 **Compiler and build-system dependency analysis.** Detecting circular
 imports/circular build targets is exactly SCC-finding on the dependency

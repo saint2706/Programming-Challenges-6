@@ -16,7 +16,7 @@ The textbook answer (CLRS ch. 14) is a balanced binary search tree with a
 treap, red-black) and is the correctness baseline. The **headline
 implementation** is the structure that is faster in practice: an
 arena-allocated **B-tree with subtree counts**, following the cache-layout
-argument of Khuong & Morin's *Cache-Friendly Search Trees* (arXiv 1907.01631).
+argument of Barratt & Zhang's *Cache-Friendly Search Trees* (arXiv 1907.01631).
 Wide nodes make a descent touch a handful of cache lines instead of ~1.4·log₂ n
 scattered binary-tree nodes.
 
@@ -64,6 +64,26 @@ Not implemented: `split_off_at_rank`/join. A correct O(log n) B-tree split
 needs per-level node splitting and rebalancing on both edges, and an O(n)
 implementation (drain + `from_sorted`) would add nothing over what bulk
 loading already shows.
+
+## Where this is actually used
+
+Rank and select over a changing ordered multiset is, in practice, a leaderboard or sliding-window
+problem. Two widely used systems answer it with count-augmented structures.
+
+**Redis sorted sets.** A sorted set keeps a hash table from member to score and a skip list ordered
+by score. The skip list's forward pointers carry spans, the number of bottom-level nodes they skip,
+so `ZRANK` sums spans along the search path in O(log n). This is the same query as `rank` here,
+answered by a skip list instead of a counted B-tree. The logic lives in `t_zset.c` in the Redis
+source.
+
+**`sortedcontainers` in Python.** Grant Jenks' `SortedList` stores a list of sorted sublists and a
+tree of pairwise length sums. A positional lookup turns the global index into a (sublist, offset)
+pair in O(log n) time. It is the same count-per-subtree idea as `select` here, with one level of
+blocks instead of a B-tree.
+
+**The gap.** Redis and `sortedcontainers` are tuned for their own workloads, a server's memory and a
+Python list's block size. The B-tree here is an in-memory structure, and its benchmark table is the
+only evidence in this repo that the cache layout pays off.
 
 ## Usage
 
@@ -216,7 +236,7 @@ bulk-loaded one is perfectly packed (no half-full nodes from splits).
 
 ## Sources
 
-- Khuong & Morin, *Cache-Friendly Search Trees; or, In Which Everything Beats
+- Barratt & Zhang, *Cache-Friendly Search Trees; or, In Which Everything Beats
   std::set* — <https://arxiv.org/abs/1907.01631>
 - Cormen, Leiserson, Rivest & Stein, *Introduction to Algorithms*, ch. 14
   (augmenting data structures: order-statistic trees) and ch. 13 (red-black

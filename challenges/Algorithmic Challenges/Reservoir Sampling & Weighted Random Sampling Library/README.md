@@ -383,7 +383,7 @@ uv run pytest -q -m "not slow" # skip the multi-thousand-trial checks
 
 Standard library only (`random`, `heapq`, `itertools`, `math`).
 
-## Where this is used
+## Where this is actually used
 
 **Log and trace sampling in observability systems.** A tracing pipeline sees
 far more spans than it can afford to store; reservoir sampling (often

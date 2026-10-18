@@ -164,7 +164,7 @@ uv run python benchmark.py # timing and quality tables
 uv run pytest -q # 113 tests
 ```
 
-## Where this is used
+## Where this is actually used
 
 **Vehicle routing and logistics.** Delivery-route optimization (last-mile
 delivery, school bus routing) is TSP with extra constraints (time windows,

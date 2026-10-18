@@ -380,7 +380,7 @@ uv run python benchmark.py            # all five comparisons above
 uv run pytest -q # 77 tests
 ```
 
-## Where this is used
+## Where this is actually used
 
 **Network routers and packet processors.** The original cuckoo filter
 paper's motivating use case: per-flow state tables and firewall/ACL rule

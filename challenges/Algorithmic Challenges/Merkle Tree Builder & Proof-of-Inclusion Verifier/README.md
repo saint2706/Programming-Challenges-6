@@ -25,6 +25,32 @@ tree, and a parallel builder.
 | `Sha256Hasher` / `Blake3Hasher`            | Generic `Hasher` trait; SHA-256 is byte-compatible with CT logs                     |
 | `reference`                                | Naive recursive oracle transcribed from the RFC text, used to check everything else |
 
+## Where this is actually used
+
+The RFC 9162 tree is deployed as public transparency logs, where the proofs are checked by parties
+who hold only the root.
+
+**Certificate Transparency.** Chrome has required certificates to be logged since April 2018, so
+publicly trusted certificates carry proof of inclusion in Merkle logs. Auditors run this crate's two
+checks: inclusion (is this entry in the log?) and consistency (did the log only grow between two
+sizes?).
+
+**Go module checksums.** `sum.golang.org` is a transparent log built on a Merkle tree. The `go`
+command verifies inclusion and consistency proofs before it adds a module's hash to `go.sum`, which
+lets it use a proxy it does not trust.
+
+**Sigstore Rekor.** Rekor is an append-only log of signed artifact metadata, with a Merkle tree
+sequencing its entries. The consistency check in `verify_consistency` is the property that makes
+such a log useful to auditors.
+
+**Bitcoin's odd-node rule.** Early Bitcoin duplicated the last hash of an odd level, so a block with a
+duplicated trailing transaction produced the same Merkle root as the original. That is CVE-2012-2459.
+The fix rejects blocks with that duplicate pairing. This crate promotes an unpaired node instead, so
+`[a, b, c]` and `[a, b, c, c]` have different roots.
+
+**The gap.** A production log also signs tree heads, runs witnesses that compare them, and stores
+tiles in a database. This crate covers the tree and its proofs, not the log around them.
+
 ## Usage
 
 Standalone Cargo crate (edition 2024, no shared workspace):

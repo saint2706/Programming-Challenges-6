@@ -206,7 +206,7 @@ uv run python benchmark.py    # state-space size, wall-clock time, heuristic qua
 uv run pytest -q # 138 tests
 ```
 
-## Where this is used
+## Where this is actually used
 
 **Bioinformatics: multiple sequence alignment (MSA).** Comparing 3+ DNA,
 RNA, or protein sequences to find conserved regions is the canonical MLCS

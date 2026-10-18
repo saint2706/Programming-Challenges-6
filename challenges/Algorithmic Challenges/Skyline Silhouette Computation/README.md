@@ -404,7 +404,7 @@ third-party `sortedcontainers` package; every command above that doesn't name
 `--verify` / `verify()` degrade gracefully (skip that one method, with a
 note) rather than fail if it isn't installed.
 
-## Where this is used
+## Where this is actually used
 
 The skyline problem is a stand-in for a family of "interval max" questions
 that show up wherever overlapping rectangles need to be reduced to their

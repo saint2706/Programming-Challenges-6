@@ -173,3 +173,20 @@ subdivided tree has more vertices than the original.
   the finding. The adversarial tree is a worst case for chain-by-chain HLD, not typical input.
 - **Memory is not measured.** `TopTree` keeps four 32-byte `Stats` per vertex plus child, parent and
   range pointers; `ClassicHld` allocates one `Stats` and one tag for each of 4n segment-tree slots.
+
+## Where this is actually used
+
+HLD is mainly a competitive-programming technique. I did not find a verified production system that
+runs it, so this section names none. The documented story is what came after it:
+
+**Top trees.** Alstrup, Holm, de Lichtenberg and Thorup (ACM Transactions on Algorithms, 2005) give
+top trees as a general interface for maintaining information over a fully dynamic forest. Their
+examples include the diameter, center and median of each tree, with O(log n) updates. The `TopTree`
+in this crate is the static, fixed-topology version of that idea, so it is the closest relative.
+
+**Link-cut trees.** Sleator and Tarjan's 1983 dynamic trees handle link, cut and path queries in
+O(log n) per operation. They were used for maximum flow, giving an O(mn log n) algorithm for sparse
+networks. HLD cannot do any of the link or cut work, because it assumes the tree never changes shape.
+
+**Where the static assumption breaks.** Any system that adds or removes edges while answering path
+queries needs a dynamic structure. The `Limitations` section above lists this crate's boundary.
