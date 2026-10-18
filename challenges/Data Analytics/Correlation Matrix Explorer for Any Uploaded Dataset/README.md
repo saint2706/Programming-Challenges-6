@@ -60,6 +60,23 @@ rate (negative), a pure-noise column, a constant column, a text column,
 missing values, and a `dose_mg` → `response` pair that is exponential:
 Pearson r ≈ 0.76 but Spearman ρ ≈ 0.99.
 
+## Where this is actually used
+
+Correlation matrices are a common first look at a table, and pandas' `DataFrame.corr` is the usual
+way to build one. Its documentation says the coefficients use pairwise complete observations: each
+column pair uses only the rows where both values are present. This explorer follows the same rule,
+so each cell has its own `n`, shown on hover, and a cell can rest on fewer rows than the table has.
+
+The significance flag addresses the testing problem. With 12 columns there are 66 pairs, and at p <
+0.05 about three would look significant by chance alone. Benjamini and Hochberg's 1995 procedure
+(Journal of the Royal Statistical Society, Series B) controls the expected share of false
+discoveries among the flagged pairs, not the chance of any single false positive. This explorer
+applies it across the unique pairs of each method, so Pearson and Spearman are corrected separately.
+
+Spearman is the rank version. It catches monotonic relationships that Pearson understates, which is
+why both are shown. The gap is that a matrix is a first look, not a model. It shows association
+between pairs of columns and says nothing about cause.
+
 ## Run it
 
 ```bash

@@ -135,6 +135,24 @@ high-spend first) and named in words, for example `K1 recent·frequent·high-spe
 - Product categories are not used, so there is no per-segment basket analysis.
 - Guest checkouts (13.6% of revenue) cannot be segmented at all; only the ledger reports them.
 
+## Where this is actually used
+
+RFM scoring (recency, frequency, monetary value) comes from direct marketing, where a customer list
+was ranked on these three numbers to choose who got the next mailing. Arthur Hughes's Strategic
+Database Marketing has a chapter on RFM analysis. The sources checked here do not establish Hughes
+as the originator, so the book is a reference rather than an origin claim.
+
+The step most RFM work skips is the check on whether the segments predict anything. This project
+scores customers as of a past date, using only earlier data, and compares each segment's later
+purchases with what its label would predict. Repeat-purchase modelling has its own literature.
+Fader, Hardie and Lee's BG/NBD model (Marketing Science, 2005) predicts future purchases in a non-
+contractual setting, and it is the usual comparison when someone asks whether RFM is enough. This
+project does not fit that model.
+
+The gap is the data. The results come from one UK gift-ware wholesaler, a single dataset. A
+production scoring job would run on the full customer base on a schedule, with the scoring rules
+under version control and the segment definitions reviewed by the people who use them.
+
 ## Sources
 
 - Chen, D. (2019). *Online Retail II* data set. UCI Machine Learning Repository,

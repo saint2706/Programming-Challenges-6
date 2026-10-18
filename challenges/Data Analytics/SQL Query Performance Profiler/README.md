@@ -139,6 +139,23 @@ measurements behind a lock so two sessions can't distort each other's timings.
 - The experiments are on one dataset of about a million rows; they show what a rewrite does there,
   not a law. At 100x the data, differences the optimizer hides here (join order, build sides) may appear.
 
+## Where this is actually used
+
+Mainstream engines can report an actual plan beside the optimizer's estimate. PostgreSQL's `EXPLAIN
+ANALYZE` prints the real row count and time for each plan node next to the estimate, and it runs the
+statement to get them. DuckDB's profiling output can also be emitted as JSON. A profiler that flags
+an operator whose actual row count is far from its estimate is doing the comparison a DBA does by
+eye on a PostgreSQL plan.
+
+That estimate check comes first for a reason. Leis and colleagues ("How Good Are Query Optimizers,
+Really?", VLDB 2015) found that cardinality estimation errors on multi-join queries were a main
+source of poor plans. The equivalence check follows the same logic: a rewrite is compared on its
+rows before any speed claim is made, and "faster" is only claimed when the two runs do not overlap.
+
+The gap is scope. This profiles one DuckDB query at a time against a table of about a million rows,
+and its experiments are on that one dataset. Results on much larger data, or on another engine,
+would need their own runs.
+
 ## Sources
 
 - Chen, D. (2019). *Online Retail II*. UCI Machine Learning Repository,

@@ -177,6 +177,25 @@ preset's description now says so. The same pass replaced a value chip that read 
 - A one-column CSV cannot hold an empty value on its own line (it reads as a blank line).
 - The page loads the whole file into memory in the browser; a few hundred MB is the practical limit.
 
+## Where this is actually used
+
+Excel's PivotTable is the everyday version of this engine. Its Show Values As options, such as
+percent of a grand, row or column total and running totals, are the kind of calculation this engine
+supports. Microsoft's support article describes the feature as changing how a value is displayed
+while the underlying sum stays the same, and the engine keeps that separation.
+
+The layered cross-tab exists because of the Berkeley admissions data. Bickel, Hammel and O'Connell's
+1975 analysis (Science) found that women were admitted at a higher rate in four of the six largest
+departments, while the pooled figures favoured men. The authors attributed the gap mainly to which
+departments women applied to. A table layered by department, with a Mantel-Haenszel adjusted odds
+ratio (Mantel and Haenszel, Journal of the National Cancer Institute, 1959), shows that reversal.
+The engine's cross-tab tests include chi-square with Yates correction for 2x2 tables, Cramér's V,
+Fisher's exact test and Mantel-Haenszel.
+
+The gap from production is the data path. Excel and BI tools connect to live sources, refresh and
+share results. This engine reads files and rebuilds the pivot on each run, and its HTML export is a
+snapshot.
+
 ## Sources
 
 - UCI Machine Learning Repository, *Adult* (Becker and Kohavi, 1996), CC BY 4.0: train and test files

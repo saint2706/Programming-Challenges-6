@@ -189,6 +189,25 @@ The hostile-name test failed on the first version: the escape table had been wri
   flagged or found by the check, but not repaired: the lineage of such a model stays incomplete.
 - Not a catalog: no persistence, no scheduling, no OpenLineage export.
 
+## Where this is actually used
+
+Column-level lineage is what data catalogs and transformation tools draw as a graph of where a
+column comes from. OpenLineage is the open standard for emitting it. Its column-lineage dataset
+facet maps each output column to the input fields it is derived from, and it types each
+transformation as DIRECT or INDIRECT. This tool's split between value lineage and rows-only
+dependencies follows that distinction. A column used only in a WHERE clause or a join condition
+decides which rows exist, which OpenLineage treats as indirect.
+
+The check against the data is the part most lineage tools skip. Static lineage read from SQL misses
+dependencies that appear only at run time, such as a COALESCE fallback that is never reached or a
+column that drives a join key. So this tool reruns the pipeline with each source column altered and
+compares what moved with what the parser claimed. A "missed" pair is a dependency the static
+analysis could not see, which is the case that breaks impact analysis.
+
+The gap is scope. The pipeline is DuckDB SQL over plain files, with no Jinja, macros, views or dbt
+project loading, and it runs on a sample. Production lineage usually reads the metadata that engines
+and jobs emit while they run, across many systems, and does not rerun the pipeline to check it.
+
 ## Sources
 
 UCI Machine Learning Repository, *Online Retail II* (Chen, 2019, CC BY 4.0), in the 600-customer

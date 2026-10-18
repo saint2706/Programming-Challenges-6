@@ -151,6 +151,27 @@ column is there to tune it.
 - The two sources are not independent here (OpenFlights imported from OurAirports), so a mismatch
   says who has changed, not who is right.
 
+## Where this is actually used
+
+Reconciliation is routine in finance and data engineering. Two systems that should hold the same
+records are compared key by key, and each difference is classified before anyone decides which side
+is right. Data-quality frameworks use the same idea. Apache Griffin's accuracy measure asks whether
+a target dataset represents real-world values, using a source of truth as the baseline. It reports
+the share of source records that match on the chosen fields. That corresponds to the matched-row
+count in this tool's summary, with the per-field categories added on top.
+
+Record linkage is the neighbouring problem. Splink is an open-source Python library from the UK
+Ministry of Justice that implements the Fellegi-Sunter model and estimates match probabilities for
+records that have no shared key. This tool does not do that. It matches on exact or normalised keys
+only. Its rule for duplicate keys, report them and never pick one, is a choice that record-linkage
+systems also have to make when several rows share a key.
+
+The two airport files are a stand-in for the same problem. OpenFlights lists OurAirports as the
+source of its rows, so the two files are not independent. In production, a comparison would run
+between systems that share no lineage, and a mismatch could mean either side is wrong. The gap is
+automation. Real reconciliations are scheduled, feed an exception queue and often involve three or
+more sources.
+
 ## Sources
 
 - OpenFlights airports database, <https://openflights.org/data.php> (Open Database License); file

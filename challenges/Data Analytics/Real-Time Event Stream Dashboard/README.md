@@ -175,6 +175,23 @@ is always shown and the chart has no table view: that is a known gap, not a pass
 - The injected disorder is synthetic. The traffic is real, but its arrival order was already sorted.
 - No persistence beyond Redis; no replay of results after a flush.
 
+## Where this is actually used
+
+Redis Streams is the consumer-group log built into Redis. Producers append entries, a group of
+consumers reads them, and an entry that was read but not acknowledged stays pending until another
+consumer claims it. This project's crash demo exercises that path. A worker is killed mid-run, and
+its pending entries are reclaimed with `XAUTOCLAIM` after an idle threshold.
+
+Delivery is at least once, so exactly-once results need the effect to be idempotent. This project
+checks each entry id against a set of applied ids, updates the windows and acknowledges the entry in
+one Lua script, so a redelivered entry is only acknowledged. The window arithmetic follows the
+event-time model of stream processors. A watermark estimates how far event time has progressed, and
+events older than it are late. The lateness sweep in the README shows how the allowed-lateness
+setting trades dropped events against waiting time.
+
+The gap is scale and durability. Production deployments shard streams by key, persist results beyond
+one Redis instance and prune the applied-id set. This one uses one stream and one partition.
+
 ## Sources
 
 REES46 Marketing Platform, "eCommerce behavior data from multi-category store", free for research and

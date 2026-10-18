@@ -175,6 +175,24 @@ BH-FDR over all regions. Uncorrected counts are still reported.
 - The county map is a 2 MB canvas: hovering is smooth, but very old machines may lag while
   switching views.
 
+## Where this is actually used
+
+Choropleth maps of counts and rates are standard in census and retail reporting. This project maps
+2017 Economic Census retail sales for 3,220 US counties. It relies on statistics that this kind of
+reporting also uses:
+
+- **Natural breaks.** The exact Fisher-Jenks method (Fisher, Journal of the American Statistical
+  Association, 1958) chooses class boundaries that minimise within-class variance. `classify.py`
+  implements that exact version. - **Spatial autocorrelation.** Global Moran's I (Moran, Biometrika,
+  1950) asks whether neighbouring regions take similar values. Local Moran's I (Anselin,
+  Geographical Analysis, 1995, the LISA paper) finds hot and cold spots. `spatial.py` corrects the
+  local tests with Benjamini-Hochberg. - **Equal-area projection.** Web Mercator, the default in
+  Leaflet, distorts high-latitude areas. This project projects to Albers equal-area conic itself.
+
+The gap is in the inputs. Raw totals mislead when places differ in size, which is why the page also
+shows per-resident values. Retail sales are booked where a business reports them, which need not be
+where its customers live. The project's own limitations section covers the rest.
+
 ## Files
 
 | File               | Purpose                                                       |
