@@ -1,0 +1,6 @@
+# The raw tables. Paths are relative to this file.
+[sources.raw_transactions]
+path = "../sample_data/transactions_sample.parquet"
+
+[sources.ref_country_region]
+path = "../sample_data/ref_country_region.csv"

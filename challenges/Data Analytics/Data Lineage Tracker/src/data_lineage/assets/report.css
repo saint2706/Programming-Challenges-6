@@ -1,0 +1,122 @@
+:root {
+  --bg: #fcfcfb;
+  --panel: #f4f3f0;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --line: #d6d4cf;
+  --box: #ffffff;
+  --up: #2a78d6;
+  --down: #eb6834;
+  --sel: #0b0b0b;
+  --ok: #1d6b3f;
+  --maybe: #8a5a00;
+  --bad: #b3261e;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a19;
+    --panel: #232321;
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --line: #3d3c39;
+    --box: #20201f;
+    --up: #3987e5;
+    --down: #d95926;
+    --sel: #f0efec;
+    --ok: #66c28b;
+    --maybe: #e0b04a;
+    --bad: #f08a82;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a1a19;
+  --panel: #232321;
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --line: #3d3c39;
+  --box: #20201f;
+  --up: #3987e5;
+  --down: #d95926;
+  --sel: #f0efec;
+  --ok: #66c28b;
+  --maybe: #e0b04a;
+  --bad: #f08a82;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+header h1 { font-size: 16px; margin: 0; }
+header .controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+input[type="search"] {
+  font: inherit;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--box);
+  color: var(--ink);
+  min-width: 220px;
+}
+#verdict-banner { padding: 8px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.muted { color: var(--ink-2); }
+.chip { margin-right: 6px; display: inline-block; padding: 1px 8px; border-radius: 10px; border: 1px solid currentColor; font-size: 12px; white-space: nowrap; }
+.chip.ok { color: var(--ok); }
+.chip.maybe { color: var(--maybe); }
+.chip.bad { color: var(--bad); }
+
+main { display: grid; grid-template-columns: minmax(0, 1fr) 380px; min-height: calc(100vh - 100px); }
+#graph { overflow: auto; padding: 4px; }
+#panel { border-left: 1px solid var(--line); background: var(--panel); padding: 12px 16px; overflow: auto; max-height: calc(100vh - 100px); }
+#panel h2 { font-size: 15px; margin: 0 0 4px; word-break: break-all; }
+#panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); margin: 16px 0 6px; }
+#panel pre { margin: 6px 0; white-space: pre-wrap; word-break: break-word; background: var(--box); padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line); font-size: 12px; }
+#panel code { font-size: 12px; }
+#panel ul { list-style: none; margin: 0; padding-left: 0; }
+#panel ul ul { padding-left: 16px; border-left: 1px solid var(--line); margin-left: 4px; }
+#panel li { margin: 3px 0; }
+.role { margin-left: 8px; font-size: 11px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 8px; padding: 0 6px; }
+.step { font-size: 11px; color: var(--ink-2); font-family: ui-monospace, Menlo, Consolas, monospace; word-break: break-word; }
+.note.warn { color: var(--maybe); font-size: 12px; margin: 8px 0; }
+.down-model { margin: 3px 0; font-size: 12px; }
+
+svg { display: block; }
+.box { fill: var(--box); stroke: var(--line); }
+.source .box { stroke-dasharray: 4 3; }
+.title { font: 600 13px system-ui, sans-serif; fill: var(--ink); }
+.rank { font: 600 11px system-ui, sans-serif; fill: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.warn { font-size: 13px; fill: var(--maybe); }
+.row { fill: transparent; }
+.cname { font: 12px ui-monospace, Menlo, Consolas, monospace; fill: var(--ink); }
+.ctype { font: 10px system-ui, sans-serif; fill: var(--ink-2); }
+.col { cursor: pointer; outline: none; }
+.col:hover .row, .col:focus-visible .row { fill: var(--panel); }
+.col.sel .row { fill: var(--sel); }
+.col.sel .cname, .col.sel .ctype { fill: var(--bg); }
+.col.up .row { fill: color-mix(in srgb, var(--up) 22%, transparent); stroke: var(--up); }
+.col.down .row { fill: color-mix(in srgb, var(--down) 22%, transparent); stroke: var(--down); }
+.col.dim { opacity: 0.35; }
+.col.hit .row { stroke: var(--ink); stroke-width: 2; }
+.edge { fill: none; stroke-width: 1.6; opacity: 0.9; }
+.edge.up { stroke: var(--up); }
+.edge.down { stroke: var(--down); }
+.edge.dashed { stroke-dasharray: 5 4; opacity: 0.55; }
+
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; }
+  #panel { border-left: none; border-top: 1px solid var(--line); max-height: none; }
+}

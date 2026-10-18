@@ -1,0 +1,7 @@
+order_id,net_amount,tax_amount,region
+1,100.0,20.0,north
+2,250.0,50.0,south
+3,80.0,16.0,north
+4,310.0,62.0,east
+5,45.0,9.0,south
+6,190.0,38.0,east

@@ -1,0 +1,4 @@
+# Two models that read the same table. One is traced completely; one uses DuckDB's COLUMNS('regex'),
+# which sqlglot cannot expand, so the static lineage loses it and only the data check finds it.
+[sources.orders]
+path = "orders.csv"

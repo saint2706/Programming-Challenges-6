@@ -37,6 +37,7 @@
 - [Correlation Matrix Explorer for Any Uploaded Dataset](Data%20Analytics/Correlation%20Matrix%20Explorer%20for%20Any%20Uploaded%20Dataset/README.md)
 - [CSV Data Profiler](Data%20Analytics/CSV%20Data%20Profiler/README.md)
 - [Customer Segmentation Explorer (RFM Analysis)](Data%20Analytics/Customer%20Segmentation%20Explorer%20%28RFM%20Analysis%29/README.md)
+- [Data Lineage Tracker](Data%20Analytics/Data%20Lineage%20Tracker/README.md)
 - [Geo-Spatial Sales Heatmap Builder](Data%20Analytics/Geo-Spatial%20Sales%20Heatmap%20Builder/README.md)
 - [Interactive Sales Dashboard from a Spreadsheet](Data%20Analytics/Interactive%20Sales%20Dashboard%20from%20a%20Spreadsheet/README.md)
 - [Multi-Source Data Reconciliation Tool](Data%20Analytics/Multi-Source%20Data%20Reconciliation%20Tool/README.md)

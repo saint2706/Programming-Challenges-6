@@ -1,0 +1,12 @@
+{
+    "transactions_sample.parquet": {
+        "source": "UCI Machine Learning Repository, Online Retail II (Chen, 2019), CC BY 4.0",
+        "url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+        "origin": "copied from challenges/Data Analytics/Customer Segmentation Explorer (RFM Analysis)/sample_data, every row of 600 random customers",
+        "rows": 87862
+    },
+    "ref_country_region.csv": {
+        "source": "hand-written lookup of the 43 country names in the data to six regions plus Unknown",
+        "rows": 43
+    }
+}

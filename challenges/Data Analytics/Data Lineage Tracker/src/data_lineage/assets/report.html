@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data lineage</title>
+<link rel="icon" href="data:,">
+<style>
+/*CSS*/
+</style>
+</head>
+<body>
+<header>
+  <h1 id="heading"></h1>
+  <div class="controls">
+    <input id="search" type="search" placeholder="Find a column (Enter selects)" aria-label="Find a column">
+    <label><input id="indirect" type="checkbox"> include rows-only dependencies (filters, joins, group keys)</label>
+  </div>
+</header>
+<div id="verdict-banner"></div>
+<main>
+  <div id="graph"></div>
+  <aside id="panel" aria-live="polite"></aside>
+</main>
+<script id="lineage-data" type="application/json">/*DATA*/</script>
+<script>
+/*JS*/
+</script>
+</body>
+</html>
