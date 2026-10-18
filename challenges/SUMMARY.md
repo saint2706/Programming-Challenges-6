@@ -35,6 +35,7 @@
 - [Automated Data Quality Monitor](Data%20Analytics/Automated%20Data%20Quality%20Monitor/README.md)
 - [Cohort Retention Analysis Tool](Data%20Analytics/Cohort%20Retention%20Analysis%20Tool/README.md)
 - [Correlation Matrix Explorer for Any Uploaded Dataset](Data%20Analytics/Correlation%20Matrix%20Explorer%20for%20Any%20Uploaded%20Dataset/README.md)
+- [Cross-Tabulation & Pivot Table Engine](Data%20Analytics/Cross-Tabulation%20%26%20Pivot%20Table%20Engine/README.md)
 - [CSV Data Profiler](Data%20Analytics/CSV%20Data%20Profiler/README.md)
 - [Customer Segmentation Explorer (RFM Analysis)](Data%20Analytics/Customer%20Segmentation%20Explorer%20%28RFM%20Analysis%29/README.md)
 - [Data Lineage Tracker](Data%20Analytics/Data%20Lineage%20Tracker/README.md)

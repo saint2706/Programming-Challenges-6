@@ -1,0 +1,11 @@
+{
+    "adult.csv.gz": {
+        "url": "https://archive.ics.uci.edu/static/public/2/adult.zip",
+        "download_sha256": "7537312dd56c2b98035880805ce99e68183a30ee468aa5329d6df0fbb3cc21bb",
+        "rows": 48842
+    },
+    "ucb_admissions.csv": {
+        "source": "Bickel, Hammel and O'Connell, Science 187 (1975); R datasets::UCBAdmissions",
+        "rows": 4526
+    }
+}

@@ -1,0 +1,23 @@
+[package]
+name = "pivot-core"
+description = "A pivot table and cross-tabulation engine written from scratch: CSV, columnar storage, hash aggregation, subtotals, show-values-as, calculated fields, chi-square statistics."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lib]
+name = "pivot_core"
+path = "src/lib.rs"
+
+[[bench]]
+name = "pivot"
+harness = false
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+criterion = "0.8"
+proptest = "1"

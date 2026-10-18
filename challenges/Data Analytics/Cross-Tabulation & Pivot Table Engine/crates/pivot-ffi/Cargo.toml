@@ -1,0 +1,17 @@
+[package]
+name = "pivot-ffi"
+description = "The pivot engine behind a C ABI (JSON in, JSON out): loaded by Python through ctypes and by the browser as WebAssembly."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lib]
+name = "pivot_ffi"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pivot-core = { path = "../pivot-core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pivot table</title>
+<link rel="icon" href="data:,">
+<style>
+/*CSS*/
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1 id="title">Pivot table</h1>
+    <div class="sub" id="subtitle">Loading the engine…</div>
+  </div>
+  <div class="spacer"></div>
+  <label>Preset <select id="preset" aria-label="Preset"></select></label>
+  <button type="button" id="reset">Clear</button>
+  <button type="button" id="export">Export CSV</button>
+</header>
+<div id="preset-note" aria-live="polite"></div>
+<main class="layout">
+  <aside class="side" aria-label="Fields and layout">
+    <h2>Fields</h2>
+    <input id="field-search" type="search" placeholder="Find a field" aria-label="Find a field">
+    <ul id="fields"></ul>
+    <h2>Layout</h2>
+    <div id="zones"></div>
+    <h2>Options</h2>
+    <div id="options"></div>
+  </aside>
+  <section class="workspace">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="pivot" aria-selected="true">Pivot</button>
+      <button type="button" role="tab" data-tab="crosstab" aria-selected="false">Cross-tab statistics</button>
+    </div>
+    <div id="status" aria-live="polite"></div>
+    <div id="output"></div>
+  </section>
+</main>
+<script id="config" type="application/json">/*CONFIG*/</script>
+<script id="wasm-b64" type="application/octet-stream">/*WASM*/</script>
+<script id="data-b64" type="application/octet-stream">/*DATA*/</script>
+<script>
+/*ENGINE*/
+</script>
+<script>
+/*APP*/
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+[workspace]
+resolver = "3"
+members = ["crates/pivot-core", "crates/pivot-ffi"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+publish = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false
+
+# The browser build: small beats fast.
+[profile.wasm]
+inherits = "release"
+opt-level = "s"
+lto = "fat"
+panic = "abort"
+strip = true

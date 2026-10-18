@@ -1,0 +1,26 @@
+[project]
+name = "cross-tabulation-pivot-table-engine"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=15.0.0",
+    "typer>=0.27.2",
+]
+
+[project.scripts]
+pivot = "pivot_tool.cli:app"
+
+[dependency-groups]
+dev = [
+    "polars>=1.44.2",
+    "pytest>=9.1.1",
+    "scipy>=1.18.1",
+    "duckdb>=1.5.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "pivot_tool"
