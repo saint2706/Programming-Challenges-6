@@ -165,8 +165,8 @@ jobs:
     if: needs.changes.outputs.python != '[]'
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    # The newest Python is a canary, not a gate: some pinned dependencies (numba, paddlepaddle)
-    # have no release for it yet. A red 3.14 leg is visible on the run but does not fail CI.
+    # The newest Python is a canary, not a gate: a pinned dependency (paddlepaddle)
+    # has no release for it yet. A red 3.14 leg is visible on the run but does not fail CI.
     continue-on-error: ${{ matrix.python == '3.14' }}
     strategy:
       fail-fast: false
