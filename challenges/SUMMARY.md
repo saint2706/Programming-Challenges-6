@@ -15,6 +15,7 @@
 - [Heavy-Light Decomposition for Tree Path Queries](Algorithmic%20Challenges/Heavy-Light%20Decomposition%20for%20Tree%20Path%20Queries/README.md)
 - [Held-Karp Exact TSP Solver](Algorithmic%20Challenges/Held-Karp%20Exact%20TSP%20Solver/README.md)
 - [Josephus Problem Solver](Algorithmic%20Challenges/Josephus%20Problem%20Solver/README.md)
+- [Link-Cut Tree for Dynamic Tree Connectivity](Algorithmic%20Challenges/Link-Cut%20Tree%20for%20Dynamic%20Tree%20Connectivity/README.md)
 - [Manacher's Algorithm for Longest Palindromic Substring](Algorithmic%20Challenges/Manacher%27s%20Algorithm%20for%20Longest%20Palindromic%20Substring/README.md)
 - [Merkle Tree Builder & Proof-of-Inclusion Verifier](Algorithmic%20Challenges/Merkle%20Tree%20Builder%20%26%20Proof-of-Inclusion%20Verifier/README.md)
 - [Minimum Spanning Tree Visualizer](Algorithmic%20Challenges/Minimum%20Spanning%20Tree%20Visualizer/README.md)
