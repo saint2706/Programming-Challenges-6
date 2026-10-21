@@ -1,0 +1,22 @@
+{
+    "dna": {
+        "url": "https://pizzachili.dcc.uchile.cl/texts/dna/dna.50MB.gz",
+        "gz_sha256": "61018dd56e8b099c0db6c86148bdab6fd6728570d4311ae34cfecd07b7169312",
+        "bytes": 52428800
+    },
+    "english": {
+        "url": "https://pizzachili.dcc.uchile.cl/texts/nlang/english.50MB.gz",
+        "gz_sha256": "4261b313e2e662563db93e04224ed8a9181ccbbe0e53b4d521798af8f9f2c263",
+        "bytes": 52428800
+    },
+    "sources": {
+        "url": "https://pizzachili.dcc.uchile.cl/texts/code/sources.50MB.gz",
+        "gz_sha256": "3b5548a8836ffeefbab1fc5d6e1fbc78dc0780b410f6c7f4f6792c362f33a280",
+        "bytes": 52428800
+    },
+    "proteins": {
+        "url": "https://pizzachili.dcc.uchile.cl/texts/protein/proteins.50MB.gz",
+        "gz_sha256": "a32874098c4da4022aef7237b3a292bb10c7f104e10231418293579879c25d52",
+        "bytes": 52428800
+    }
+}

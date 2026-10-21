@@ -27,6 +27,7 @@
 - [Run-Length Encoding Compressor with Custom Alphabets](Algorithmic%20Challenges/Run-Length%20Encoding%20Compressor%20with%20Custom%20Alphabets/README.md)
 - [Skyline Silhouette Computation](Algorithmic%20Challenges/Skyline%20Silhouette%20Computation/README.md)
 - [Strongly Connected Components Finder](Algorithmic%20Challenges/Strongly%20Connected%20Components%20Finder/README.md)
+- [Suffix Tree Construction (Ukkonen's Algorithm)](Algorithmic%20Challenges/Suffix%20Tree%20Construction%20%28Ukkonen%27s%20Algorithm%29/README.md)
 - [T9 Predictive Text (Phone Keypad) Simulator](Algorithmic%20Challenges/T9%20Predictive%20Text%20%28Phone%20Keypad%29%20Simulator/README.md)
 - [Z-Algorithm String Pattern Indexer](Algorithmic%20Challenges/Z-Algorithm%20String%20Pattern%20Indexer/README.md)
 

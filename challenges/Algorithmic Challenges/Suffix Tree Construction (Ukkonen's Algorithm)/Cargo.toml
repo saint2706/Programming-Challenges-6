@@ -1,0 +1,36 @@
+[package]
+name = "suffix-tree"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+description = "Suffix trees three ways (Ukkonen, suffix array + LCP, top-down partitioning) against a SA-IS suffix array."
+
+[lib]
+name = "sufftree"
+path = "src/lib.rs"
+
+[[bin]]
+name = "sufftree"
+path = "src/bin/sufftree.rs"
+
+[[bench]]
+name = "construction"
+harness = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false
+
+[dev-dependencies]
+criterion = "0.8.2"
+libsais = { version = "0.2.0", default-features = false }
+proptest = "1.12.0"
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive"] }
+foldhash = "0.2.0"
