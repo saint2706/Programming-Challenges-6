@@ -1,0 +1,38 @@
+[package]
+name = "min-cost-flow"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+description = "Assignment and min-cost flow solvers: Hungarian, Jonker-Volgenant, LAPMOD, auction, SSP, cost scaling, network simplex."
+
+[lib]
+name = "mcflow"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mcflow"
+path = "src/bin/mcflow.rs"
+
+[[bench]]
+name = "solvers"
+harness = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.8.2"
+lapjv = "0.3.0"
+# lapjv 0.3 is built on ndarray 0.16; its `Matrix` type only accepts that version.
+ndarray = "0.16.1"
+pathfinding = "4.16.0"
+proptest = "1.12.0"
