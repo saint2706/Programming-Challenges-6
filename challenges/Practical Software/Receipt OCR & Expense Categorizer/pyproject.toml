@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "paddleocr>=3.7.0",
     "paddlepaddle>=3.3.1",
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "rapidfuzz>=3.14.6",
     "typer>=0.27.3",
 ]
