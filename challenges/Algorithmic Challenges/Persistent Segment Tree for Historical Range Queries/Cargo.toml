@@ -1,0 +1,36 @@
+[package]
+name = "persistent-segment-tree"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+description = "Persistent segment trees (path copying, lazy marks, fat nodes) against a wavelet matrix, with version garbage collection."
+
+[lib]
+name = "persegtree"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pst"
+path = "src/bin/pst.rs"
+
+[[bench]]
+name = "queries"
+harness = false
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false
+
+[dependencies]
+clap = { version = "4.6.7", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.8.2"
+imbl = "7.0.2"
+proptest = "1.12.0"
+rpds = "1.2.1"
