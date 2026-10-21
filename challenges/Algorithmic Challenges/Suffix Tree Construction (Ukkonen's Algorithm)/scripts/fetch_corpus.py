@@ -40,7 +40,11 @@ def sha256(path: Path) -> str:
 
 def main() -> int:
     record = "--record" in sys.argv
-    pins = {} if record or not MANIFEST.exists() else json.loads(MANIFEST.read_text("utf-8"))
+    pins = (
+        {}
+        if record or not MANIFEST.exists()
+        else json.loads(MANIFEST.read_text("utf-8"))
+    )
     DATA.mkdir(exist_ok=True)
     out = {}
     for name, rel in TEXTS.items():
@@ -49,23 +53,34 @@ def main() -> int:
         if not target.exists():
             url = f"{BASE}/{rel}"
             print(f"downloading {url}")
-            with urllib.request.urlopen(url, timeout=120) as response, archive.open("wb") as f:
+            with (
+                urllib.request.urlopen(url, timeout=120) as response,
+                archive.open("wb") as f,
+            ):
                 shutil.copyfileobj(response, f)
             digest = sha256(archive)
             pinned = pins.get(name, {}).get("gz_sha256")
             if pinned and pinned != digest:
                 archive.unlink()
-                print(f"error: {name}: sha256 {digest} does not match the pinned {pinned}")
+                print(
+                    f"error: {name}: sha256 {digest} does not match the pinned {pinned}"
+                )
                 return 1
             with gzip.open(archive, "rb") as src, target.open("wb") as dst:
                 shutil.copyfileobj(src, dst)
             archive.unlink()
         else:
             digest = pins.get(name, {}).get("gz_sha256", "")
-        out[name] = {"url": f"{BASE}/{rel}", "gz_sha256": digest, "bytes": target.stat().st_size}
+        out[name] = {
+            "url": f"{BASE}/{rel}",
+            "gz_sha256": digest,
+            "bytes": target.stat().st_size,
+        }
         print(f"{name}: {out[name]['bytes']:,} bytes")
     if record or not MANIFEST.exists():
-        MANIFEST.write_text(json.dumps(out, indent=4) + "\n", encoding="utf-8", newline="\n")
+        MANIFEST.write_text(
+            json.dumps(out, indent=4) + "\n", encoding="utf-8", newline="\n"
+        )
         print(f"wrote {MANIFEST.name}")
     return 0
 
