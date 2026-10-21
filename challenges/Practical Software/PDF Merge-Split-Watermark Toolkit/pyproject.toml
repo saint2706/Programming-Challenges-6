@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 dependencies = [
     "cryptography>=50.0.2",
     "cyclopts>=5.2.0",
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "pypdf>=6.20.1",
     "reportlab>=5.0.1",
 ]
