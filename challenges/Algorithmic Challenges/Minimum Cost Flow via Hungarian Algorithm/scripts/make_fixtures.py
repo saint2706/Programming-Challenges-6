@@ -70,7 +70,7 @@ def assignment_fixtures(rng: np.random.Generator) -> list[tuple[str, str, str]]:
         scipy_cost = np.where(forbidden, np.inf, c.astype(float))
         try:
             ri, ci = linear_sum_assignment(scipy_cost)
-            expected = str(int(round(c[ri, ci].sum())))
+            expected = str(int(c[ri, ci].sum()))
         except ValueError:
             expected = "infeasible"
         rows.append(("matrix", fname, expected))
