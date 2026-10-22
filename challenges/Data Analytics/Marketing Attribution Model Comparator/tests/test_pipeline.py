@@ -208,7 +208,9 @@ def test_report_is_self_contained_and_escapes_names():
     j = from_paths([["<img src=x onerror=1>", "b"], ["b"]], [30, 20], [100, 100])
     c = compare(j, Settings(half_life=1.0), draws=5)
     page = build_html("<b>t</b>", c, [], MODELS, ["note <i>"])
-    markup = re.sub(r"<script>.*?</script>", "", page, flags=re.DOTALL)
+    markup = re.sub(
+        r"<script\b[^>]*>.*?</script\s*>", "", page, flags=re.DOTALL | re.IGNORECASE
+    )
     assert (
         "<img src=x" not in page
         and "&lt;img src=x" in page
