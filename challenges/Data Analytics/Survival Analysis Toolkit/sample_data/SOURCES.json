@@ -1,0 +1,20 @@
+{
+    "telco.parquet": {
+        "source": "IBM Telco customer churn sample dataset (Cognos Analytics sample data)",
+        "url": "https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv",
+        "rows": 7043,
+        "cleaning": "TotalCharges blanks -> null; churned = Churn == 'Yes'; columns otherwise as-is"
+    },
+    "lung.csv": {
+        "source": "NCCTG lung cancer data (Loprinzi et al., 1994), R survival::lung",
+        "url": "https://vincentarelbundock.github.io/Rdatasets/csv/survival/cancer.csv",
+        "rows": 228,
+        "cleaning": "dots in column names -> underscores; event = (status == 2)"
+    },
+    "gbsg.csv": {
+        "source": "German Breast Cancer Study Group (Schumacher et al., 1994), R survival::gbsg",
+        "url": "https://vincentarelbundock.github.io/Rdatasets/csv/survival/gbsg.csv",
+        "rows": 686,
+        "cleaning": "rownames dropped; event = status (1 = recurrence or death)"
+    }
+}

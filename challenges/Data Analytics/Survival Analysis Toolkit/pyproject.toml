@@ -1,0 +1,29 @@
+[project]
+name = "survival-analysis-toolkit"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5.4",
+    "plotly>=7.1.0",
+    "polars>=2.0.0",
+    "rich>=15.0.0",
+    "scipy>=1.18.1",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+survival = "survival_toolkit.cli:app"
+
+[dependency-groups]
+dev = [
+    "lifelines>=0.30.3",
+    "pytest>=9.1.1",
+    "scikit-survival>=0.28.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "survival_toolkit"
