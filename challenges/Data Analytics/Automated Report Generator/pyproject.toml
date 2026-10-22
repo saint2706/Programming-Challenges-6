@@ -1,0 +1,30 @@
+[project]
+name = "automated-report-generator"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=2.0.0",
+    "numpy>=2.5.4",
+    "plotly>=7.1.0",
+    "polars>=2.0.0",
+    "rich>=15.0.0",
+    "scipy>=1.18.1",
+    "statsmodels>=0.15.0",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+autoreport = "report_generator.cli:app"
+
+[dependency-groups]
+dev = [
+    "pymannkendall>=1.4.3",
+    "pytest>=9.1.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "report_generator"

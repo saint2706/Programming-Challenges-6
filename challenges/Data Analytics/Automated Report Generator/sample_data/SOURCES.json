@@ -1,0 +1,20 @@
+{
+    "bike.parquet": {
+        "source": "UCI Bike Sharing Dataset, daily file (Fanaee-T and Gama, 2013), CC BY 4.0",
+        "url": "https://archive.ics.uci.edu/static/public/275/bike+sharing+dataset.zip",
+        "cleaning": "categorical codes decoded; weather columns rescaled to C, % and km/h",
+        "rows": 731
+    },
+    "retail.parquet": {
+        "source": "UCI Online Retail II (Chen, 2019), CC BY 4.0",
+        "url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+        "origin": "copied from challenges/Data Analytics/Customer Segmentation Explorer (RFM Analysis)/sample_data: every line of 600 random customers; revenue is derived at load",
+        "rows": 87862
+    },
+    "ames.parquet": {
+        "source": "Ames, Iowa housing (De Cock, 2011) via R modeldata::ames (Rdatasets)",
+        "url": "https://vincentarelbundock.github.io/Rdatasets/csv/modeldata/ames.csv",
+        "cleaning": "16 of 74 columns kept; sale_month built from Year_Sold and Mo_Sold",
+        "rows": 2930
+    }
+}
