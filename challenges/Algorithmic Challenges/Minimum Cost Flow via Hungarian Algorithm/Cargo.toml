@@ -33,6 +33,6 @@ clap = { version = "4.6.7", features = ["derive"] }
 criterion = "0.8.2"
 lapjv = "0.3.0"
 # lapjv 0.3 is built on ndarray 0.16; its `Matrix` type only accepts that version.
-ndarray = "0.16.1"
+ndarray = "0.17.2"
 pathfinding = "4.16.0"
 proptest = "1.12.0"
