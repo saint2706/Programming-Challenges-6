@@ -45,6 +45,7 @@ class Settings:
     allow_regexes: tuple[str, ...] = ()
     stopwords: tuple[str, ...] = ()
     honor_inline_allow: bool = False
+    allow_partial: bool = False  # a partial audit fails the run unless this is set
     time_budget: int = 600
     scan_budget_bytes: int = 2 * 1024**3
     config_source: str | None = field(default=None, compare=False)
@@ -77,6 +78,7 @@ _BOOL_KEYS = (
     "check_signatures",
     "check_identities",
     "honor_inline_allow",
+    "allow_partial",
 )
 _STR_KEYS = ("ref", "default_branch", "fail_on", "baseline", "since")
 _LIST_KEYS = ("allow_paths", "allow_regexes", "stopwords")

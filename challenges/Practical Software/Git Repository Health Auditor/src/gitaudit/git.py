@@ -26,7 +26,6 @@ MAX_RECORD = 4 * 1024**2  # one record longer than this is refused, not buffered
 MAX_POINTER_BYTES = 1024**2
 _HEX40 = re.compile(rb"[0-9a-f]{40}")
 _VERSION_RE = re.compile(r"git version (\d+)\.(\d+)")
-_INCLUDE_RE = re.compile(r"^\s*\[\s*include", re.IGNORECASE | re.MULTILINE)
 
 # Disable everything in the audited repo's config that could execute code, contact a remote or
 # pick a program. `-c` on the command line outranks the repository's own config.
@@ -86,8 +85,9 @@ def _hardened_env() -> dict[str, str]:
 
 
 def _is_network_path(text: str) -> bool:
-    """UNC and `//host/share` paths make Windows open an SMB connection, so they are refused."""
-    return text.strip().replace("\\", "/").startswith("//")
+    """Any doubled slash, UNC and `//host/share` included. Windows opens SMB for those, so they are
+    refused rather than resolved. Refusing a harmless doubled slash costs nothing."""
+    return "//" in text.strip().replace("\\", "/")
 
 
 def _read_pointer(path: Path) -> str | None:
@@ -96,54 +96,98 @@ def _read_pointer(path: Path) -> str | None:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
-def _refuse_untrusted_storage(path: Path) -> None:
-    """Refuse repository pointers that could make git reach the network or follow config includes.
+def _same_dir(path: Path | str) -> str:
+    return os.path.normcase(os.path.realpath(path))
 
-    Runs before the first git call, because git itself follows these files as it starts.
+
+def _gitdir_candidates(path: Path) -> list[tuple[Path, Path]]:
+    """(worktree root, storage dir) for every place git could find a repository above `path`.
+
+    Reads only local pointer text, so nothing is opened over the network. A UNC gitfile is refused.
     """
-    root = next((c for c in (path, *path.parents) if (c / ".git").exists()), path)
-    dot = root / ".git"
-    gitdir = dot if dot.exists() else root  # a bare repository is its own git dir
-    if dot.is_file():
-        text = _read_pointer(dot) or ""
-        target = next(
-            (
-                ln[len("gitdir:") :].strip()
-                for ln in text.splitlines()
-                if ln.startswith("gitdir:")
-            ),
-            "",
-        )
-        if _is_network_path(target):
-            raise GitError("refusing a gitfile that points at a network path")
-        gitdir = root / target
-    if not gitdir.is_dir():
-        return
+    found: list[tuple[Path, Path]] = []
+    for c in (path, *path.parents):
+        dot = c / ".git"
+        if dot.is_dir():
+            found.append((c, dot))
+        elif dot.is_file():
+            text = _read_pointer(dot) or ""
+            target = next(
+                (
+                    ln[len("gitdir:") :].strip()
+                    for ln in text.splitlines()
+                    if ln.startswith("gitdir:")
+                ),
+                "",
+            )
+            if _is_network_path(target):
+                raise GitError("refusing a gitfile that points at a network path")
+            if target:
+                found.append((c, c / target))
+        elif (c / "HEAD").is_file() and (c / "objects").is_dir():
+            found.append((c, c))  # a bare repository is its own storage dir
+    return found
+
+
+def _refuse_includes(config: Path, env: dict[str, str]) -> None:
+    """Refuse a config file that git reads an include from.
+
+    Asks git for the key names with includes not followed, so git's own parser decides what
+    counts as an include. A file git cannot parse raises here too.
+    """
+    proc = subprocess.run(
+        [
+            "git",
+            "config",
+            "--file",
+            str(config),
+            "--no-includes",
+            "--list",
+            "--name-only",
+            "-z",
+        ],
+        capture_output=True,
+        env=env,
+        cwd=tempfile.gettempdir(),  # outside any repository: nothing else is read
+        timeout=60,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise GitError(f"git cannot read {sanitize(config.name, 40)}")
+    for raw in proc.stdout.split(b"\0"):
+        key = raw.decode("utf-8", "replace").lower()
+        if key.startswith(("include.", "includeif.")):
+            raise GitError(
+                f"refusing {sanitize(config.name, 40)}: it uses an include, which this audit "
+                "does not follow"
+            )
+
+
+def _refuse_untrusted_storage(root: Path, gitdir: Path, env: dict[str, str]) -> None:
+    """Refuse pointers and includes in one storage dir that git would otherwise follow at startup."""
     common_text = (_read_pointer(gitdir / "commondir") or "").strip()
     if _is_network_path(common_text):
         raise GitError("refusing a commondir that points at a network path")
     common = (gitdir / common_text).resolve() if common_text else gitdir.resolve()
-    for config in {gitdir / "config", common / "config"}:
-        text = _read_pointer(config) or ""
-        if _INCLUDE_RE.search(text):
-            raise GitError(
-                f"refusing {sanitize(config.name, 40)}: it uses [include] or [includeIf], "
-                "which this audit does not follow"
-            )
+    for config in (gitdir / "config", gitdir / "config.worktree", common / "config"):
+        if config.is_file():
+            _refuse_includes(config, env)
     inside = root.resolve()
     for line in (
         _read_pointer(common / "objects" / "info" / "alternates") or ""
     ).splitlines():
-        entry = line.strip()
-        if not entry or entry.startswith("#"):
+        if not line or line.startswith("#"):
             continue
-        if _is_network_path(entry):
+        # Git C-unquotes a quoted line, and this check does not parse that, so refuse it.
+        if line.startswith('"'):
+            raise GitError("refusing a quoted object alternate")
+        if _is_network_path(line):
             raise GitError("refusing an object alternate on a network path")
-        target = (common / "objects" / entry).resolve()
+        target = (common / "objects" / line).resolve()
         if target != inside and inside not in target.parents:
             raise GitError(
                 "refusing object alternates outside the repository: "
-                f"{sanitize(entry, 120)}"
+                f"{sanitize(line, 120)}"
             )
 
 
@@ -155,9 +199,12 @@ class GitRepo:
         self.timeout = timeout
         self._env = _hardened_env()
         self._check_version()
-        if self.path.is_dir():
-            _refuse_untrusted_storage(self.path)
-        self.git_dir = self._discover()
+        if not self.path.is_dir():
+            raise GitError(f"not a directory: {sanitize(self.path, 200)}")
+        candidates = _gitdir_candidates(self.path)
+        for root, gitdir in candidates:
+            _refuse_untrusted_storage(root, gitdir, self._env)
+        self.git_dir = self._discover(candidates)
 
     # ----- process plumbing -------------------------------------------------------------
 
@@ -181,14 +228,16 @@ class GitRepo:
                 f"git {need} or newer is required, found {sanitize(out.strip(), 60)}"
             )
 
-    def _discover(self) -> Path:
-        if not self.path.is_dir():
-            raise GitError(f"not a directory: {sanitize(self.path, 200)}")
+    def _discover(self, candidates: list[tuple[Path, Path]]) -> Path:
+        """The storage dir git reports. It must be one the checks above covered."""
         out = (
             self.run(["rev-parse", "--absolute-git-dir"])
             .decode("utf-8", "replace")
             .strip()
         )
+        checked = {_same_dir(gitdir) for _root, gitdir in candidates}
+        if _same_dir(out) not in checked:
+            raise GitError("git uses a storage directory the audit did not check")
         return Path(out)
 
     def run(self, args: list[str], stdin: bytes | None = None) -> bytes:

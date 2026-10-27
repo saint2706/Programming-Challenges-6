@@ -394,7 +394,7 @@ CATALOG: dict[str, RuleInfo] = {
             "HY013",
             "audit-budget-exhausted",
             "hygiene",
-            Severity.MEDIUM,
+            Severity.HIGH,
             "A time or scan budget ran out, so the results are partial.",
         ),
         RuleInfo(

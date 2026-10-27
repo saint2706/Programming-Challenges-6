@@ -523,3 +523,152 @@ def test_unexpected_error_exits_two(repo_factory, monkeypatch, capsys):
     monkeypatch.setattr(cli_module, "run_audit", boom)
     assert main([str(repo.path), "--format", "json"]) == 2
     assert "internal error" in capsys.readouterr().err
+
+
+# ----- Second review: alternates quoting, include keys, storage discovery, partial exit ------
+
+
+@requires_git
+def test_quoted_alternate_line_is_refused(repo_factory):
+    # Git C-unquotes a quoted alternates line, so the plain-text checks cannot judge it.
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    (repo.path / ".git" / "objects" / "info" / "alternates").write_text(
+        '"/elsewhere/objects"\n', encoding="utf-8"
+    )
+    with pytest.raises(GitError, match="quoted"):
+        GitRepo(repo.path)
+
+
+@requires_git
+@pytest.mark.parametrize(
+    "section",
+    [
+        "[include]\n\tpath = /tmp/a.cfg\n",
+        "[INCLUDE]\n\tPATH = /tmp/b.cfg\n",
+        '[includeIf "gitdir:/x"]\n\tpath = /tmp/c.cfg\n',
+        '[include "sub"]\n\tpath = /tmp/d.cfg\n',
+    ],
+)
+def test_include_spellings_are_refused(repo_factory, section):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    with (repo.path / ".git" / "config").open("a", encoding="utf-8") as fh:
+        fh.write(section)
+    with pytest.raises(GitError, match="include"):
+        GitRepo(repo.path)
+
+
+@requires_git
+def test_include_in_config_worktree_is_refused(repo_factory):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    (repo.path / ".git" / "config.worktree").write_text(
+        "[include]\n\tpath = /tmp/e.cfg\n", encoding="utf-8"
+    )
+    with pytest.raises(GitError, match="include"):
+        GitRepo(repo.path)
+
+
+@requires_git
+def test_config_git_cannot_parse_is_refused(repo_factory):
+    # Git rejects "[ include ]" as a bad line, so no reader can disagree about it: fail closed.
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    with (repo.path / ".git" / "config").open("a", encoding="utf-8") as fh:
+        fh.write("[ include ]\n\tpath = /tmp/f.cfg\n")
+    with pytest.raises(GitError, match="cannot read"):
+        GitRepo(repo.path)
+
+
+@requires_git
+def test_bare_repository_is_discovered_as_itself(tmp_path):
+    bare = tmp_path / "bare.git"
+    subprocess.run([GIT, "init", "--bare", "-q", str(bare)], check=True, env=_CLEAN_ENV)
+    assert GitRepo(bare).git_dir == bare.resolve()
+
+
+@requires_git
+def test_gitfile_is_discovered_at_the_directory_git_reports(repo_factory, tmp_path):
+    store = repo_factory()
+    store.write("a.txt", "a")
+    store.commit("init")
+    work = tmp_path / "work"
+    work.mkdir()
+    (work / ".git").write_text(f"gitdir: {store.path / '.git'}\n", encoding="utf-8")
+    assert GitRepo(work).git_dir == (store.path / ".git").resolve()
+
+
+@requires_git
+def test_include_in_a_gitfile_target_is_refused(repo_factory, tmp_path):
+    store = repo_factory()
+    store.write("a.txt", "a")
+    store.commit("init")
+    with (store.path / ".git" / "config").open("a", encoding="utf-8") as fh:
+        fh.write("[include]\n\tpath = /tmp/g.cfg\n")
+    work = tmp_path / "work"
+    work.mkdir()
+    (work / ".git").write_text(f"gitdir: {store.path / '.git'}\n", encoding="utf-8")
+    with pytest.raises(GitError, match="include"):
+        GitRepo(work)
+
+
+@requires_git
+def test_nested_directory_is_discovered_at_the_enclosing_repository(repo_factory):
+    repo = repo_factory()
+    repo.write("sub/a.txt", "a")
+    repo.commit("init")
+    assert GitRepo(repo.path / "sub").git_dir == (repo.path / ".git").resolve()
+
+
+@requires_git
+def test_partial_audit_fails_the_run_by_default(repo_factory, capsys):
+    repo = repo_factory()
+    repo.write("a.txt", "x" * 100)
+    repo.commit("init")
+    args = [str(repo.path), "--fail-on", "none", "--format", "json", "--no-history"]
+    args += ["--scan-budget", "1"]
+    assert main(args) == 1
+    assert '"HY013"' in capsys.readouterr().out
+
+
+@requires_git
+def test_allow_partial_lets_a_partial_audit_pass(repo_factory, capsys):
+    repo = repo_factory()
+    repo.write("a.txt", "x" * 100)
+    repo.commit("init")
+    args = [str(repo.path), "--fail-on", "none", "--format", "json", "--no-history"]
+    args += ["--scan-budget", "1", "--allow-partial"]
+    assert main(args) == 0
+    out = json.loads(capsys.readouterr().out)
+    hy013 = [f for f in out["findings"] if f["rule"] == "HY013"]
+    assert hy013 and hy013[0]["severity"] == "info"
+
+
+@requires_git
+def test_allow_path_skips_content_only_when_every_path_is_allowed(repo_factory):
+    # The same secret under an allowed path and a non-allowed one: the non-allowed path must scan.
+    repo = repo_factory()
+    key = fake_aws_key_id()
+    repo.write("docs/a.txt", f"a = '{key}'\n")
+    repo.write("src/a.txt", f"a = '{key}'\n")
+    repo.commit("same blob twice")
+    result = run_audit(Settings(repo=repo.path, history=False, allow_paths=("src/*",)))
+    assert any(f.rule_id == "SEC001" for f in result.findings)
+
+
+@requires_git
+def test_allow_path_skips_content_when_all_paths_are_allowed(repo_factory):
+    repo = repo_factory()
+    key = fake_aws_key_id()
+    repo.write("docs/a.txt", f"a = '{key}'\n")
+    repo.write("src/a.txt", f"a = '{key}'\n")
+    repo.commit("same blob twice")
+    result = run_audit(
+        Settings(repo=repo.path, history=False, allow_paths=("docs/*", "src/*"))
+    )
+    assert not any(f.rule_id == "SEC001" for f in result.findings)

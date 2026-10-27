@@ -63,11 +63,12 @@ def _sort_key(f: Finding) -> tuple[int, str, str, str]:
     return (-int(f.severity), f.rule_id, f.path or f.ref or "", f.fingerprint)
 
 
-def _partial_finding(reasons: list[str]) -> Finding:
+def _partial_finding(reasons: list[str], allow_partial: bool) -> Finding:
     text = ", ".join(sorted(set(reasons)))
     return Finding(
         rule_id="HY013",
-        severity=CATALOG["HY013"].severity,
+        # HIGH fails the run unless the operator opted out with --allow-partial.
+        severity=Severity.INFO if allow_partial else CATALOG["HY013"].severity,
         confidence="high",
         title=f"Audit results are partial: {text} reached",
         category="hygiene",
@@ -146,13 +147,16 @@ def run_audit(settings: Settings) -> AuditResult:
                     paths.append((path, blob, sha))
                 if blob is not None:
                     where.setdefault(blob, (path, sha))
-    for sha, entry in head_blobs.items():
+    # Every tree entry, not one per blob: a blob under two head paths must keep both names.
+    for entry in head_entries:
+        if entry.kind != "blob":
+            continue
         # The audited tree's name for a blob is the one to report.
-        _, commit_sha = where.get(sha, (None, None))
-        where[sha] = (entry.path, commit_sha)
-        if (entry.path, sha) not in seen_paths:
-            seen_paths.add((entry.path, sha))
-            paths.append((entry.path, sha, None))
+        _, commit_sha = where.get(entry.sha, (None, None))
+        where[entry.sha] = (entry.path, commit_sha)
+        if (entry.path, entry.sha) not in seen_paths:
+            seen_paths.add((entry.path, entry.sha))
+            paths.append((entry.path, entry.sha, None))
 
     allow = Allowlist(
         settings.allow_paths,
@@ -162,6 +166,12 @@ def run_audit(settings: Settings) -> AuditResult:
     )
     for path, blob, commit_sha in paths:
         findings += path_findings(path, blob or "", commit_sha, allow)
+    names: dict[
+        str, set[str]
+    ] = {}  # every path a blob appears under, not only the first
+    for path, blob, _commit in paths:
+        if blob is not None:
+            names.setdefault(blob, set()).add(path)
 
     # Pass 4: contents of every candidate under the scan limit.
     binary_shas: set[str] = set()
@@ -183,8 +193,9 @@ def run_audit(settings: Settings) -> AuditResult:
             binary_shas.add(sha)
             continue
         path, commit_sha = where.get(sha, (None, None))
-        if allow.path_allowed(path or ""):
-            continue  # --allow-path covers content as well as file names
+        blob_names = names.get(sha, set())
+        if blob_names and all(allow.path_allowed(p) for p in blob_names):
+            continue  # --allow-path covers content only when every path the blob has is allowed
         scanned += 1
         hits = scan_text(data, allow)
         if len(hits) >= MAX_HITS_PER_BLOB:
@@ -246,7 +257,7 @@ def run_audit(settings: Settings) -> AuditResult:
         except GitError:
             pass  # no commits on HEAD: nothing to verify
     if partial:
-        findings.append(_partial_finding(partial))
+        findings.append(_partial_finding(partial, settings.allow_partial))
 
     if settings.baseline:
         accepted = load_baseline(Path(settings.baseline))

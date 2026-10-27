@@ -106,6 +106,13 @@ def _parser() -> argparse.ArgumentParser:
         help="honour 'gitaudit:allow' comments on a line (off by default: a commit must not hide its own secrets)",
     )
     p.add_argument(
+        "--allow-partial",
+        dest="allow_partial",
+        action="store_true",
+        default=None,
+        help="do not fail the run when a budget or cap stopped the audit early (exit 0 with an INFO HY013)",
+    )
+    p.add_argument(
         "--time-budget",
         dest="time_budget",
         type=int,
@@ -146,7 +153,7 @@ def _overrides(args: argparse.Namespace) -> dict[str, object]:
         "ref", "default_branch", "stale_days", "long_lived_days", "max_blob_size",
         "lfs_threshold", "max_scan_size", "top", "fail_on", "history", "since",
         "check_signatures", "check_identities", "baseline", "honor_inline_allow",
-        "time_budget", "scan_budget_bytes",
+        "allow_partial", "time_budget", "scan_budget_bytes",
     )  # fmt: skip
     values: dict[str, object] = {k: getattr(args, k) for k in keys}
     values["allow_paths"] = args.allow_paths
@@ -201,7 +208,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             return EXIT_OK
         _render(result, args, console, forbidden)
         threshold = settings.fail_threshold()
-        return EXIT_FINDINGS if result.failing(threshold) else EXIT_OK
+        # A partial audit fails open in CI unless the operator explicitly allowed it.
+        partial_fails = result.partial and not settings.allow_partial
+        return EXIT_FINDINGS if partial_fails or result.failing(threshold) else EXIT_OK
     except (GitError, ValueError, OSError) as exc:
         err.print(
             f"gitaudit: error: {sanitize(exc, 400)}", markup=False, highlight=False

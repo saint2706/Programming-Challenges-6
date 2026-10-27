@@ -46,12 +46,14 @@ uv run --locked pytest -q                                    # tests, offline
 | `--write-baseline FILE` | none       | Write current fingerprints to the file and exit 0                                          |
 | `--allow-path GLOB`     | none       | Skip paths for secret checks (repeatable)                                                  |
 | `--allow-regex REGEX`   | none       | Ignore matching secret values (repeatable)                                                 |
+| `--allow-partial`       | off        | Do not fail when a budget or cap stopped the audit early (default: it fails)               |
 | `--format`              | `table`    | `table`, `json`, `sarif`, or `html`                                                        |
 | `--output`, `-o FILE`   | stdout     | Write JSON, SARIF or HTML to a file                                                        |
 | `--quiet`, `-q`         | off        | Table only: summary without per-row output                                                 |
 
-Exit codes: `0` no finding at or above `--fail-on`; `1` such a finding exists; `2` usage or
-configuration error (printed to stderr as `gitaudit: error: ...`).
+Exit codes: `0` no finding at or above `--fail-on`; `1` such a finding exists, or the audit was
+partial (a `--time-budget`, `--scan-budget` or hit cap stopped it early) unless `--allow-partial`
+is given; `2` usage or configuration error (printed to stderr as `gitaudit: error: ...`).
 
 When `GITHUB_ACTIONS=true`, the run also prints workflow annotations.
 
@@ -137,14 +139,35 @@ An independent review found items A1 to A8 and several smaller nits. Each has a 
 - **A7, nonzero git exit misclassified.** A nonzero git exit raises `GitError` unless the consumer
   stopped reading early. Early stops are not errors.
 - **A8, hostile storage refused.** A UNC or `//` gitfile or commondir, alternates outside the
-  repository or on UNC, and `[include]`/`[includeIf]` in config are refused before git runs. Exit 2.
+  repository or on UNC, and `[include]`/`[includeIf]` in config are refused. Exit 2.
 - **Nits.** Inline `gitaudit:allow` is opt-in (`--honor-inline-allow`). Skipped blobs are an INFO
-  finding (HY014). `--allow-path` also covers content secret checks. Stopwords no longer include
+  finding (HY014). `--allow-path` skips a blob's content only when every path it appears under is
+  allowed. Stopwords no longer include
   `password`, `passwd`, `todo` or `fixme`. `redact` masks anything under 16 characters completely.
   Fingerprints include an occurrence index. Output is written atomically with `mkstemp`. Git runs
   with `--no-ext-diff --no-textconv` and `i18n.logOutputEncoding=UTF-8`. Stdout is UTF-8. An
   unexpected exception exits 2 with `internal error`. SARIF `executionSuccessful` is false when the
-  run is partial. An incomplete audit adds HY013.
+  run is partial. An incomplete audit adds HY013 at HIGH, so it fails the run (see below).
+
+### Second review (items B1 to B4)
+
+A post-commit review found four more issues. Each has a regression test.
+
+- **B1, quoted alternates.** Git C-unquotes an alternates line that starts with `"`, which the
+  plain-text check could not judge. Such a line is now refused. Git splits alternates on newlines
+  only (`a:b` is one path), so no colon splitting is needed.
+- **B2, include keys.** The regex that spotted `[include` is gone. Git lists each config file's keys
+  with `--no-includes`, and any `include.*` or `includeif.*` key is refused. This covers
+  `config`, `config.worktree` and the common `config`, plus every spelling git accepts. A file git
+  cannot parse fails closed.
+- **B3, storage discovery.** The audit collects every storage directory that could apply (gitfile
+  targets, `.git` directories and bare repositories above the path) and checks each one. It then
+  asks git for `rev-parse --absolute-git-dir`. If git's answer is not one of the checked
+  directories, the audit refuses to run. Bare repositories, gitfiles and nested repositories are
+  tested. Bare repositories keep git's default `safe.bareRepository`, so they stay auditable.
+- **B4, partial audits fail open.** A budget or cap now makes the run fail (exit 1) even with
+  `--fail-on none`, unless `--allow-partial` is given. With that flag the HY013 finding drops to
+  INFO. Partial results are never written as a clean pass.
 
 Deviations from the review's suggestions:
 
