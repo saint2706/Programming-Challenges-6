@@ -106,6 +106,20 @@ def _parser() -> argparse.ArgumentParser:
         help="honour 'gitaudit:allow' comments on a line (off by default: a commit must not hide its own secrets)",
     )
     p.add_argument(
+        "--trust-owner",
+        dest="trust_owner",
+        action="store_true",
+        default=None,
+        help="skip the check that the repository is owned by the current user",
+    )
+    p.add_argument(
+        "--safe-directory",
+        dest="safe_directory",
+        action="append",
+        default=None,
+        help="repository path exempt from the owner check (repeatable; the only way to allow one)",
+    )
+    p.add_argument(
         "--allow-partial",
         dest="allow_partial",
         action="store_true",
@@ -153,9 +167,12 @@ def _overrides(args: argparse.Namespace) -> dict[str, object]:
         "ref", "default_branch", "stale_days", "long_lived_days", "max_blob_size",
         "lfs_threshold", "max_scan_size", "top", "fail_on", "history", "since",
         "check_signatures", "check_identities", "baseline", "honor_inline_allow",
-        "allow_partial", "time_budget", "scan_budget_bytes",
+        "allow_partial", "time_budget", "scan_budget_bytes", "trust_owner",
     )  # fmt: skip
     values: dict[str, object] = {k: getattr(args, k) for k in keys}
+    values["safe_directory"] = (
+        tuple(args.safe_directory) if args.safe_directory else None
+    )
     values["allow_paths"] = args.allow_paths
     values["allow_regexes"] = args.allow_regexes
     return values
@@ -196,7 +213,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         repo = Path(args.repo)
         settings = build_settings(repo, args.config, Path.cwd(), _overrides(args))
-        forbidden = GitRepo(repo).git_dir  # reports are never written inside .git
+        owner = {
+            "trust_owner": settings.trust_owner,
+            "safe_directory": settings.safe_directory,
+        }
+        forbidden = GitRepo(
+            repo, **owner
+        ).git_dir  # reports are never written inside .git
         result = run_audit(settings)
         if args.write_baseline is not None:
             count = write_baseline(args.write_baseline, result.findings, forbidden)

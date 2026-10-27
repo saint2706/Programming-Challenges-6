@@ -98,7 +98,11 @@ def run_audit(settings: Settings) -> AuditResult:
     started = time.perf_counter()
     deadline = started + settings.time_budget
     partial: list[str] = []
-    git = GitRepo(settings.repo)
+    git = GitRepo(
+        settings.repo,
+        trust_owner=settings.trust_owner,
+        safe_directory=settings.safe_directory,
+    )
     commit = git.resolve_commit(settings.ref)
     refs = git.for_each_ref()
     head_entries = git.ls_tree(commit)

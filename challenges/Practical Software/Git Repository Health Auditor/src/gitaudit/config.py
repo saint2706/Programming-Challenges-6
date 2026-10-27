@@ -46,6 +46,10 @@ class Settings:
     stopwords: tuple[str, ...] = ()
     honor_inline_allow: bool = False
     allow_partial: bool = False  # a partial audit fails the run unless this is set
+    trust_owner: bool = False  # CLI only: skip the owner check on the repository
+    safe_directory: tuple[
+        str, ...
+    ] = ()  # CLI only: repositories exempt from the owner check
     time_budget: int = 600
     scan_budget_bytes: int = 2 * 1024**3
     config_source: str | None = field(default=None, compare=False)

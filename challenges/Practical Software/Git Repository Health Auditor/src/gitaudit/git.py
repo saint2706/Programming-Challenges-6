@@ -135,6 +135,8 @@ def _gitdir_candidates(path: Path) -> list[tuple[Path, Path]]:
     for c in (path, *path.parents):
         dot = c / ".git"
         if dot.is_dir():
+            if not ((dot / "HEAD").is_file() and (dot / "objects").is_dir()):
+                raise GitError("refusing a .git directory that is not a repository")
             found.append((c, dot))
         elif dot.is_file():
             target = _gitfile_target(dot)
@@ -144,6 +146,105 @@ def _gitdir_candidates(path: Path) -> list[tuple[Path, Path]]:
         elif (c / "HEAD").is_file() and (c / "objects").is_dir():
             found.append((c, c))  # a bare repository is its own storage dir
     return found
+
+
+def _posix_owner_ok(owner_uid: int, euid: int) -> bool:
+    """Only the running user's own files pass. Root-owned files are refused unless we are root."""
+    return owner_uid == euid
+
+
+def _windows_owner_ok(path: Path) -> bool:
+    """True when the file's owner SID is the current user's SID, read through advapi32 ctypes."""
+    import ctypes
+    from ctypes import wintypes
+
+    advapi = ctypes.WinDLL("advapi32", use_last_error=True)
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    # Declared types: untyped handles would be truncated to 32 bits on 64-bit Windows.
+    kernel.GetCurrentProcess.restype = wintypes.HANDLE
+    advapi.OpenProcessToken.argtypes = [
+        wintypes.HANDLE,
+        wintypes.DWORD,
+        ctypes.POINTER(wintypes.HANDLE),
+    ]
+    advapi.GetTokenInformation.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_int,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+        ctypes.POINTER(wintypes.DWORD),
+    ]
+    advapi.EqualSid.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+    kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel.LocalFree.argtypes = [ctypes.c_void_p]
+    owner = ctypes.c_void_p()
+    sd = ctypes.c_void_p()
+    rc = advapi.GetNamedSecurityInfoW(
+        str(path), 1, 1, ctypes.byref(owner), None, None, None, ctypes.byref(sd)
+    )
+    if rc:
+        raise OSError(rc, "GetNamedSecurityInfoW failed")
+    try:
+        token = wintypes.HANDLE()
+        if not advapi.OpenProcessToken(
+            kernel.GetCurrentProcess(), 0x0008, ctypes.byref(token)
+        ):
+            raise ctypes.WinError(ctypes.get_last_error())
+        try:
+            size = wintypes.DWORD()
+            advapi.GetTokenInformation(
+                token, 1, None, 0, ctypes.byref(size)
+            )  # TokenUser
+            buf = ctypes.create_string_buffer(size.value)
+            if not advapi.GetTokenInformation(token, 1, buf, size, ctypes.byref(size)):
+                raise ctypes.WinError(ctypes.get_last_error())
+            user_sid = ctypes.c_void_p.from_buffer(
+                buf
+            ).value  # TOKEN_USER starts with the SID
+            return bool(advapi.EqualSid(owner, ctypes.c_void_p(user_sid)))
+        finally:
+            kernel.CloseHandle(token)
+    finally:
+        kernel.LocalFree(sd)
+
+
+def _owner_ok(path: Path) -> bool:
+    if os.name != "nt":
+        return _posix_owner_ok(path.stat().st_uid, os.geteuid())
+    try:
+        return _windows_owner_ok(path)
+    except OSError as exc:
+        raise GitError(
+            f"cannot determine the owner of {sanitize(path.name, 40)}; "
+            "pass --trust-owner to skip this check"
+        ) from exc
+
+
+def _check_owner(root: Path, gitdir: Path, trust_owner: bool, safe: set[str]) -> None:
+    """Refuse a repository the current user does not own, as git's own safe.directory check would.
+
+    The CLI's --safe-directory and --trust-owner are the only ways past this. Nothing is read from
+    the audited repository's config for it.
+    """
+    if trust_owner or _same_dir(root) in safe or _same_dir(gitdir) in safe:
+        return
+    for path in {root, gitdir}:  # a bare repository has one path
+        if not _owner_ok(path):
+            raise GitError(
+                f"refusing {sanitize(path.name, 40)}: owned by another user "
+                "(run as its owner, or pass --safe-directory PATH or --trust-owner)"
+            )
+
+
+def _pinned_env(
+    env: dict[str, str], root: Path, gitdir: Path, scratch: str
+) -> dict[str, str]:
+    """GIT_DIR, and GIT_WORK_TREE always, so core.worktree is never consulted.
+
+    A bare repository gets an empty scratch directory as its work tree.
+    """
+    work_tree = root if root != gitdir else Path(scratch)
+    return dict(env, GIT_DIR=str(gitdir), GIT_WORK_TREE=str(work_tree))
 
 
 def _refuse_includes(config: Path, env: dict[str, str]) -> None:
@@ -225,27 +326,33 @@ def _refuse_untrusted_storage(gitdir: Path, env: dict[str, str]) -> None:
 class GitRepo:
     """A repository handle. Methods stream where the output can be large."""
 
-    def __init__(self, path: Path, timeout: float = 1800.0) -> None:
+    def __init__(
+        self,
+        path: Path,
+        timeout: float = 1800.0,
+        *,
+        trust_owner: bool = False,
+        safe_directory: Iterable[str] = (),
+    ) -> None:
         self.path = Path(path).resolve()
         self.timeout = timeout
-        self._env = _hardened_env()
+        base = _hardened_env()
+        self._env = base
         self._check_version()
         if not self.path.is_dir():
             raise GitError(f"not a directory: {sanitize(self.path, 200)}")
         candidates = _gitdir_candidates(self.path)
         if not candidates:
             raise GitError("not a git repository")
-        for _root, gitdir in candidates:
-            _refuse_untrusted_storage(gitdir, self._env)
-        # The nearest candidate is the one git would use. Ask git unpinned first, so its own
-        # ownership (safe.directory) checks run; then pin GIT_DIR so later calls cannot drift.
         root, gitdir = candidates[0]
-        self._discover(gitdir)
-        # GIT_WORK_TREE is always set, so core.worktree in any config is ignored. A bare repo gets
-        # an empty scratch directory instead of its own storage dir as a work tree.
+        # Python-only checks first: no git process runs before the owner check passes.
+        _check_owner(root, gitdir, trust_owner, {_same_dir(s) for s in safe_directory})
         self._scratch = tempfile.TemporaryDirectory(prefix="gitaudit-worktree-")
-        work_tree = root if root != gitdir else Path(self._scratch.name)
-        self._env = dict(self._env, GIT_DIR=str(gitdir), GIT_WORK_TREE=str(work_tree))
+        for c_root, c_gitdir in candidates:
+            pinned = _pinned_env(base, c_root, c_gitdir, self._scratch.name)
+            _refuse_untrusted_storage(c_gitdir, pinned)
+        # The nearest candidate is the one git uses. Pin it, so later git calls cannot pick another.
+        self._env = _pinned_env(base, root, gitdir, self._scratch.name)
         self.git_dir = self._discover(gitdir)
 
     # ----- process plumbing -------------------------------------------------------------
@@ -271,16 +378,12 @@ class GitRepo:
             )
 
     def _discover(self, expected: Path) -> Path:
-        """git must report the directory that was validated: before pinning (ownership checks
-        run) and after (pinned GIT_DIR)."""
-        try:
-            raw = self.run(["rev-parse", "--absolute-git-dir"])
-        except GitError as exc:
-            raise GitError(
-                f"git refuses this repository, so the audit stops ({exc}). "
-                "Run the audit as the repository's owner."
-            ) from exc
-        out = raw.decode("utf-8", "replace").strip()
+        """Post-check: git, pinned to GIT_DIR, must report the directory that was validated."""
+        out = (
+            self.run(["rev-parse", "--absolute-git-dir"])
+            .decode("utf-8", "replace")
+            .strip()
+        )
         if _same_dir(out) != _same_dir(expected):
             raise GitError("git reports a storage directory the audit did not check")
         return Path(out)

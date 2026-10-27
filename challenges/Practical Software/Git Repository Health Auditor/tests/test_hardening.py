@@ -233,7 +233,10 @@ def test_gitfile_pointing_at_a_unc_path_is_refused(tmp_path):
 @requires_git
 def test_commondir_on_a_unc_path_is_refused(tmp_path):
     work = tmp_path / "work"
-    (work / ".git").mkdir(parents=True)
+    (work / ".git" / "objects").mkdir(parents=True)
+    (work / ".git" / "HEAD").write_text(
+        "ref: refs/heads/main\n", encoding="utf-8", newline="\n"
+    )
     (work / ".git" / "commondir").write_text(
         "//server/share/common\n", encoding="utf-8", newline="\n"
     )
@@ -806,19 +809,70 @@ def test_bare_repo_with_normal_core_worktree_is_pinned_away(tmp_path):
 
 
 @requires_git
-def test_git_ownership_refusal_stops_the_audit(repo_factory, monkeypatch):
+def test_owner_mismatch_is_refused(repo_factory, monkeypatch):
     repo = repo_factory()
     repo.write("a.txt", "a")
     repo.commit("init")
-    real_run = subprocess.run
-
-    def refuse_rev_parse(argv, *args, **kwargs):
-        if "rev-parse" in argv:
-            return subprocess.CompletedProcess(
-                argv, 128, b"", b"fatal: detected dubious ownership in repository"
-            )
-        return real_run(argv, *args, **kwargs)
-
-    monkeypatch.setattr(git_module.subprocess, "run", refuse_rev_parse)
-    with pytest.raises(GitError, match="repository's owner"):
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: False)
+    with pytest.raises(GitError, match="owned by another user"):
         GitRepo(repo.path)
+
+
+@requires_git
+def test_trust_owner_skips_the_owner_check(repo_factory, monkeypatch):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: False)
+    GitRepo(repo.path, trust_owner=True)
+
+
+@requires_git
+def test_safe_directory_exempts_only_the_named_repository(
+    repo_factory, tmp_path, monkeypatch
+):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: False)
+    GitRepo(repo.path, safe_directory=[str(repo.path)])
+    with pytest.raises(GitError, match="owned by another user"):
+        GitRepo(repo.path, safe_directory=[str(tmp_path / "other")])
+
+
+def test_cli_owner_overrides_reach_settings():
+    args = cli_module._parser().parse_args(
+        ["x", "--trust-owner", "--safe-directory", "/a", "--safe-directory", "/b"]
+    )
+    values = cli_module._overrides(args)
+    assert values["trust_owner"] is True
+    assert values["safe_directory"] == ("/a", "/b")
+
+
+@pytest.mark.parametrize(
+    ("owner_uid", "euid", "expected"),
+    [
+        (1000, 1000, True),
+        (1000, 1001, False),
+        (0, 1000, False),
+        (0, 0, True),
+        (1000, 0, False),
+    ],
+)
+def test_posix_owner_rule(owner_uid, euid, expected):
+    assert git_module._posix_owner_ok(owner_uid, euid) is expected
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows owner SID check")
+def test_windows_owner_sid_matches_the_current_user(tmp_path):
+    f = tmp_path / "mine.txt"
+    f.write_text("x", encoding="utf-8")
+    assert git_module._windows_owner_ok(f) is True
+
+
+@requires_git
+def test_invalid_dot_git_directory_is_refused(tmp_path):
+    work = tmp_path / "work"
+    (work / ".git").mkdir(parents=True)
+    with pytest.raises(GitError, match="not a repository"):
+        GitRepo(work)

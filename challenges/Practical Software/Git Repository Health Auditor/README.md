@@ -195,23 +195,45 @@ leaving gaps, so the rules are now simple and fail closed. Each has regression t
   cannot pick the work tree. A bare repository gets an empty scratch directory. Every checked
   config file's `core.worktree` values are also read, and a network path is refused. Tests cover a
   UNC value (refused) and a normal path (accepted, and ignored).
-- **D2, ownership.** Before pinning, the audit runs an unpinned `rev-parse --absolute-git-dir`, so
-  git's own `safe.directory` and dubious-ownership checks run. A refusal stops the audit with a
-  message to run as the owner. The answer must match the nearest candidate, and the pinned call
-  checks again. A test mocks the refusal.
+- **D2, ownership.** Superseded by E1 in the fifth review. The unpinned `rev-parse` it added ran
+  repo-scoped git before validation, so it was removed.
+
+### Fifth review (items E1 to E3)
+
+The unpinned `rev-parse` from D2 let git read repository config before the candidate was checked.
+It is removed, which keeps one rule: no git process runs unless `GIT_DIR` and `GIT_WORK_TREE` pin
+it to the validated candidate.
+
+- **E1, pinned git only.** The gitfile, commondir and owner checks run in Python first. Then every
+  `git config --file` read and the final `rev-parse` run with `GIT_DIR` and `GIT_WORK_TREE` set.
+- **E2, ownership.** Before any git process, the audit compares the owner of the storage directory
+  (and of the worktree, if not bare) with the current user. On POSIX this is `st_uid` against
+  `geteuid()`, so root-owned files are refused unless we run as root. On Windows it compares the
+  owner SID with the current user's SID through `advapi32` (ctypes). If the owner cannot be read,
+  the audit fails closed. Two CLI flags are the only way past the check: `--safe-directory PATH`
+  exempts one repository, and `--trust-owner` skips the check. Neither is read from config.
+- **E3, invalid `.git`.** A `.git` directory without a `HEAD` file and an `objects` directory is
+  refused. It no longer falls through to treating the parent as a bare repository.
 
 ### Threat model
 
-Defended: the audited repository is untrusted data. Its config, gitfile, commondir, alternates and
-`core.worktree` are checked before git reads them, and git is pinned to the one storage directory
-that was checked. Network paths are refused, and git's ownership checks still run.
+Defended: the audited repository is untrusted data. Its config, gitfile, commondir, alternates,
+`core.worktree` and the storage directory's owner are checked before any git process reads it. Git
+is pinned to the nearest storage directory, with `GIT_WORK_TREE` always set, so a `core.worktree`
+never picks the work tree. A network path is refused in any of these.
 
 Not defended:
 
 - A hostile `git` binary on `PATH`.
 - A hostile parent directory tree that changes discovery beyond the nearest candidate. Only the
-  nearest candidate is pinned, and the other candidates are checked but not used.
+  nearest candidate is pinned. The others are checked but not used.
 - Windows junctions or symlinks used as storage directories. They are not resolved specially.
+- A race between the owner check and git's later reads. The owner is checked by path, not by an
+  open file handle, so a repository swapped in between is not caught.
+- A `.git` directory with a valid `HEAD` and `objects` but corrupt contents. Git reads it as it
+  would, and a crafted file can still make git misbehave beyond the checks above.
+- Repositories owned by another user are refused by default. Auditing one needs `--safe-directory`
+  or `--trust-owner`, which accept that risk.
 
 Deviations from the review's suggestions:
 
