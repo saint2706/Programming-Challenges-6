@@ -841,6 +841,36 @@ def test_safe_directory_exempts_only_the_named_repository(
         GitRepo(repo.path, safe_directory=[str(tmp_path / "other")])
 
 
+def test_safe_directory_cannot_be_matched_through_a_repo_controlled_commondir(
+    tmp_path, monkeypatch
+):
+    root, gitdir, trusted = (
+        tmp_path / "root",
+        tmp_path / "root" / ".git",
+        tmp_path / "trusted",
+    )
+    for path in (root, gitdir, trusted):
+        path.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: False)
+    safe = {git_module._same_dir(trusted)}
+    with pytest.raises(GitError, match="owned by another user"):
+        # the repository's own `commondir` file points at the directory the user trusts
+        git_module._check_owner([root, gitdir, trusted], False, safe, [root, gitdir])
+    git_module._check_owner([root, gitdir, trusted], False, safe, [trusted])
+
+
+@requires_git
+def test_config_worktree_owned_by_another_user_is_refused(repo_factory, monkeypatch):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    other = (repo.path / ".git" / "config.worktree").resolve()
+    other.write_text("[core]\n\tbare = false\n", encoding="utf-8")
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: path.resolve() != other)
+    with pytest.raises(GitError, match="owned by another user"):
+        GitRepo(repo.path)
+
+
 def test_cli_owner_overrides_reach_settings():
     args = cli_module._parser().parse_args(
         ["x", "--trust-owner", "--safe-directory", "/a", "--safe-directory", "/b"]

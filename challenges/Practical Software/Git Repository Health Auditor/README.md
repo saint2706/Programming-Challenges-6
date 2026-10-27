@@ -223,8 +223,12 @@ it to the validated candidate.
   `GIT_DIR` and `GIT_WORK_TREE` are set after validation passes. A test spies on every
   `subprocess.run` call and fails if any config check sees `GIT_DIR`.
 - **F2, ownership scope.** The owner check now covers the root, the storage dir, the resolved
-  commondir and its `config`, the storage `config`, and the `.git` gitfile when one exists. Tests
+  commondir and its `config` and `config.worktree`, the storage `config` and `config.worktree`, and the `.git` gitfile when one exists. Tests
   mock an owner mismatch on the commondir and on the gitfile.
+- **F3, `--safe-directory` anchors.** Only the root and storage dir the user pointed at can match
+  `--safe-directory`. The commondir comes from the audited repository, so a hostile `commondir`
+  file naming a directory the user trusts can no longer skip the ownership checks. A test covers
+  it.
 
 ### Threat model
 

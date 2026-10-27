@@ -220,16 +220,20 @@ def _owner_ok(path: Path) -> bool:
         ) from exc
 
 
-def _check_owner(paths: list[Path], trust_owner: bool, safe: set[str]) -> None:
+def _check_owner(
+    paths: list[Path], trust_owner: bool, safe: set[str], anchors: list[Path]
+) -> None:
     """Refuse storage the current user does not own, as git's own safe.directory check would.
 
     `paths` are the root, storage dir, resolved commondir and config files, and a gitfile. The
     CLI's --safe-directory and --trust-owner are the only ways past this. Nothing is read from the
-    audited repository's config for it.
+    audited repository's config for it. Only the `anchors` (the root and storage dir the user
+    named) can match --safe-directory: the commondir comes from the repository, so a hostile
+    `commondir` file must not be able to point at a trusted directory and skip the checks.
     """
     if trust_owner:
         return
-    if any(_same_dir(p) in safe for p in paths):
+    if any(_same_dir(p) in safe for p in anchors):
         return
     for path in paths:
         if path.exists() and not _owner_ok(path):
@@ -357,8 +361,11 @@ class GitRepo:
         root, gitdir = candidates[0]
         common = _common_dir(gitdir)
         owned = [root, gitdir, common, common / "config", gitdir / "config"]
+        owned += [common / "config.worktree", gitdir / "config.worktree"]
         owned.append(root / ".git")  # a gitfile, when one exists
-        _check_owner(owned, trust_owner, {_same_dir(s) for s in safe_directory})
+        _check_owner(
+            owned, trust_owner, {_same_dir(s) for s in safe_directory}, [root, gitdir]
+        )
         self._scratch = tempfile.TemporaryDirectory(prefix="gitaudit-worktree-")
         _refuse_untrusted_storage(gitdir, common, base)
         self._env = _pinned_env(base, root, gitdir, self._scratch.name)
