@@ -66,7 +66,7 @@ def test_report_is_one_self_contained_file(lung_analysis):
     page = build_html(lung_analysis)
     assert page.startswith("<!doctype html>")
     markup = re.sub(
-        r"<script\b[^>]*>.*?</script\s*>", "", page, flags=re.DOTALL | re.IGNORECASE
+        r"<script\b[^>]*>.*?</script[^>]*>", "", page, flags=re.DOTALL | re.IGNORECASE
     )  # plotly.js has URLs in strings
     assert not re.search(r"""(src|href)=["']https?://""", markup)  # no network fetches
     assert page.count("Plotly.newPlot") >= 4

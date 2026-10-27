@@ -63,7 +63,7 @@ def test_json_is_strict_and_traceable(report):
 def test_html_is_one_self_contained_file(report):
     page = to_html(report)
     markup = re.sub(
-        r"<script\b[^>]*>.*?</script\s*>", "", page, flags=re.DOTALL | re.IGNORECASE
+        r"<script\b[^>]*>.*?</script[^>]*>", "", page, flags=re.DOTALL | re.IGNORECASE
     )
     assert not re.search(r"""(src|href)=["']https?://""", markup)
     assert page.count("Plotly.newPlot") >= len(report.findings) - 1

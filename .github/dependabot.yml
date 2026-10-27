@@ -55,6 +55,11 @@ updates:
     cooldown:
       default-days: 7
       semver-major-days: 14
+    # lapjv 0.3 (the Min Cost Flow oracle) is built on ndarray 0.16, so a 0.17 bump cannot compile
+    # until lapjv ships a release for it. In 0.x semver, 0.16 -> 0.17 counts as a minor bump.
+    ignore:
+      - dependency-name: "ndarray"
+        update-types: ["version-update:semver-minor"]
     groups:
       cargo-minor-patch:
         update-types: ["minor", "patch"]
