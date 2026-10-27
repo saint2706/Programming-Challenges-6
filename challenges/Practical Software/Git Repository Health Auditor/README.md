@@ -225,7 +225,7 @@ it to the validated candidate.
 - **F2, ownership scope.** The owner check now covers the root, the storage dir, the resolved
   commondir and its `config` and `config.worktree`, the storage `config` and `config.worktree`, and the `.git` gitfile when one exists. Tests
   mock an owner mismatch on the commondir and on the gitfile.
-- **F3, `--safe-directory` anchors.** Only the root and storage dir the user pointed at can match
+- **F3, `--safe-directory` anchors.** Only the root the user pointed at (never a gitfile target) can match
   `--safe-directory`. The commondir comes from the audited repository, so a hostile `commondir`
   file naming a directory the user trusts can no longer skip the ownership checks. A test covers
   it.

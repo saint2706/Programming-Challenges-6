@@ -363,9 +363,9 @@ class GitRepo:
         owned = [root, gitdir, common, common / "config", gitdir / "config"]
         owned += [common / "config.worktree", gitdir / "config.worktree"]
         owned.append(root / ".git")  # a gitfile, when one exists
-        _check_owner(
-            owned, trust_owner, {_same_dir(s) for s in safe_directory}, [root, gitdir]
-        )
+        # root is the path the user named (a bare repo's root is its storage dir); gitdir can be a
+        # gitfile target the repository chose, so it never counts as an anchor
+        _check_owner(owned, trust_owner, {_same_dir(s) for s in safe_directory}, [root])
         self._scratch = tempfile.TemporaryDirectory(prefix="gitaudit-worktree-")
         _refuse_untrusted_storage(gitdir, common, base)
         self._env = _pinned_env(base, root, gitdir, self._scratch.name)

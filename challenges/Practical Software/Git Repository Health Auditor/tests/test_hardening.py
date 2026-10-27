@@ -871,6 +871,22 @@ def test_config_worktree_owned_by_another_user_is_refused(repo_factory, monkeypa
         GitRepo(repo.path)
 
 
+@requires_git
+def test_safe_directory_cannot_be_matched_through_a_gitfile_target(
+    tmp_path, monkeypatch
+):
+    trusted = tmp_path / "trusted"
+    trusted.mkdir()
+    subprocess.run(["git", "init", "-q", str(trusted)], check=True)
+    hostile = tmp_path / "hostile"
+    hostile.mkdir()
+    # a gitfile makes the repository's storage dir whatever the repository says it is
+    (hostile / ".git").write_bytes(f"gitdir: {trusted / '.git'}\n".encode())
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: False)
+    with pytest.raises(GitError, match="owned by another user"):
+        GitRepo(hostile, safe_directory=[str(trusted / ".git")])
+
+
 def test_cli_owner_overrides_reach_settings():
     args = cli_module._parser().parse_args(
         ["x", "--trust-owner", "--safe-directory", "/a", "--safe-directory", "/b"]
