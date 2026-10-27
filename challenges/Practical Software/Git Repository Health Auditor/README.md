@@ -169,9 +169,31 @@ A post-commit review found four more issues. Each has a regression test.
   `--fail-on none`, unless `--allow-partial` is given. With that flag the HY013 finding drops to
   INFO. Partial results are never written as a clean pass.
 
+### Third review (items C1 to C3)
+
+A third review found parser differences in the storage code. Re-implementing git's parsing kept
+leaving gaps, so the rules are now simple and fail closed. Each has regression tests.
+
+- **C1, check, then use.** The nearest storage directory is validated locally, then pinned with
+  `GIT_DIR` (and `GIT_WORK_TREE` unless bare) in the environment of every later git call. The
+  `rev-parse --absolute-git-dir` answer is only a post-check and must match the pinned directory.
+  A `.git` file must be exactly one line that starts with `gitdir: `, ends in a single newline, and
+  holds non-empty UTF-8 with no control characters (CRLF, a missing space, or a second line are
+  refused). A `.git` file that is neither this nor a directory fails closed, even beside a
+  bare-looking directory.
+- **C2, nested alternates.** Git follows `objects/info/alternates` for every object read, so a
+  finding alone cannot keep the audit honest. Any alternates entry is refused, including ones
+  inside the repository and ones whose target has its own alternates. No `--allow-alternates`
+  flag was added. To audit such a repository, run `git repack -a -d` and remove the file.
+- **C3, alternates bytes.** The file is read as bytes and split on `\n` only. Anything else (a
+  carriage return, NUL, non-UTF-8 bytes, leading or trailing spaces) is refused, and a file with no
+  entries (empty or only newlines) is accepted.
+
 Deviations from the review's suggestions:
 
-- Gitfile, alternates and `[include]` problems are refused, not reported as findings.
+- Gitfile, alternates and `[include]` problems are refused, not reported as findings. Alternates
+  refusal in C2 is a stricter rule than the review's "refuse or flag" option, because a flagged
+  alternates file still lets git read the other object store.
 - Credentialed URLs print no host or path, because a password can contain `@` or `/`.
 - The `password` stopword was removed, so SEC013 rises on test fixtures (see the monorepo results).
 - The fingerprint format changed (it now includes the occurrence). Baselines written before this

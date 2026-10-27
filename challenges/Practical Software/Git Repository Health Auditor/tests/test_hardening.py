@@ -10,6 +10,7 @@ import io
 import json
 import os
 import subprocess
+import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -72,7 +73,7 @@ def test_repository_config_cannot_choose_a_gpg_program(repo_factory, tmp_path):
     repo.commit("init")
     marker = tmp_path / "ran"
     script = tmp_path / "evil-gpg"
-    script.write_text(f"#!/bin/sh\ntouch '{marker}'\n", encoding="utf-8")
+    script.write_text(f"#!/bin/sh\ntouch '{marker}'\n", encoding="utf-8", newline="\n")
     script.chmod(0o755)
     with (repo.path / ".git" / "config").open("a", encoding="utf-8") as fh:
         fh.write(f'[gpg]\n\tprogram = {script}\n[gpg "ssh"]\n\tprogram = {script}\n')
@@ -184,7 +185,9 @@ def test_stream_timeout_raises_instead_of_ending_quietly(repo_factory):
     repo.write("a.txt", "a")
     repo.commit("init")
     handle = GitRepo(repo.path)
-    handle.timeout = 0.001  # the timer fires before git can finish
+    handle.timeout = 0.2
+    # A process that never finishes, so the timer always fires (a fast git can beat a tiny timer).
+    handle._argv = lambda args: [sys.executable, "-c", "import time; time.sleep(30)"]
     with pytest.raises(GitError, match="timed out"):
         list(handle.records(["rev-list", "--all"]))
 
@@ -220,7 +223,9 @@ def test_stopping_early_is_not_an_error(repo_factory):
 def test_gitfile_pointing_at_a_unc_path_is_refused(tmp_path):
     work = tmp_path / "work"
     work.mkdir()
-    (work / ".git").write_text("gitdir: //server/share/repo\n", encoding="utf-8")
+    (work / ".git").write_text(
+        "gitdir: //server/share/repo\n", encoding="utf-8", newline="\n"
+    )
     with pytest.raises(GitError, match="network path"):
         GitRepo(work)
 
@@ -230,7 +235,7 @@ def test_commondir_on_a_unc_path_is_refused(tmp_path):
     work = tmp_path / "work"
     (work / ".git").mkdir(parents=True)
     (work / ".git" / "commondir").write_text(
-        "//server/share/common\n", encoding="utf-8"
+        "//server/share/common\n", encoding="utf-8", newline="\n"
     )
     with pytest.raises(GitError, match="network path"):
         GitRepo(work)
@@ -244,9 +249,9 @@ def test_alternates_outside_the_repository_are_refused(repo_factory, tmp_path):
     other = tmp_path / "elsewhere" / "objects"
     other.mkdir(parents=True)
     (repo.path / ".git" / "objects" / "info" / "alternates").write_text(
-        f"{other}\n", encoding="utf-8"
+        f"{other}\n", encoding="utf-8", newline="\n"
     )
-    with pytest.raises(GitError, match="outside the repository"):
+    with pytest.raises(GitError, match="alternates"):
         GitRepo(repo.path)
 
 
@@ -256,9 +261,9 @@ def test_unc_alternate_is_refused(repo_factory):
     repo.write("a.txt", "a")
     repo.commit("init")
     (repo.path / ".git" / "objects" / "info" / "alternates").write_text(
-        "//server/share/objects\n", encoding="utf-8"
+        "//server/share/objects\n", encoding="utf-8", newline="\n"
     )
-    with pytest.raises(GitError, match="network path"):
+    with pytest.raises(GitError, match="alternates"):
         GitRepo(repo.path)
 
 
@@ -277,7 +282,9 @@ def test_config_with_include_is_refused(repo_factory):
 def test_cli_exits_two_on_a_refused_repository(tmp_path, capsys):
     work = tmp_path / "work"
     work.mkdir()
-    (work / ".git").write_text("gitdir: //server/share/repo\n", encoding="utf-8")
+    (work / ".git").write_text(
+        "gitdir: //server/share/repo\n", encoding="utf-8", newline="\n"
+    )
     assert main([str(work), "--format", "json"]) == 2
     capsys.readouterr()
 
@@ -508,7 +515,7 @@ def test_tool_that_is_not_a_table_is_refused():
 def test_non_table_tool_does_not_crash_discovery(tmp_path):
     cwd = tmp_path / "cwd"
     cwd.mkdir()
-    (cwd / "pyproject.toml").write_text('tool = "x"\n', encoding="utf-8")
+    (cwd / "pyproject.toml").write_text('tool = "x"\n', encoding="utf-8", newline="\n")
     assert discover_config(cwd, tmp_path / "elsewhere") is None
 
 
@@ -535,9 +542,9 @@ def test_quoted_alternate_line_is_refused(repo_factory):
     repo.write("a.txt", "a")
     repo.commit("init")
     (repo.path / ".git" / "objects" / "info" / "alternates").write_text(
-        '"/elsewhere/objects"\n', encoding="utf-8"
+        '"/elsewhere/objects"\n', encoding="utf-8", newline="\n"
     )
-    with pytest.raises(GitError, match="quoted"):
+    with pytest.raises(GitError, match="alternates"):
         GitRepo(repo.path)
 
 
@@ -567,7 +574,7 @@ def test_include_in_config_worktree_is_refused(repo_factory):
     repo.write("a.txt", "a")
     repo.commit("init")
     (repo.path / ".git" / "config.worktree").write_text(
-        "[include]\n\tpath = /tmp/e.cfg\n", encoding="utf-8"
+        "[include]\n\tpath = /tmp/e.cfg\n", encoding="utf-8", newline="\n"
     )
     with pytest.raises(GitError, match="include"):
         GitRepo(repo.path)
@@ -599,7 +606,9 @@ def test_gitfile_is_discovered_at_the_directory_git_reports(repo_factory, tmp_pa
     store.commit("init")
     work = tmp_path / "work"
     work.mkdir()
-    (work / ".git").write_text(f"gitdir: {store.path / '.git'}\n", encoding="utf-8")
+    (work / ".git").write_text(
+        f"gitdir: {store.path / '.git'}\n", encoding="utf-8", newline="\n"
+    )
     assert GitRepo(work).git_dir == (store.path / ".git").resolve()
 
 
@@ -612,7 +621,9 @@ def test_include_in_a_gitfile_target_is_refused(repo_factory, tmp_path):
         fh.write("[include]\n\tpath = /tmp/g.cfg\n")
     work = tmp_path / "work"
     work.mkdir()
-    (work / ".git").write_text(f"gitdir: {store.path / '.git'}\n", encoding="utf-8")
+    (work / ".git").write_text(
+        f"gitdir: {store.path / '.git'}\n", encoding="utf-8", newline="\n"
+    )
     with pytest.raises(GitError, match="include"):
         GitRepo(work)
 
@@ -672,3 +683,90 @@ def test_allow_path_skips_content_when_all_paths_are_allowed(repo_factory):
         Settings(repo=repo.path, history=False, allow_paths=("docs/*", "src/*"))
     )
     assert not any(f.rule_id == "SEC001" for f in result.findings)
+
+
+# ----- C1 to C3: fail-closed pointer rules, pinned GIT_DIR, refused alternates -----------
+
+
+def _gitfile_work(tmp_path, body: bytes) -> Path:
+    work = tmp_path / "work"
+    work.mkdir()
+    (work / ".git").write_bytes(body)
+    return work
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        b"gitdir:/server/x\n",  # no space after the colon
+        b"gitdir: /a\ngitdir: /b\n",  # two lines
+        b"gitdir: /a\r\n",  # CRLF
+        b"gitdir: /a",  # no trailing newline
+        b" gitdir: /a\n",  # leading space
+        b"gitdir: \n",  # empty target
+    ],
+)
+@requires_git
+def test_non_exact_gitfile_is_refused(tmp_path, body):
+    work = _gitfile_work(tmp_path, body)
+    with pytest.raises(GitError):
+        GitRepo(work)
+
+
+@requires_git
+def test_gitfile_with_a_non_utf8_target_is_refused(tmp_path):
+    work = _gitfile_work(tmp_path, b"gitdir: /a\xff\n")
+    with pytest.raises(GitError, match="UTF-8"):
+        GitRepo(work)
+
+
+@requires_git
+def test_invalid_dot_git_beside_a_bare_looking_dir_fails_closed(repo_factory, tmp_path):
+    work = tmp_path / "bare-looking"
+    work.mkdir()
+    (work / "HEAD").write_text("ref: refs/heads/main\n", encoding="utf-8", newline="\n")
+    (work / "objects").mkdir()
+    (work / ".git").write_bytes(b"not a pointer\n")
+    with pytest.raises(GitError, match="gitdir"):
+        GitRepo(work)
+
+
+@requires_git
+def test_blank_alternates_file_is_accepted(repo_factory):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    (repo.path / ".git" / "objects" / "info").mkdir(parents=True, exist_ok=True)
+    (repo.path / ".git" / "objects" / "info" / "alternates").write_bytes(b"\n")
+    GitRepo(repo.path)
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        b"/elsewhere/objects\r\n",  # carriage return
+        b"/else\x00where/objects\n",  # NUL
+        b"/elsewhere/\xff/objects\n",  # not UTF-8
+        b" /elsewhere/objects\n",  # leading space
+        b"/elsewhere/objects \n",  # trailing space
+    ],
+)
+@requires_git
+def test_malformed_alternates_line_is_refused(repo_factory, body):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    (repo.path / ".git" / "objects" / "info").mkdir(parents=True, exist_ok=True)
+    (repo.path / ".git" / "objects" / "info" / "alternates").write_bytes(body)
+    with pytest.raises(GitError, match="alternates"):
+        GitRepo(repo.path)
+
+
+@requires_git
+def test_git_dir_and_work_tree_are_pinned_to_the_checked_storage(repo_factory):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    handle = GitRepo(repo.path)
+    assert handle._env["GIT_DIR"] == str(repo.path / ".git")
+    assert handle._env["GIT_WORK_TREE"] == str(repo.path)

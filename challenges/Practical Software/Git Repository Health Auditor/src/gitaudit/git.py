@@ -87,23 +87,49 @@ def _hardened_env() -> dict[str, str]:
 def _is_network_path(text: str) -> bool:
     """Any doubled slash, UNC and `//host/share` included. Windows opens SMB for those, so they are
     refused rather than resolved. Refusing a harmless doubled slash costs nothing."""
-    return "//" in text.strip().replace("\\", "/")
+    return "//" in text.replace("\\", "/")
 
 
-def _read_pointer(path: Path) -> str | None:
-    if not path.is_file() or path.stat().st_size > MAX_POINTER_BYTES:
+def _read_pointer(path: Path) -> bytes | None:
+    """The file's bytes, or None when absent. Over the size limit is refused, not truncated."""
+    if not path.is_file():
         return None
-    return path.read_text(encoding="utf-8", errors="replace")
+    if path.stat().st_size > MAX_POINTER_BYTES:
+        raise GitError(
+            f"refusing {sanitize(path.name, 40)}: too large for a git pointer"
+        )
+    return path.read_bytes()
 
 
 def _same_dir(path: Path | str) -> str:
     return os.path.normcase(os.path.realpath(path))
 
 
-def _gitdir_candidates(path: Path) -> list[tuple[Path, Path]]:
-    """(worktree root, storage dir) for every place git could find a repository above `path`.
+def _one_line(data: bytes, what: str) -> str:
+    """The text of a one-line pointer file. Anything else is refused: no loose parsing."""
+    if data.count(b"\n") != 1 or not data.endswith(b"\n"):
+        raise GitError(f"refusing {what}: it must be exactly one line")
+    try:
+        text = data[:-1].decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise GitError(f"refusing {what}: it is not UTF-8") from exc
+    if not text or any(ord(ch) < 0x20 for ch in text):
+        raise GitError(f"refusing {what}: empty or contains control characters")
+    return text
 
-    Reads only local pointer text, so nothing is opened over the network. A UNC gitfile is refused.
+
+def _gitfile_target(dot: Path) -> str:
+    """git's own rule: the file starts with `gitdir: `. Only that one-line form is accepted."""
+    data = _read_pointer(dot) or b""
+    if not data.startswith(b"gitdir: "):
+        raise GitError("refusing a .git file that does not start with 'gitdir: '")
+    return _one_line(data[len(b"gitdir: ") :], "the .git file")
+
+
+def _gitdir_candidates(path: Path) -> list[tuple[Path, Path]]:
+    """(worktree root, storage dir) per place git could find a repository above `path`, nearest first.
+
+    Reads only local pointer bytes, so nothing is opened over the network.
     """
     found: list[tuple[Path, Path]] = []
     for c in (path, *path.parents):
@@ -111,19 +137,10 @@ def _gitdir_candidates(path: Path) -> list[tuple[Path, Path]]:
         if dot.is_dir():
             found.append((c, dot))
         elif dot.is_file():
-            text = _read_pointer(dot) or ""
-            target = next(
-                (
-                    ln[len("gitdir:") :].strip()
-                    for ln in text.splitlines()
-                    if ln.startswith("gitdir:")
-                ),
-                "",
-            )
+            target = _gitfile_target(dot)
             if _is_network_path(target):
                 raise GitError("refusing a gitfile that points at a network path")
-            if target:
-                found.append((c, c / target))
+            found.append((c, c / target))
         elif (c / "HEAD").is_file() and (c / "objects").is_dir():
             found.append((c, c))  # a bare repository is its own storage dir
     return found
@@ -163,32 +180,32 @@ def _refuse_includes(config: Path, env: dict[str, str]) -> None:
             )
 
 
-def _refuse_untrusted_storage(root: Path, gitdir: Path, env: dict[str, str]) -> None:
-    """Refuse pointers and includes in one storage dir that git would otherwise follow at startup."""
-    common_text = (_read_pointer(gitdir / "commondir") or "").strip()
-    if _is_network_path(common_text):
-        raise GitError("refusing a commondir that points at a network path")
-    common = (gitdir / common_text).resolve() if common_text else gitdir.resolve()
+def _refuse_untrusted_storage(gitdir: Path, env: dict[str, str]) -> None:
+    """Refuse commondir, config-include and alternates tricks in one storage dir, before git reads them."""
+    common_data = _read_pointer(gitdir / "commondir")
+    common = gitdir.resolve()
+    if common_data is not None:
+        text = _one_line(common_data, "commondir")
+        if _is_network_path(text):
+            raise GitError("refusing a commondir that points at a network path")
+        common = (gitdir / text).resolve()
     for config in (gitdir / "config", gitdir / "config.worktree", common / "config"):
         if config.is_file():
             _refuse_includes(config, env)
-    inside = root.resolve()
-    for line in (
-        _read_pointer(common / "objects" / "info" / "alternates") or ""
-    ).splitlines():
-        if not line or line.startswith("#"):
-            continue
-        # Git C-unquotes a quoted line, and this check does not parse that, so refuse it.
-        if line.startswith('"'):
-            raise GitError("refusing a quoted object alternate")
-        if _is_network_path(line):
-            raise GitError("refusing an object alternate on a network path")
-        target = (common / "objects" / line).resolve()
-        if target != inside and inside not in target.parents:
-            raise GitError(
-                "refusing object alternates outside the repository: "
-                f"{sanitize(line, 120)}"
-            )
+    # Alternates are not followed: any entry at all is refused, so no entry is ever parsed.
+    alternates = _read_pointer(common / "objects" / "info" / "alternates") or b""
+    if alternates.strip(b"\n"):
+        raise GitError(
+            "refusing object alternates: run git repack -a -d, then remove objects/info/alternates"
+        )
+
+
+def _pinned_env(env: dict[str, str], root: Path, gitdir: Path) -> dict[str, str]:
+    """GIT_DIR (and GIT_WORK_TREE unless bare) so every later git call uses the checked dir."""
+    pinned = dict(env, GIT_DIR=str(gitdir))
+    if gitdir != root:
+        pinned["GIT_WORK_TREE"] = str(root)
+    return pinned
 
 
 class GitRepo:
@@ -202,9 +219,14 @@ class GitRepo:
         if not self.path.is_dir():
             raise GitError(f"not a directory: {sanitize(self.path, 200)}")
         candidates = _gitdir_candidates(self.path)
-        for root, gitdir in candidates:
-            _refuse_untrusted_storage(root, gitdir, self._env)
-        self.git_dir = self._discover(candidates)
+        if not candidates:
+            raise GitError("not a git repository")
+        for _root, gitdir in candidates:
+            _refuse_untrusted_storage(gitdir, self._env)
+        # The nearest candidate is the one git would use. Pin it, so git cannot pick another.
+        root, gitdir = candidates[0]
+        self._env = _pinned_env(self._env, root, gitdir)
+        self.git_dir = self._discover(gitdir)
 
     # ----- process plumbing -------------------------------------------------------------
 
@@ -228,16 +250,15 @@ class GitRepo:
                 f"git {need} or newer is required, found {sanitize(out.strip(), 60)}"
             )
 
-    def _discover(self, candidates: list[tuple[Path, Path]]) -> Path:
-        """The storage dir git reports. It must be one the checks above covered."""
+    def _discover(self, expected: Path) -> Path:
+        """Post-check: git, pinned to GIT_DIR, must report the directory that was validated."""
         out = (
             self.run(["rev-parse", "--absolute-git-dir"])
             .decode("utf-8", "replace")
             .strip()
         )
-        checked = {_same_dir(gitdir) for _root, gitdir in candidates}
-        if _same_dir(out) not in checked:
-            raise GitError("git uses a storage directory the audit did not check")
+        if _same_dir(out) != _same_dir(expected):
+            raise GitError("git reports a storage directory the audit did not check")
         return Path(out)
 
     def run(self, args: list[str], stdin: bytes | None = None) -> bytes:
