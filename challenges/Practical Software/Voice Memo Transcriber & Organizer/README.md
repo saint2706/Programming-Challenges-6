@@ -83,23 +83,46 @@ means it merges topics and leaves a third of the memos untagged.
 
 ## Security review
 
-The web UI is built for a single user on loopback. Each measure has a regression test.
+The web UI is built for a single user on loopback. Each measure has a regression test. A second
+review (findings verified and fixed) added the items marked *review fix*.
 
 - **DNS rebinding.** A Host header must name `127.0.0.1`, `localhost` or `::1`; everything else
   gets a 400.
 - **Cross-site writes.** A POST with an Origin header that does not match the Host is refused with
   a 403. Writes also need a double-submit CSRF token: an HttpOnly, SameSite=strict cookie that must
-  equal the form field, compared with `hmac.compare_digest`.
+  equal the form field, compared with `hmac.compare_digest` on bytes, so a non-ASCII form field gets
+  a 403 instead of a 500 (*review fix*). A cookie that is not a 43-character token is replaced
+  (*review fix*).
 - **Stored XSS.** Titles, transcripts, tags and file names are escaped by Jinja autoescape.
   Search snippets are escaped before the highlight markers are turned into `<mark>` tags.
-  Control and escape characters are stripped from names before display.
+  Control characters, including the C1 range U+0080 to U+009F, are stripped before display
+  (*review fix*).
 - **Path traversal.** Audio is served by memo id. The file path comes from a hash-derived name
-  stored in the database, never from the request. Non-numeric ids do not route.
+  stored in the database, never from the request. Stored names containing `/`, `\`, `..` or `:`
+  (Windows drive-relative names such as `C:x.m4a`) are refused (*review fix*). Non-numeric ids do
+  not route. A tag filter that cannot be a valid tag returns an empty list, not an error
+  (*review fix*).
 - **Headers.** CSP with `default-src 'self'` and no `unsafe-inline` scripts, `frame-ancestors
   'none'`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`.
-- **Network.** `serve` refuses `0.0.0.0` and other non-loopback addresses.
-- **Downloads.** Model downloads happen only under `models pull`; the runtime never fetches a
-  model, and a model folder without its `.ready` marker is treated as missing.
+- **Network.** `serve` refuses `0.0.0.0` and every other non-loopback address. The former
+  `--allow-remote` override is gone (*review fix*).
+- **Downloads.** Model downloads happen only under `models pull`, and every download is pinned to a
+  Hugging Face commit. Weight files are checked against a pinned sha256 before the model is marked
+  ready; a mismatch deletes the file and fails the pull (*review fix*). The `.ready` marker is a JSON
+  manifest of file sizes, so a truncated or replaced file makes the model missing again (*review
+  fix*). The runtime never fetches a model. A folder without a valid manifest is treated as missing.
+  Parakeet also needs its Silero VAD model. Whisper names are an allow-list (`tiny`, `base`,
+  `small`), and the whisper.cpp model is loaded by absolute path, so no other folder is searched
+  (*review fix*).
+- **Untrusted audio.** FFmpeg may open only local files (`protocol_whitelist=file`), so a memo
+  cannot make decoding fetch a URL or read a concat list (*review fix*). Files over 2 GiB are
+  refused before they are hashed or copied, and decoded audio longer than 12 hours is refused
+  while it streams (*review fix*).
+- **Watch folder.** Symlinks are skipped, so a link cannot pull in a file from outside the folder.
+  A file that cannot be stat'ed, locked or refused by the library is logged and skipped; the rest of
+  the scan continues (*review fix*).
+- **CLI errors.** Unreadable input files and a model integrity failure are reported as errors with
+  exit code 1, not as tracebacks (*review fix*). `--whisper` accepts only the allow-listed names.
 
 ## Where this is actually used
 
@@ -132,7 +155,7 @@ src/voicememo/
   export.py       Markdown, SRT, VTT and JSON writers
   ingest.py       transcribe_file, ingest_file, retranscribe
   library.py      SQLite schema, FTS5, tags, tag normalisation
-  models.py       explicit model pulls, .ready markers, status
+  models.py       pinned model pulls, sha256 checks, .ready size manifests, status
   paths.py        data and models folders (env overrides)
   tagging.py      model2vec and LSA embedders, HDBSCAN, c-TF-IDF, evaluate
   watch.py        settle-window folder watcher with an injected clock

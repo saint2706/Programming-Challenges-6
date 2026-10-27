@@ -1,5 +1,7 @@
+import av
 import numpy as np
 import pytest
+import voicememo.audio as audio_mod
 from helpers import ENCODED_FORMATS, encoder_available, tone, write_encoded, write_wav
 from voicememo.audio import SAMPLE_RATE, DecodeError, iter_chunks, load_audio
 
@@ -123,3 +125,27 @@ def test_audio_without_stream_wrapper_names_the_cause(tmp_path):
     path.write_bytes(b"RIFF\x00\x00\x00\x00WAVEfmt " + b"\x00" * 64)
     with pytest.raises(DecodeError, match="(cannot open|no audio|corrupt)"):
         load_audio(path)
+
+
+def test_memo_longer_than_the_cap_is_refused(tmp_path):
+    path = write_wav(tmp_path / "long.wav", tone(2.0))
+    with pytest.raises(DecodeError, match="longer than"):
+        list(iter_chunks(path, max_seconds=1.0))
+
+
+def test_file_is_opened_by_resolved_path_with_local_protocol_only(
+    tmp_path, monkeypatch
+):
+    path = write_wav(tmp_path / "a.wav", tone(1.0))
+    seen = []
+    real_open = av.open
+
+    def spy(*args, **kwargs):
+        seen.append((args, kwargs))
+        return real_open(*args, **kwargs)
+
+    monkeypatch.setattr(audio_mod.av, "open", spy)
+    load_audio(path)
+    args, kwargs = seen[0]
+    assert args[0] == str(path.resolve())
+    assert kwargs["options"] == {"protocol_whitelist": "file"}

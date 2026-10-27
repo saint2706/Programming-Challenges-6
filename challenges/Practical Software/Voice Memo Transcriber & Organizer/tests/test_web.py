@@ -363,3 +363,23 @@ def test_security_headers_on_every_page(client, memo_id):
 def test_csp_forbids_inline_scripts(client):
     csp = client.get("/").headers["content-security-policy"]
     assert not re.search(r"script-src[^;]*'unsafe-inline'", csp)
+
+
+def test_tag_filter_with_unusable_value_returns_200(client):
+    assert client.get("/?tag=%20").status_code == 200
+    assert client.get("/?tag=" + "a" * 41).status_code == 200
+
+
+def test_non_ascii_csrf_field_is_refused_not_crashing(client, memo_id):
+    csrf_from(client, f"/memos/{memo_id}")
+    response = client.post(
+        f"/memos/{memo_id}/tags", data={"csrf_token": "tökén", "tag": "x"}
+    )
+    assert response.status_code == 403
+
+
+def test_malformed_csrf_cookie_is_replaced(client):
+    response = client.get("/", headers={"Cookie": f"{CSRF_COOKIE}=short"})
+    fresh = response.cookies.get(CSRF_COOKIE)
+    assert fresh != "short"
+    assert re.fullmatch(r"[A-Za-z0-9_-]{43}", fresh)

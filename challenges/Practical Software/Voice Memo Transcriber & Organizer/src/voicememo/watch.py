@@ -14,8 +14,9 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from voicememo.audio import DecodeError
 from voicememo.ingest import Engine, IngestResult, ingest_file
-from voicememo.library import Library
+from voicememo.library import Library, LibraryError
 
 log = logging.getLogger("voicememo.watch")
 
@@ -67,9 +68,13 @@ class Watcher:
         now = self.clock()
         present: dict[Path, Signature] = {}
         for path in sorted(self.root.iterdir()):
-            if not path.is_file() or not is_candidate(path):
+            try:
+                if path.is_symlink() or not path.is_file() or not is_candidate(path):
+                    continue  # symlinks could point outside the watched folder
+                stat = path.stat()
+            except OSError as exc:  # deleted or locked between listing and stat
+                log.warning("%s: skipped, cannot read (%s)", path.name, exc)
                 continue
-            stat = path.stat()
             present[path] = (stat.st_size, stat.st_mtime_ns)
 
         # Forget files that vanished so a re-created file starts its settle window again.
@@ -89,10 +94,16 @@ class Watcher:
                 continue
             if self._done.get(path) == sig:
                 continue
-            result = ingest_file(
-                self.library, path, self.engine, language=self.language
+            self._done[path] = (
+                sig  # set first: a bad file is reported once, not on every scan
             )
-            self._done[path] = sig
+            try:
+                result = ingest_file(
+                    self.library, path, self.engine, language=self.language
+                )
+            except (OSError, DecodeError, LibraryError) as exc:
+                log.warning("%s: not ingested (%s)", path.name, exc)
+                continue
             log.info("%s: %s %s", path.name, result.status, result.message)
             handled.append((path, result))
         return handled

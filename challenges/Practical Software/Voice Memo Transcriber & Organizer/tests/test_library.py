@@ -370,3 +370,20 @@ def test_library_reopens_with_data_intact(tmp_path):
         assert lib.transcript(memo_id) == "remember this"
         assert lib.tags(memo_id) == [("saved", "user")]
         assert len(lib.search("remember")) == 1
+
+
+@pytest.mark.parametrize("bad_name", ["C:x.m4a", "c:evil.wav"])
+def test_audio_path_refuses_drive_relative_names(library, bad_name):
+    memo = library.create_pending("p9", "x.wav", ".wav")
+    library.conn.execute(
+        "UPDATE memos SET audio_file = ? WHERE id = ?", (bad_name, memo.id)
+    )
+    library.conn.commit()
+    with pytest.raises(LibraryError):
+        library.audio_path(library.get(memo.id))
+
+
+def test_list_memos_with_unusable_tag_returns_nothing(library):
+    add_done(library, "t1", "a.m4a", ["x"])
+    assert library.list_memos(tag="   ") == []
+    assert library.list_memos(tag="a" * 41) == []

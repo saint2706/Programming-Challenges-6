@@ -196,9 +196,33 @@ def test_models_status_lists_every_model(capsys):
         assert f"{name}: missing" in out
 
 
-def test_serve_refuses_non_loopback_without_flag(capsys):
+def test_serve_refuses_non_loopback(capsys):
     assert main(["serve", "--host", "0.0.0.0", "--port", "8765"]) == 2
-    assert "--allow-remote" in capsys.readouterr().out
+    assert "loopback-only" in capsys.readouterr().out
+
+
+def test_allow_remote_flag_is_gone():
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["serve", "--allow-remote"])
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["ingest", "x.m4a", "--whisper", "../../evil"],
+        ["retranscribe", "1", "--whisper", "huge"],
+        ["models", "pull", "--whisper", "huge"],
+    ],
+)
+def test_whisper_names_are_limited_to_the_allow_list(argv):
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(argv)
+
+
+def test_ingest_reports_unreadable_file_instead_of_crashing(tmp_path, capsys, script):
+    missing = tmp_path / "gone.m4a"
+    assert main(["ingest", str(missing), "--backend", "fake"]) == 1
+    assert "error" in capsys.readouterr().out
 
 
 def test_watch_once_ingests_then_exits(script, tmp_path, capsys):

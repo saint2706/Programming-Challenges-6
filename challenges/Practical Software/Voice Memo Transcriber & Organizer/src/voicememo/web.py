@@ -139,7 +139,20 @@ def _html(body: str, *, token: str, status: int = 200) -> Response:
 
 def _csrf_ok(request: Request, form_token: str | None) -> bool:
     cookie = request.cookies.get(CSRF_COOKIE, "")
-    return bool(cookie and form_token and hmac.compare_digest(cookie, form_token))
+    # Bytes, not str: compare_digest raises TypeError on non-ASCII text.
+    return bool(
+        cookie
+        and form_token
+        and hmac.compare_digest(cookie.encode(), form_token.encode("utf-8"))
+    )
+
+
+def _token(request: Request) -> str:
+    """Reuse the cookie's token only if it has the shape we issue; otherwise mint a new one."""
+    cookie = request.cookies.get(CSRF_COOKIE, "")
+    if re.fullmatch(r"[A-Za-z0-9_-]{43}", cookie):
+        return cookie
+    return secrets.token_urlsafe(32)
 
 
 def create_app(library: Library) -> Litestar:
@@ -178,7 +191,7 @@ def create_app(library: Library) -> Litestar:
         tag: Annotated[str, QueryParameter()] = "",
     ) -> Response:
         q = q[:MAX_QUERY]
-        token = request.cookies.get(CSRF_COOKIE) or secrets.token_urlsafe(32)
+        token = _token(request)
         hits = []
         memos: list[Memo] = []
         if q.strip():
@@ -206,7 +219,7 @@ def create_app(library: Library) -> Litestar:
     @get("/memos/{memo_id:int}", sync_to_thread=False)
     def detail(request: Request, memo_id: FromPath[int]) -> Response:
         memo = _memo_or_none(memo_id)
-        token = request.cookies.get(CSRF_COOKIE) or secrets.token_urlsafe(32)
+        token = _token(request)
         if memo is None:
             return _html(
                 _render("error.html", message="No such memo."), token=token, status=404

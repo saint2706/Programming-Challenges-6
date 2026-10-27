@@ -10,12 +10,18 @@ from pathlib import Path
 import numpy as np
 
 from voicememo.asr import Segment, Word
-from voicememo.paths import models_dir
+from voicememo.models import (  # noqa: F401 - re-exported for callers of this module
+    PARAKEET_MODEL,
+    PARAKEET_QUANTIZATION,
+    READY_MARKER,
+    VAD_MODEL,
+    WHISPER_PINS,
+    is_ready,
+    parakeet_dir,
+    vad_dir,
+    whisper_dir,
+)
 
-PARAKEET_MODEL = "nemo-parakeet-tdt-0.6b-v3"
-PARAKEET_QUANTIZATION = "int8"
-VAD_MODEL = "silero"
-READY_MARKER = ".ready"
 SENTENCEPIECE_SPACE = "▁"
 
 
@@ -23,24 +29,12 @@ class ModelMissingError(Exception):
     """A model is not pulled yet. The message names the command that fixes it."""
 
 
-def parakeet_dir() -> Path:
-    return models_dir() / "parakeet"
-
-
-def vad_dir() -> Path:
-    return models_dir() / "silero"
-
-
-def whisper_dir() -> Path:
-    return models_dir() / "whisper"
-
-
 def whisper_available(name: str = "base") -> bool:
-    return (whisper_dir() / f"ggml-{name}.bin").is_file()
+    return is_ready(whisper_dir(name))
 
 
 def require_marker(directory: Path, what: str, command: str) -> None:
-    if not (directory / READY_MARKER).is_file():
+    if not is_ready(directory):
         raise ModelMissingError(
             f"{what} is not installed; run `{command}` once (it downloads the model)"
         )
@@ -80,6 +74,7 @@ class ParakeetTranscriber:
 
         base = directory or parakeet_dir()
         require_marker(base, "Parakeet TDT v3", "voicememo models pull --parakeet")
+        require_marker(vad_dir(), "Silero VAD", "voicememo models pull --parakeet")
         vad = onnx_asr.load_vad(VAD_MODEL, path=str(vad_dir()))
         model = onnx_asr.load_model(
             PARAKEET_MODEL, path=str(base), quantization=PARAKEET_QUANTIZATION
@@ -114,14 +109,17 @@ class WhisperCppTranscriber:
     def __init__(self, model: str = "base", directory: Path | None = None) -> None:
         from pywhispercpp.model import Model
 
-        base = directory or whisper_dir()
-        if not (base / f"ggml-{model}.bin").is_file():
-            raise ModelMissingError(
-                f"whisper.cpp model {model!r} is not installed; run `voicememo models pull --whisper {model}`"
-            )
+        if model not in WHISPER_PINS:
+            raise ModelMissingError(f"unknown whisper.cpp model {model!r}")
+        base = directory or whisper_dir(model)
+        require_marker(
+            base,
+            f"whisper.cpp model {model!r}",
+            f"voicememo models pull --whisper {model}",
+        )
+        # Absolute path: pywhispercpp would otherwise search its own default folders by name.
         self._model = Model(
-            model,
-            models_dir=str(base),
+            str(base / f"ggml-{model}.bin"),
             redirect_whispercpp_logs_to=None,
             print_progress=False,
             print_realtime=False,

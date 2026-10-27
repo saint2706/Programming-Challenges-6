@@ -273,3 +273,12 @@ def test_word_objects_survive_shift():
     shifted = ingest_mod._shift(seg, 2.5)
     assert shifted.start == 2.5
     assert shifted.words[0].end == 3.5
+
+
+def test_oversized_file_is_refused_before_hashing(library, wav):
+    from voicememo.library import file_sha256
+
+    engine, _ = fake_engine()
+    with pytest.raises(DecodeError, match="limit"):
+        ingest_file(library, wav, engine, max_bytes=10)
+    assert library.find_by_sha(file_sha256(wav)) is None

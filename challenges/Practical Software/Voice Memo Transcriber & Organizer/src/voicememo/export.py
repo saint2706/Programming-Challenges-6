@@ -7,7 +7,7 @@ from typing import Any
 
 from voicememo.library import Library, Memo
 
-_CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+_CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")  # includes C1 controls
 _MD_SPECIAL = re.compile(r"([\\`*_\[\]<>|#~{}])")
 
 

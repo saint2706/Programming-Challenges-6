@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from helpers import tone, write_wav
 from voicememo.asr import FakeTranscriber
@@ -209,3 +211,57 @@ def test_missing_folder_raises_clearly(tmp_path, make_watcher):
     watcher = make_watcher(tmp_path / "nope")
     with pytest.raises(FileNotFoundError):
         watcher.scan()
+
+
+def test_unreadable_file_does_not_stop_the_scan(
+    folder, make_watcher, clock, monkeypatch
+):
+    write_wav(folder / "a_locked.wav", tone(1.0))
+    write_wav(folder / "b.wav", tone(1.0))
+    real_stat = Path.stat
+
+    def stat(self, *args, **kwargs):
+        if self.name == "a_locked.wav":
+            raise PermissionError("locked by another program")
+        return real_stat(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "stat", stat)
+    watcher = make_watcher(folder, settle=1.0)
+    watcher.scan()
+    clock.advance(2.0)
+    assert [p.name for p, _ in watcher.scan()] == ["b.wav"]
+
+
+def test_symlinks_are_never_followed(folder, tmp_path, make_watcher, clock):
+    outside = write_wav(tmp_path / "outside.wav", tone(1.0))
+    try:
+        (folder / "link.wav").symlink_to(outside)
+    except OSError:
+        pytest.skip("symlinks need extra privileges on this system")
+    watcher = make_watcher(folder, settle=1.0)
+    watcher.scan()
+    clock.advance(2.0)
+    assert watcher.scan() == []
+
+
+def test_ingest_error_is_logged_and_the_file_is_not_retried(
+    folder, make_watcher, clock, monkeypatch
+):
+    import voicememo.watch as watch_mod
+    from voicememo.audio import DecodeError
+
+    calls = []
+
+    def refuse(*args, **kwargs):
+        calls.append(1)
+        raise DecodeError("too big")
+
+    monkeypatch.setattr(watch_mod, "ingest_file", refuse)
+    write_wav(folder / "huge.wav", tone(1.0))
+    watcher = make_watcher(folder, settle=1.0)
+    watcher.scan()
+    clock.advance(2.0)
+    assert watcher.scan() == []
+    clock.advance(2.0)
+    assert watcher.scan() == []
+    assert len(calls) == 1

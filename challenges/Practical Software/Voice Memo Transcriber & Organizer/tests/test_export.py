@@ -199,3 +199,7 @@ def test_render_rejects_unknown_format(library, memo_with_hostile_text):
 def test_export_of_library_with_no_memos_is_valid_json(tmp_path):
     with Library(tmp_path / "empty") as lib:
         assert json.loads(library_json(lib))["memos"] == []
+
+
+def test_clean_text_strips_c1_control_characters():
+    assert clean_text("a\x80b\x9fc") == "abc"

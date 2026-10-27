@@ -181,10 +181,16 @@ class Library:
 
     def list_memos(self, tag: str | None = None, limit: int = 100) -> list[Memo]:
         if tag:
+            try:
+                key = normalize_tag(tag)
+            except (
+                LibraryError
+            ):  # an unusable filter can match nothing; it is not an error
+                return []
             rows = self.conn.execute(
                 "SELECT m.* FROM memos m JOIN tags t ON t.memo_id = m.id WHERE t.tag = ? "
                 "ORDER BY m.created_at DESC, m.id DESC LIMIT ?",
-                (normalize_tag(tag), limit),
+                (key, limit),
             )
         else:
             rows = self.conn.execute(
@@ -218,6 +224,7 @@ class Library:
             not memo.audio_file
             or "/" in memo.audio_file
             or "\\" in memo.audio_file
+            or ":" in memo.audio_file  # Windows drive-relative names such as "C:x.m4a"
             or ".." in memo.audio_file
         ):
             raise LibraryError("memo has no safe audio file")

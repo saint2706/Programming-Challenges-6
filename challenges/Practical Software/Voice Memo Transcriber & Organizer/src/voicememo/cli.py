@@ -16,6 +16,7 @@ from voicememo.ingest import (
     retranscribe,
 )
 from voicememo.library import Library, LibraryError
+from voicememo.models import WHISPER_PINS
 from voicememo.paths import data_dir
 
 AUDIO_SUFFIXES = (
@@ -106,7 +107,7 @@ def cmd_ingest(args: argparse.Namespace) -> int:
                     language=args.language,
                     retry_failed=args.retry_failed,
                 )
-            except (DecodeError, LibraryError, FileNotFoundError) as exc:
+            except (DecodeError, LibraryError, OSError) as exc:
                 _say(f"{path}: error: {exc}")
                 failures += 1
                 continue
@@ -296,8 +297,8 @@ def cmd_serve(args: argparse.Namespace) -> int:
 
     from voicememo.web import create_app
 
-    if args.host not in {"127.0.0.1", "localhost", "::1"} and not args.allow_remote:
-        _say("refusing to bind a non-loopback address without --allow-remote")
+    if args.host not in {"127.0.0.1", "localhost", "::1"}:
+        _say("refusing to bind a non-loopback address; the web UI is loopback-only")
         return 2
     with _open_library() as library:
         app = create_app(library)
@@ -339,6 +340,7 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument(
             "--whisper",
             default="base",
+            choices=sorted(WHISPER_PINS),
             help="whisper.cpp model used for non-Parakeet languages",
         )
 
@@ -351,6 +353,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--whisper",
         action="append",
         metavar="NAME",
+        choices=sorted(WHISPER_PINS),
         help="whisper.cpp model, e.g. base",
     )
     p.add_argument(
@@ -428,9 +431,6 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("serve", help="local web UI (loopback only by default)")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8000)
-    p.add_argument(
-        "--allow-remote", action="store_true", help="permit a non-loopback bind address"
-    )
     p.set_defaults(func=cmd_serve)
 
     p = sub.add_parser(
@@ -456,6 +456,11 @@ def main(argv: list[str] | None = None) -> int:
         from voicememo.backends import ModelMissingError
 
         if isinstance(exc, ModelMissingError):
+            _say(str(exc))
+            return 1
+        from voicememo.models import ModelIntegrityError
+
+        if isinstance(exc, ModelIntegrityError):
             _say(str(exc))
             return 1
         raise

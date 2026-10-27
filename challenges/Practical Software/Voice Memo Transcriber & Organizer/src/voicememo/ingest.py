@@ -10,6 +10,10 @@ from voicememo.asr import Segment, Transcriber, normalize_language, route_backen
 from voicememo.audio import SAMPLE_RATE, DecodeError, iter_chunks
 from voicememo.library import Library, file_sha256
 
+MAX_FILE_BYTES = (
+    2 * 1024**3
+)  # refused before hashing or copying, so a huge file costs nothing
+
 
 class Engine(Protocol):
     """Chooses the transcriber for a memo. Called once per memo with its first audio chunk."""
@@ -129,9 +133,15 @@ def ingest_file(
     *,
     language: str | None = None,
     retry_failed: bool = False,
+    max_bytes: int = MAX_FILE_BYTES,
 ) -> IngestResult:
     """Add one audio file. Re-running on the same bytes is a no-op unless the earlier attempt failed."""
     lang = normalize_language(language)
+    size = path.stat().st_size
+    if size > max_bytes:
+        raise DecodeError(
+            f"file is {size / 2**30:.2f} GiB; the limit is {max_bytes / 2**30:g} GiB"
+        )
     sha = file_sha256(path)
     existing = library.find_by_sha(sha)
     if existing is not None and (existing.status == "done" or not retry_failed):
