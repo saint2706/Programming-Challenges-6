@@ -1,0 +1,37 @@
+[project]
+name = "distributed-data-processing-pipeline"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.4.0",
+    "numpy>=2.3.0",
+    "polars>=1.30.0",
+    "psutil>=7.0.0",
+    "pyarrow>=20.0.0",
+    "rich>=14.0.0",
+    "typer>=0.16.0",
+]
+
+[project.optional-dependencies]
+# Heavy engines. Each one is optional: the harness records "not installed" and skips it.
+engines = [
+    "dask[dataframe,distributed]>=2025.1.0",
+    "pandas>=2.2.0",
+    "pyspark>=4.0.0",
+    "daft>=0.5.0",
+]
+
+[project.scripts]
+dist-pipeline = "dist_pipeline.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "dist_pipeline"

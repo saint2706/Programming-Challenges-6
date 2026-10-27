@@ -1,0 +1,4 @@
+# Local data and runtime state (the full download and the benchmark scratch files are not committed)
+data/
+.pytest_cache/
+.ruff_cache/
