@@ -1,0 +1,7 @@
+# Local model downloads (large; fetched with `voicememo models pull`).
+/models/
+# Local library and audio store created by the app at runtime.
+/data/
+.venv/
+.pytest_cache/
+__pycache__/

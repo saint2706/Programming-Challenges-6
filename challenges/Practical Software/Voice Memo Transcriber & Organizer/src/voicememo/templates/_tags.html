@@ -1,0 +1,23 @@
+<section class="tagbox" id="tags" aria-labelledby="tags-heading">
+  <h2 id="tags-heading">Tags</h2>
+  <ul class="tag-list">
+    {% for name, kind in tags %}
+    <li>
+      <span class="tag {{ kind }}">{{ name }}</span>
+      <form class="inline" method="post" action="/memos/{{ memo.id }}/tags/remove" hx-post="/memos/{{ memo.id }}/tags/remove" hx-target="#tags" hx-swap="outerHTML">
+        <input type="hidden" name="csrf_token" value="{{ csrf }}">
+        <input type="hidden" name="tag" value="{{ name }}">
+        <button type="submit" aria-label="Remove tag {{ name }}">&times;</button>
+      </form>
+    </li>
+    {% else %}
+    <li class="empty">No tags.</li>
+    {% endfor %}
+  </ul>
+  <form class="inline" method="post" action="/memos/{{ memo.id }}/tags" hx-post="/memos/{{ memo.id }}/tags" hx-target="#tags" hx-swap="outerHTML">
+    <input type="hidden" name="csrf_token" value="{{ csrf }}">
+    <input type="text" name="tag" maxlength="40" required placeholder="new tag" aria-label="New tag">
+    <button type="submit">Add</button>
+  </form>
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+</section>

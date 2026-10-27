@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{% if q %}Search: {{ q }}{% else %}Library{% endif %}{% endblock %}
+{% block content %}
+{% if tag_counts %}
+<nav class="tags" aria-label="Tags">
+  <a href="/" class="{{ 'active' if not tag else '' }}">all</a>
+  {% for name, count in tag_counts %}
+  <a href="/?tag={{ name|urlencode }}" class="{{ 'active' if tag == name else '' }}">{{ name }} <span class="count">{{ count }}</span></a>
+  {% endfor %}
+</nav>
+{% endif %}
+
+{% if q %}
+  <h1>Results for &ldquo;{{ q }}&rdquo;</h1>
+  {% if hits %}
+  <ol class="hits">
+    {% for hit in hits %}
+    <li>
+      <a href="/memos/{{ hit.memo_id }}#t{{ '%.0f' % hit.start }}">{{ hit.title }}</a>
+      <span class="time">{{ '%.1f' % hit.start }} s</span>
+      <p class="snippet">{{ hit.snippet }}</p>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p class="empty">No matches.</p>
+  {% endif %}
+{% else %}
+  <h1>{% if tag %}Tagged &ldquo;{{ tag }}&rdquo;{% else %}All memos{% endif %}</h1>
+  {% if memos %}
+  <ul class="memos">
+    {% for memo in memos %}
+    <li>
+      <a href="/memos/{{ memo.id }}">{{ memo.title }}</a>
+      <span class="meta">{{ '%.0f' % memo.duration }} s &middot; {{ memo.language or 'unknown' }} &middot; {{ memo.status }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">No memos yet. Run <code>voicememo ingest</code> or <code>voicememo watch</code>.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

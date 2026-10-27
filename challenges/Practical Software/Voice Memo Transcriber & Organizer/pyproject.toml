@@ -1,0 +1,32 @@
+[project]
+name = "voice-memo-transcriber-organizer"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "av>=19.0.2",
+    "jinja2>=3.1.6",
+    "litestar>=2.25.0",
+    "model2vec>=0.10.0",
+    "numpy>=2.2",
+    "onnx-asr[cpu]>=0.12.0",
+    "pywhispercpp>=1.5.1",
+    "scikit-learn>=1.9.1",
+    "uvicorn>=0.34",
+]
+
+[project.scripts]
+voicememo = "voicememo.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "voicememo"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+    "pytest-timeout>=2.4.0",
+]

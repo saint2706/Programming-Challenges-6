@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ memo.title }}{% endblock %}
+{% block content %}
+<article class="memo">
+  <h1>{{ memo.title }}</h1>
+  <p class="meta">{{ '%.1f' % memo.duration }} s &middot; language {{ memo.language or 'unknown' }} &middot; {{ memo.backend or 'no backend' }}</p>
+
+  {% if has_audio %}
+  <audio controls preload="none" src="/memos/{{ memo.id }}/audio"></audio>
+  {% endif %}
+
+  {% include "_tags.html" %}
+
+  <section aria-labelledby="transcript-heading">
+    <h2 id="transcript-heading">Transcript</h2>
+    {% if segments %}
+    <ol class="segments">
+      {% for seg in segments %}
+      <li id="t{{ '%.0f' % seg.start }}"><span class="time">{{ '%.1f' % seg.start }}&ndash;{{ '%.1f' % seg.end }} s</span> {{ seg.text }}</li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="empty">No transcript.</p>
+    {% endif %}
+  </section>
+  <p><a href="/">&larr; Back to library</a></p>
+</article>
+{% endblock %}
