@@ -1,0 +1,7 @@
+[00:00:04] Sam Okafor: Quick check on the incident follow-ups.
+[00:00:30] Lena Brandt: I'll write the postmortem by next Tuesday.
+[00:00:58] Priya Shah: Sam, please set up the alert thresholds this week.
+[00:01:22] Sam Okafor: The on-call rota is fine as it is.
+[00:01:45] Lena Brandt: Someone should check the dashboard for the spike.
+[00:02:10] Priya Shah: Okay, I will send the summary to leadership.
+[00:02:33] Sam Okafor: Should we move the review to Monday?

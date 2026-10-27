@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:03,000
+Ana Costa: The beta feedback is mostly positive.
+
+2
+00:00:03,000 --> 00:00:07,000
+Priya Shah: Marco, please prepare the beta readout for Thursday.
+
+3
+00:00:07,000 --> 00:00:11,000
+Marco Rossi: Sure, I'll prepare it and share it with Ana by Friday.
+
+4
+00:00:11,000 --> 00:00:15,000
+Ana Costa: Should we invite the partner team to the readout?
+
+5
+00:00:15,000 --> 00:00:19,000
+Priya Shah: Let's add the partner team to the invite list.
+
+6
+00:00:19,000 --> 00:00:23,000
+Ana Costa: I'll think about the pricing tiers later.

@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:03,000
+Sam Okafor: Let's go through the month-end close.
+
+2
+00:00:03,000 --> 00:00:08,000
+Lena Brandt: I'll reconcile the bank accounts by end of the month.
+
+3
+00:00:08,000 --> 00:00:12,000
+Priya Shah: Lena, can you also send the accrual list to finance?
+
+4
+00:00:12,000 --> 00:00:16,000
+Sam Okafor: The auditor asked about the prepaid expenses.
+
+5
+00:00:16,000 --> 00:00:20,000
+Priya Shah: We need someone to own the audit response.
+
+6
+00:00:20,000 --> 00:00:24,000
+Sam Okafor: Should we pay the vendor early?

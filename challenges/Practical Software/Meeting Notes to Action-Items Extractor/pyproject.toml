@@ -1,0 +1,27 @@
+[project]
+name = "meeting-notes-to-action-items-extractor"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "dateparser>=1.4.3",
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+    "rapidfuzz>=3.14.6",
+    "spacy>=3.8.18,<3.9",
+]
+
+[project.scripts]
+actionitems = "actionitems.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "actionitems"
+
+[dependency-groups]
+dev = [
+    "icalendar>=7.3.0",
+    "pytest>=9.1.1",
+    "pytest-timeout>=2.4.0",
+]

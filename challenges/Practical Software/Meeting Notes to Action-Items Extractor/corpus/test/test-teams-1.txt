@@ -1,0 +1,17 @@
+Tomas Berg 00:00:07
+Let's look at the cloud bill.
+
+Aiko Mori 00:00:33
+I will tag the unused volumes by Wednesday.
+
+Ravi Patel 00:00:58
+Tomas to approve the new budget on Friday.
+
+Aiko Mori 00:01:21
+We decided to cut the spend by ten percent.
+
+Tomas Berg 00:01:44
+Someone needs to tell finance about the change.
+
+Ravi Patel 00:02:09
+Could you check if the reserved instances expire soon?

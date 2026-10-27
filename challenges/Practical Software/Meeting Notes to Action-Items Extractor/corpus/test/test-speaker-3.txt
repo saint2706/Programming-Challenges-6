@@ -1,0 +1,7 @@
+Tomas Berg: Okay, let's wrap the release.
+Aiko Mori: Ravi, can you sign the vendor contract by Monday?
+Ravi Patel: Yes, I will sign it on Monday.
+Tomas Berg: Chloe will update the roadmap, I think.
+Aiko Mori: We need to decide whether to keep the beta open.
+Ravi Patel: Did anyone check the logs last night?
+Tomas Berg: Thanks all, that's it.

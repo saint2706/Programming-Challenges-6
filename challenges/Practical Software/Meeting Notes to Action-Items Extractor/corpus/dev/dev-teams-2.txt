@@ -1,0 +1,17 @@
+Ana Costa 00:00:10
+The bug queue has forty open tickets.
+
+Priya Shah 00:00:34
+Ana, please triage the top ten tickets by Friday.
+
+Marco Rossi 00:00:58
+We will close the duplicates this week.
+
+Ana Costa 00:01:20
+I'm going to write up the triage rules on Thursday.
+
+Priya Shah 00:01:50
+Good. Marco, should we reopen the old incident?
+
+Marco Rossi 00:02:12
+Let's leave the incident for now.

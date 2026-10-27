@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:03,000
+Fatima Haddad: The hiring pipeline is full.
+
+2
+00:00:03,000 --> 00:00:07,000
+Noah Kim: Chloe, please call the two agencies by Friday.
+
+3
+00:00:07,000 --> 00:00:11,000
+Chloe Dubois: I will call the first one today.
+
+4
+00:00:11,000 --> 00:00:15,000
+Fatima Haddad: Someone should update the job post.
+
+5
+00:00:15,000 --> 00:00:19,000
+Noah Kim: We decided to cap the team at eight people.
+
+6
+00:00:19,000 --> 00:00:23,000
+Chloe Dubois: Maybe I can take the interview panel.

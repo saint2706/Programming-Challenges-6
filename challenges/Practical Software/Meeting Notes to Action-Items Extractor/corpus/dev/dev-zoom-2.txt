@@ -1,0 +1,7 @@
+[00:00:03] Ana Costa: The vendor invoice is still open.
+[00:00:25] Priya Shah: Ana, can you chase the vendor by Friday?
+[00:00:50] Marco Rossi: We're going with the annual plan.
+[00:01:15] Ana Costa: Right. I'll send the signed contract on Thursday.
+[00:01:40] Priya Shah: Marco, will you update the pricing page next week?
+[00:02:05] Ana Costa: Should we renew the license for next year?
+[00:02:30] Marco Rossi: Let's skip the renewal discussion this week.

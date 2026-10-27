@@ -1,0 +1,7 @@
+[00:00:04] Tomas Berg: Quick look at the release checklist.
+[00:00:30] Aiko Mori: I'll update the checklist with the new owners tomorrow.
+[00:00:55] Ravi Patel: Tomas, please book the QA window for Thursday.
+[00:01:20] Tomas Berg: Someone should write the rollback steps by next week.
+[00:01:44] Aiko Mori: The schedule is fine as it is.
+[00:02:10] Ravi Patel: Let's skip the demo this time.
+[00:02:33] Tomas Berg: Should we ask support about the ticket backlog?

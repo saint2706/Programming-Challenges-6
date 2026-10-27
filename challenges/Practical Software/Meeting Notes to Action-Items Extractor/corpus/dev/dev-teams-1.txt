@@ -1,0 +1,17 @@
+Priya Shah 00:00:08
+Let's go over the sprint goals.
+
+Marco Rossi 00:00:31
+I'll finish the migration script by Thursday.
+
+Dana Lee 00:00:52
+Sure. Dana to run the regression suite on Tuesday.
+
+Priya Shah 00:01:20
+Marco, the staging database needs a reset before we test.
+
+Marco Rossi 00:01:44
+Maybe we should wait for the vendor answer.
+
+Priya Shah 00:02:05
+Thanks. The meeting is over.

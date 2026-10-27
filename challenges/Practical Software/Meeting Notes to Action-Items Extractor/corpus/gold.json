@@ -1,0 +1,2805 @@
+{
+    "schema": 1,
+    "description": "Synthetic meeting notes (all names invented). Quotes locate gold items by line. action=false marks a sentence that must not produce an action item.",
+    "documents": [
+        {
+            "id": "dev-speaker-1",
+            "split": "dev",
+            "format": "speaker",
+            "file": "dev/dev-speaker-1.txt",
+            "meeting_date": "2026-11-02",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Let's get started on the launch checklist.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll send the revised pricing deck to the client by Friday.",
+                    "task": "Send the revised pricing deck to the client",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Dana, can you book a room for the review?",
+                    "task": "Book a room for the review",
+                    "owner": "Dana Lee",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Sure, I'll book it tomorrow morning.",
+                    "task": "Book it",
+                    "owner": "Dana Lee",
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "We decided to delay the beta until December.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Someone should update the risk register before next week.",
+                    "task": "Update the risk register",
+                    "owner": null,
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "I think I might look at the vendor contract later.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Eli, please follow up with legal about the data terms.",
+                    "task": "Follow up with legal about the data terms",
+                    "owner": "Eli Park",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Is the legal team available on Monday?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-speaker-2",
+            "split": "dev",
+            "format": "speaker",
+            "file": "dev/dev-speaker-2.txt",
+            "meeting_date": "2026-11-04",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Ana, could you share the summary with the leadership group by Friday?",
+                    "task": "Share the summary with the leadership group",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Yes, I will share it by Friday.",
+                    "task": "Share it",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Marco will own the landing page copy",
+                    "task": "Own the landing page copy",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "If legal signs off, I will also publish the FAQ.",
+                    "task": "Publish the FAQ",
+                    "owner": "Marco Rossi",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We agreed to keep the current pricing page for now.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Should we add a demo video?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Let's revisit the demo question on the next call.",
+                    "task": "Revisit the demo question on the next call",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I'm not going to have time to edit the video this month.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-speaker-3",
+            "split": "dev",
+            "format": "speaker",
+            "file": "dev/dev-speaker-3.txt",
+            "meeting_date": "2026-11-06",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "Okay, let's review the Q4 hiring plan.",
+                    "task": "Review the Q4 hiring plan",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Priya will send the job description to the agency by tomorrow.",
+                    "task": "Send the job description to the agency",
+                    "owner": "Priya Shah",
+                    "due": "2026-11-07",
+                    "action": true
+                },
+                {
+                    "quote": "Yes, I can do that.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll also update the careers page.",
+                    "task": "Update the careers page",
+                    "owner": "Priya Shah",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Could someone chase the agency on the contract next week?",
+                    "task": "Chase the agency on the contract",
+                    "owner": null,
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "I'll chase it myself on Monday.",
+                    "task": "Chase it myself",
+                    "owner": "Sam Okafor",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "We're not going to hire a second recruiter this quarter.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Lena, please check the candidate pipeline before end of week.",
+                    "task": "Check the candidate pipeline",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "I'll check it.",
+                    "task": "Check it",
+                    "owner": "Lena Brandt",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Also the referral bonus, should we raise it?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Good question, let's park it for now.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-zoom-1",
+            "split": "dev",
+            "format": "zoom",
+            "file": "dev/dev-zoom-1.txt",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Let's begin with the release notes.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll draft the release notes by Wednesday.",
+                    "task": "Draft the release notes",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-04",
+                    "action": true
+                },
+                {
+                    "quote": "I will book the QA environment tomorrow.",
+                    "task": "Book the QA environment",
+                    "owner": "Dana Lee",
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "Dana, please also check the staging logs.",
+                    "task": "Check the staging logs",
+                    "owner": "Dana Lee",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "The old API may be deprecated, maybe we should discuss it.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Someone needs to tell support about the outage window.",
+                    "task": "Tell support about the outage window",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "dev-zoom-2",
+            "split": "dev",
+            "format": "zoom",
+            "file": "dev/dev-zoom-2.txt",
+            "meeting_date": "2026-11-04",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Ana, can you chase the vendor by Friday?",
+                    "task": "Chase the vendor",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "We're going with the annual plan.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll send the signed contract on Thursday.",
+                    "task": "Send the signed contract",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "Marco, will you update the pricing page next week?",
+                    "task": "Update the pricing page",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "Should we renew the license for next year?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Let's skip the renewal discussion this week.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-zoom-3",
+            "split": "dev",
+            "format": "zoom",
+            "file": "dev/dev-zoom-3.txt",
+            "meeting_date": "2026-11-06",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "I'll write the postmortem by next Tuesday.",
+                    "task": "Write the postmortem",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-10",
+                    "action": true
+                },
+                {
+                    "quote": "Sam, please set up the alert thresholds this week.",
+                    "task": "Set up the alert thresholds",
+                    "owner": "Sam Okafor",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "The on-call rota is fine as it is.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Someone should check the dashboard for the spike.",
+                    "task": "Check the dashboard for the spike",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I will send the summary to leadership.",
+                    "task": "Send the summary to leadership",
+                    "owner": "Priya Shah",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Should we move the review to Monday?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-teams-1",
+            "split": "dev",
+            "format": "teams",
+            "file": "dev/dev-teams-1.txt",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Let's go over the sprint goals.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll finish the migration script by Thursday.",
+                    "task": "Finish the migration script",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "Dana to run the regression suite on Tuesday.",
+                    "task": "Run the regression suite",
+                    "owner": "Dana Lee",
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "Marco, the staging database needs a reset before we test.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Maybe we should wait for the vendor answer.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-teams-2",
+            "split": "dev",
+            "format": "teams",
+            "file": "dev/dev-teams-2.txt",
+            "meeting_date": "2026-11-04",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Ana, please triage the top ten tickets by Friday.",
+                    "task": "Triage the top ten tickets",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "We will close the duplicates this week.",
+                    "task": "Close the duplicates",
+                    "owner": null,
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "I'm going to write up the triage rules on Thursday.",
+                    "task": "Write up the triage rules",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "Good. Marco, should we reopen the old incident?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Let's leave the incident for now.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-teams-3",
+            "split": "dev",
+            "format": "teams",
+            "file": "dev/dev-teams-3.txt",
+            "meeting_date": "2026-11-06",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "We need to decide on the vendor by Monday.",
+                    "task": "Decide on the vendor",
+                    "owner": null,
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "I can own the vendor shortlist.",
+                    "task": "Own the vendor shortlist",
+                    "owner": "Lena Brandt",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Lena, please send the shortlist to Sam by next Wednesday.",
+                    "task": "Send the shortlist to Sam",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-11",
+                    "action": true
+                },
+                {
+                    "quote": "I'll confirm the budget on Monday.",
+                    "task": "Confirm the budget",
+                    "owner": "Sam Okafor",
+                    "due": "2026-11-09",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "dev-vtt-1",
+            "split": "dev",
+            "format": "vtt",
+            "file": "dev/dev-vtt-1.vtt",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Let's start the retro.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll fix the flaky login test by Wednesday.",
+                    "task": "Fix the flaky login test",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-04",
+                    "action": true
+                },
+                {
+                    "quote": "Dana will update the on-call doc tomorrow.",
+                    "task": "Update the on-call doc",
+                    "owner": "Dana Lee",
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "Someone should summarize the open questions.",
+                    "task": "Summarize the open questions",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Should we move the retro to Friday?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I think we should keep the same format.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-vtt-2",
+            "split": "dev",
+            "format": "vtt",
+            "file": "dev/dev-vtt-2.vtt",
+            "meeting_date": "2026-11-04",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Let's go through the budget.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Ana, can you send the new forecast by Thursday?",
+                    "task": "Send the new forecast",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "I'll look into the hosting costs next week.",
+                    "task": "Look into the hosting costs",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "Let's not reopen the contract question.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Eli will confirm the seat count by 2026-11-20.",
+                    "task": "Confirm the seat count",
+                    "owner": "Eli",
+                    "due": "2026-11-20",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "dev-vtt-3",
+            "split": "dev",
+            "format": "vtt",
+            "file": "dev/dev-vtt-3.vtt",
+            "meeting_date": "2026-11-06",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "Let's begin with the outage summary.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll publish the outage summary today.",
+                    "task": "Publish the outage summary",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Sam, please book the postmortem review for Monday.",
+                    "task": "Book the postmortem review",
+                    "owner": "Sam Okafor",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "We will update the runbook after that.",
+                    "task": "Update the runbook",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Are we going to change the paging policy?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "We decided to keep paging as is.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-srt-1",
+            "split": "dev",
+            "format": "srt",
+            "file": "dev/dev-srt-1.srt",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Welcome, let's cover the onboarding flow.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll write the onboarding checklist by Friday.",
+                    "task": "Write the onboarding checklist",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Okay, I'll set up the sandbox accounts tomorrow.",
+                    "task": "Set up the sandbox accounts",
+                    "owner": "Dana Lee",
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "Eli, could you review the security questionnaire by Wednesday?",
+                    "task": "Review the security questionnaire",
+                    "owner": "Eli Park",
+                    "due": "2026-11-04",
+                    "action": true
+                },
+                {
+                    "quote": "Someone needs to tell the vendor about the new SSO plan.",
+                    "task": "Tell the vendor about the new SSO plan",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I don't think we need the extra license.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-srt-2",
+            "split": "dev",
+            "format": "srt",
+            "file": "dev/dev-srt-2.srt",
+            "meeting_date": "2026-11-04",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Marco, please prepare the beta readout for Thursday.",
+                    "task": "Prepare the beta readout",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "I'll prepare it and share it with Ana by Friday.",
+                    "task": "Prepare it and share it with Ana",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Should we invite the partner team to the readout?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Let's add the partner team to the invite list.",
+                    "task": "Add the partner team to the invite list",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I'll think about the pricing tiers later.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-srt-3",
+            "split": "dev",
+            "format": "srt",
+            "file": "dev/dev-srt-3.srt",
+            "meeting_date": "2026-11-06",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "Let's go through the month-end close.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll reconcile the bank accounts by end of the month.",
+                    "task": "Reconcile the bank accounts",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-30",
+                    "action": true
+                },
+                {
+                    "quote": "Lena, can you also send the accrual list to finance?",
+                    "task": "Send the accrual list to finance",
+                    "owner": "Lena Brandt",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We need someone to own the audit response.",
+                    "task": "Own the audit response",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Should we pay the vendor early?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-checklist-1",
+            "split": "dev",
+            "format": "checklist",
+            "file": "dev/dev-checklist-1.md",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Send the pricing deck to the client (Marco Rossi) by Friday",
+                    "task": "Send the pricing deck to the client",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "[x] Book the review room (Dana Lee)",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Update the status page @Dana",
+                    "task": "Update the status page",
+                    "owner": "Dana Lee",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Confirm the legal review date",
+                    "task": "Confirm the legal review date",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We agreed to keep the free tier.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-checklist-2",
+            "split": "dev",
+            "format": "checklist",
+            "file": "dev/dev-checklist-2.md",
+            "meeting_date": "2026-11-04",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Ana to request the security report from the vendor by Friday",
+                    "task": "Request the security report from the vendor",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Marco: draft the renewal email tomorrow",
+                    "task": "Draft the renewal email",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "Priya to decide on the seat count",
+                    "task": "Decide on the seat count",
+                    "owner": "Priya Shah",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "[x] Collect the invoices (Ana Costa)",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "The vendor offered a 10 percent discount.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-checklist-3",
+            "split": "dev",
+            "format": "checklist",
+            "file": "dev/dev-checklist-3.md",
+            "meeting_date": "2026-11-06",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "Lena: write the customer email by Monday",
+                    "task": "Write the customer email",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "Sam Okafor to update the runbook",
+                    "task": "Update the runbook",
+                    "owner": "Sam Okafor",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Priya will check the alert noise next week",
+                    "task": "Check the alert noise",
+                    "owner": "Priya Shah",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "Archive the old incident channel",
+                    "task": "Archive the old incident channel",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Someone to confirm the on-call handover",
+                    "task": "Confirm the on-call handover",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Paging stays as it is.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-asr-1",
+            "split": "dev",
+            "format": "asr",
+            "file": "dev/dev-asr-1.txt",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Marco will send the revised deck by Wednesday",
+                    "task": "Send the revised deck",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-04",
+                    "action": true
+                },
+                {
+                    "quote": "can you book the room Dana",
+                    "task": "Book the room",
+                    "owner": "Dana Lee",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "we decided to skip the beta review",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll update the risk register tomorrow",
+                    "task": "Update the risk register",
+                    "owner": null,
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "Priya will check the budget next week",
+                    "task": "Check the budget",
+                    "owner": "Priya Shah",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "someone should follow up with legal on the data terms",
+                    "task": "Follow up with legal on the data terms",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "should we move the launch to December",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "we need someone to test the export flow",
+                    "task": "Test the export flow",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "dev-asr-2",
+            "split": "dev",
+            "format": "asr",
+            "file": "dev/dev-asr-2.txt",
+            "meeting_date": "2026-11-04",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "can you email the three shortlisted vendors tomorrow",
+                    "task": "Email the three shortlisted vendors",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "I will ask legal about the nda by Friday",
+                    "task": "Ask legal about the NDA",
+                    "owner": null,
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "please keep the trial running until we decide",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "maybe we could book a call with the top vendor",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "we will confirm the budget soon",
+                    "task": "Confirm the budget soon",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "dev-asr-3",
+            "split": "dev",
+            "format": "asr",
+            "file": "dev/dev-asr-3.txt",
+            "meeting_date": "2026-11-06",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "I'll draft the offer letter today",
+                    "task": "Draft the offer letter",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-06",
+                    "action": true
+                },
+                {
+                    "quote": "Sam will sign off on Monday",
+                    "task": "Sign off",
+                    "owner": "Sam Okafor",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "would you check the references Priya",
+                    "task": "Check the references",
+                    "owner": "Priya Shah",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "we agreed the offer stays at the same salary",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "someone needs to tell the recruiter about the change",
+                    "task": "Tell the recruiter about the change",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "should we restart the search next month",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-notes-1",
+            "split": "dev",
+            "format": "notes",
+            "file": "dev/dev-notes-1.md",
+            "meeting_date": "2026-11-02",
+            "timezone": "UTC",
+            "attendees": [
+                "Priya Shah",
+                "Marco Rossi",
+                "Dana Lee"
+            ],
+            "items": [
+                {
+                    "quote": "Summary: We reviewed the backlog and picked three items.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "send the API spec to partners by Thursday.",
+                    "task": "Send the API spec to partners",
+                    "owner": "Marco Rossi",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "Dana to set up the staging environment tomorrow.",
+                    "task": "Set up the staging environment",
+                    "owner": "Dana Lee",
+                    "due": "2026-11-03",
+                    "action": true
+                },
+                {
+                    "quote": "@Priya please confirm the sprint goal with product.",
+                    "task": "Confirm the sprint goal",
+                    "owner": "Priya Shah",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We agreed to push the search feature to the next sprint.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-notes-2",
+            "split": "dev",
+            "format": "notes",
+            "file": "dev/dev-notes-2.md",
+            "meeting_date": "2026-11-04",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Priya Shah",
+                "Ana Costa",
+                "Marco Rossi"
+            ],
+            "items": [
+                {
+                    "quote": "Ana Costa will send the redlined contract to the vendor on Thursday",
+                    "task": "Send the redlined contract to the vendor",
+                    "owner": "Ana Costa",
+                    "due": "2026-11-05",
+                    "action": true
+                },
+                {
+                    "quote": "Marco to confirm the SLA numbers before the next call",
+                    "task": "Confirm the SLA numbers",
+                    "owner": "Marco Rossi",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We need to choose between the two shortlisted vendors",
+                    "task": "Choose between the two shortlisted vendors",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Priya: should we ask for a longer trial?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "The vendor hinted they might lower the price if we sign in November.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "dev-notes-3",
+            "split": "dev",
+            "format": "notes",
+            "file": "dev/dev-notes-3.md",
+            "meeting_date": "2026-11-06",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Sam Okafor",
+                "Lena Brandt",
+                "Priya Shah"
+            ],
+            "items": [
+                {
+                    "quote": "Lena: the handoff doc was late this week.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Lena to write the handoff checklist before Monday.",
+                    "task": "Write the handoff checklist",
+                    "owner": "Lena Brandt",
+                    "due": "2026-11-09",
+                    "action": true
+                },
+                {
+                    "quote": "Priya will schedule the next retro for November 20.",
+                    "task": "Schedule the next retro",
+                    "owner": "Priya Shah",
+                    "due": "2026-11-20",
+                    "action": true
+                },
+                {
+                    "quote": "Someone should archive the old wiki pages.",
+                    "task": "Archive the old wiki pages",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Maybe we should look at the cost dashboard.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Sam Okafor: book the room for the leadership demo on Tuesday",
+                    "task": "Book the room for the leadership demo",
+                    "owner": "Sam Okafor",
+                    "due": "2026-11-10",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-speaker-1",
+            "split": "test",
+            "format": "speaker",
+            "file": "test/test-speaker-1.txt",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Let's get going with the quarterly numbers.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll pull the churn numbers by Wednesday.",
+                    "task": "Pull the churn numbers",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-11",
+                    "action": true
+                },
+                {
+                    "quote": "Ravi will rewrite the forecast assumptions next week.",
+                    "task": "Rewrite the forecast assumptions",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "Aiko, can you also share the cohort table with finance?",
+                    "task": "Share the cohort table with finance",
+                    "owner": "Aiko Mori",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We decided to freeze hiring until January.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Somebody should check the currency exposure before the board pack.",
+                    "task": "Check the currency exposure before the board pack",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I might revisit the pricing tiers on Friday.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Should we keep the weekly report going?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll finish the vendor review by end of week.",
+                    "task": "Finish the vendor review",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-13",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-speaker-2",
+            "split": "test",
+            "format": "speaker",
+            "file": "test/test-speaker-2.txt",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Let's keep it short today.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll send the landing page draft tomorrow.",
+                    "task": "Send the landing page draft",
+                    "owner": "Noah Kim",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "Chloe, please update the press kit before the launch.",
+                    "task": "Update the press kit before the launch",
+                    "owner": "Chloe Dubois",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Should we add a waitlist?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "The legal team will look at the terms.",
+                    "task": "Look at the terms",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We agreed to delay the webinar until spring.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Someone needs to book the launch webinar slot by Friday.",
+                    "task": "Book the launch webinar slot",
+                    "owner": null,
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "I'll check the budget with finance next Tuesday.",
+                    "task": "Check the budget with finance",
+                    "owner": "Chloe Dubois",
+                    "due": "2026-11-17",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-speaker-3",
+            "split": "test",
+            "format": "speaker",
+            "file": "test/test-speaker-3.txt",
+            "meeting_date": "2026-11-13",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "let's wrap the release.",
+                    "task": "Wrap the release",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Ravi, can you sign the vendor contract by Monday?",
+                    "task": "Sign the vendor contract",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "I will sign it on Monday.",
+                    "task": "Sign it",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "Chloe will update the roadmap, I think.",
+                    "task": "Update the roadmap",
+                    "owner": "Chloe",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We need to decide whether to keep the beta open.",
+                    "task": "Decide whether to keep the beta open",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Did anyone check the logs last night?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-zoom-1",
+            "split": "test",
+            "format": "zoom",
+            "file": "test/test-zoom-1.txt",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Quick look at the release checklist.",
+                    "task": "Look at the release checklist",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I'll update the checklist with the new owners tomorrow.",
+                    "task": "Update the checklist with the new owners",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-10",
+                    "action": true
+                },
+                {
+                    "quote": "Tomas, please book the QA window for Thursday.",
+                    "task": "Book the QA window",
+                    "owner": "Tomas Berg",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "Someone should write the rollback steps by next week.",
+                    "task": "Write the rollback steps",
+                    "owner": null,
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "The schedule is fine as it is.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Let's skip the demo this time.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Should we ask support about the ticket backlog?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-zoom-2",
+            "split": "test",
+            "format": "zoom",
+            "file": "test/test-zoom-2.txt",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Noah, can you summarize the responses by Friday?",
+                    "task": "Summarize the responses",
+                    "owner": "Noah Kim",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "I'll write the follow-up email on Thursday.",
+                    "task": "Write the follow-up email",
+                    "owner": "Fatima Haddad",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "We're going with the short survey format.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Fatima will share the email draft with Chloe before Thursday.",
+                    "task": "Share the email draft with Chloe",
+                    "owner": "Fatima Haddad",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "Probably I should double-check the links first.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Let's close the feedback loop next week.",
+                    "task": "Close the feedback loop",
+                    "owner": null,
+                    "due": "2026-11-16",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-zoom-3",
+            "split": "test",
+            "format": "zoom",
+            "file": "test/test-zoom-3.txt",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "I'll reconcile the accruals on Monday.",
+                    "task": "Reconcile the accruals",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "Ravi, please send the variance report to the CFO by next Wednesday.",
+                    "task": "Send the variance report to the CFO",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-18",
+                    "action": true
+                },
+                {
+                    "quote": "Someone should confirm the audit date with the firm.",
+                    "task": "Confirm the audit date with the firm",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We need to lock the journal entries this week.",
+                    "task": "Lock the journal entries",
+                    "owner": null,
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "Maybe we can skip the variance deep dive.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I won't be able to join the review on Monday.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-teams-1",
+            "split": "test",
+            "format": "teams",
+            "file": "test/test-teams-1.txt",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Let's look at the cloud bill.",
+                    "task": "Look at the cloud bill",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I will tag the unused volumes by Wednesday.",
+                    "task": "Tag the unused volumes",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-11",
+                    "action": true
+                },
+                {
+                    "quote": "Tomas to approve the new budget on Friday.",
+                    "task": "Approve the new budget",
+                    "owner": "Tomas Berg",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "We decided to cut the spend by ten percent.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Someone needs to tell finance about the change.",
+                    "task": "Tell finance about the change",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Could you check if the reserved instances expire soon?",
+                    "task": "Check if the reserved instances expire soon",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-teams-2",
+            "split": "test",
+            "format": "teams",
+            "file": "test/test-teams-2.txt",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Fatima, please write the launch tweets by Thursday.",
+                    "task": "Write the launch tweets",
+                    "owner": "Fatima Haddad",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "I will write them.",
+                    "task": "Write them",
+                    "owner": "Fatima Haddad",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Also I might look at the banner.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Should we pause the paid ads?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Noah will set up the ad pause on Thursday if the budget is approved.",
+                    "task": "Set up the ad pause",
+                    "owner": "Noah Kim",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "We will publish the FAQ next week.",
+                    "task": "Publish the FAQ",
+                    "owner": null,
+                    "due": "2026-11-16",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-teams-3",
+            "split": "test",
+            "format": "teams",
+            "file": "test/test-teams-3.txt",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Let's review the quarter in brief.",
+                    "task": "Review the quarter in brief",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Ravi, please send the board deck to Tomas by Monday.",
+                    "task": "Send the board deck to Tomas",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "I'll send it.",
+                    "task": "Send it",
+                    "owner": "Ravi Patel",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I need to re-check the forecast on Tuesday.",
+                    "task": "Re-check the forecast",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-17",
+                    "action": true
+                },
+                {
+                    "quote": "Are we still on for the offsite?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll book the offsite venue if the deposit is paid.",
+                    "task": "Book the offsite venue",
+                    "owner": "Aiko Mori",
+                    "due": null,
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-vtt-1",
+            "split": "test",
+            "format": "vtt",
+            "file": "test/test-vtt-1.vtt",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Let's get the onboarding metrics reviewed.",
+                    "task": "Get the onboarding metrics reviewed",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Ravi will send the dashboard link by Wednesday.",
+                    "task": "Send the dashboard link",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-11",
+                    "action": true
+                },
+                {
+                    "quote": "I'll double check the numbers tomorrow.",
+                    "task": "Double check the numbers",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-10",
+                    "action": true
+                },
+                {
+                    "quote": "Someone should draft the survey questions.",
+                    "task": "Draft the survey questions",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We might skip the survey this month.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Is anyone else seeing the errors?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-vtt-2",
+            "split": "test",
+            "format": "vtt",
+            "file": "test/test-vtt-2.vtt",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Let's go through the ad copy.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Fatima, can you rewrite the headline by Friday?",
+                    "task": "Rewrite the headline",
+                    "owner": "Fatima Haddad",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "I'll rewrite it,",
+                    "task": "Rewrite the headline",
+                    "owner": "Fatima Haddad",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "I'll also send the variants to Noah.",
+                    "task": "Send the variants to Noah",
+                    "owner": "Fatima Haddad",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We're not going to run the video ad this quarter.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'm thinking about a podcast sponsorship.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Chloe will confirm the ad budget by end of month.",
+                    "task": "Confirm the ad budget",
+                    "owner": "Chloe Dubois",
+                    "due": "2026-11-30",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-vtt-3",
+            "split": "test",
+            "format": "vtt",
+            "file": "test/test-vtt-3.vtt",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Quick update on the migration.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Aiko, could you set the cutover date with the vendor by Tuesday?",
+                    "task": "Set the cutover date with the vendor",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-17",
+                    "action": true
+                },
+                {
+                    "quote": "I'll set it up with the vendor.",
+                    "task": "Set it up with the vendor",
+                    "owner": "Aiko Mori",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We will test the rollback on Monday.",
+                    "task": "Test the rollback",
+                    "owner": null,
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "Let's not change the schedule again.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'm not sure we can finish the audit in time.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-srt-1",
+            "split": "test",
+            "format": "srt",
+            "file": "test/test-srt-1.srt",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Hi all, let's start with the support backlog.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll triage the oldest fifty tickets by Thursday.",
+                    "task": "Triage the oldest fifty tickets",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "Tomas, can you approve the hiring request tomorrow?",
+                    "task": "Approve the hiring request",
+                    "owner": "Tomas Berg",
+                    "due": "2026-11-10",
+                    "action": true
+                },
+                {
+                    "quote": "We're going to close the old tickets next week.",
+                    "task": "Close the old tickets",
+                    "owner": null,
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "Should we hire a contractor for the peak?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I don't think we need a new tool.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-srt-2",
+            "split": "test",
+            "format": "srt",
+            "file": "test/test-srt-2.srt",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Chloe, please call the two agencies by Friday.",
+                    "task": "Call the two agencies",
+                    "owner": "Chloe Dubois",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "I will call the first one today.",
+                    "task": "Call the first one",
+                    "owner": "Chloe Dubois",
+                    "due": "2026-11-11",
+                    "action": true
+                },
+                {
+                    "quote": "Someone should update the job post.",
+                    "task": "Update the job post",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We decided to cap the team at eight people.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Maybe I can take the interview panel.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-srt-3",
+            "split": "test",
+            "format": "srt",
+            "file": "test/test-srt-3.srt",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Let's go over the holiday coverage.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Ravi will publish the coverage calendar by Monday.",
+                    "task": "Publish the coverage calendar",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "I'll publish it on Monday and then notify the team.",
+                    "task": "Publish it",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "We need someone to draft the on-call rota.",
+                    "task": "Draft the on-call rota",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Is there a risk to the schedule?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll look into the cost of overtime next week.",
+                    "task": "Look into the cost of overtime",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-16",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-notes-1",
+            "split": "test",
+            "format": "notes",
+            "file": "test/test-notes-1.md",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Summary: Infra costs are up again.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Aiko Mori: publish the cost breakdown by Friday.",
+                    "task": "Publish the cost breakdown",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "Ravi to renegotiate the reserved instance contract next month.",
+                    "task": "Renegotiate the reserved instance contract",
+                    "owner": "Ravi Patel",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "@Tomas please review the on-call schedule.",
+                    "task": "Review the on-call schedule",
+                    "owner": "Tomas Berg",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Someone should document the failover runbook.",
+                    "task": "Document the failover runbook",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "We agreed to keep the current cloud region.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-notes-2",
+            "split": "test",
+            "format": "notes",
+            "file": "test/test-notes-2.md",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Noah to finalise the creative brief by Friday",
+                    "task": "Finalise the creative brief",
+                    "owner": "Noah Kim",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "Fatima will email the agency about the timeline tomorrow",
+                    "task": "Email the agency about the timeline",
+                    "owner": "Fatima Haddad",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "We need to pick a single hero image",
+                    "task": "Pick a single hero image",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Chloe: should we extend the test to Monday?",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Paid social performed better than search this week.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-notes-3",
+            "split": "test",
+            "format": "notes",
+            "file": "test/test-notes-3.md",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Aiko: the audit fieldwork starts on Monday.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Ravi will send the final variance report to Tomas by next Wednesday.",
+                    "task": "Send the final variance report to Tomas",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-18",
+                    "action": true
+                },
+                {
+                    "quote": "Aiko to book the audit kickoff call for November 18.",
+                    "task": "Book the audit kickoff call",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-18",
+                    "action": true
+                },
+                {
+                    "quote": "We should maybe look at the tax provision later.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Tomas: someone should confirm the auditor's access.",
+                    "task": "Confirm the auditor's access",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Ravi: close the open purchase orders this week.",
+                    "task": "Close the open purchase orders",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-13",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-checklist-1",
+            "split": "test",
+            "format": "checklist",
+            "file": "test/test-checklist-1.md",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Freeze the release branch (Tomas Berg) by Wednesday",
+                    "task": "Freeze the release branch",
+                    "owner": "Tomas Berg",
+                    "due": "2026-11-11",
+                    "action": true
+                },
+                {
+                    "quote": "Draft the rollback plan (Ravi Patel)",
+                    "task": "Draft the rollback plan",
+                    "owner": "Ravi Patel",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "[x] Notify support about the window (Aiko Mori)",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Check the monitoring alerts @Aiko",
+                    "task": "Check the monitoring alerts",
+                    "owner": "Aiko Mori",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Confirm the database backup window",
+                    "task": "Confirm the database backup window",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "The window is Saturday night.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-checklist-2",
+            "split": "test",
+            "format": "checklist",
+            "file": "test/test-checklist-2.md",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Noah to send the partner brief by Thursday",
+                    "task": "Send the partner brief",
+                    "owner": "Noah Kim",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "Fatima: draft the thank-you note tomorrow",
+                    "task": "Draft the thank-you note",
+                    "owner": "Fatima Haddad",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "Chloe to approve the revised terms",
+                    "task": "Approve the revised terms",
+                    "owner": "Chloe Dubois",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Pick the venue for the event",
+                    "task": "Pick the venue for the event",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "[x] Confirm the catering order (Noah Kim)",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "We will not add a second sponsor.",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-checklist-3",
+            "split": "test",
+            "format": "checklist",
+            "file": "test/test-checklist-3.md",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Ravi: send the accrual schedule to the auditors by Tuesday",
+                    "task": "Send the accrual schedule to the auditors",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-17",
+                    "action": true
+                },
+                {
+                    "quote": "Reconcile the intercompany balances (Aiko Mori)",
+                    "task": "Reconcile the intercompany balances",
+                    "owner": "Aiko Mori",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Get sign-off on the revenue memo",
+                    "task": "Get sign-off on the revenue memo",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Tomas to chase the missing invoices",
+                    "task": "Chase the missing invoices",
+                    "owner": "Tomas Berg",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "[x] Post the depreciation journal",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Aiko will lock the ledger next week",
+                    "task": "Lock the ledger",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-16",
+                    "action": true
+                }
+            ]
+        },
+        {
+            "id": "test-asr-1",
+            "split": "test",
+            "format": "asr",
+            "file": "test/test-asr-1.txt",
+            "meeting_date": "2026-11-09",
+            "timezone": "UTC",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "Tomas will draft the agenda for the offsite by Thursday",
+                    "task": "Draft the agenda for the offsite",
+                    "owner": "Tomas Berg",
+                    "due": "2026-11-12",
+                    "action": true
+                },
+                {
+                    "quote": "can you confirm the venue Ravi",
+                    "task": "Confirm the venue",
+                    "owner": "Ravi Patel",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "we decided to keep the offsite to one day",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "I'll call the caterer tomorrow",
+                    "task": "Call the caterer",
+                    "owner": null,
+                    "due": "2026-11-10",
+                    "action": true
+                },
+                {
+                    "quote": "Aiko will check the dietary needs next week",
+                    "task": "Check the dietary needs",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "someone should send the invite to the wider team",
+                    "task": "Send the invite to the wider team",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "maybe we could move it to a weekend",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "should we ask the board about the date",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-asr-2",
+            "split": "test",
+            "format": "asr",
+            "file": "test/test-asr-2.txt",
+            "meeting_date": "2026-11-11",
+            "timezone": "Europe/London",
+            "attendees": [
+                "Chloe Dubois",
+                "Noah Kim",
+                "Fatima Haddad"
+            ],
+            "items": [
+                {
+                    "quote": "Noah I'll share the survey results by Friday",
+                    "task": "Share the survey results",
+                    "owner": "Noah Kim",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "please keep the old form live until then",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "we agreed to skip the webinar this month",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Fatima will look into the translation costs",
+                    "task": "Look into the translation costs",
+                    "owner": "Fatima Haddad",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "Chloe will send the brief next week",
+                    "task": "Send the brief",
+                    "owner": "Chloe Dubois",
+                    "due": "2026-11-16",
+                    "action": true
+                },
+                {
+                    "quote": "we need someone to own the partner list",
+                    "task": "Own the partner list",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "should we extend the trial",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                }
+            ]
+        },
+        {
+            "id": "test-asr-3",
+            "split": "test",
+            "format": "asr",
+            "file": "test/test-asr-3.txt",
+            "meeting_date": "2026-11-13",
+            "timezone": "America/New_York",
+            "attendees": [
+                "Tomas Berg",
+                "Aiko Mori",
+                "Ravi Patel"
+            ],
+            "items": [
+                {
+                    "quote": "I'll update the vendor sheet today",
+                    "task": "Update the vendor sheet",
+                    "owner": "Ravi Patel",
+                    "due": "2026-11-13",
+                    "action": true
+                },
+                {
+                    "quote": "Tomas will review the pricing by Tuesday",
+                    "task": "Review the pricing",
+                    "owner": "Tomas Berg",
+                    "due": "2026-11-17",
+                    "action": true
+                },
+                {
+                    "quote": "would you book the review room Aiko",
+                    "task": "Book the review room",
+                    "owner": "Aiko Mori",
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "we're not going to renew the old license",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "someone needs to tell the vendor about the new terms",
+                    "task": "Tell the vendor about the new terms",
+                    "owner": null,
+                    "due": null,
+                    "action": true
+                },
+                {
+                    "quote": "should we shorten the contract",
+                    "task": null,
+                    "owner": null,
+                    "due": null,
+                    "action": false
+                },
+                {
+                    "quote": "Aiko will check the attendance next week",
+                    "task": "Check the attendance",
+                    "owner": "Aiko Mori",
+                    "due": "2026-11-16",
+                    "action": true
+                }
+            ]
+        }
+    ]
+}

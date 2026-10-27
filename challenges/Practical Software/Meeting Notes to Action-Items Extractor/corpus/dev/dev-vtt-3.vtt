@@ -1,0 +1,25 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.000
+<v Sam Okafor>Let's begin with the outage summary.</v>
+
+2
+00:00:03.000 --> 00:00:09.000
+<v Lena Brandt>I'll publish the outage summary today.</v>
+
+3
+00:00:09.000 --> 00:00:14.000
+<v Priya Shah>Sam, please book the postmortem review for Monday.</v>
+
+4
+00:00:14.000 --> 00:00:19.000
+<v Sam Okafor>We will update the runbook after that.</v>
+
+5
+00:00:19.000 --> 00:00:24.000
+<v Lena Brandt>Are we going to change the paging policy?</v>
+
+6
+00:00:24.000 --> 00:00:30.000
+<v Priya Shah>We decided to keep paging as is.</v>

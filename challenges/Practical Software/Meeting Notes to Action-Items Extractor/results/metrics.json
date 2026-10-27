@@ -1,0 +1,279 @@
+{
+    "schema": 1,
+    "gold_sha256": "7bdfd66667bcbf2b5250540d7c18b786bf36c21ee24217f31c1874f48fad30cd",
+    "llm_pass": false,
+    "options": {
+        "use_nlp": true,
+        "min_confidence": 0.4
+    },
+    "splits": {
+        "dev": {
+            "documents": 24,
+            "backends": [
+                "spacy:en_core_web_sm"
+            ],
+            "overall": {
+                "documents": 24,
+                "gold_actions": 90,
+                "predicted_items": 88,
+                "tp": 87,
+                "fp": 1,
+                "fn": 3,
+                "precision": 0.989,
+                "recall": 0.967,
+                "f1": 0.978,
+                "matched": 87,
+                "owner_accuracy": 0.943,
+                "due_accuracy": 1.0
+            },
+            "by_format": {
+                "asr": {
+                    "documents": 3,
+                    "gold_actions": 13,
+                    "predicted_items": 12,
+                    "tp": 12,
+                    "fp": 0,
+                    "fn": 1,
+                    "precision": 1.0,
+                    "recall": 0.923,
+                    "f1": 0.96,
+                    "matched": 12,
+                    "owner_accuracy": 0.667,
+                    "due_accuracy": 1.0
+                },
+                "checklist": {
+                    "documents": 3,
+                    "gold_actions": 11,
+                    "predicted_items": 11,
+                    "tp": 11,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 11,
+                    "owner_accuracy": 0.909,
+                    "due_accuracy": 1.0
+                },
+                "notes": {
+                    "documents": 3,
+                    "gold_actions": 10,
+                    "predicted_items": 10,
+                    "tp": 10,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 10,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "speaker": {
+                    "documents": 3,
+                    "gold_actions": 17,
+                    "predicted_items": 17,
+                    "tp": 17,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 17,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "srt": {
+                    "documents": 3,
+                    "gold_actions": 10,
+                    "predicted_items": 9,
+                    "tp": 9,
+                    "fp": 0,
+                    "fn": 1,
+                    "precision": 1.0,
+                    "recall": 0.9,
+                    "f1": 0.947,
+                    "matched": 9,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "teams": {
+                    "documents": 3,
+                    "gold_actions": 9,
+                    "predicted_items": 9,
+                    "tp": 8,
+                    "fp": 1,
+                    "fn": 1,
+                    "precision": 0.889,
+                    "recall": 0.889,
+                    "f1": 0.889,
+                    "matched": 8,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "vtt": {
+                    "documents": 3,
+                    "gold_actions": 9,
+                    "predicted_items": 9,
+                    "tp": 9,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 9,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "zoom": {
+                    "documents": 3,
+                    "gold_actions": 11,
+                    "predicted_items": 11,
+                    "tp": 11,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 11,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                }
+            }
+        },
+        "test": {
+            "documents": 24,
+            "backends": [
+                "spacy:en_core_web_sm"
+            ],
+            "overall": {
+                "documents": 24,
+                "gold_actions": 100,
+                "predicted_items": 98,
+                "tp": 96,
+                "fp": 2,
+                "fn": 4,
+                "precision": 0.98,
+                "recall": 0.96,
+                "f1": 0.97,
+                "matched": 96,
+                "owner_accuracy": 0.958,
+                "due_accuracy": 1.0
+            },
+            "by_format": {
+                "asr": {
+                    "documents": 3,
+                    "gold_actions": 14,
+                    "predicted_items": 14,
+                    "tp": 14,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 14,
+                    "owner_accuracy": 0.714,
+                    "due_accuracy": 1.0
+                },
+                "checklist": {
+                    "documents": 3,
+                    "gold_actions": 13,
+                    "predicted_items": 13,
+                    "tp": 13,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 13,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "notes": {
+                    "documents": 3,
+                    "gold_actions": 11,
+                    "predicted_items": 11,
+                    "tp": 11,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 11,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "speaker": {
+                    "documents": 3,
+                    "gold_actions": 15,
+                    "predicted_items": 15,
+                    "tp": 14,
+                    "fp": 1,
+                    "fn": 1,
+                    "precision": 0.933,
+                    "recall": 0.933,
+                    "f1": 0.933,
+                    "matched": 14,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "srt": {
+                    "documents": 3,
+                    "gold_actions": 10,
+                    "predicted_items": 10,
+                    "tp": 10,
+                    "fp": 0,
+                    "fn": 0,
+                    "precision": 1.0,
+                    "recall": 1.0,
+                    "f1": 1.0,
+                    "matched": 10,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "teams": {
+                    "documents": 3,
+                    "gold_actions": 14,
+                    "predicted_items": 13,
+                    "tp": 13,
+                    "fp": 0,
+                    "fn": 1,
+                    "precision": 1.0,
+                    "recall": 0.929,
+                    "f1": 0.963,
+                    "matched": 13,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "vtt": {
+                    "documents": 3,
+                    "gold_actions": 11,
+                    "predicted_items": 11,
+                    "tp": 10,
+                    "fp": 1,
+                    "fn": 1,
+                    "precision": 0.909,
+                    "recall": 0.909,
+                    "f1": 0.909,
+                    "matched": 10,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                },
+                "zoom": {
+                    "documents": 3,
+                    "gold_actions": 12,
+                    "predicted_items": 11,
+                    "tp": 11,
+                    "fp": 0,
+                    "fn": 1,
+                    "precision": 1.0,
+                    "recall": 0.917,
+                    "f1": 0.957,
+                    "matched": 11,
+                    "owner_accuracy": 1.0,
+                    "due_accuracy": 1.0
+                }
+            }
+        }
+    }
+}

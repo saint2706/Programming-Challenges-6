@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:04,000
+Priya Shah: Welcome, let's cover the onboarding flow.
+
+2
+00:00:04,000 --> 00:00:09,000
+Marco Rossi: I'll write the onboarding checklist by Friday.
+
+3
+00:00:09,000 --> 00:00:13,000
+Dana Lee: Okay, I'll set up the sandbox accounts tomorrow.
+
+4
+00:00:13,000 --> 00:00:17,000
+Priya Shah: Eli, could you review the security questionnaire by Wednesday?
+
+5
+00:00:17,000 --> 00:00:21,000
+Dana Lee: Someone needs to tell the vendor about the new SSO plan.
+
+6
+00:00:21,000 --> 00:00:25,000
+Marco Rossi: I don't think we need the extra license.

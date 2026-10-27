@@ -1,0 +1,7 @@
+[00:00:05] Priya Shah: Let's begin with the release notes.
+[00:00:20] Marco Rossi: I'll draft the release notes by Wednesday.
+[00:00:41] Dana Lee: Okay, I will book the QA environment tomorrow.
+[00:01:02] Priya Shah: Dana, please also check the staging logs.
+[00:01:30] Marco Rossi: The old API may be deprecated, maybe we should discuss it.
+[00:02:10] Priya Shah: Someone needs to tell support about the outage window.
+[00:02:45] Dana Lee: Let's wrap up, thanks all.

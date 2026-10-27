@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:03,000
+Aiko Mori: Let's go over the holiday coverage.
+
+2
+00:00:03,000 --> 00:00:08,000
+Tomas Berg: Ravi will publish the coverage calendar by Monday.
+
+3
+00:00:08,000 --> 00:00:12,000
+Ravi Patel: Yes. I'll publish it on Monday and then notify the team.
+
+4
+00:00:12,000 --> 00:00:16,000
+Aiko Mori: We need someone to draft the on-call rota.
+
+5
+00:00:16,000 --> 00:00:20,000
+Tomas Berg: Is there a risk to the schedule?
+
+6
+00:00:20,000 --> 00:00:24,000
+Aiko Mori: I'll look into the cost of overtime next week.

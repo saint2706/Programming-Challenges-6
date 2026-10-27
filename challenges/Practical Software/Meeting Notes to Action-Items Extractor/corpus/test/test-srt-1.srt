@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:03,000
+Tomas Berg: Hi all, let's start with the support backlog.
+
+2
+00:00:03,000 --> 00:00:07,000
+Aiko Mori: I'll triage the oldest fifty tickets by Thursday.
+
+3
+00:00:07,000 --> 00:00:11,000
+Ravi Patel: Tomas, can you approve the hiring request tomorrow?
+
+4
+00:00:11,000 --> 00:00:15,000
+Tomas Berg: We're going to close the old tickets next week.
+
+5
+00:00:15,000 --> 00:00:19,000
+Aiko Mori: Should we hire a contractor for the peak?
+
+6
+00:00:19,000 --> 00:00:23,000
+Ravi Patel: I don't think we need a new tool.
