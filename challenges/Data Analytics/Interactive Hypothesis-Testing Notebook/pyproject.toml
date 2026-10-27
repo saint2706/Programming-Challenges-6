@@ -1,0 +1,28 @@
+[project]
+name = "hypothesis-testing-notebook"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "marimo>=0.20.0",
+    "numpy>=2.2.0",
+    "polars>=1.30.0",
+    "scipy>=1.15.0",
+    "statsmodels>=0.14.4",
+    "typer>=0.16.0",
+]
+
+[project.scripts]
+hypo = "hypothesis_wizard.cli:app"
+
+[dependency-groups]
+dev = [
+    "pingouin>=0.5.5",
+    "pytest>=8.3.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "hypothesis_wizard"

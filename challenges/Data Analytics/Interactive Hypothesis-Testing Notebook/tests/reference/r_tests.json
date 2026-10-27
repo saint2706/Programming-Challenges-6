@@ -1,0 +1,103 @@
+{
+  "welch_t_sleep": {
+    "statistic": -1.860813467487,
+    "parameter": 17.776473516178,
+    "p_value": 0.07939414018736,
+    "conf_int": [-3.365483230712, 0.2054832307117],
+    "estimate": [0.75, 2.33]
+  },
+  "student_t_sleep": {
+    "statistic": -1.860813467487,
+    "parameter": 18,
+    "p_value": 0.07918671421594,
+    "conf_int": [-3.363874032288, 0.2038740322876],
+    "estimate": [0.75, 2.33]
+  },
+  "paired_t_sleep": {
+    "statistic": -4.062127683382,
+    "parameter": 9,
+    "p_value": 0.002832890197384,
+    "conf_int": [-2.459885763277, -0.700114236723],
+    "estimate": -1.58
+  },
+  "mann_whitney_sleep": {
+    "statistic": 25.5,
+    "parameter": null,
+    "p_value": 0.06581653640477,
+    "conf_int": null,
+    "estimate": null
+  },
+  "mann_whitney_sleep_normal": {
+    "statistic": 25.5,
+    "parameter": null,
+    "p_value": 0.06932757543363,
+    "conf_int": null,
+    "estimate": null
+  },
+  "welch_anova_iris_petal_length": {
+    "statistic": 1826.580952419748,
+    "parameter": [2, 78.054924266285],
+    "p_value": 2.853130661605e-66,
+    "conf_int": null,
+    "estimate": null
+  },
+  "anova_iris_petal_length": {
+    "statistic": 1179.03432770022,
+    "parameter": [2, 147],
+    "p_value": 3.051975801828e-91,
+    "conf_int": null,
+    "estimate": null
+  },
+  "kruskal_wallis_iris_petal_length": {
+    "statistic": 130.41406912894,
+    "parameter": 2,
+    "p_value": 4.796723747946e-29,
+    "conf_int": null,
+    "estimate": null
+  },
+  "chi2_2x2": {
+    "statistic": 6.319891801114,
+    "parameter": 1,
+    "p_value": 0.01193909137791,
+    "conf_int": null,
+    "estimate": null
+  },
+  "fisher_2x2": {
+    "statistic": [],
+    "parameter": null,
+    "p_value": 0.03496503496503,
+    "conf_int": [1.008849380397, 1049.791446131755],
+    "estimate": 15.469687462887
+  },
+  "cmh_ucb": {
+    "statistic": 1.524606660443,
+    "parameter": 1,
+    "p_value": 0.2169236970555,
+    "conf_int": [0.9431028285161, 1.295492243682],
+    "estimate": 1.105342661502
+  },
+  "pearson_tooth": {
+    "statistic": 10.250114270819,
+    "parameter": 58,
+    "p_value": 1.232698221095e-14,
+    "conf_int": [0.6892520941771, 0.8777169462419],
+    "estimate": 0.8026912693325
+  },
+  "spearman_tooth": {
+    "statistic": 6177.989944213772,
+    "parameter": null,
+    "p_value": 3.175775863736e-16,
+    "conf_int": null,
+    "estimate": 0.8283414852955
+  },
+  "kendall_tooth": {
+    "statistic": 6.84041478158,
+    "parameter": null,
+    "p_value": 7.896420995709e-12,
+    "conf_int": null,
+    "estimate": 0.6959839025993
+  },
+  "holm": [0.005, 0.032, 0.117, 0.117, 0.2],
+  "benjamini_hochberg": [0.005, 0.02, 0.05125, 0.05125, 0.2],
+  "multiplicity_input": [0.001, 0.008, 0.039, 0.041, 0.2]
+}

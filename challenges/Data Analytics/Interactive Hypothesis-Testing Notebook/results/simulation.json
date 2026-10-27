@@ -1,0 +1,420 @@
+{
+    "alpha": 0.05,
+    "reps": 4000,
+    "perm_reps": 1000,
+    "seed": 20261027,
+    "scenarios": {
+        "null_normal_equal": {
+            "label": "null: normal, equal SD, n 20/20",
+            "null": true,
+            "n": [
+                20,
+                20
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.04625,
+                    "mc_se": 0.0033208032725531933
+                },
+                "welch_always": {
+                    "rate": 0.04625,
+                    "mc_se": 0.0033208032725531933
+                },
+                "student_always": {
+                    "rate": 0.0465,
+                    "mc_se": 0.0033293298875299217
+                },
+                "mann_whitney_always": {
+                    "rate": 0.04675,
+                    "mc_se": 0.003337830039861227
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.0505,
+                    "mc_se": 0.00346228789964093
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.0465,
+                    "mc_se": 0.0033293298875299217
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.0475,
+                    "mc_se": 0.003363173724326473
+                },
+                "permutation_mean": {
+                    "rate": 0.04,
+                    "mc_se": 0.0061967733539318665
+                }
+            }
+        },
+        "null_normal_small_group_wide": {
+            "label": "null: normal, SD 3 vs 1, n 10/30",
+            "null": true,
+            "n": [
+                10,
+                30
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.05,
+                    "mc_se": 0.0034460121880225555
+                },
+                "welch_always": {
+                    "rate": 0.05,
+                    "mc_se": 0.0034460121880225555
+                },
+                "student_always": {
+                    "rate": 0.20825,
+                    "mc_se": 0.00642031808986128
+                },
+                "mann_whitney_always": {
+                    "rate": 0.12025,
+                    "mc_se": 0.005142711772499019
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.0555,
+                    "mc_se": 0.003620074239570233
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.06075,
+                    "mc_se": 0.0037768848771176492
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.20625,
+                    "mc_se": 0.006397478751430129
+                },
+                "permutation_mean": {
+                    "rate": 0.152,
+                    "mc_se": 0.011353237423748346
+                }
+            }
+        },
+        "null_normal_large_group_wide": {
+            "label": "null: normal, SD 3 vs 1, n 30/10",
+            "null": true,
+            "n": [
+                30,
+                10
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.05425,
+                    "mc_se": 0.0035814430576235606
+                },
+                "welch_always": {
+                    "rate": 0.05425,
+                    "mc_se": 0.0035814430576235606
+                },
+                "student_always": {
+                    "rate": 0.00425,
+                    "mc_se": 0.0010285836742822629
+                },
+                "mann_whitney_always": {
+                    "rate": 0.01775,
+                    "mc_se": 0.0020877582175625603
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.053,
+                    "mc_se": 0.00354228033899069
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.05,
+                    "mc_se": 0.0034460121880225555
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.00875,
+                    "mc_se": 0.0014725350165615758
+                }
+            }
+        },
+        "null_lognormal_equal": {
+            "label": "null: lognormal(0,1) both groups, n 20/20",
+            "null": true,
+            "n": [
+                20,
+                20
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.03725,
+                    "mc_se": 0.0029942627431473008
+                },
+                "welch_always": {
+                    "rate": 0.03725,
+                    "mc_se": 0.0029942627431473008
+                },
+                "student_always": {
+                    "rate": 0.04175,
+                    "mc_se": 0.0031625518770448655
+                },
+                "mann_whitney_always": {
+                    "rate": 0.0485,
+                    "mc_se": 0.003396606762638266
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.05425,
+                    "mc_se": 0.0035814430576235606
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.03925,
+                    "mc_se": 0.003070400523547376
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.04875,
+                    "mc_se": 0.0034049022563063394
+                }
+            }
+        },
+        "null_lognormal_unequal": {
+            "label": "null: lognormal(0,1) both groups, n 8/24",
+            "null": true,
+            "n": [
+                8,
+                24
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.0685,
+                    "mc_se": 0.00399398766898447
+                },
+                "welch_always": {
+                    "rate": 0.0685,
+                    "mc_se": 0.00399398766898447
+                },
+                "student_always": {
+                    "rate": 0.0465,
+                    "mc_se": 0.0033293298875299217
+                },
+                "mann_whitney_always": {
+                    "rate": 0.0465,
+                    "mc_se": 0.0033293298875299217
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.0635,
+                    "mc_se": 0.0038557667849598992
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.02825,
+                    "mc_se": 0.0026197298286273723
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.048,
+                    "mc_se": 0.0033799408278844174
+                },
+                "permutation_mean": {
+                    "rate": 0.066,
+                    "mc_se": 0.007851369307324678
+                }
+            }
+        },
+        "null_t3_heavy": {
+            "label": "null: Student t (3 df), n 15/15",
+            "null": true,
+            "n": [
+                15,
+                15
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.04025,
+                    "mc_se": 0.0031076493326950517
+                },
+                "welch_always": {
+                    "rate": 0.04025,
+                    "mc_se": 0.0031076493326950517
+                },
+                "student_always": {
+                    "rate": 0.04025,
+                    "mc_se": 0.0031076493326950517
+                },
+                "mann_whitney_always": {
+                    "rate": 0.04625,
+                    "mc_se": 0.0033208032725531933
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.05575,
+                    "mc_se": 0.0036277381899745744
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.04025,
+                    "mc_se": 0.0031076493326950517
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.0475,
+                    "mc_se": 0.003363173724326473
+                }
+            }
+        },
+        "null_skew_vs_normal": {
+            "label": "null: centred exponential vs normal, same mean and SD, n 15/15",
+            "null": true,
+            "n": [
+                15,
+                15
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.048,
+                    "mc_se": 0.0033799408278844174
+                },
+                "welch_always": {
+                    "rate": 0.048,
+                    "mc_se": 0.0033799408278844174
+                },
+                "student_always": {
+                    "rate": 0.05025,
+                    "mc_se": 0.003454161891834255
+                },
+                "mann_whitney_always": {
+                    "rate": 0.0585,
+                    "mc_se": 0.0037107192698990314
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.06275,
+                    "mc_se": 0.0038344633751021795
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.04925,
+                    "mc_se": 0.003421419204803761
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.061,
+                    "mc_se": 0.0037841445532643177
+                },
+                "permutation_mean": {
+                    "rate": 0.046,
+                    "mc_se": 0.006624499981130651
+                }
+            }
+        },
+        "power_normal_shift": {
+            "label": "power: normal shift 0.5 SD, n 20/20",
+            "null": false,
+            "n": [
+                20,
+                20
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.31775,
+                    "mc_se": 0.007361809178116477
+                },
+                "welch_always": {
+                    "rate": 0.31775,
+                    "mc_se": 0.007361809178116477
+                },
+                "student_always": {
+                    "rate": 0.3195,
+                    "mc_se": 0.007372580111467084
+                },
+                "mann_whitney_always": {
+                    "rate": 0.2975,
+                    "mc_se": 0.007228308066207472
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.31025,
+                    "mc_se": 0.007314282902308332
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.3195,
+                    "mc_se": 0.007372580111467084
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.3175,
+                    "mc_se": 0.0073602606951112814
+                }
+            }
+        },
+        "power_normal_unequal_shift": {
+            "label": "power: normal shift 0.5, SD 3 vs 1, n 10/30",
+            "null": false,
+            "n": [
+                10,
+                30
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.076,
+                    "mc_se": 0.004189988066808783
+                },
+                "welch_always": {
+                    "rate": 0.076,
+                    "mc_se": 0.004189988066808783
+                },
+                "student_always": {
+                    "rate": 0.2755,
+                    "mc_se": 0.007063988781134919
+                },
+                "mann_whitney_always": {
+                    "rate": 0.1665,
+                    "mc_se": 0.00589019842619924
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.0845,
+                    "mc_se": 0.004397719579509362
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.08975,
+                    "mc_se": 0.004519262591950151
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.266,
+                    "mc_se": 0.006986486956976303
+                }
+            }
+        },
+        "power_lognormal_shift": {
+            "label": "power: lognormal, shift +0.5 on the second group, n 20/20",
+            "null": false,
+            "n": [
+                20,
+                20
+            ],
+            "rates": {
+                "wizard": {
+                    "rate": 0.1565,
+                    "mc_se": 0.005744731281792039
+                },
+                "welch_always": {
+                    "rate": 0.1565,
+                    "mc_se": 0.005744731281792039
+                },
+                "student_always": {
+                    "rate": 0.1605,
+                    "mc_se": 0.005803872629546587
+                },
+                "mann_whitney_always": {
+                    "rate": 0.397,
+                    "mc_se": 0.007736132754807145
+                },
+                "brunner_munzel_always": {
+                    "rate": 0.39225,
+                    "mc_se": 0.0077199406976349244
+                },
+                "levene_then_student_or_welch": {
+                    "rate": 0.16025,
+                    "mc_se": 0.0058002141663045514
+                },
+                "shapiro_then_t_or_mwu": {
+                    "rate": 0.397,
+                    "mc_se": 0.007736132754807145
+                }
+            }
+        }
+    },
+    "flip_through": {
+        "tests": [
+            "welch_t",
+            "student_t",
+            "mann_whitney",
+            "brunner_munzel"
+        ],
+        "naive_any_rejection": {
+            "rate": 0.068,
+            "mc_se": 0.003980452235613436
+        },
+        "alpha_over_k_rejection": {
+            "rate": 0.02175,
+            "mc_se": 0.002306346542694744
+        }
+    }
+}
