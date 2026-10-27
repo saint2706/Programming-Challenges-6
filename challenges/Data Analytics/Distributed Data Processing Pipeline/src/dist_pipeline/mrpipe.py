@@ -31,6 +31,7 @@ processes and runs). Its 64-bit output is split into a 12-bit register index and
 from __future__ import annotations
 
 import io
+import multiprocessing
 import time
 from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor
@@ -390,7 +391,12 @@ class MrPipeline:
 
     def __init__(self, workers: int) -> None:
         self.workers = max(1, workers)
-        self.pool = ProcessPoolExecutor(max_workers=self.workers)
+        # Always spawn: Linux's default fork copies a parent that already runs Polars/DuckDB
+        # threads, and the children can deadlock. Windows only spawns, so this also keeps the
+        # measured behaviour the same on every platform.
+        self.pool = ProcessPoolExecutor(
+            max_workers=self.workers, mp_context=multiprocessing.get_context("spawn")
+        )
         self.last: RunStats = RunStats()
 
     def close(self) -> None:

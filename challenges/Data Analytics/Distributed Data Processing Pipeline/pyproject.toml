@@ -27,6 +27,7 @@ dist-pipeline = "dist_pipeline.cli:app"
 [dependency-groups]
 dev = [
     "pytest>=9.0.0",
+    "pytest-timeout>=2.4.0",
 ]
 
 [build-system]
