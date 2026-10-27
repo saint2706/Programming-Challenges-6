@@ -1,27 +1,27 @@
 {
-  "files": {
-    "iris.csv": {
-      "sha256": "20f7ef9ad6e85c0752a0cda4c9d1edfcad39c04114a822496a15c20eb1df2cda"
+    "files": {
+        "iris.csv": {
+            "sha256": "20f7ef9ad6e85c0752a0cda4c9d1edfcad39c04114a822496a15c20eb1df2cda"
+        },
+        "penguins.csv": {
+            "sha256": "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93"
+        },
+        "sleep.csv": {
+            "sha256": "c1d2c2140d17654ddca094ed3992ef496872a4368010e010028e245799a37a98"
+        },
+        "toothgrowth.csv": {
+            "sha256": "67a19410c355fbedf7f56721ecfc040f3b9dafd97ca5cf99a2c3558146a30112"
+        },
+        "ucb_admissions.csv": {
+            "sha256": "c1f9b9cd0d34e65358d90008b973fbea360ff5f10d39b8d06f2f6d938b9fd943"
+        },
+        "wine_red.csv": {
+            "sha256": "f5eb6b494f4f6431698dce8fb15c356d091c2a5dc13f823742dcc9709a327b4a"
+        }
     },
-    "penguins.csv": {
-      "sha256": "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93"
-    },
-    "sleep.csv": {
-      "sha256": "c1d2c2140d17654ddca094ed3992ef496872a4368010e010028e245799a37a98"
-    },
-    "toothgrowth.csv": {
-      "sha256": "67a19410c355fbedf7f56721ecfc040f3b9dafd97ca5cf99a2c3558146a30112"
-    },
-    "ucb_admissions.csv": {
-      "sha256": "c1f9b9cd0d34e65358d90008b973fbea360ff5f10d39b8d06f2f6d938b9fd943"
-    },
-    "wine_red.csv": {
-      "sha256": "f5eb6b494f4f6431698dce8fb15c356d091c2a5dc13f823742dcc9709a327b4a"
+    "urls": {
+        "penguins.csv": "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv",
+        "iris.zip": "https://archive.ics.uci.edu/static/public/53/iris.zip",
+        "wine_quality.zip": "https://archive.ics.uci.edu/static/public/186/wine+quality.zip"
     }
-  },
-  "urls": {
-    "penguins.csv": "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv",
-    "iris.zip": "https://archive.ics.uci.edu/static/public/53/iris.zip",
-    "wine_quality.zip": "https://archive.ics.uci.edu/static/public/186/wine+quality.zip"
-  }
 }

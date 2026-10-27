@@ -1,10 +1,10 @@
 {
-  "url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
-  "sha256": "572e36277c2390fbfde10664750731e0a86f55e33470d91919085f0408e67bfb",
-  "rows": 1044848,
-  "overlap_rows_removed": 22523,
-  "late_arrival_percent_of_invoices": 2,
-  "late_lines": 19710,
-  "sample_customers": 600,
-  "sample_rows": 87862
+    "url": "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip",
+    "sha256": "572e36277c2390fbfde10664750731e0a86f55e33470d91919085f0408e67bfb",
+    "rows": 1044848,
+    "overlap_rows_removed": 22523,
+    "late_arrival_percent_of_invoices": 2,
+    "late_lines": 19710,
+    "sample_customers": 600,
+    "sample_rows": 87862
 }
