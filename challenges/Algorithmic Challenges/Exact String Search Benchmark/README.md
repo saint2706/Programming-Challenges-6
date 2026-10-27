@@ -344,5 +344,5 @@ No third-party dependencies at all — the module is pure standard library.
 - Crochemore & Perrin, ["Two-way string-matching"](https://doi.org/10.1145/116825.116845), *JACM* 38(3), 1991
 - Baeza-Yates & Gonnet, ["A new approach to text searching"](https://doi.org/10.1145/135239.135243), *CACM* 35(10), 1992 — Shift-Or
 - Yao, ["The complexity of pattern matching for a random string"](https://doi.org/10.1137/0208029), *SIAM J. Computing* 8(3), 1979 — the Ω(n log_σ(m)/m) bound in §3
-- Faro & Lecroq, ["The Exact String Matching Problem: a Comprehensive Experimental Evaluation"](https://arxiv.org/abs/1012.2547) (2010), and the [SMART](https://www.dmi.unict.it/faro/smart/) testbed
+- Faro & Lecroq, ["The Exact String Matching Problem: a Comprehensive Experimental Evaluation"](https://arxiv.org/abs/1012.2547) (2010), and the [SMART](https://smart-tool.github.io/smart/) testbed
 - CPython, [`Objects/stringlib/fastsearch.h`](https://github.com/python/cpython/blob/main/Objects/stringlib/fastsearch.h) and [`stringlib_find_two_way_notes.txt`](https://github.com/python/cpython/blob/main/Objects/stringlib/stringlib_find_two_way_notes.txt) — what `builtin` actually runs
