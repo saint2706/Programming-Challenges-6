@@ -1,0 +1,23 @@
+[
+    {
+        "commits": 250,
+        "generate_seconds": 0.28,
+        "audit_seconds": 0.38,
+        "seconds_per_1000_commits": 1.51,
+        "findings": 6
+    },
+    {
+        "commits": 1000,
+        "generate_seconds": 0.5,
+        "audit_seconds": 0.41,
+        "seconds_per_1000_commits": 0.41,
+        "findings": 9
+    },
+    {
+        "commits": 4000,
+        "generate_seconds": 1.19,
+        "audit_seconds": 0.82,
+        "seconds_per_1000_commits": 0.21,
+        "findings": 19
+    }
+]
