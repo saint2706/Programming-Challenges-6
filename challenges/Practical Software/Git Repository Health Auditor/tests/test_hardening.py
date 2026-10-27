@@ -11,6 +11,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -876,3 +877,66 @@ def test_invalid_dot_git_directory_is_refused(tmp_path):
     (work / ".git").mkdir(parents=True)
     with pytest.raises(GitError, match="not a repository"):
         GitRepo(work)
+
+
+# ----- F1 and F2: validation runs unpinned, and ownership covers every decider -----------
+
+
+@requires_git
+def test_validation_never_runs_with_git_dir_set(repo_factory, monkeypatch):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    seen: list[tuple[list[str], dict, object]] = []
+    real_run = subprocess.run
+
+    def spy(argv, *args, **kwargs):
+        seen.append((list(argv), kwargs.get("env") or {}, kwargs.get("cwd")))
+        return real_run(argv, *args, **kwargs)
+
+    monkeypatch.setattr(git_module.subprocess, "run", spy)
+    GitRepo(repo.path)
+    config_calls = [i for i, (argv, _, _) in enumerate(seen) if "config" in argv]
+    pinned_calls = [i for i, (_, env, _) in enumerate(seen) if "GIT_DIR" in env]
+    assert config_calls, "the repository's config should have been validated"
+    for i in config_calls:
+        _, env, cwd = seen[i]
+        assert "GIT_DIR" not in env and "GIT_WORK_TREE" not in env
+        assert cwd == tempfile.gettempdir()
+    assert min(pinned_calls) > max(config_calls)
+
+
+@requires_git
+def test_commondir_owned_by_another_user_is_refused(tmp_path, monkeypatch):
+    work = tmp_path / "work"
+    (work / ".git" / "objects").mkdir(parents=True)
+    (work / ".git" / "HEAD").write_text(
+        "ref: refs/heads/main\n", encoding="utf-8", newline="\n"
+    )
+    (work / ".git" / "commondir").write_text(
+        "../store\n", encoding="utf-8", newline="\n"
+    )
+    (work / "store").mkdir()
+    monkeypatch.setattr(git_module, "_owner_ok", lambda path: path.name != "store")
+    with pytest.raises(GitError, match="owned by another user"):
+        GitRepo(work)
+
+
+@requires_git
+def test_gitfile_owned_by_another_user_is_refused(repo_factory, tmp_path, monkeypatch):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    work = tmp_path / "work"
+    work.mkdir()
+    (work / ".git").write_text(
+        f"gitdir: {repo.path / '.git'}\n", encoding="utf-8", newline="\n"
+    )
+    monkeypatch.setattr(
+        git_module,
+        "_owner_ok",
+        lambda path: not (path.name == ".git" and path.is_file()),
+    )
+    with pytest.raises(GitError, match="owned by another user"):
+        GitRepo(work)
+    GitRepo(work, trust_owner=True)

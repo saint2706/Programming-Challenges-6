@@ -220,16 +220,19 @@ def _owner_ok(path: Path) -> bool:
         ) from exc
 
 
-def _check_owner(root: Path, gitdir: Path, trust_owner: bool, safe: set[str]) -> None:
-    """Refuse a repository the current user does not own, as git's own safe.directory check would.
+def _check_owner(paths: list[Path], trust_owner: bool, safe: set[str]) -> None:
+    """Refuse storage the current user does not own, as git's own safe.directory check would.
 
-    The CLI's --safe-directory and --trust-owner are the only ways past this. Nothing is read from
-    the audited repository's config for it.
+    `paths` are the root, storage dir, resolved commondir and config files, and a gitfile. The
+    CLI's --safe-directory and --trust-owner are the only ways past this. Nothing is read from the
+    audited repository's config for it.
     """
-    if trust_owner or _same_dir(root) in safe or _same_dir(gitdir) in safe:
+    if trust_owner:
         return
-    for path in {root, gitdir}:  # a bare repository has one path
-        if not _owner_ok(path):
+    if any(_same_dir(p) in safe for p in paths):
+        return
+    for path in paths:
+        if path.exists() and not _owner_ok(path):
             raise GitError(
                 f"refusing {sanitize(path.name, 40)}: owned by another user "
                 "(run as its owner, or pass --safe-directory PATH or --trust-owner)"
@@ -302,15 +305,19 @@ def _refuse_network_worktree(config: Path, env: dict[str, str]) -> None:
             )
 
 
-def _refuse_untrusted_storage(gitdir: Path, env: dict[str, str]) -> None:
-    """Refuse commondir, config-include and alternates tricks in one storage dir, before git reads them."""
-    common_data = _read_pointer(gitdir / "commondir")
-    common = gitdir.resolve()
-    if common_data is not None:
-        text = _one_line(common_data, "commondir")
-        if _is_network_path(text):
-            raise GitError("refusing a commondir that points at a network path")
-        common = (gitdir / text).resolve()
+def _common_dir(gitdir: Path) -> Path:
+    """The resolved common dir: the storage dir itself, or the target of a one-line commondir."""
+    data = _read_pointer(gitdir / "commondir")
+    if data is None:
+        return gitdir.resolve()
+    text = _one_line(data, "commondir")
+    if _is_network_path(text):
+        raise GitError("refusing a commondir that points at a network path")
+    return (gitdir / text).resolve()
+
+
+def _refuse_untrusted_storage(gitdir: Path, common: Path, env: dict[str, str]) -> None:
+    """Refuse config-include, core.worktree and alternates tricks before git reads them."""
     for config in (gitdir / "config", gitdir / "config.worktree", common / "config"):
         if config.is_file():
             _refuse_includes(config, env)
@@ -336,7 +343,9 @@ class GitRepo:
     ) -> None:
         self.path = Path(path).resolve()
         self.timeout = timeout
-        base = _hardened_env()
+        base = (
+            _hardened_env()
+        )  # no GIT_DIR here: validation must not set up the audited repo
         self._env = base
         self._check_version()
         if not self.path.is_dir():
@@ -344,14 +353,14 @@ class GitRepo:
         candidates = _gitdir_candidates(self.path)
         if not candidates:
             raise GitError("not a git repository")
+        # Only the nearest candidate is the one git uses; it is the only one validated or pinned.
         root, gitdir = candidates[0]
-        # Python-only checks first: no git process runs before the owner check passes.
-        _check_owner(root, gitdir, trust_owner, {_same_dir(s) for s in safe_directory})
+        common = _common_dir(gitdir)
+        owned = [root, gitdir, common, common / "config", gitdir / "config"]
+        owned.append(root / ".git")  # a gitfile, when one exists
+        _check_owner(owned, trust_owner, {_same_dir(s) for s in safe_directory})
         self._scratch = tempfile.TemporaryDirectory(prefix="gitaudit-worktree-")
-        for c_root, c_gitdir in candidates:
-            pinned = _pinned_env(base, c_root, c_gitdir, self._scratch.name)
-            _refuse_untrusted_storage(c_gitdir, pinned)
-        # The nearest candidate is the one git uses. Pin it, so later git calls cannot pick another.
+        _refuse_untrusted_storage(gitdir, common, base)
         self._env = _pinned_env(base, root, gitdir, self._scratch.name)
         self.git_dir = self._discover(gitdir)
 

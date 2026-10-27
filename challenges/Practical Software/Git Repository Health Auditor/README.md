@@ -215,25 +215,40 @@ it to the validated candidate.
 - **E3, invalid `.git`.** A `.git` directory without a `HEAD` file and an `objects` directory is
   refused. It no longer falls through to treating the parent as a bare repository.
 
+### Sixth review (items F1 and F2)
+
+- **F1, validation runs unpinned.** The config, `core.worktree` and alternates checks run with
+  the plain hardened environment and from the temp directory, so no git process sets up the
+  audited repository while validating it. Only the nearest candidate is validated and pinned.
+  `GIT_DIR` and `GIT_WORK_TREE` are set after validation passes. A test spies on every
+  `subprocess.run` call and fails if any config check sees `GIT_DIR`.
+- **F2, ownership scope.** The owner check now covers the root, the storage dir, the resolved
+  commondir and its `config`, the storage `config`, and the `.git` gitfile when one exists. Tests
+  mock an owner mismatch on the commondir and on the gitfile.
+
 ### Threat model
 
-Defended: the audited repository is untrusted data. Its config, gitfile, commondir, alternates,
-`core.worktree` and the storage directory's owner are checked before any git process reads it. Git
-is pinned to the nearest storage directory, with `GIT_WORK_TREE` always set, so a `core.worktree`
-never picks the work tree. A network path is refused in any of these.
+Defended: the audited repository is untrusted data. The nearest storage directory is checked for
+ownership, gitfile form, commondir, config includes, `core.worktree` and alternates, all before
+git is pinned to it. `GIT_WORK_TREE` is always set, so a `core.worktree` never picks the work
+tree. Network paths are refused in any of these.
 
 Not defended:
 
 - A hostile `git` binary on `PATH`.
-- A hostile parent directory tree that changes discovery beyond the nearest candidate. Only the
-  nearest candidate is pinned. The others are checked but not used.
+- A hostile parent directory tree that changes discovery beyond the nearest candidate. Ancestor
+  `.git` entries are parsed in Python to find candidates, so a malformed one refuses the audit.
+  No git process validates them, and they are never pinned.
 - Windows junctions or symlinks used as storage directories. They are not resolved specially.
-- A race between the owner check and git's later reads. The owner is checked by path, not by an
+- A race between the owner check and git's later reads. Ownership is checked by path, not by an
   open file handle, so a repository swapped in between is not caught.
 - A `.git` directory with a valid `HEAD` and `objects` but corrupt contents. Git reads it as it
   would, and a crafted file can still make git misbehave beyond the checks above.
 - Repositories owned by another user are refused by default. Auditing one needs `--safe-directory`
-  or `--trust-owner`, which accept that risk.
+  or `--trust-owner`. `--safe-directory` matches any path in the owner set, so naming the gitfile
+  or the worktree exempts the whole repository's ownership checks.
+- Validation runs `git config --file` from the system temp directory. A hostile file there can
+  affect validation output, though global and system config are disabled.
 
 Deviations from the review's suggestions:
 
