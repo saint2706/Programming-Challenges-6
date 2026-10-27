@@ -180,6 +180,27 @@ def _refuse_includes(config: Path, env: dict[str, str]) -> None:
             )
 
 
+def _refuse_network_worktree(config: Path, env: dict[str, str]) -> None:
+    """Refuse a core.worktree that names a network path. Every value is read, not just the last."""
+    proc = subprocess.run(
+        ["git", "config", "--file", str(config), "--get-all", "-z", "core.worktree"],
+        capture_output=True,
+        env=env,
+        cwd=tempfile.gettempdir(),
+        timeout=60,
+        check=False,
+    )
+    if proc.returncode == 1:  # key absent
+        return
+    if proc.returncode != 0:
+        raise GitError(f"git cannot read {sanitize(config.name, 40)}")
+    for raw in proc.stdout.split(b"\0"):
+        if raw and _is_network_path(raw.decode("utf-8", "replace")):
+            raise GitError(
+                f"refusing {sanitize(config.name, 40)}: core.worktree is a network path"
+            )
+
+
 def _refuse_untrusted_storage(gitdir: Path, env: dict[str, str]) -> None:
     """Refuse commondir, config-include and alternates tricks in one storage dir, before git reads them."""
     common_data = _read_pointer(gitdir / "commondir")
@@ -192,20 +213,13 @@ def _refuse_untrusted_storage(gitdir: Path, env: dict[str, str]) -> None:
     for config in (gitdir / "config", gitdir / "config.worktree", common / "config"):
         if config.is_file():
             _refuse_includes(config, env)
+            _refuse_network_worktree(config, env)
     # Alternates are not followed: any entry at all is refused, so no entry is ever parsed.
     alternates = _read_pointer(common / "objects" / "info" / "alternates") or b""
     if alternates.strip(b"\n"):
         raise GitError(
             "refusing object alternates: run git repack -a -d, then remove objects/info/alternates"
         )
-
-
-def _pinned_env(env: dict[str, str], root: Path, gitdir: Path) -> dict[str, str]:
-    """GIT_DIR (and GIT_WORK_TREE unless bare) so every later git call uses the checked dir."""
-    pinned = dict(env, GIT_DIR=str(gitdir))
-    if gitdir != root:
-        pinned["GIT_WORK_TREE"] = str(root)
-    return pinned
 
 
 class GitRepo:
@@ -223,9 +237,15 @@ class GitRepo:
             raise GitError("not a git repository")
         for _root, gitdir in candidates:
             _refuse_untrusted_storage(gitdir, self._env)
-        # The nearest candidate is the one git would use. Pin it, so git cannot pick another.
+        # The nearest candidate is the one git would use. Ask git unpinned first, so its own
+        # ownership (safe.directory) checks run; then pin GIT_DIR so later calls cannot drift.
         root, gitdir = candidates[0]
-        self._env = _pinned_env(self._env, root, gitdir)
+        self._discover(gitdir)
+        # GIT_WORK_TREE is always set, so core.worktree in any config is ignored. A bare repo gets
+        # an empty scratch directory instead of its own storage dir as a work tree.
+        self._scratch = tempfile.TemporaryDirectory(prefix="gitaudit-worktree-")
+        work_tree = root if root != gitdir else Path(self._scratch.name)
+        self._env = dict(self._env, GIT_DIR=str(gitdir), GIT_WORK_TREE=str(work_tree))
         self.git_dir = self._discover(gitdir)
 
     # ----- process plumbing -------------------------------------------------------------
@@ -251,12 +271,16 @@ class GitRepo:
             )
 
     def _discover(self, expected: Path) -> Path:
-        """Post-check: git, pinned to GIT_DIR, must report the directory that was validated."""
-        out = (
-            self.run(["rev-parse", "--absolute-git-dir"])
-            .decode("utf-8", "replace")
-            .strip()
-        )
+        """git must report the directory that was validated: before pinning (ownership checks
+        run) and after (pinned GIT_DIR)."""
+        try:
+            raw = self.run(["rev-parse", "--absolute-git-dir"])
+        except GitError as exc:
+            raise GitError(
+                f"git refuses this repository, so the audit stops ({exc}). "
+                "Run the audit as the repository's owner."
+            ) from exc
+        out = raw.decode("utf-8", "replace").strip()
         if _same_dir(out) != _same_dir(expected):
             raise GitError("git reports a storage directory the audit did not check")
         return Path(out)

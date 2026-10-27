@@ -770,3 +770,55 @@ def test_git_dir_and_work_tree_are_pinned_to_the_checked_storage(repo_factory):
     handle = GitRepo(repo.path)
     assert handle._env["GIT_DIR"] == str(repo.path / ".git")
     assert handle._env["GIT_WORK_TREE"] == str(repo.path)
+
+
+# ----- D1 and D2: core.worktree and git's own ownership check ---------------------------
+
+
+def _bare_repo(tmp_path) -> Path:
+    bare = tmp_path / "bare.git"
+    subprocess.run(["git", "init", "--bare", "-q", str(bare)], check=True)
+    return bare
+
+
+@requires_git
+def test_bare_repo_with_unc_core_worktree_is_refused(tmp_path):
+    bare = _bare_repo(tmp_path)
+    subprocess.run(
+        ["git", "--git-dir", str(bare), "config", "core.worktree", "//server/share/w"],
+        check=True,
+    )
+    with pytest.raises(GitError, match="network path"):
+        GitRepo(bare)
+
+
+@requires_git
+def test_bare_repo_with_normal_core_worktree_is_pinned_away(tmp_path):
+    bare = _bare_repo(tmp_path)
+    elsewhere = tmp_path / "elsewhere"
+    subprocess.run(
+        ["git", "--git-dir", str(bare), "config", "core.worktree", str(elsewhere)],
+        check=True,
+    )
+    handle = GitRepo(bare)
+    assert handle._env["GIT_WORK_TREE"] not in (str(elsewhere), str(bare))
+    assert handle.git_dir == bare.resolve()
+
+
+@requires_git
+def test_git_ownership_refusal_stops_the_audit(repo_factory, monkeypatch):
+    repo = repo_factory()
+    repo.write("a.txt", "a")
+    repo.commit("init")
+    real_run = subprocess.run
+
+    def refuse_rev_parse(argv, *args, **kwargs):
+        if "rev-parse" in argv:
+            return subprocess.CompletedProcess(
+                argv, 128, b"", b"fatal: detected dubious ownership in repository"
+            )
+        return real_run(argv, *args, **kwargs)
+
+    monkeypatch.setattr(git_module.subprocess, "run", refuse_rev_parse)
+    with pytest.raises(GitError, match="repository's owner"):
+        GitRepo(repo.path)

@@ -189,6 +189,30 @@ leaving gaps, so the rules are now simple and fail closed. Each has regression t
   carriage return, NUL, non-UTF-8 bytes, leading or trailing spaces) is refused, and a file with no
   entries (empty or only newlines) is accepted.
 
+### Fourth review (items D1 and D2)
+
+- **D1, core.worktree.** `GIT_WORK_TREE` is now always set, so a `core.worktree` in any config
+  cannot pick the work tree. A bare repository gets an empty scratch directory. Every checked
+  config file's `core.worktree` values are also read, and a network path is refused. Tests cover a
+  UNC value (refused) and a normal path (accepted, and ignored).
+- **D2, ownership.** Before pinning, the audit runs an unpinned `rev-parse --absolute-git-dir`, so
+  git's own `safe.directory` and dubious-ownership checks run. A refusal stops the audit with a
+  message to run as the owner. The answer must match the nearest candidate, and the pinned call
+  checks again. A test mocks the refusal.
+
+### Threat model
+
+Defended: the audited repository is untrusted data. Its config, gitfile, commondir, alternates and
+`core.worktree` are checked before git reads them, and git is pinned to the one storage directory
+that was checked. Network paths are refused, and git's ownership checks still run.
+
+Not defended:
+
+- A hostile `git` binary on `PATH`.
+- A hostile parent directory tree that changes discovery beyond the nearest candidate. Only the
+  nearest candidate is pinned, and the other candidates are checked but not used.
+- Windows junctions or symlinks used as storage directories. They are not resolved specially.
+
 Deviations from the review's suggestions:
 
 - Gitfile, alternates and `[include]` problems are refused, not reported as findings. Alternates
