@@ -1,0 +1,79 @@
+{
+    "environment": {
+        "python": "3.14.7",
+        "duckdb": "2.0.0",
+        "polars": "2.1.0",
+        "machine": "AMD64 Windows",
+        "feed": "feed.parquet"
+    },
+    "load": {
+        "feed_lines": 1044848,
+        "window": "2009-12-01 to 2012-05-01",
+        "full_load_seconds": 2.38,
+        "lines_per_second": 438956
+    },
+    "incremental": {
+        "months": 29,
+        "monthly_total_seconds": 27.64,
+        "median_month_seconds": 0.906,
+        "last_month_seconds": 0.451,
+        "last_month_rerun_seconds": 0.43,
+        "rerun_status": "succeeded",
+        "same_hash_as_full_rebuild": true,
+        "rerun_leaves_hash_unchanged": true,
+        "full_rebuild_hash_prefix": "048349a5284bf049"
+    },
+    "star_vs_flat": {
+        "flat_rows": 1032917,
+        "queries": [
+            {
+                "query": "monthly sales by country",
+                "star_ms": 15.2,
+                "flat_ms": 8.8,
+                "faster": "flat",
+                "result_rows": 562,
+                "same_answer": true
+            },
+            {
+                "query": "sales by stock code",
+                "star_ms": 21.3,
+                "flat_ms": 17.7,
+                "faster": "flat",
+                "result_rows": 4877,
+                "same_answer": true
+            },
+            {
+                "query": "distinct customers per region per quarter",
+                "star_ms": 26.7,
+                "flat_ms": 14.7,
+                "faster": "flat",
+                "result_rows": 55,
+                "same_answer": true
+            },
+            {
+                "query": "total sales, no grouping",
+                "star_ms": 1.1,
+                "flat_ms": 1.5,
+                "faster": "star",
+                "result_rows": 1,
+                "same_answer": true
+            },
+            {
+                "query": "one country's sale lines",
+                "star_ms": 3.9,
+                "flat_ms": 2.4,
+                "faster": "flat",
+                "result_rows": 1,
+                "same_answer": true
+            },
+            {
+                "query": "returns by month",
+                "star_ms": 1.8,
+                "flat_ms": 2.7,
+                "faster": "star",
+                "result_rows": 25,
+                "same_answer": true
+            }
+        ]
+    }
+}

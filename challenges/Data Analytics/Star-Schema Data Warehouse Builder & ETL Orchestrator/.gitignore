@@ -1,0 +1,4 @@
+# Local data and runtime state (the full download is not committed)
+.cache/
+data/
+out/
