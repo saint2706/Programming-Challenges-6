@@ -90,7 +90,9 @@ def corpus() -> list[Sample]:
         "sha1_git": "commit = 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3'",
         "uuid": "id = '123e4567-e89b-12d3-a456-426614174000'",
         "placeholder": "password = 'changeme-placeholder-value'",
-        "todo_text": "# TODO: rotate the key before release",
+        # Joined with + (ruff keeps it) so the issue-tracking bot does not read this sample as a
+        # real comment marker.
+        "todo_text": "# TO" + "DO: rotate the key before release",
         "plain_word": "name = 'configuration_manager'",
         "lorem": "text = 'lorem ipsum dolor sit amet consectetur'",
         "sequential": "pad = 'abcdefghijklmnopqrstuvwxyz0123456789'",
