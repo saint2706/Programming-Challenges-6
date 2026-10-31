@@ -50,7 +50,7 @@ does, only different trade-offs:
   32-bit suffix tree to a 48-bit suffix array in MUMmer4 to lift its genome-size limit
   ([Marçais et al., PLoS Comput Biol 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5802927/)).
 - **Enhanced suffix arrays** (Abouelhoda, Kurtz and Ohlebusch,
-  [Journal of Discrete Algorithms 2, 2004](https://hollywood.zbh.uni-hamburg.de/uploads/pubs/pdf/AboKurOhl2004.pdf))
+  [Journal of Discrete Algorithms 2, 2004](https://doi.org/10.1016/S1570-8667(03)00065-0))
   argue that an algorithm built on a suffix tree can be replaced by one on a suffix array plus an
   LCP array with the same time complexity. The tree here is built from exactly that, in linear time.
 - **Cache-efficient top-down construction.** Tata, Hankins and Patel ("Practical Suffix Tree
