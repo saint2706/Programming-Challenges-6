@@ -18,10 +18,12 @@
 - [Link-Cut Tree for Dynamic Tree Connectivity](Algorithmic%20Challenges/Link-Cut%20Tree%20for%20Dynamic%20Tree%20Connectivity/README.md)
 - [Manacher's Algorithm for Longest Palindromic Substring](Algorithmic%20Challenges/Manacher%27s%20Algorithm%20for%20Longest%20Palindromic%20Substring/README.md)
 - [Merkle Tree Builder & Proof-of-Inclusion Verifier](Algorithmic%20Challenges/Merkle%20Tree%20Builder%20%26%20Proof-of-Inclusion%20Verifier/README.md)
+- [Minimum Cost Flow via Hungarian Algorithm](Algorithmic%20Challenges/Minimum%20Cost%20Flow%20via%20Hungarian%20Algorithm/README.md)
 - [Minimum Spanning Tree Visualizer](Algorithmic%20Challenges/Minimum%20Spanning%20Tree%20Visualizer/README.md)
 - [Multi-Sequence Alignment (Generalized LCS for K Strings)](Algorithmic%20Challenges/Multi-Sequence%20Alignment%20%28Generalized%20LCS%20for%20K%20Strings%29/README.md)
 - [N-Queens Solver with Bitmask Optimization](Algorithmic%20Challenges/N-Queens%20Solver%20with%20Bitmask%20Optimization/README.md)
 - [Order Statistics Tree](Algorithmic%20Challenges/Order%20Statistics%20Tree/README.md)
+- [Persistent Segment Tree for Historical Range Queries](Algorithmic%20Challenges/Persistent%20Segment%20Tree%20for%20Historical%20Range%20Queries/README.md)
 - [Prime Sieve Showdown (Eratosthenes vs Atkin)](Algorithmic%20Challenges/Prime%20Sieve%20Showdown%20%28Eratosthenes%20vs%20Atkin%29/README.md)
 - [Reservoir Sampling & Weighted Random Sampling Library](Algorithmic%20Challenges/Reservoir%20Sampling%20%26%20Weighted%20Random%20Sampling%20Library/README.md)
 - [Run-Length Encoding Compressor with Custom Alphabets](Algorithmic%20Challenges/Run-Length%20Encoding%20Compressor%20with%20Custom%20Alphabets/README.md)
@@ -35,21 +37,27 @@
 
 - [A/B Test Significance Calculator](Data%20Analytics/A-B%20Test%20Significance%20Calculator/README.md)
 - [Automated Data Quality Monitor](Data%20Analytics/Automated%20Data%20Quality%20Monitor/README.md)
+- [Automated Report Generator](Data%20Analytics/Automated%20Report%20Generator/README.md)
 - [Cohort Retention Analysis Tool](Data%20Analytics/Cohort%20Retention%20Analysis%20Tool/README.md)
 - [Correlation Matrix Explorer for Any Uploaded Dataset](Data%20Analytics/Correlation%20Matrix%20Explorer%20for%20Any%20Uploaded%20Dataset/README.md)
 - [Cross-Tabulation & Pivot Table Engine](Data%20Analytics/Cross-Tabulation%20%26%20Pivot%20Table%20Engine/README.md)
 - [CSV Data Profiler](Data%20Analytics/CSV%20Data%20Profiler/README.md)
 - [Customer Segmentation Explorer (RFM Analysis)](Data%20Analytics/Customer%20Segmentation%20Explorer%20%28RFM%20Analysis%29/README.md)
 - [Data Lineage Tracker](Data%20Analytics/Data%20Lineage%20Tracker/README.md)
+- [Distributed Data Processing Pipeline](Data%20Analytics/Distributed%20Data%20Processing%20Pipeline/README.md)
 - [Geo-Spatial Sales Heatmap Builder](Data%20Analytics/Geo-Spatial%20Sales%20Heatmap%20Builder/README.md)
+- [Interactive Hypothesis-Testing Notebook](Data%20Analytics/Interactive%20Hypothesis-Testing%20Notebook/README.md)
 - [Interactive Sales Dashboard from a Spreadsheet](Data%20Analytics/Interactive%20Sales%20Dashboard%20from%20a%20Spreadsheet/README.md)
+- [Marketing Attribution Model Comparator](Data%20Analytics/Marketing%20Attribution%20Model%20Comparator/README.md)
 - [Multi-Source Data Reconciliation Tool](Data%20Analytics/Multi-Source%20Data%20Reconciliation%20Tool/README.md)
 - [Personal Spending Categorizer & Monthly Trend Report](Data%20Analytics/Personal%20Spending%20Categorizer%20%26%20Monthly%20Trend%20Report/README.md)
 - [Public API Data Aggregator & Daily Snapshot Logger](Data%20Analytics/Public%20API%20Data%20Aggregator%20%26%20Daily%20Snapshot%20Logger/README.md)
 - [Real-Time Event Stream Dashboard](Data%20Analytics/Real-Time%20Event%20Stream%20Dashboard/README.md)
 - [SQL Query Performance Profiler](Data%20Analytics/SQL%20Query%20Performance%20Profiler/README.md)
+- [Star-Schema Data Warehouse Builder & ETL Orchestrator](Data%20Analytics/Star-Schema%20Data%20Warehouse%20Builder%20%26%20ETL%20Orchestrator/README.md)
 - [Statistical Anomaly Detector for Time Series](Data%20Analytics/Statistical%20Anomaly%20Detector%20for%20Time%20Series/README.md)
 - [Survey Results Visualizer](Data%20Analytics/Survey%20Results%20Visualizer/README.md)
+- [Survival Analysis Toolkit](Data%20Analytics/Survival%20Analysis%20Toolkit/README.md)
 - [Web Traffic Funnel Analyzer](Data%20Analytics/Web%20Traffic%20Funnel%20Analyzer/README.md)
 
 ## Practical ML
@@ -87,6 +95,7 @@
 - [Self-Hosted Paste Bin with Expiry & Burn-After-Read](Practical%20Software/Self-Hosted%20Paste%20Bin%20with%20Expiry%20%26%20Burn-After-Read/README.md)
 - [Self-Hosted RSS Reader with Full-Text Extraction](Practical%20Software/Self-Hosted%20RSS%20Reader%20with%20Full-Text%20Extraction/README.md)
 - [Terminal-Based Kanban Board (ncurses)](Practical%20Software/Terminal-Based%20Kanban%20Board%20%28ncurses%29/README.md)
+- [Voice Memo Transcriber & Organizer](Practical%20Software/Voice%20Memo%20Transcriber%20%26%20Organizer/README.md)
 
 ## Web Development Showcase
 
