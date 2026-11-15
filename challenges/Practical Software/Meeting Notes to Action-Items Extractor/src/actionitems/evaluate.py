@@ -14,7 +14,7 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass, field, replace
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 from actionitems import llm
 from actionitems.errors import InputError
@@ -153,6 +153,10 @@ def _corpus_file(name: str) -> Path:
     base = corpus_dir().resolve()
     if not isinstance(name, str):
         raise InputError("gold entry file must be a string")
+    # Reject absolute paths in either flavour on every OS: "C:/x" is relative on Linux and "/x"
+    # has no drive on Windows, so one Path check alone would let the other style through.
+    if PureWindowsPath(name).anchor or PurePosixPath(name).is_absolute():
+        raise InputError(f"gold entry points outside the corpus: {safe_text(name)!r}")
     target = (base / name).resolve()
     if not target.is_relative_to(base):
         raise InputError(f"gold entry points outside the corpus: {safe_text(name)!r}")

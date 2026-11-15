@@ -147,9 +147,10 @@ pub fn certify(g: &Sparse, a: &Assignment) -> Result<(), String> {
     let (n, m) = (g.rows(), g.cols());
     let hub = (n + m) as u32;
     let mut edges: Vec<(u32, u32, i64)> = Vec::with_capacity(g.nnz() + n.max(m));
-    for i in 0..n {
+    // check_assignment guarantees row_to_col has exactly n entries.
+    for (i, &matched) in a.row_to_col.iter().enumerate() {
         for (j, c) in g.row(i) {
-            if a.row_to_col[i] == Some(j as u32) {
+            if matched == Some(j as u32) {
                 edges.push(((n + j) as u32, i as u32, -c));
             } else {
                 edges.push((i as u32, (n + j) as u32, c));

@@ -1,0 +1,38 @@
+name: Auto-merge
+
+# Queues a squash auto-merge on every pull request into main: Dependabot, automated CI PRs and
+# hand-written ones alike. --auto only queues the merge; GitHub performs it once the main ruleset
+# is satisfied (the "CI gate" job in ci.yml), so a red CI run is never merged. Draft PRs are
+# queued when they are marked ready for review.
+#
+# Pull requests from forks are left alone: their token is read-only, and auto-merging code from
+# someone without write access the moment CI turns green would hand them the main branch.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, ready_for_review, synchronize]
+
+permissions: {}
+
+jobs:
+  automerge:
+    if: >-
+      !github.event.pull_request.draft &&
+      !github.event.pull_request.auto_merge &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+        with:
+          egress-policy: audit
+
+      - name: Queue auto-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"

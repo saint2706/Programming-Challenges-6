@@ -176,6 +176,6 @@ more sources.
 
 - OpenFlights airports database, <https://openflights.org/data.php> (Open Database License); file
   `airports.dat` from <https://github.com/jpatokal/openflights>.
-- OurAirports, <https://ourairports.com/data/> (public domain); `airports.csv` from
+- OurAirports, <https://github.com/davidmegginson/ourairports-data> (public domain); `airports.csv` from
   <https://davidmegginson.github.io/ourairports-data/>. Download SHA-256s are in
   `sample_data/SOURCES.json`.
