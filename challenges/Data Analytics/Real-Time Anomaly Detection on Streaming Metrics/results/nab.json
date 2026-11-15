@@ -1,0 +1,242 @@
+[
+    {
+        "stream": "nyc_taxi",
+        "chart": "shewhart",
+        "prewhiten": false,
+        "windows_hit": 1,
+        "windows": 5,
+        "false_alarms": 15,
+        "false_per_1k": 1.71,
+        "mean_delay": 159.0
+    },
+    {
+        "stream": "nyc_taxi",
+        "chart": "shewhart",
+        "prewhiten": true,
+        "windows_hit": 5,
+        "windows": 5,
+        "false_alarms": 126,
+        "false_per_1k": 14.36,
+        "mean_delay": 47.0
+    },
+    {
+        "stream": "nyc_taxi",
+        "chart": "ewma",
+        "prewhiten": false,
+        "windows_hit": 3,
+        "windows": 5,
+        "false_alarms": 22,
+        "false_per_1k": 2.51,
+        "mean_delay": 130.3
+    },
+    {
+        "stream": "nyc_taxi",
+        "chart": "ewma",
+        "prewhiten": true,
+        "windows_hit": 5,
+        "windows": 5,
+        "false_alarms": 64,
+        "false_per_1k": 7.3,
+        "mean_delay": 66.0
+    },
+    {
+        "stream": "nyc_taxi",
+        "chart": "cusum",
+        "prewhiten": false,
+        "windows_hit": 4,
+        "windows": 5,
+        "false_alarms": 21,
+        "false_per_1k": 2.39,
+        "mean_delay": 127.8
+    },
+    {
+        "stream": "nyc_taxi",
+        "chart": "cusum",
+        "prewhiten": true,
+        "windows_hit": 5,
+        "windows": 5,
+        "false_alarms": 77,
+        "false_per_1k": 8.78,
+        "mean_delay": 57.0
+    },
+    {
+        "stream": "ambient_temperature_system_failure",
+        "chart": "shewhart",
+        "prewhiten": false,
+        "windows_hit": 0,
+        "windows": 2,
+        "false_alarms": 20,
+        "false_per_1k": 3.24,
+        "mean_delay": null
+    },
+    {
+        "stream": "ambient_temperature_system_failure",
+        "chart": "shewhart",
+        "prewhiten": true,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 17,
+        "false_per_1k": 2.75,
+        "mean_delay": 184.5
+    },
+    {
+        "stream": "ambient_temperature_system_failure",
+        "chart": "ewma",
+        "prewhiten": false,
+        "windows_hit": 1,
+        "windows": 2,
+        "false_alarms": 24,
+        "false_per_1k": 3.89,
+        "mean_delay": 84.0
+    },
+    {
+        "stream": "ambient_temperature_system_failure",
+        "chart": "ewma",
+        "prewhiten": true,
+        "windows_hit": 1,
+        "windows": 2,
+        "false_alarms": 7,
+        "false_per_1k": 1.13,
+        "mean_delay": 172.0
+    },
+    {
+        "stream": "ambient_temperature_system_failure",
+        "chart": "cusum",
+        "prewhiten": false,
+        "windows_hit": 1,
+        "windows": 2,
+        "false_alarms": 21,
+        "false_per_1k": 3.4,
+        "mean_delay": 293.0
+    },
+    {
+        "stream": "ambient_temperature_system_failure",
+        "chart": "cusum",
+        "prewhiten": true,
+        "windows_hit": 1,
+        "windows": 2,
+        "false_alarms": 7,
+        "false_per_1k": 1.13,
+        "mean_delay": 163.0
+    },
+    {
+        "stream": "ec2_cpu_utilization_24ae8d",
+        "chart": "shewhart",
+        "prewhiten": false,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 50,
+        "false_per_1k": 14.59,
+        "mean_delay": 12.0
+    },
+    {
+        "stream": "ec2_cpu_utilization_24ae8d",
+        "chart": "shewhart",
+        "prewhiten": true,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 48,
+        "false_per_1k": 14.0,
+        "mean_delay": 23.5
+    },
+    {
+        "stream": "ec2_cpu_utilization_24ae8d",
+        "chart": "ewma",
+        "prewhiten": false,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 11,
+        "false_per_1k": 3.21,
+        "mean_delay": 94.5
+    },
+    {
+        "stream": "ec2_cpu_utilization_24ae8d",
+        "chart": "ewma",
+        "prewhiten": true,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 11,
+        "false_per_1k": 3.21,
+        "mean_delay": 94.5
+    },
+    {
+        "stream": "ec2_cpu_utilization_24ae8d",
+        "chart": "cusum",
+        "prewhiten": false,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 11,
+        "false_per_1k": 3.21,
+        "mean_delay": 94.5
+    },
+    {
+        "stream": "ec2_cpu_utilization_24ae8d",
+        "chart": "cusum",
+        "prewhiten": true,
+        "windows_hit": 2,
+        "windows": 2,
+        "false_alarms": 11,
+        "false_per_1k": 3.21,
+        "mean_delay": 94.5
+    },
+    {
+        "stream": "art_daily_jumpsdown",
+        "chart": "shewhart",
+        "prewhiten": false,
+        "windows_hit": 1,
+        "windows": 1,
+        "false_alarms": 1,
+        "false_per_1k": 0.29,
+        "mean_delay": 266.0
+    },
+    {
+        "stream": "art_daily_jumpsdown",
+        "chart": "shewhart",
+        "prewhiten": true,
+        "windows_hit": 1,
+        "windows": 1,
+        "false_alarms": 30,
+        "false_per_1k": 8.75,
+        "mean_delay": 201.0
+    },
+    {
+        "stream": "art_daily_jumpsdown",
+        "chart": "ewma",
+        "prewhiten": false,
+        "windows_hit": 1,
+        "windows": 1,
+        "false_alarms": 1,
+        "false_per_1k": 0.29,
+        "mean_delay": 227.0
+    },
+    {
+        "stream": "art_daily_jumpsdown",
+        "chart": "ewma",
+        "prewhiten": true,
+        "windows_hit": 1,
+        "windows": 1,
+        "false_alarms": 25,
+        "false_per_1k": 7.29,
+        "mean_delay": 201.0
+    },
+    {
+        "stream": "art_daily_jumpsdown",
+        "chart": "cusum",
+        "prewhiten": false,
+        "windows_hit": 1,
+        "windows": 1,
+        "false_alarms": 1,
+        "false_per_1k": 0.29,
+        "mean_delay": 224.0
+    },
+    {
+        "stream": "art_daily_jumpsdown",
+        "chart": "cusum",
+        "prewhiten": true,
+        "windows_hit": 1,
+        "windows": 1,
+        "false_alarms": 40,
+        "false_per_1k": 11.67,
+        "mean_delay": 201.0
+    }
+]

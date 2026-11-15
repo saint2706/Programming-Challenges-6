@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPC Stream Monitor</title>
+<style>
+  :root { --bg: #fff; --fg: #1d2129; --muted: #6b7280; --line: #2563eb; --limit: #9ca3af;
+          --alarm: #dc2626; --window: rgba(234, 179, 8, .18); --phase1: rgba(107, 114, 128, .12); }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #111418; --fg: #e5e7eb; --muted: #9ca3af; --line: #60a5fa; --limit: #6b7280;
+            --alarm: #f87171; --window: rgba(234, 179, 8, .16); --phase1: rgba(156, 163, 175, .12); }
+  }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg);
+         font: 14px/1.4 system-ui, sans-serif; }
+  form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 12px; }
+  label { display: grid; gap: 2px; color: var(--muted); font-size: 12px; }
+  canvas { width: 100%; height: 220px; display: block; margin-bottom: 8px; }
+  #log { max-height: 180px; overflow: auto; font: 12px ui-monospace, monospace; color: var(--alarm); }
+  .legend { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<h1 style="font-size:18px;margin:0 0 12px">SPC stream monitor</h1>
+<form id="f">
+  <label>Stream <select id="stream"></select></label>
+  <label>Chart <select id="chart"><option>ewma</option><option>cusum</option><option>shewhart</option></select></label>
+  <label><span><input type="checkbox" id="pre" checked> prewhiten (seasonal diff + AR(1))</span></label>
+  <label>Points/s <input id="speed" type="number" value="400" min="1" max="5000"></label>
+  <button>Start</button>
+</form>
+<p class="legend">Grey: Phase I baseline. Yellow: labelled anomaly windows. Red ticks: alarms.</p>
+<canvas id="raw" aria-label="raw metric value"></canvas>
+<canvas id="stat" aria-label="control chart statistic with limits"></canvas>
+<p id="status" class="legend"></p>
+<div id="log" aria-live="polite"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+let es = null, meta = null, pts = [];
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v);
+
+fetch("/api/streams").then((r) => r.json()).then((names) => {
+  for (const n of names) $("stream").add(new Option(n, n));
+});
+
+function draw(canvas, key) {
+  const dpr = devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const g = canvas.getContext("2d"); g.scale(dpr, dpr); g.clearRect(0, 0, w, h);
+  if (!meta || !pts.length) return;
+  const vals = pts.flatMap((p) => key === "x" ? [p.x] : [p.stat, p.lcl, p.ucl]).filter((v) => v !== null);
+  if (!vals.length) return;
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if (hi === lo) { hi += 1; lo -= 1; }
+  const X = (i) => (i / meta.n) * w, Y = (v) => h - 4 - ((v - lo) / (hi - lo)) * (h - 8);
+  g.fillStyle = css("--phase1"); g.fillRect(0, 0, X(meta.baseline_n), h);
+  g.fillStyle = css("--window");
+  for (const [a, b] of meta.windows) g.fillRect(X(a), 0, Math.max(1, X(b) - X(a)), h);
+  const line = (sel, color) => {
+    g.strokeStyle = color; g.beginPath(); let on = false;
+    for (const p of pts) { const v = sel(p); if (v === null) { on = false; continue; }
+      on ? g.lineTo(X(p.i), Y(v)) : g.moveTo(X(p.i), Y(v)); on = true; }
+    g.stroke();
+  };
+  if (key === "stat") { line((p) => p.ucl, css("--limit")); line((p) => p.lcl, css("--limit")); }
+  line((p) => p[key], css("--line"));
+  g.fillStyle = css("--alarm");
+  for (const p of pts) if (p.alarm) g.fillRect(X(p.i) - 1, 0, 2, h);
+}
+
+let queued = false;
+function redraw() {
+  if (queued) return; queued = true;
+  requestAnimationFrame(() => { queued = false; draw($("raw"), "x"); draw($("stat"), "stat"); });
+}
+
+$("f").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  if (es) es.close();
+  pts = []; meta = null; $("log").replaceChildren();
+  const q = new URLSearchParams({ chart: $("chart").value, prewhiten: $("pre").checked, speed: $("speed").value });
+  es = new EventSource(`/api/stream/${encodeURIComponent($("stream").value)}?${q}`);
+  es.addEventListener("meta", (e) => { meta = JSON.parse(e.data); });
+  es.addEventListener("point", (e) => {
+    const p = JSON.parse(e.data); pts.push(p);
+    if (p.alarm) {
+      const row = document.createElement("div");
+      row.textContent = `${p.t}  #${p.i}  ${p.alarm}`;  // textContent: never parsed as HTML
+      $("log").prepend(row);
+    }
+    $("status").textContent = `${p.i + 1} / ${meta.n} points`;
+    redraw();
+  });
+  es.addEventListener("end", () => { es.close(); $("status").textContent += " (done)"; });
+});
+addEventListener("resize", redraw);
+</script>
+</body>
+</html>
