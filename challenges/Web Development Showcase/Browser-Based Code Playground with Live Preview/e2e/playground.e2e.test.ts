@@ -105,18 +105,19 @@ describe('it runs, and edits show up', () => {
         await edit(page, 'index.html', '<!doctype html><html><body style="margin:0"><div style="height:4000px">tall</div></body></html>');
         let frame = await previewFrame(page);
         // The page reports its scroll position a moment after it settles; wait for that report, not a guess.
-        const reported = page.evaluate(
-            () =>
-                new Promise<void>((resolve) => {
-                    addEventListener('message', function seen(e) {
-                        if (e.origin !== 'null' || e.data?.t !== 'scroll' || e.data.y !== 900) return; // the sandbox has an opaque origin
-                        removeEventListener('message', seen);
-                        resolve();
-                    });
-                }),
-        );
+        // The listener is installed (and awaited) before scrolling: the sandboxed frame can run in its own
+        // process, so an un-awaited page.evaluate may lose the race and miss the report entirely.
+        await page.evaluate(() => {
+            const w = window as unknown as { __scrolled?: boolean };
+            w.__scrolled = false;
+            addEventListener('message', function seen(e) {
+                if (e.origin !== 'null' || e.data?.t !== 'scroll' || Math.round(e.data.y) !== 900) return; // the sandbox has an opaque origin
+                removeEventListener('message', seen);
+                w.__scrolled = true;
+            });
+        });
         await frame.evaluate(() => window.scrollTo(0, 900));
-        await reported;
+        await page.waitForFunction(() => (window as unknown as { __scrolled?: boolean }).__scrolled === true, { timeout: 10_000 });
         await edit(page, 'main.js', 'console.log("again");');
         frame = await previewFrame(page);
         await frame.waitForFunction(() => Math.round(window.scrollY) === 900, { timeout: 10_000 });

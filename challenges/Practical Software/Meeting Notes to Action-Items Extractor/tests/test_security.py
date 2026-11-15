@@ -329,7 +329,15 @@ def test_error_messages_are_printed_safely(tmp_path, capsys):
 # 6. Gold paths -------------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("name", ["../../pyproject.toml", "C:/Windows/win.ini"])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "../../pyproject.toml",
+        "C:/Windows/win.ini",
+        "/etc/passwd",
+        "\\\\server\\share\\x",
+    ],
+)
 def test_gold_entries_must_stay_inside_the_corpus(name):
     with pytest.raises(InputError, match="outside the corpus"):
         evaluate._corpus_file(name)
