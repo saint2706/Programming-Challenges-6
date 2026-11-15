@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Catalog Search</title>
+<style>
+  :root { --bg: #fff; --fg: #1d2129; --muted: #6b7280; --line: #e5e7eb; --accent: #2563eb; --tag: #fef3c7; --tagfg: #92400e; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #111418; --fg: #e5e7eb; --muted: #9ca3af; --line: #2a2f37; --accent: #60a5fa; --tag: #3b2f12; --tagfg: #fcd34d; }
+  }
+  body { margin: 0 auto; max-width: 960px; padding: 16px; background: var(--bg); color: var(--fg);
+         font: 14px/1.45 system-ui, sans-serif; }
+  form { display: flex; gap: 8px; margin: 12px 0; }
+  input[type=search] { flex: 1; padding: 8px; font: inherit; background: var(--bg); color: var(--fg);
+                       border: 1px solid var(--line); border-radius: 6px; }
+  li { list-style: none; padding: 8px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  ul { padding: 0; }
+  .muted { color: var(--muted); font-size: 12px; word-break: break-all; }
+  .tag { display: inline-block; background: var(--tag); color: var(--tagfg); border-radius: 4px;
+         padding: 0 6px; margin-left: 4px; font-size: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  td, th { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1 style="font-size:18px;margin:0">Data catalog</h1>
+<form id="f" role="search">
+  <input type="search" id="q" placeholder="e.g. customer email, ship date, price" aria-label="Search the catalog" autofocus>
+  <label><input type="checkbox" id="pii"> PII only</label>
+  <button>Search</button>
+</form>
+<ul id="hits" aria-live="polite"></ul>
+<section id="detail"></section>
+<script>
+const $ = (id) => document.getElementById(id);
+// Every value goes in through textContent, so names or samples from a source can never become markup.
+function el(tag, text, cls) { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (cls) e.className = cls; return e; }
+function tags(list) { const s = el("span"); for (const t of list || []) s.append(el("span", t, "tag")); return s; }
+
+$("f").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const p = new URLSearchParams({ q: $("q").value });
+  if ($("pii").checked) p.set("tag", "pii");
+  const r = await fetch(`/api/search?${p}`);
+  const hits = r.ok ? await r.json() : [];
+  $("hits").replaceChildren(); $("detail").replaceChildren();
+  if (!hits.length) $("hits").append(el("li", "No matches"));
+  for (const h of hits) {
+    const li = el("li");
+    li.tabIndex = 0;
+    li.append(el("strong", h.column ? `${h.name}.${h.column}` : `${h.name} (dataset)`), tags(h.tags), el("div", h.dataset, "muted"));
+    const open = () => show(h.dataset);
+    li.addEventListener("click", open);
+    li.addEventListener("keydown", (e) => { if (e.key === "Enter") open(); });
+    $("hits").append(li);
+  }
+});
+
+async function show(key) {
+  const r = await fetch(`/api/dataset?${new URLSearchParams({ key })}`);
+  if (!r.ok) return;
+  const d = await r.json();
+  const sec = $("detail");
+  sec.replaceChildren(el("h2", `${d.name} (${d.kind}, ${d.rows} rows)`), el("div", d.key, "muted"));
+  const t = el("table"), head = el("tr");
+  for (const h of ["Column", "Type", "Nulls", "Distinct", "Min", "Max", "Tags"]) head.append(el("th", h));
+  t.append(head);
+  for (const c of d.columns) {
+    const tr = el("tr");
+    for (const v of [c.name, c.type, c.nulls, c.distinct, c.min ?? "", c.max ?? ""]) tr.append(el("td", String(v)));
+    const td = el("td"); td.append(tags(c.tags)); tr.append(td);
+    t.append(tr);
+  }
+  const wrap = el("div", undefined, "wrap"); wrap.append(t); sec.append(wrap);
+  if (d.relationships.length) {
+    sec.append(el("h3", "Relationships"));
+    const ul = el("ul");
+    for (const x of d.relationships) {
+      const short = (k) => k.split("#").pop();
+      ul.append(el("li", `${x.origin}: ${short(x.child)}.${x.child_column} -> ${short(x.parent)}.${x.parent_column}`));
+    }
+    sec.append(ul);
+  }
+}
+</script>
+</body>
+</html>
