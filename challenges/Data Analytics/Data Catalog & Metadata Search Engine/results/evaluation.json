@@ -1,0 +1,148 @@
+{
+    "datasets": 10,
+    "crawl": {
+        "new": 10,
+        "errors": []
+    },
+    "foreign_keys": {
+        "true_positives": 11,
+        "false_positives": [],
+        "missed": [],
+        "precision": 1.0,
+        "recall": 1.0
+    },
+    "pii": {
+        "tagged": [
+            [
+                "customer",
+                "c_address"
+            ],
+            [
+                "customer",
+                "c_phone"
+            ],
+            [
+                "supplier",
+                "s_address"
+            ],
+            [
+                "supplier",
+                "s_phone"
+            ],
+            [
+                "users",
+                "email"
+            ],
+            [
+                "users",
+                "first_name"
+            ],
+            [
+                "users",
+                "ip_address"
+            ],
+            [
+                "users",
+                "last_name"
+            ],
+            [
+                "users",
+                "phone"
+            ]
+        ],
+        "precision": 1.0,
+        "recall": 1.0
+    },
+    "search": {
+        "like": {
+            "mrr": 0.736,
+            "hit_at_5": "15/16"
+        },
+        "fts": {
+            "mrr": 0.637,
+            "hit_at_5": "13/16"
+        },
+        "hybrid": {
+            "mrr": 0.906,
+            "hit_at_5": "15/16"
+        }
+    },
+    "top3_hybrid": {
+        "customer email": [
+            "users.email",
+            "users.customer_id",
+            "customer.*"
+        ],
+        "phone number": [
+            "users.phone",
+            "customer.c_phone",
+            "supplier.s_phone"
+        ],
+        "ship date": [
+            "lineitem.l_shipdate",
+            "users.signup_date",
+            "lineitem.l_shipmode"
+        ],
+        "extended price": [
+            "lineitem.l_extendedprice",
+            "lineitem.*",
+            "orders.o_totalprice"
+        ],
+        "order priority": [
+            "orders.o_orderpriority",
+            "orders.o_orderkey",
+            "orders.*"
+        ],
+        "supplier": [
+            "supplier.*",
+            "supplier.s_name",
+            "supplier.s_suppkey"
+        ],
+        "nation": [
+            "nation.*",
+            "nation.n_nationkey",
+            "customer.c_nationkey"
+        ],
+        "discount": [
+            "lineitem.l_discount",
+            "lineitem.*"
+        ],
+        "ip address": [
+            "users.ip_address",
+            "supplier.s_address",
+            "customer.c_address"
+        ],
+        "signup": [
+            "users.signup_date",
+            "users.*"
+        ],
+        "region": [
+            "region.*",
+            "region.r_regionkey",
+            "nation.n_regionkey"
+        ],
+        "retail price": [
+            "part.p_retailprice",
+            "part.*",
+            "orders.o_totalprice"
+        ],
+        "events": [
+            "events.*",
+            "events.event_id",
+            "events.event"
+        ],
+        "price": [
+            "orders.o_totalprice",
+            "part.p_retailprice",
+            "lineitem.l_extendedprice"
+        ],
+        "segment": [
+            "customer.c_mktsegment"
+        ],
+        "account balance": [
+            "customer.c_comment",
+            "orders.o_comment",
+            "part.p_comment"
+        ]
+    }
+}
