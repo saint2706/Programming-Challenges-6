@@ -1,0 +1,21 @@
+[package]
+name = "columnar-engine"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+description = "A mini Parquet/DuckDB: encoded columnar files with zone maps, a SQL subset, a planner with pushdown, and a vectorized executor."
+
+[lib]
+name = "colstore"
+path = "src/lib.rs"
+
+[[bin]]
+name = "colq"
+path = "src/main.rs"
+
+[dependencies]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
