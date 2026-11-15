@@ -105,6 +105,8 @@ jobs:
               --title "chore: automated lint and format" \
               --body "Opened by the scheduled Auto-fix Lint and Format workflow. CI is dispatched on this branch because pull requests created with GITHUB_TOKEN do not start checks on their own."
           fi
+          # A GITHUB_TOKEN-created PR does not trigger auto-merge.yml either, so queue it here.
+          gh pr merge "$FIX_BRANCH" --auto --squash
           gh workflow run ci.yml --ref "$FIX_BRANCH" -f base=main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
