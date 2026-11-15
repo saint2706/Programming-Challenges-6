@@ -244,3 +244,27 @@ def test_symlinks_inside_crawled_folders_are_skipped(tmp_path):
     except OSError:
         pytest.skip("creating symlinks needs privileges on this OS")
     assert [p.name for _, p in discover([src])] == ["ok.csv"]
+
+
+def test_glob_characters_in_file_names_are_refused(tmp_path):
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "b.csv").write_text("a\n1\n", encoding="utf-8")
+    # DuckDB would expand "[b].csv" to b.csv: a name must never read a different file
+    (src / "[b].csv").write_text("a\n2\n", encoding="utf-8")
+    with Catalog(tmp_path / "c.sqlite") as cat:
+        s = crawl_into(cat, [src])
+    assert s.new == 1
+    assert len(s.errors) == 1 and "glob characters" in s.errors[0]
+
+
+def test_junctions_are_not_followed(tmp_path):
+    winapi = pytest.importorskip("_winapi")
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "secret.csv").write_text("k\n1\n", encoding="utf-8")
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "ok.csv").write_text("a\n1\n", encoding="utf-8")
+    winapi.CreateJunction(str(outside), str(src / "jump"))
+    assert [p.name for _, p in discover([src])] == ["ok.csv"]

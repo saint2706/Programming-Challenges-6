@@ -8,6 +8,7 @@ column, used for PII detection and shown in the catalog.
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
 from collections.abc import Iterator
 from contextlib import closing, contextmanager
@@ -29,6 +30,7 @@ FILE_KINDS = {
 SQLITE_EXT = {".sqlite", ".sqlite3", ".db"}
 DUCKDB_EXT = {".duckdb", ".ddb"}
 SAMPLE = 50
+GLOB_CHARS = re.compile(r"[*?\[\]{}]")
 
 
 @dataclass
@@ -92,7 +94,14 @@ def discover(paths: list[Path]) -> Iterator[tuple[str, Path]]:
     for p in paths:
         if p.is_dir():
             for root, dirs, files in os.walk(p):
-                dirs[:] = sorted(d for d in dirs if not d.startswith("."))
+                # os.walk does not treat Windows junctions as links, so drop them by hand.
+                dirs[:] = sorted(
+                    d
+                    for d in dirs
+                    if not d.startswith(".")
+                    and not os.path.islink(os.path.join(root, d))
+                    and not os.path.isjunction(os.path.join(root, d))
+                )
                 for f in sorted(files):
                     entry = Path(root) / f
                     # A symlink inside a crawled folder could point anywhere on disk.
@@ -219,6 +228,10 @@ def _duckdb(path: Path) -> list[Dataset]:
 
 
 def _file(kind: str, path: Path) -> list[Dataset]:
+    # DuckDB's file readers expand *, ?, [ ] and { } as globs, so such a path could read files
+    # other than the one that was checked (including skipped symlinks). Refuse it.
+    if GLOB_CHARS.search(str(path)):
+        raise ValueError(f"path contains glob characters, not read: {path.name}")
     ds = Dataset(kind, str(path), path.stem, fingerprint=_fingerprint(path))
     with connect(kind, str(path)) as (con, frm):
         desc = con.execute(f"DESCRIBE SELECT * FROM {frm(ds.name)}").fetchall()

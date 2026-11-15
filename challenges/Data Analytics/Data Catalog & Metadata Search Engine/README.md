@@ -14,7 +14,7 @@ and keep a schema change log. A CLI and a small FastAPI search page sit on top.
 ## Run it
 
 ```bash
-uv run --locked pytest -q                         # 25 tests (the symlink test skips on Windows without privileges)
+uv run --locked pytest -q                         # 27 tests (the symlink test skips on Windows without privileges)
 uv run catalog crawl ./warehouse.duckdb ./exports/ shop.sqlite
 uv run catalog search "customer email"            # --tag pii, --mode fts|like|hybrid
 uv run catalog show orders                        # columns, profile, relationships (--json)
@@ -119,8 +119,11 @@ request-supplied path, and it renders every value with `textContent`.
 
 A second review pass added three more guards:
 
-- Symlinks found inside a crawled folder are skipped, so a link cannot pull an arbitrary file
-  into the crawl.
+- Symlinks and Windows junctions found inside a crawled folder are skipped (`os.walk` does not
+  treat junctions as links, so they are filtered by hand), so a link cannot pull an arbitrary
+  file into the crawl.
+- File paths containing `*`, `?`, `[`, `]`, `{` or `}` are refused and reported. DuckDB's file
+  readers would expand them as globs and read files other than the one that was checked.
 - A column tagged as PII keeps its counts but not its sample values, min or max. The catalog
   records that the data is personal without copying it.
 - The server answers only requests addressed to `localhost`, `127.0.0.1` or `[::1]` (plus the
