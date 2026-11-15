@@ -1,0 +1,55 @@
+{
+    "sf": 1,
+    "runs": 3,
+    "sizes": {
+        "lineitem": {
+            "csv": 285095147,
+            "parquet": 63072449,
+            "col": 76845732
+        },
+        "orders": {
+            "csv": 40612125,
+            "parquet": 15326703,
+            "col": 7342284
+        },
+        "customer": {
+            "csv": 2438528,
+            "parquet": 658899,
+            "col": 56847
+        }
+    },
+    "queries": [
+        {
+            "query": "Q1 pricing summary",
+            "colq_s": 3.609,
+            "duckdb_s": 0.022,
+            "match": true,
+            "rows": 4,
+            "scan": "4 rows in 3.434s; scanned 6001215 rows, read 92/92 row groups"
+        },
+        {
+            "query": "Q6 forecast revenue",
+            "colq_s": 0.78,
+            "duckdb_s": 0.005,
+            "match": true,
+            "rows": 1,
+            "scan": "1 rows in 0.734s; scanned 6001215 rows, read 92/92 row groups"
+        },
+        {
+            "query": "Q3 shipping priority (3-way join)",
+            "colq_s": 1.343,
+            "duckdb_s": 0.036,
+            "match": true,
+            "rows": 10,
+            "scan": "10 rows in 1.282s; scanned 7651215 rows, read 118/118 row groups"
+        },
+        {
+            "query": "Key range (zone-map pruning)",
+            "colq_s": 0.018,
+            "duckdb_s": 0.001,
+            "match": true,
+            "rows": 1,
+            "scan": "1 rows in 0.014s; scanned 196608 rows, read 3/92 row groups"
+        }
+    ]
+}
