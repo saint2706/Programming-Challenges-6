@@ -7,10 +7,17 @@ from importlib.resources import files
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from data_catalog.store import Catalog
 
 app = FastAPI(title="Data catalog")
+# Only answer requests addressed to this machine by name, so a web page cannot read the catalog
+# through DNS rebinding. `catalog serve --host X` adds X; DATA_CATALOG_HOSTS adds more.
+_extra = [h for h in os.environ.get("DATA_CATALOG_HOSTS", "").split(",") if h]
+app.add_middleware(
+    TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "[::1]", *_extra]
+)
 
 
 def _db() -> str:

@@ -59,7 +59,7 @@
             "hit_at_5": "15/16"
         },
         "fts": {
-            "mrr": 0.637,
+            "mrr": 0.669,
             "hit_at_5": "13/16"
         },
         "hybrid": {
@@ -96,7 +96,7 @@
         "supplier": [
             "supplier.*",
             "supplier.s_name",
-            "supplier.s_suppkey"
+            "supplier.s_address"
         ],
         "nation": [
             "nation.*",
@@ -109,8 +109,8 @@
         ],
         "ip address": [
             "users.ip_address",
-            "supplier.s_address",
-            "customer.c_address"
+            "customer.c_address",
+            "supplier.s_address"
         ],
         "signup": [
             "users.signup_date",

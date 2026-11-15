@@ -94,9 +94,10 @@ def discover(paths: list[Path]) -> Iterator[tuple[str, Path]]:
             for root, dirs, files in os.walk(p):
                 dirs[:] = sorted(d for d in dirs if not d.startswith("."))
                 for f in sorted(files):
-                    yield from (
-                        discover([Path(root) / f]) if not f.startswith(".") else ()
-                    )
+                    entry = Path(root) / f
+                    # A symlink inside a crawled folder could point anywhere on disk.
+                    if not f.startswith(".") and not entry.is_symlink():
+                        yield from discover([entry])
         elif p.is_file():
             ext = p.suffix.lower()
             if ext in FILE_KINDS:
@@ -154,6 +155,9 @@ def _profile(con, frm: str, ds: Dataset) -> None:
         ).fetchall()
         c.samples = [v[0] for v in vals]
         c.tags = tag_column(c.name, c.samples)
+        # The catalog records that a column holds PII, never the PII itself.
+        if "pii" in c.tags:
+            c.samples, c.min, c.max = [], None, None
 
 
 def _sqlite(path: Path) -> list[Dataset]:

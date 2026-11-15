@@ -14,7 +14,7 @@ and keep a schema change log. A CLI and a small FastAPI search page sit on top.
 ## Run it
 
 ```bash
-uv run --locked pytest -q                         # 24 tests
+uv run --locked pytest -q                         # 25 tests (the symlink test skips on Windows without privileges)
 uv run catalog crawl ./warehouse.duckdb ./exports/ shop.sqlite
 uv run catalog search "customer email"            # --tag pii, --mode fts|like|hybrid
 uv run catalog show orders                        # columns, profile, relationships (--json)
@@ -97,7 +97,7 @@ appears in the top 5):
 | Mode                         | MRR   | Hit@5 |
 | ---------------------------- | ----- | ----- |
 | `LIKE` substring baseline    | 0.736 | 15/16 |
-| FTS5 BM25 on words           | 0.637 | 13/16 |
+| FTS5 BM25 on words           | 0.669 | 13/16 |
 | Hybrid (BM25 + trigram, RRF) | 0.906 | 15/16 |
 
 Word search alone lost to plain `LIKE`. Warehouse column names are compounds (`o_orderpriority`,
@@ -116,6 +116,16 @@ opened with `enable_external_access = false`. Such a view then fails with a perm
 the crawl reports it. A test covers this. The finding came from a security review of this
 challenge. The search page is read-only: it reads only the catalog, never a source or a
 request-supplied path, and it renders every value with `textContent`.
+
+A second review pass added three more guards:
+
+- Symlinks found inside a crawled folder are skipped, so a link cannot pull an arbitrary file
+  into the crawl.
+- A column tagged as PII keeps its counts but not its sample values, min or max. The catalog
+  records that the data is personal without copying it.
+- The server answers only requests addressed to `localhost`, `127.0.0.1` or `[::1]` (plus the
+  `--host` it binds and any names in `DATA_CATALOG_HOSTS`). Another web page therefore cannot
+  read the catalog through DNS rebinding.
 
 ## Limits
 
