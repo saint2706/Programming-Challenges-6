@@ -144,7 +144,7 @@ fn encodings_round_trip_and_pick_the_smallest() {
     for (col, want) in cases {
         let (bytes, tag) = encoding::encode(&col);
         assert_eq!(encoding::NAMES[tag as usize], want, "{:?}", col.get(0));
-        let back = encoding::decode(&bytes, col.dtype()).unwrap();
+        let back = encoding::decode(&bytes, col.dtype(), col.len()).unwrap();
         match (&col, &back) {
             (Column::Float(a), Column::Float(b)) => {
                 assert!(a.iter().zip(b).all(|(x, y)| x.to_bits() == y.to_bits()))
@@ -166,7 +166,10 @@ fn random_int_columns_round_trip() {
                 .collect(),
         );
         let (bytes, _) = encoding::encode(&col);
-        assert_eq!(encoding::decode(&bytes, col.dtype()).unwrap(), col);
+        assert_eq!(
+            encoding::decode(&bytes, col.dtype(), col.len()).unwrap(),
+            col
+        );
     }
 }
 
@@ -193,7 +196,58 @@ fn corrupt_files_error_instead_of_panicking() {
         &[1, 255, 255, 255, 255][..],
         &[9, 0, 0, 0, 0][..],
     ] {
-        assert!(encoding::decode(b, colstore::DataType::Int).is_err());
+        assert!(encoding::decode(b, colstore::DataType::Int, 0).is_err());
+    }
+}
+
+#[test]
+fn oversized_row_count_is_rejected_before_allocating() {
+    // dict chunk: tag 1, u32::MAX rows, one-entry dictionary, zero-bit codes
+    let mut b = vec![1u8];
+    b.extend_from_slice(&u32::MAX.to_le_bytes());
+    b.extend_from_slice(&1u32.to_le_bytes());
+    b.extend_from_slice(&7i64.to_le_bytes());
+    b.push(0);
+    let e = encoding::decode(&b, colstore::DataType::Int, 10).unwrap_err();
+    assert!(e.contains("claims"), "{e}");
+}
+
+#[test]
+fn group_by_with_every_row_group_pruned_is_empty() {
+    let (cat, _) = setup("emptygroup");
+    let (b, s) = rows(
+        &cat,
+        "SELECT region, count(*) FROM sales WHERE id < 0 GROUP BY region",
+    );
+    assert_eq!((b.rows(), s.row_groups_read), (0, 0));
+    assert_eq!(b.names, ["region", "COUNT(*)"]);
+}
+
+#[test]
+fn table_qualifiers_are_checked() {
+    let (cat, d) = setup("qual");
+    let (b, _) = rows(
+        &cat,
+        "SELECT sales.qty FROM sales JOIN custs ON sales.cust = custs.cust_id WHERE custs.cust_id = 3 LIMIT 1",
+    );
+    assert_eq!(b.names, ["qty"]);
+    assert_eq!(
+        b.columns[0].get(0),
+        Value::Int(d.qty[d.cust.iter().position(|&c| c == 3).unwrap()])
+    );
+    for (sql, msg) in [
+        (
+            "SELECT custs.cust FROM sales JOIN custs ON cust = cust_id",
+            "belongs to sales",
+        ),
+        ("SELECT nope.qty FROM sales", "unknown table"),
+        (
+            "SELECT * FROM sales JOIN custs ON custs.cust = cust_id",
+            "belongs to sales",
+        ),
+    ] {
+        let e = query(&cat, sql).unwrap_err();
+        assert!(e.contains(msg), "{sql}: {e}");
     }
 }
 

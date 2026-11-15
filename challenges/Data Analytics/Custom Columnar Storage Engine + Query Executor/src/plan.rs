@@ -93,7 +93,7 @@ fn prune(groups: &[RowGroupMeta], names: &[String], filters: &[Expr]) -> Vec<usi
         .collect()
 }
 
-pub fn build(q: Select, catalog: &HashMap<String, PathBuf>) -> Result<Plan> {
+pub fn build(mut q: Select, catalog: &HashMap<String, PathBuf>) -> Result<Plan> {
     let tables: Vec<String> = std::iter::once(q.from.clone())
         .chain(q.joins.iter().map(|j| j.0.clone()))
         .collect();
@@ -114,6 +114,42 @@ pub fn build(q: Select, catalog: &HashMap<String, PathBuf>) -> Result<Plan> {
             }
         }
         opened.push((path, tab));
+    }
+    // `t.col` must name the table that owns `col`; then the qualifier is dropped.
+    let mut unqualify = |c: &mut String| -> Result<()> {
+        if let Some((t, col)) = c.split_once('.') {
+            let ti = tables
+                .iter()
+                .position(|x| x == t)
+                .ok_or_else(|| format!("unknown table {t:?} in {c}"))?;
+            match owner.get(col) {
+                Some(&o) if o == ti => *c = col.to_string(),
+                Some(&o) => {
+                    return Err(format!("column {col:?} belongs to {}, not {t}", tables[o]));
+                }
+                None => return Err(format!("unknown column {c:?}")),
+            }
+        }
+        Ok(())
+    };
+    if let Some(items) = &mut q.items {
+        for (e, _) in items {
+            e.map_columns(&mut unqualify)?;
+        }
+    }
+    if let Some(f) = &mut q.filter {
+        f.map_columns(&mut unqualify)?;
+    }
+    for e in q
+        .group_by
+        .iter_mut()
+        .chain(q.order_by.iter_mut().map(|(e, _)| e))
+    {
+        e.map_columns(&mut unqualify)?;
+    }
+    for (_, a, b) in &mut q.joins {
+        unqualify(a)?;
+        unqualify(b)?;
     }
     let table_of = |c: &str| {
         owner

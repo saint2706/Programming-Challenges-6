@@ -248,10 +248,15 @@ fn decode_for(c: &mut Cursor, n: usize) -> Result<Vec<i64>> {
         .collect())
 }
 
-pub fn decode(buf: &[u8], t: crate::DataType) -> Result<Column> {
+/// Decode a chunk that must hold exactly `rows` values. The count is checked before anything is
+/// allocated, so a corrupt header cannot ask for billions of entries.
+pub fn decode(buf: &[u8], t: crate::DataType, rows: usize) -> Result<Column> {
     let mut c = Cursor::new(buf);
     let tag = c.u8()?;
     let n = c.u32()? as usize;
+    if n != rows {
+        return Err(format!("chunk claims {n} rows, footer says {rows}"));
+    }
     let int_only = |what: &str| -> Result<()> {
         if t == crate::DataType::Int {
             Ok(())

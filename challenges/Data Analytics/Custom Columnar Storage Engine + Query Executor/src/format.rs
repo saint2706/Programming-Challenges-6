@@ -259,7 +259,8 @@ impl Table {
             .seek(SeekFrom::Start(m.offset))
             .map_err(|e| e.to_string())?;
         self.file.read_exact(&mut buf).map_err(|e| e.to_string())?;
-        let c = encoding::decode(&buf, self.footer.types[col])?;
+        let rows = self.footer.row_groups[rg].rows as usize;
+        let c = encoding::decode(&buf, self.footer.types[col], rows)?;
         if c.len() != self.footer.row_groups[rg].rows as usize {
             return Err(format!(
                 "chunk rg {rg} col {col} decoded to the wrong row count"

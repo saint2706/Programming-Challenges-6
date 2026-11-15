@@ -674,10 +674,9 @@ pub fn run(plan: Plan) -> Result<(Batch, Stats)> {
         for (k, e) in out_items.iter().chain(&out_order).enumerate() {
             b.names.push(format!("#{k}"));
             b.columns.push(
-                if src.rows() == 0
-                    && !src.names.is_empty()
-                    && src.columns.iter().all(Column::is_empty)
-                {
+                // GROUP BY over zero rows (e.g. every row group pruned): no groups, no key
+                // columns were ever typed, so the answer is simply empty.
+                if !q.group_by.is_empty() && groups.is_empty() {
                     Column::empty(DataType::Int)
                 } else {
                     eval_column(e, &src)?

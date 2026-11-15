@@ -13,7 +13,7 @@ and hash aggregation. On TPC-H SF1 (6M `lineitem` rows) every answer matches Duc
 ## Run it
 
 ```bash
-cargo test --release                       # 18 tests (unit + end-to-end against plain-Rust answers)
+cargo test --release                       # 21 tests (unit + end-to-end against plain-Rust answers)
 cargo run --release --bin colq -- import sales.csv sales.col [--delim '|'] [--row-group 65536]
 cargo run --release --bin colq -- info sales.col
 cargo run --release --bin colq -- query --table sales=sales.col --timing \
@@ -48,7 +48,7 @@ the smallest, as Parquet writers do per chunk:
 **SQL** (`src/sql.rs`). `[EXPLAIN] SELECT ... FROM t [JOIN u ON a = b ...] [WHERE] [GROUP BY]
 [ORDER BY ... ASC|DESC] [LIMIT]` with arithmetic, comparisons, `BETWEEN`, `AND/OR/NOT`, and
 `COUNT(*) / COUNT / SUM / AVG / MIN / MAX`. Joined tables must have distinct column names (TPC-H
-style `l_`, `o_`, `c_` prefixes), so `t.col` qualifiers are accepted and dropped.
+style `l_`, `o_`, `c_` prefixes), so `t.col` is accepted after checking that `t` really owns `col`.
 
 **Planner** (`src/plan.rs`). Resolves each column to its table, then:
 

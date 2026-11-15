@@ -84,6 +84,21 @@ impl Expr {
     pub fn bin(a: Expr, op: BinOp, b: Expr) -> Expr {
         Expr::Bin(Box::new(a), op, Box::new(b))
     }
+    /// Apply `f` to every column name in place (used to resolve `table.col` qualifiers).
+    pub fn map_columns(
+        &mut self,
+        f: &mut impl FnMut(&mut String) -> crate::Result<()>,
+    ) -> crate::Result<()> {
+        match self {
+            Expr::Col(c) => f(c),
+            Expr::Bin(a, _, b) => {
+                a.map_columns(f)?;
+                b.map_columns(f)
+            }
+            Expr::Not(a) | Expr::Neg(a) | Expr::Agg(_, Some(a)) => a.map_columns(f),
+            _ => Ok(()),
+        }
+    }
     pub fn has_agg(&self) -> bool {
         match self {
             Expr::Agg(..) => true,
@@ -273,10 +288,14 @@ impl Parser {
             t => Err(format!("expected a name, found {t:?}")),
         }
     }
-    /// `col` or `table.col`; the table qualifier is dropped (joined tables must not share column names).
+    /// `col` or `table.col`; the planner checks the qualifier against the column's table.
     fn column(&mut self) -> Result<String> {
         let a = self.ident()?;
-        if self.sym(".") { self.ident() } else { Ok(a) }
+        if self.sym(".") {
+            Ok(format!("{a}.{}", self.ident()?))
+        } else {
+            Ok(a)
+        }
     }
 
     fn expr(&mut self) -> Result<Expr> {
@@ -431,7 +450,7 @@ pub fn parse(sql: &str) -> Result<Select> {
                 p.ident()?
             } else {
                 match &e {
-                    Expr::Col(c) => c.clone(),
+                    Expr::Col(c) => c.rsplit('.').next().unwrap_or(c).to_string(),
                     e => e.to_string(),
                 }
             };
@@ -532,7 +551,7 @@ mod tests {
         )
         .unwrap();
         assert!(q.explain);
-        assert_eq!(q.joins, vec![("u".into(), "k".into(), "k2".into())]);
+        assert_eq!(q.joins, vec![("u".into(), "t.k".into(), "u.k2".into())]);
         assert!(q.order_by[0].1);
         assert_eq!(q.limit, Some(5));
         assert_eq!(q.items.unwrap()[2].1, "s");
