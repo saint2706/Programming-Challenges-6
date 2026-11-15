@@ -82,6 +82,9 @@ def test_pii_tags_from_names_and_values(estate, tmp_path):
         crawl_into(cat, [estate])
         cols = {c["name"]: c["tags"] for c in cat.get("customers")["columns"]}
         assert cols["email"] == ["email", "pii"]
+        email = next(c for c in cat.get("customers")["columns"] if c["name"] == "email")
+        assert (email["samples"], email["min"], email["max"]) == ([], None, None)
+        assert email["distinct"] == 20  # counts stay; values do not
         assert cols["full_name"] == ["person_name", "pii"]
         assert cols["id"] == []
         visits = {c["name"]: c["tags"] for c in cat.get("visits")["columns"]}
@@ -200,7 +203,8 @@ def test_server(estate, tmp_path, monkeypatch):
     monkeypatch.setenv("DATA_CATALOG_DB", str(db))
     from data_catalog.server import app
 
-    c = TestClient(app)
+    c = TestClient(app, base_url="http://127.0.0.1")
+    assert c.get("/", headers={"host": "evil.example"}).status_code == 400
     assert "textContent" in c.get("/").text
     hits = c.get("/api/search", params={"q": "email"}).json()
     assert hits[0]["column"] == "email"
@@ -227,3 +231,16 @@ def test_duckdb_view_cannot_read_local_files(tmp_path):
         assert "TOPSECRET" not in json.dumps(
             [d.columns for d in cat.datasets()], default=str
         )
+
+
+def test_symlinks_inside_crawled_folders_are_skipped(tmp_path):
+    outside = tmp_path / "outside.csv"
+    outside.write_text("secret\nTOPSECRET\n", encoding="utf-8")
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "ok.csv").write_text("a\n1\n", encoding="utf-8")
+    try:
+        (src / "link.csv").symlink_to(outside)
+    except OSError:
+        pytest.skip("creating symlinks needs privileges on this OS")
+    assert [p.name for _, p in discover([src])] == ["ok.csv"]

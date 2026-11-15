@@ -91,6 +91,9 @@ def cmd_serve(a: argparse.Namespace) -> int:
     import uvicorn
 
     os.environ["DATA_CATALOG_DB"] = str(Path(a.catalog).resolve())
+    os.environ["DATA_CATALOG_HOSTS"] = ",".join(
+        filter(None, [os.environ.get("DATA_CATALOG_HOSTS", ""), a.host])
+    )
     uvicorn.run("data_catalog.server:app", host=a.host, port=a.port)
     return 0
 

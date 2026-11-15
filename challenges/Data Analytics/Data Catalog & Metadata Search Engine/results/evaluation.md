@@ -17,7 +17,7 @@
 | Mode   | MRR   | Hit@5 |
 | ------ | ----- | ----- |
 | like   | 0.736 | 15/16 |
-| fts    | 0.637 | 13/16 |
+| fts    | 0.669 | 13/16 |
 | hybrid | 0.906 | 15/16 |
 
 ## Top 3 hybrid hits per query
@@ -29,10 +29,10 @@
 | ship date       | lineitem.l_shipdate, users.signup_date, lineitem.l_shipmode       |
 | extended price  | lineitem.l_extendedprice, lineitem.*, orders.o_totalprice         |
 | order priority  | orders.o_orderpriority, orders.o_orderkey, orders.*               |
-| supplier        | supplier.*, supplier.s_name, supplier.s_suppkey                   |
+| supplier        | supplier.*, supplier.s_name, supplier.s_address                   |
 | nation          | nation.*, nation.n_nationkey, customer.c_nationkey                |
 | discount        | lineitem.l_discount, lineitem.*                                   |
-| ip address      | users.ip_address, supplier.s_address, customer.c_address          |
+| ip address      | users.ip_address, customer.c_address, supplier.s_address          |
 | signup          | users.signup_date, users.*                                        |
 | region          | region.*, region.r_regionkey, nation.n_regionkey                  |
 | retail price    | part.p_retailprice, part.*, orders.o_totalprice                   |
